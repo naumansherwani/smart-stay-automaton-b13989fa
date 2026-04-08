@@ -9,6 +9,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
+import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import IndustryKPIs from "@/components/dashboard/IndustryKPIs";
 import IndustryWidgets from "@/components/dashboard/IndustryWidgets";
 import ScheduleTimeline from "@/components/dashboard/ScheduleTimeline";
