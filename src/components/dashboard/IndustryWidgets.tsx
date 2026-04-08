@@ -1,7 +1,7 @@
 import { 
-  Shield, Zap, Brain, Globe, Bell, Users, MapPin, 
-  Truck, CalendarCheck, AlertTriangle, BarChart3, 
-  Target, Gauge, Timer, Package, Anchor, Building2 
+  Shield, Zap, Brain, Users, Activity,
+  AlertTriangle, BarChart3, 
+  Target, Gauge
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
