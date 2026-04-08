@@ -14,6 +14,7 @@ import IndustryWidgets from "@/components/dashboard/IndustryWidgets";
 import ScheduleTimeline from "@/components/dashboard/ScheduleTimeline";
 import BookingCalendar from "@/components/dashboard/BookingCalendar";
 import BookingsList from "@/components/dashboard/BookingsList";
+import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 
