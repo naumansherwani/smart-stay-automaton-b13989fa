@@ -15,7 +15,7 @@ const PLANS = [
   },
   {
     name: "Premium", price: 99,
-    features: ["Unlimited resources", "All 14 industries", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Dedicated manager", "Custom AI training"],
+    features: ["Unlimited resources", "All 13 industries", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Dedicated manager", "Custom AI training"],
   },
 ];
 
