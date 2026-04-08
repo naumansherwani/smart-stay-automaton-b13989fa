@@ -1,6 +1,5 @@
 import { TrendingUp, Clock, DollarSign, Users, BarChart3, Activity } from "lucide-react";
 import type { IndustryConfig } from "@/lib/industryConfig";
-import type { IndustryConfig } from "@/lib/industryConfig";
 
 interface IndustryKPIsProps {
   config: IndustryConfig;
