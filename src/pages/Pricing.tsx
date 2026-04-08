@@ -45,7 +45,7 @@ const PLANS = [
     plan: "premium" as const,
     features: [
       "Unlimited resources/properties",
-      "All 14 industry templates",
+      "All 13 industry templates",
       "AI demand forecasting",
       "AI conflict auto-resolution",
       "Revenue optimization engine",
