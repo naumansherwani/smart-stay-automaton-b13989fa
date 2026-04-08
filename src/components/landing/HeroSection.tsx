@@ -23,7 +23,7 @@ const HeroSection = () => {
           </h1>
           
           <p className="text-xl text-primary-foreground/70 max-w-2xl mx-auto">
-            The only AI scheduling platform built for hospitality, airlines, car rentals, healthcare, logistics, and 8 more industries. Smarter than any calendar you've used.
+            The only AI scheduling platform built for travel, tourism & hospitality, airlines, car rentals, healthcare, logistics, and 9 more industries. Smarter than any calendar you've used.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">

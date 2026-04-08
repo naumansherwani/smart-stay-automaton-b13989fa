@@ -15,7 +15,7 @@ const FEATURES = [
 ];
 
 const INDUSTRIES = [
-  { icon: Hotel, name: "Hospitality", desc: "Hotels, vacation rentals, B&Bs" },
+  { icon: Hotel, name: "Travel, Tourism & Hospitality", desc: "Hotels, vacation rentals, B&Bs, tour operators" },
   { icon: Plane, name: "Airlines", desc: "Crew scheduling, gate management, fleet rotation" },
   { icon: Car, name: "Car Rental", desc: "Fleet availability, maintenance scheduling" },
   { icon: Stethoscope, name: "Healthcare", desc: "Appointment scheduling, OR rooms, equipment" },
