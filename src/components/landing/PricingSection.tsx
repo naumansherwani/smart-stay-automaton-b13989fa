@@ -6,16 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 const PLANS = [
   {
-    name: "Basic", price: 15,
-    features: ["3 resources", "Basic sync", "Double-booking prevention", "Email alerts", "1 industry", "Basic reports"],
+    name: "Basic", price: 25,
+    features: ["3 resources", "1 industry", "Basic calendar sync", "Double-booking prevention", "Email alerts", "Basic reports"],
   },
   {
-    name: "Standard", price: 39, popular: true,
-    features: ["15 resources", "Multi-platform sync", "AI smart pricing", "Gap-night filler", "Guest scoring", "Analytics dashboard", "Competitor radar", "3 industries", "Priority support"],
+    name: "Pro", price: 55, popular: true,
+    features: ["15 resources", "1 industry", "Multi-platform sync", "AI smart pricing", "Gap-night filler", "Guest scoring", "Analytics dashboard", "Competitor radar", "Priority support"],
   },
   {
-    name: "Premium", price: 99,
-    features: ["Unlimited resources", "All 13 industries", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Dedicated manager", "Custom AI training"],
+    name: "Premium", price: 110,
+    features: ["Unlimited resources", "1 industry", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Dedicated manager", "Custom AI training"],
   },
 ];
 
@@ -27,7 +27,7 @@ const PricingSection = () => {
       <div className="container space-y-12">
         <div className="text-center space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground">Simple, Transparent Pricing</h2>
-          <p className="text-lg text-muted-foreground">3-day free trial on all plans. No credit card required.</p>
+          <p className="text-lg text-muted-foreground">3-day free trial. 1 industry per plan. Pay via Card or Payoneer.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
