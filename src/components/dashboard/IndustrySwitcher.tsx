@@ -1,5 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { INDUSTRY_CONFIGS, type IndustryType } from "@/lib/industryConfig";
+import IndustryIcon from "./IndustryIcon";
 
 interface IndustrySwitcherProps {
   current: IndustryType;
@@ -14,7 +15,7 @@ const IndustrySwitcher = ({ current, onChange }: IndustrySwitcherProps) => {
       <SelectTrigger className="w-[260px] bg-card border-border">
         <SelectValue>
           <span className="flex items-center gap-2">
-            <span>{config.icon}</span>
+            <IndustryIcon industry={current} size={18} />
             <span className="font-medium">{config.label}</span>
           </span>
         </SelectValue>
@@ -23,7 +24,7 @@ const IndustrySwitcher = ({ current, onChange }: IndustrySwitcherProps) => {
         {Object.values(INDUSTRY_CONFIGS).map(c => (
           <SelectItem key={c.id} value={c.id}>
             <span className="flex items-center gap-2">
-              <span>{c.icon}</span>
+              <IndustryIcon industry={c.id} size={16} />
               <span>{c.label}</span>
             </span>
           </SelectItem>
