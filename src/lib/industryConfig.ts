@@ -1,7 +1,7 @@
 export type IndustryType =
   | "hospitality" | "airlines" | "car_rental" | "healthcare" | "education"
   | "logistics" | "events_entertainment" | "fitness_wellness" | "legal_services"
-  | "real_estate" | "coworking" | "marine_maritime" | "government";
+  | "real_estate" | "coworking" | "marine_maritime" | "government" | "travel_tourism";
 
 export interface IndustryConfig {
   id: IndustryType;
@@ -268,6 +268,26 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Served/Day", key: "servedDay", format: "number" },
     ],
     color: "hsl(240, 50%, 50%)",
+  },
+  travel_tourism: {
+    id: "travel_tourism", label: "Travel & Tourism", icon: "🌍",
+    resourceLabel: "Tour", resourceLabelPlural: "Tours",
+    bookingLabel: "Reservation", bookingLabelPlural: "Reservations",
+    clientLabel: "Traveler", clientLabelPlural: "Travelers",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "viator", label: "Viator" },
+      { value: "getyourguide", label: "GetYourGuide" }, { value: "tripadvisor", label: "TripAdvisor" },
+      { value: "klook", label: "Klook" }, { value: "expedia", label: "Expedia" },
+    ],
+    statuses: ["confirmed", "pending", "in-progress", "completed", "cancelled", "no-show", "waitlisted"],
+    widgets: ["itinerary-builder", "tour-calendar", "guide-scheduler", "group-capacity", "seasonal-demand", "review-tracker", "multi-currency", "weather-alerts", "transport-links", "package-builder"],
+    kpis: [
+      { label: "Booking Rate", key: "bookingRate", format: "percent" },
+      { label: "Rev/Tour", key: "revTour", format: "currency" },
+      { label: "Avg Group Size", key: "groupSize", format: "number" },
+      { label: "Satisfaction", key: "satisfaction", format: "percent" },
+    ],
+    color: "hsl(280, 60%, 50%)",
   },
 };
 

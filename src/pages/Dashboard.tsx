@@ -17,6 +17,11 @@ import BookingsList from "@/components/dashboard/BookingsList";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
+import {
+  ItineraryBuilder, GuideScheduler, GroupCapacityMonitor,
+  SeasonalDemandChart, ReviewTracker, WeatherAlerts,
+  MultiCurrencyRevenue, PackageBuilder, TransportLinks,
+} from "@/components/dashboard/TravelWidgets";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -87,6 +92,28 @@ const Dashboard = () => {
         <ScheduleTimeline config={config} />
 
         <IndustryWidgets config={config} />
+
+        {currentIndustry === "travel_tourism" && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <ItineraryBuilder />
+                <GroupCapacityMonitor />
+                <SeasonalDemandChart />
+              </div>
+              <div className="space-y-6">
+                <WeatherAlerts />
+                <GuideScheduler />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <PackageBuilder />
+              <MultiCurrencyRevenue />
+              <TransportLinks />
+            </div>
+            <ReviewTracker />
+          </>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">

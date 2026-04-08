@@ -294,6 +294,7 @@ export type Database = {
         | "coworking"
         | "marine_maritime"
         | "government"
+        | "travel_tourism"
       subscription_plan: "trial" | "basic" | "standard" | "premium"
       subscription_status:
         | "active"
@@ -443,6 +444,7 @@ export const Constants = {
         "coworking",
         "marine_maritime",
         "government",
+        "travel_tourism",
       ],
       subscription_plan: ["trial", "basic", "standard", "premium"],
       subscription_status: [

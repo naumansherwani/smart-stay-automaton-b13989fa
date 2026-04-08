@@ -23,6 +23,7 @@ const INDUSTRIES = [
   { value: "coworking", label: "🏢 Co-working Spaces" },
   { value: "marine_maritime", label: "🚢 Marine & Maritime" },
   { value: "government", label: "🏛️ Government" },
+  { value: "travel_tourism", label: "🌍 Travel & Tourism" },
 ];
 
 export default function Signup() {
