@@ -14,8 +14,8 @@ import IndustryWidgets from "@/components/dashboard/IndustryWidgets";
 import ScheduleTimeline from "@/components/dashboard/ScheduleTimeline";
 import BookingCalendar from "@/components/dashboard/BookingCalendar";
 import BookingsList from "@/components/dashboard/BookingsList";
-import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
+import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -93,6 +93,7 @@ const Dashboard = () => {
             <BookingsList bookings={bookings} />
           </div>
           <div className="space-y-8">
+            <DoubleBookingGuard config={config} />
             <AlertsPanel alerts={alerts} onMarkRead={markAlertRead} />
           </div>
         </div>
