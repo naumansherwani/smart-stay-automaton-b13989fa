@@ -16,6 +16,7 @@ import BookingCalendar from "@/components/dashboard/BookingCalendar";
 import BookingsList from "@/components/dashboard/BookingsList";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
+import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Dashboard = () => {
             <Button variant="outline" size="sm" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </Button>
-            <AddBookingDialog properties={properties} onAdd={addBooking} />
+            <AddBookingDialog properties={properties} onAdd={addBooking} config={config} />
             <Button variant="ghost" size="sm" onClick={() => navigate("/pricing")}>Upgrade</Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
@@ -93,6 +94,7 @@ const Dashboard = () => {
             <BookingsList bookings={bookings} />
           </div>
           <div className="space-y-8">
+            <DoubleBookingGuard config={config} />
             <AlertsPanel alerts={alerts} onMarkRead={markAlertRead} />
           </div>
         </div>

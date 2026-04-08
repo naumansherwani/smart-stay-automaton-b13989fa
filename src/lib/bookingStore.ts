@@ -256,29 +256,56 @@ export function useBookingStore() {
   ]);
 
   const addBooking = useCallback((booking: Omit<Booking, "id">) => {
-    const conflicts = bookings.filter(
+    // 1. Time overlap check
+    const overlaps = bookings.filter(
       b => b.propertyName === booking.propertyName && b.status !== "cancelled" && datesOverlap(b, booking)
     );
-    if (conflicts.length > 0) {
+    if (overlaps.length > 0) {
       const alert: Alert = {
         id: `a-${Date.now()}`,
         type: "double-booking",
-        title: "Double Booking Prevented!",
-        message: `Cannot book ${booking.propertyName} for ${booking.guestName}: conflicts with ${conflicts[0].guestName}'s reservation (${conflicts[0].checkIn.toLocaleDateString()} - ${conflicts[0].checkOut.toLocaleDateString()})`,
+        title: "🛡️ Double Booking Auto-Declined",
+        message: `Cannot book ${booking.propertyName} for ${booking.guestName}: time overlap with ${overlaps[0].guestName}'s reservation (${overlaps[0].checkIn.toLocaleDateString()} – ${overlaps[0].checkOut.toLocaleDateString()}). AI prevented this conflict automatically.`,
         timestamp: new Date(),
         read: false,
       };
       setAlerts(prev => [alert, ...prev]);
-      return { success: false, conflict: conflicts[0] };
+      return { success: false, conflict: overlaps[0] };
     }
+
+    // 2. Turnaround buffer check (same-day back-to-back)
+    const property = properties.find(p => p.name === booking.propertyName);
+    if (property) {
+      const bufferMs = property.turnaroundHours * 60 * 60 * 1000;
+      const turnaroundConflict = bookings.find(b => {
+        if (b.propertyName !== booking.propertyName || b.status === "cancelled") return false;
+        const gapAfter = booking.checkIn.getTime() - b.checkOut.getTime();
+        const gapBefore = b.checkIn.getTime() - booking.checkOut.getTime();
+        return (gapAfter >= 0 && gapAfter < bufferMs) || (gapBefore >= 0 && gapBefore < bufferMs);
+      });
+      if (turnaroundConflict) {
+        const alert: Alert = {
+          id: `a-${Date.now()}`,
+          type: "double-booking",
+          title: "⏱️ Turnaround Violation Declined",
+          message: `Cannot book ${booking.propertyName} for ${booking.guestName}: insufficient turnaround time (${property.turnaroundHours}h required) after ${turnaroundConflict.guestName}'s checkout. AI auto-declined.`,
+          timestamp: new Date(),
+          read: false,
+        };
+        setAlerts(prev => [alert, ...prev]);
+        return { success: false, conflict: turnaroundConflict };
+      }
+    }
+
+    // 3. Success — create booking
     const newBooking: Booking = { ...booking, id: `b-${Date.now()}`, guestScore: Math.floor(Math.random() * 50) + 50 };
     setBookings(prev => [...prev, newBooking]);
     setAlerts(prev => [
-      { id: `a-${Date.now()}`, type: "sync", title: "Booking Synced", message: `New booking for ${booking.guestName} at ${booking.propertyName} synced across all calendars`, timestamp: new Date(), read: false },
+      { id: `a-${Date.now()}`, type: "sync", title: "✅ Booking Synced", message: `New booking for ${booking.guestName} at ${booking.propertyName} synced across all calendars. No conflicts detected.`, timestamp: new Date(), read: false },
       ...prev,
     ]);
     return { success: true, booking: newBooking };
-  }, [bookings]);
+  }, [bookings, properties]);
 
   const markAlertRead = useCallback((id: string) => {
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
