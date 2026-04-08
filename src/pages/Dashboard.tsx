@@ -9,6 +9,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
+import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import IndustryKPIs from "@/components/dashboard/IndustryKPIs";
 import IndustryWidgets from "@/components/dashboard/IndustryWidgets";
 import ScheduleTimeline from "@/components/dashboard/ScheduleTimeline";
@@ -195,8 +196,9 @@ const Dashboard = () => {
       <main className="container py-8 space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {config.icon} {config.label} Dashboard
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <IndustryIcon industry={currentIndustry} size={24} />
+              {config.label} Dashboard
             </h1>
             <p className="text-muted-foreground">
               Manage your {config.resourceLabelPlural.toLowerCase()}, {config.bookingLabelPlural.toLowerCase()}, and {config.clientLabelPlural.toLowerCase()} with AI.
