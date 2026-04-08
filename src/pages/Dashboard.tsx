@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, LogOut, BarChart3, Settings, Shield } from "lucide-react";
+import { Calendar, LogOut, BarChart3, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useBookingStore } from "@/lib/bookingStore";

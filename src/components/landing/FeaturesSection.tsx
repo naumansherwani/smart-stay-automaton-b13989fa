@@ -27,6 +27,7 @@ const INDUSTRIES = [
   { icon: Building, name: "Real Estate", desc: "Property viewings, agent scheduling" },
   { icon: Ship, name: "Maritime", desc: "Berth allocation, crew rotation" },
   { icon: Landmark, name: "Government", desc: "Facility booking, appointment scheduling" },
+  { icon: Hotel, name: "Travel & Tourism", desc: "Tour scheduling, guide management, packages" },
 ];
 
 const FeaturesSection = () => (
