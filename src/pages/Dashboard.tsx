@@ -1,4 +1,4 @@
-import { Calendar, LogOut } from "lucide-react";
+import { Calendar, LogOut, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useBookingStore } from "@/lib/bookingStore";
@@ -8,6 +8,10 @@ import BookingsList from "@/components/dashboard/BookingsList";
 import SmartPricingCard from "@/components/dashboard/SmartPricingCard";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
+import GuestScoreCard from "@/components/dashboard/GuestScoreCard";
+import GapNightFiller from "@/components/dashboard/GapNightFiller";
+import CompetitorRadar from "@/components/dashboard/CompetitorRadar";
+import TurnoverProfit from "@/components/dashboard/TurnoverProfit";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,6 +28,9 @@ const Dashboard = () => {
             <span className="text-lg font-bold text-foreground">HostSync</span>
           </div>
           <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => navigate("/analytics")}>
+              <BarChart3 className="w-4 h-4 mr-2" /> Analytics
+            </Button>
             <AddBookingDialog properties={properties} onAdd={addBooking} />
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <LogOut className="w-4 h-4" />
@@ -44,9 +51,13 @@ const Dashboard = () => {
           <div className="lg:col-span-2 space-y-8">
             <BookingCalendar bookings={bookings} />
             <BookingsList bookings={bookings} />
+            <TurnoverProfit bookings={bookings} properties={properties} />
           </div>
           <div className="space-y-8">
             <AlertsPanel alerts={alerts} onMarkRead={markAlertRead} />
+            <GapNightFiller bookings={bookings} properties={properties} />
+            <GuestScoreCard bookings={bookings} />
+            <CompetitorRadar properties={properties} />
             <SmartPricingCard properties={properties} />
           </div>
         </div>
