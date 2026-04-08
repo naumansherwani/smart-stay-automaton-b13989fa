@@ -17,11 +17,133 @@ import BookingsList from "@/components/dashboard/BookingsList";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import AddBookingDialog from "@/components/dashboard/AddBookingDialog";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
-import {
-  ItineraryBuilder, GuideScheduler, GroupCapacityMonitor,
-  SeasonalDemandChart, ReviewTracker, WeatherAlerts,
-  MultiCurrencyRevenue, PackageBuilder, TransportLinks,
-} from "@/components/dashboard/TravelWidgets";
+// Travel, Tourism & Hospitality
+import { ItineraryBuilder, GuideScheduler, GroupCapacityMonitor, SeasonalDemandChart, ReviewTracker, WeatherAlerts, MultiCurrencyRevenue, PackageBuilder, TransportLinks } from "@/components/dashboard/TravelWidgets";
+// Airlines
+import { CrewScheduler, GateAssignment, FlightLoadFactor, DelayTracker } from "@/components/dashboard/AirlineWidgets";
+// Car Rental
+import { FleetStatusBoard, DamageReports, UtilizationChart } from "@/components/dashboard/CarRentalWidgets";
+// Healthcare
+import { PatientFlowBoard, NoShowPredictor, WaitlistManager } from "@/components/dashboard/HealthcareWidgets";
+// Education
+import { ClassScheduleBoard, AttendanceTracker, InstructorAvailability } from "@/components/dashboard/EducationWidgets";
+// Logistics
+import { DeliveryTrackingBoard, WarehouseCapacity, DriverSchedule } from "@/components/dashboard/LogisticsWidgets";
+// Events
+import { VenueCalendar, VendorCoordination } from "@/components/dashboard/EventsWidgets";
+// Fitness
+import { ClassScheduleFitness, MemberRetention, TrainerBooking } from "@/components/dashboard/FitnessWidgets";
+// Legal
+import { CourtDateTracker, BillableHoursTracker, CaseDeadlines } from "@/components/dashboard/LegalWidgets";
+// Real Estate
+import { ShowingCalendar, LeadTracker, MarketAnalysis } from "@/components/dashboard/RealEstateWidgets";
+// Coworking
+import { DeskMap, MeetingRoomAvailability, MemberCheckins } from "@/components/dashboard/CoworkingWidgets";
+// Maritime
+import { BerthSchedule, CrewRotation, TideCalendar } from "@/components/dashboard/MaritimeWidgets";
+// Government
+import { CitizenAppointments, QueueManagement, ServiceSatisfaction } from "@/components/dashboard/GovernmentWidgets";
+
+function IndustrySpecificWidgets({ industry }: { industry: IndustryType }) {
+  switch (industry) {
+    case "hospitality":
+      return (
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6"><ItineraryBuilder /><GroupCapacityMonitor /><SeasonalDemandChart /></div>
+            <div className="space-y-6"><WeatherAlerts /><GuideScheduler /></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6"><PackageBuilder /><MultiCurrencyRevenue /><TransportLinks /></div>
+          <ReviewTracker />
+        </>
+      );
+    case "airlines":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><GateAssignment /><FlightLoadFactor /></div>
+          <div className="space-y-6"><CrewScheduler /><DelayTracker /></div>
+        </div>
+      );
+    case "car_rental":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><FleetStatusBoard /><UtilizationChart /></div>
+          <div className="space-y-6"><DamageReports /></div>
+        </div>
+      );
+    case "healthcare":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><PatientFlowBoard /><WaitlistManager /></div>
+          <div className="space-y-6"><NoShowPredictor /></div>
+        </div>
+      );
+    case "education":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><ClassScheduleBoard /><AttendanceTracker /></div>
+          <div className="space-y-6"><InstructorAvailability /></div>
+        </div>
+      );
+    case "logistics":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><DeliveryTrackingBoard /><WarehouseCapacity /></div>
+          <div className="space-y-6"><DriverSchedule /></div>
+        </div>
+      );
+    case "events_entertainment":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <VenueCalendar /><VendorCoordination />
+        </div>
+      );
+    case "fitness_wellness":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><ClassScheduleFitness /><MemberRetention /></div>
+          <div className="space-y-6"><TrainerBooking /></div>
+        </div>
+      );
+    case "legal_services":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><CourtDateTracker /><BillableHoursTracker /></div>
+          <div className="space-y-6"><CaseDeadlines /></div>
+        </div>
+      );
+    case "real_estate":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><ShowingCalendar /><MarketAnalysis /></div>
+          <div className="space-y-6"><LeadTracker /></div>
+        </div>
+      );
+    case "coworking":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><DeskMap /><MeetingRoomAvailability /></div>
+          <div className="space-y-6"><MemberCheckins /></div>
+        </div>
+      );
+    case "marine_maritime":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><BerthSchedule /><TideCalendar /></div>
+          <div className="space-y-6"><CrewRotation /></div>
+        </div>
+      );
+    case "government":
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6"><CitizenAppointments /><QueueManagement /></div>
+          <div className="space-y-6"><ServiceSatisfaction /></div>
+        </div>
+      );
+    default:
+      return null;
+  }
+}
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -80,40 +202,15 @@ const Dashboard = () => {
               Manage your {config.resourceLabelPlural.toLowerCase()}, {config.bookingLabelPlural.toLowerCase()}, and {config.clientLabelPlural.toLowerCase()} with AI.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
-              <Shield className="w-3 h-3 mr-1" /> Protected
-            </Badge>
-          </div>
+          <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+            <Shield className="w-3 h-3 mr-1" /> Protected
+          </Badge>
         </div>
 
         <IndustryKPIs config={config} />
-        
         <ScheduleTimeline config={config} />
-
         <IndustryWidgets config={config} />
-
-        {currentIndustry === "hospitality" && (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <ItineraryBuilder />
-                <GroupCapacityMonitor />
-                <SeasonalDemandChart />
-              </div>
-              <div className="space-y-6">
-                <WeatherAlerts />
-                <GuideScheduler />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <PackageBuilder />
-              <MultiCurrencyRevenue />
-              <TransportLinks />
-            </div>
-            <ReviewTracker />
-          </>
-        )}
+        <IndustrySpecificWidgets industry={currentIndustry} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
