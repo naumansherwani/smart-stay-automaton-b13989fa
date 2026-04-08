@@ -44,6 +44,7 @@ const Dashboard = () => {
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
+          </div>
         </div>
       </header>
 
