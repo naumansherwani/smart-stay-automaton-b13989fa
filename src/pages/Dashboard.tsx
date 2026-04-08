@@ -40,10 +40,10 @@ const Dashboard = () => {
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </Button>
             <AddBookingDialog properties={properties} onAdd={addBooking} />
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/pricing")}>Upgrade</Button>
+            <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
-          </div>
         </div>
       </header>
 
