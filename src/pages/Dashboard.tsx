@@ -30,8 +30,11 @@ const Dashboard = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
               <Calendar className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold text-foreground">HostSync</span>
+            <span className="text-lg font-bold text-foreground">CalendarAI</span>
           </div>
+          {isTrialing && trialDaysLeft > 0 && (
+            <Badge variant="outline" className="border-primary text-primary">{trialDaysLeft}d trial left</Badge>
+          )}
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
