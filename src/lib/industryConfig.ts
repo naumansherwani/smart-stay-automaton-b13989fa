@@ -1,7 +1,7 @@
 export type IndustryType =
   | "hospitality" | "airlines" | "car_rental" | "healthcare" | "education"
   | "logistics" | "events_entertainment" | "fitness_wellness" | "legal_services"
-  | "real_estate" | "coworking" | "marine_maritime" | "government";
+  | "real_estate" | "coworking" | "marine_maritime" | "government" | "travel_tourism";
 
 export interface IndustryConfig {
   id: IndustryType;
