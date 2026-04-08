@@ -19,6 +19,8 @@ import TurnoverProfit from "@/components/dashboard/TurnoverProfit";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { bookings, properties, alerts, addBooking, markAlertRead } = useBookingStore();
+  const { signOut } = useAuth();
+  const { subscription, trialDaysLeft, isTrialing } = useSubscription();
 
   return (
     <div className="min-h-screen bg-background">
