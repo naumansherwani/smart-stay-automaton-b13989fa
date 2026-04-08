@@ -56,7 +56,7 @@ const Dashboard = () => {
             <Button variant="outline" size="sm" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </Button>
-            <AddBookingDialog properties={properties} onAdd={addBooking} />
+            <AddBookingDialog properties={properties} onAdd={addBooking} config={config} />
             <Button variant="ghost" size="sm" onClick={() => navigate("/pricing")}>Upgrade</Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
