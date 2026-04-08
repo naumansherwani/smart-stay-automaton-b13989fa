@@ -14,16 +14,293 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          check_in: string
+          check_out: string
+          cleaning_fee: number | null
+          created_at: string
+          guest_email: string | null
+          guest_name: string
+          guest_phone: string | null
+          guest_score: number | null
+          id: string
+          metadata: Json | null
+          nightly_rate: number | null
+          notes: string | null
+          platform: string | null
+          repeat_guest: boolean | null
+          resource_id: string
+          status: string
+          total_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          check_in: string
+          check_out: string
+          cleaning_fee?: number | null
+          created_at?: string
+          guest_email?: string | null
+          guest_name: string
+          guest_phone?: string | null
+          guest_score?: number | null
+          id?: string
+          metadata?: Json | null
+          nightly_rate?: number | null
+          notes?: string | null
+          platform?: string | null
+          repeat_guest?: boolean | null
+          resource_id: string
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          check_in?: string
+          check_out?: string
+          cleaning_fee?: number | null
+          created_at?: string
+          guest_email?: string | null
+          guest_name?: string
+          guest_phone?: string | null
+          guest_score?: number | null
+          id?: string
+          metadata?: Json | null
+          nightly_rate?: number | null
+          notes?: string | null
+          platform?: string | null
+          repeat_guest?: boolean | null
+          resource_id?: string
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"] | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"] | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"] | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          base_price: number | null
+          cleaning_cost: number | null
+          created_at: string
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          is_active: boolean | null
+          location: string | null
+          max_capacity: number | null
+          metadata: Json | null
+          name: string
+          turnaround_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          base_price?: number | null
+          cleaning_cost?: number | null
+          created_at?: string
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_active?: boolean | null
+          location?: string | null
+          max_capacity?: number | null
+          metadata?: Json | null
+          name: string
+          turnaround_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          base_price?: number | null
+          cleaning_cost?: number | null
+          created_at?: string
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_active?: boolean | null
+          location?: string | null
+          max_capacity?: number | null
+          metadata?: Json | null
+          name?: string
+          turnaround_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_ends_at: string
+          trial_starts_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string
+          trial_starts_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string
+          trial_starts_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
+      industry_type:
+        | "hospitality"
+        | "airlines"
+        | "car_rental"
+        | "healthcare"
+        | "education"
+        | "logistics"
+        | "events_entertainment"
+        | "fitness_wellness"
+        | "legal_services"
+        | "real_estate"
+        | "coworking"
+        | "marine_maritime"
+        | "government"
+      subscription_plan: "trial" | "basic" | "standard" | "premium"
+      subscription_status:
+        | "active"
+        | "trialing"
+        | "past_due"
+        | "canceled"
+        | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +427,31 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+      industry_type: [
+        "hospitality",
+        "airlines",
+        "car_rental",
+        "healthcare",
+        "education",
+        "logistics",
+        "events_entertainment",
+        "fitness_wellness",
+        "legal_services",
+        "real_estate",
+        "coworking",
+        "marine_maritime",
+        "government",
+      ],
+      subscription_plan: ["trial", "basic", "standard", "premium"],
+      subscription_status: [
+        "active",
+        "trialing",
+        "past_due",
+        "canceled",
+        "expired",
+      ],
+    },
   },
 } as const
