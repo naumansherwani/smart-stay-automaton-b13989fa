@@ -22,7 +22,7 @@ export interface IndustryConfig {
 
 export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
   hospitality: {
-    id: "hospitality", label: "Hospitality & Hotels", icon: "🏨",
+    id: "hospitality", label: "Travel, Tourism & Hospitality", icon: "🏨",
     resourceLabel: "Property", resourceLabelPlural: "Properties",
     bookingLabel: "Booking", bookingLabelPlural: "Bookings",
     clientLabel: "Guest", clientLabelPlural: "Guests",

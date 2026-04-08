@@ -10,7 +10,7 @@ import { Calendar, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const INDUSTRIES = [
-  { value: "hospitality", label: "🏨 Hospitality & Hotels" },
+  { value: "hospitality", label: "🏨 Travel, Tourism & Hospitality" },
   { value: "airlines", label: "✈️ Airlines & Aviation" },
   { value: "car_rental", label: "🚗 Car Rental" },
   { value: "healthcare", label: "🏥 Healthcare & Clinics" },
