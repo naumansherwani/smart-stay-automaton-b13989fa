@@ -47,7 +47,7 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="md" />
+            <Logo size="lg" />
             <span className="text-2xl font-bold text-foreground">HostFlow AI</span>
           </div>
           <p className="text-muted-foreground">Reset your password</p>
