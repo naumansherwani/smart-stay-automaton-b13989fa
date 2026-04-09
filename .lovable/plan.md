@@ -1,46 +1,46 @@
 
-## Phase 1: Industry-Specific Dashboards (Now)
-Create dedicated dashboard views for each of the 13 industries with tailored widgets:
+# Universal AI Auto-Scheduling SaaS Platform
 
-| Industry | Key Widgets |
-|----------|------------|
-| **Hospitality** | Occupancy heatmap, turnover tracker, guest scoring, channel sync |
-| **Airlines** | Crew scheduling, gate assignment, flight load factor, delay alerts |
-| **Car Rental** | Fleet availability map, vehicle status, mileage tracker, damage reports |
-| **Healthcare** | Appointment slots, patient flow, room utilization, waitlist management |
-| **Education** | Class schedules, room booking, instructor availability, semester planner |
-| **Logistics** | Route optimization, warehouse slots, driver schedules, delivery tracking |
-| **Events** | Venue calendar, ticket capacity, vendor coordination, setup timelines |
-| **Fitness** | Class schedules, trainer booking, member check-ins, equipment rotation |
-| **Legal** | Court dates, client meetings, case deadlines, billing hours |
-| **Real Estate** | Property showings, open house scheduler, agent calendars, lead tracking |
-| **Coworking** | Desk/room booking, member check-ins, meeting room availability |
-| **Maritime** | Berth scheduling, vessel tracking, port slot management, crew rotation |
-| **Government** | Citizen appointments, facility booking, permit scheduling, staff rotation |
+## Phase 1: Core Scheduling Engine (Database + Backend)
+1. **New tables**: `schedule_settings` (working hours, days, holidays, slot duration, capacity, buffer time per resource)
+2. **Slot generation logic**: Edge function that auto-generates available time slots based on settings
+3. **Double-booking prevention**: Database constraints + validation in booking creation
+4. **Auto-assign resources**: Match bookings to available resources automatically
 
-## Phase 2: Advanced AI Features
-- **AI Conflict Resolution** — auto-detect and resolve double bookings
-- **Demand Forecasting** — predict busy periods using historical data
-- **Smart Pricing** — dynamic pricing based on demand/supply
-- **Auto-Scheduling** — AI fills gaps and optimizes resource utilization
-- **Natural Language Booking** — "Book Room 3 for Dr. Smith next Tuesday 2pm"
+## Phase 2: Enhanced Booking System
+1. **Booking CRUD**: Create, update, cancel, reschedule with proper status flow (pending → confirmed → completed / cancelled)
+2. **Free slots on cancellation**: Auto-release slots when booking cancelled
+3. **Multi-resource support**: Assign multiple staff/rooms/assets per booking
+4. **Timezone support**: Store in UTC, auto-detect user timezone, convert for display
+5. **Buffer time enforcement**: Prevent bookings within buffer period
+6. **Optional overbooking rules**: Allow configurable overbooking per resource
 
-## Phase 3: Security Hardening
-- Rate limiting on all API endpoints
-- Input validation with Zod on all forms
-- CSRF protection via Supabase Auth tokens
-- RLS policies review and tightening
-- Session timeout and re-authentication
-- Audit logging for all data changes
-- Content Security Policy headers
+## Phase 3: AI Features (using Lovable AI)
+1. **Smart slot suggestions**: AI recommends best available times based on patterns
+2. **Gap optimization**: AI identifies and fills schedule gaps
+3. **Dynamic pricing**: Adjust rates based on demand/peak times
+4. **Peak time prediction**: Analyze booking patterns to predict busy periods
 
-## Phase 4: Global & Enterprise Features
-- Multi-language support (i18n) — 10+ languages
-- Multi-timezone handling
-- Team/organization accounts with role-based access
-- White-label customization
-- Data export (CSV, PDF reports)
-- Email/SMS notifications
-- API access for Premium users
+## Phase 4: Dashboard UI Overhaul
+1. **New calendar views**: Daily, Weekly, Monthly with drag-and-drop
+2. **Schedule settings panel**: Configure working hours, holidays, capacity per resource
+3. **Resource management**: Staff/rooms/assets CRUD with availability
+4. **Booking creation wizard**: Step-by-step easy booking with AI suggestions
+5. **Real-time updates**: Live calendar sync across users
 
-**Implementation order**: Phase 1 first (industry dashboards), then Phase 3 (security), then Phase 2 & 4.
+## Phase 5: Notifications
+1. **Booking confirmations**: Email on create/update/cancel
+2. **Reminders**: Automated reminders before bookings
+3. **Staff notifications**: Alert assigned staff of new bookings
+
+## Phase 6: Industry Templates
+1. **Pre-built configs**: Healthcare (15-min slots), Hospitality (nightly), Rentals (hourly/daily), Education (class periods)
+2. **Custom rules engine**: Per-industry booking rules and constraints
+
+## Phase 7: Mobile App (PWA)
+1. **Installable PWA**: Add to home screen on iPhone/Android
+2. **Mobile-optimized UI**: Touch-friendly calendar and booking forms
+3. **Offline support**: View schedule offline
+
+## Implementation Order
+Start with **Phase 1 + 2 + 4** (core functionality + UI) → then **Phase 3** (AI) → **Phase 5** (notifications) → **Phase 6** (templates) → **Phase 7** (PWA)

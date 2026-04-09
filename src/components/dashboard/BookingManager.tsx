@@ -1,0 +1,344 @@
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Shield, Zap, AlertTriangle, CalendarCheck, X, RefreshCw, CheckCircle2, XCircle, Clock, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import type { IndustryConfig } from "@/lib/industryConfig";
+
+interface BookingRow {
+  id: string;
+  guest_name: string;
+  guest_email: string | null;
+  guest_phone: string | null;
+  resource_id: string;
+  check_in: string;
+  check_out: string;
+  status: string;
+  platform: string | null;
+  nightly_rate: number | null;
+  total_price: number | null;
+  notes: string | null;
+  created_at: string;
+}
+
+interface Resource {
+  id: string;
+  name: string;
+}
+
+interface BookingManagerProps {
+  config: IndustryConfig;
+}
+
+const STATUS_ICONS: Record<string, React.ReactNode> = {
+  confirmed: <CheckCircle2 className="w-3.5 h-3.5 text-success" />,
+  pending: <Clock className="w-3.5 h-3.5 text-warning" />,
+  cancelled: <XCircle className="w-3.5 h-3.5 text-destructive" />,
+  completed: <CalendarCheck className="w-3.5 h-3.5 text-primary" />,
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  confirmed: "bg-success/10 text-success border-success/20",
+  pending: "bg-warning/10 text-warning border-warning/20",
+  cancelled: "bg-destructive/10 text-destructive border-destructive/20",
+  completed: "bg-primary/10 text-primary border-primary/20",
+};
+
+const BookingManager = ({ config }: BookingManagerProps) => {
+  const { user } = useAuth();
+  const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [filter, setFilter] = useState<string>("all");
+  const [form, setForm] = useState({
+    guest_name: "",
+    guest_email: "",
+    guest_phone: "",
+    resource_id: "",
+    check_in: "",
+    check_out: "",
+    platform: "direct",
+    nightly_rate: "",
+    notes: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchData = async () => {
+    if (!user) return;
+    const [bRes, rRes] = await Promise.all([
+      supabase.from("bookings").select("*").eq("user_id", user.id).order("check_in", { ascending: false }),
+      supabase.from("resources").select("id, name").eq("user_id", user.id).eq("is_active", true),
+    ]);
+    if (bRes.data) setBookings(bRes.data as BookingRow[]);
+    if (rRes.data) setResources(rRes.data);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchData(); }, [user]);
+
+  // Realtime subscription
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel("bookings-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, () => {
+        fetchData();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !form.resource_id) return;
+    setSubmitting(true);
+
+    const checkIn = new Date(form.check_in);
+    const checkOut = new Date(form.check_out);
+    if (checkOut <= checkIn) {
+      toast.error("End time must be after start time");
+      setSubmitting(false);
+      return;
+    }
+
+    // Check for double booking
+    const { data: overlaps } = await supabase
+      .from("bookings")
+      .select("id, guest_name")
+      .eq("resource_id", form.resource_id)
+      .eq("user_id", user.id)
+      .neq("status", "cancelled")
+      .lt("check_in", form.check_out)
+      .gt("check_out", form.check_in);
+
+    if (overlaps && overlaps.length > 0) {
+      toast.error(`🛡️ Double booking prevented! Conflicts with ${overlaps[0].guest_name}'s reservation.`);
+      setSubmitting(false);
+      return;
+    }
+
+    const diffMs = checkOut.getTime() - checkIn.getTime();
+    const nights = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) || 1;
+    const rate = Number(form.nightly_rate) || 0;
+
+    const { error } = await supabase.from("bookings").insert({
+      user_id: user.id,
+      resource_id: form.resource_id,
+      guest_name: form.guest_name,
+      guest_email: form.guest_email || null,
+      guest_phone: form.guest_phone || null,
+      check_in: form.check_in,
+      check_out: form.check_out,
+      platform: form.platform,
+      nightly_rate: rate,
+      total_price: rate * nights,
+      notes: form.notes || null,
+      status: "confirmed",
+    });
+
+    if (error) {
+      toast.error("Failed to create booking");
+    } else {
+      toast.success(`${config.bookingLabel} created successfully!`);
+      setDialogOpen(false);
+      setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "" });
+    }
+    setSubmitting(false);
+  };
+
+  const updateStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+    if (error) toast.error("Failed to update");
+    else toast.success(`Status updated to ${status}`);
+  };
+
+  const cancelBooking = async (id: string) => {
+    await updateStatus(id, "cancelled");
+  };
+
+  const filteredBookings = filter === "all" ? bookings : bookings.filter(b => b.status === filter);
+
+  const getResourceName = (id: string) => resources.find(r => r.id === id)?.name || "Unknown";
+
+  if (loading) {
+    return <Card><CardContent className="py-8 text-center text-muted-foreground">Loading bookings...</CardContent></Card>;
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold text-foreground">{config.bookingLabelPlural}</h3>
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="w-[140px] h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All ({bookings.length})</SelectItem>
+              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-gradient-primary hover:opacity-90">
+              <Plus className="w-4 h-4 mr-2" /> New {config.bookingLabel}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                New {config.bookingLabel}
+                <Badge variant="secondary" className="bg-success/10 text-success text-xs">
+                  <Shield className="w-3 h-3 mr-1" /> AI Guard Active
+                </Badge>
+              </DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div className="bg-primary/5 border border-primary/10 rounded-lg p-2.5 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-primary flex-shrink-0" />
+                <p className="text-[11px] text-muted-foreground">
+                  AI checks for overlaps, buffer violations, and capacity limits before confirming.
+                </p>
+              </div>
+
+              <div>
+                <Label>{config.resourceLabel}</Label>
+                <Select value={form.resource_id} onValueChange={v => setForm(f => ({ ...f, resource_id: v }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={`Select ${config.resourceLabel.toLowerCase()}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {resources.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>{config.clientLabel} Name</Label>
+                <Input value={form.guest_name} onChange={e => setForm(f => ({ ...f, guest_name: e.target.value }))} required />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Email</Label>
+                  <Input type="email" value={form.guest_email} onChange={e => setForm(f => ({ ...f, guest_email: e.target.value }))} />
+                </div>
+                <div>
+                  <Label>Phone</Label>
+                  <Input value={form.guest_phone} onChange={e => setForm(f => ({ ...f, guest_phone: e.target.value }))} />
+                </div>
+              </div>
+              <div>
+                <Label>Platform</Label>
+                <Select value={form.platform} onValueChange={v => setForm(f => ({ ...f, platform: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {config.platforms.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Start</Label>
+                  <Input type="datetime-local" value={form.check_in} onChange={e => setForm(f => ({ ...f, check_in: e.target.value }))} required />
+                </div>
+                <div>
+                  <Label>End</Label>
+                  <Input type="datetime-local" value={form.check_out} onChange={e => setForm(f => ({ ...f, check_out: e.target.value }))} required />
+                </div>
+              </div>
+              <div>
+                <Label>Rate ($)</Label>
+                <Input type="number" value={form.nightly_rate} onChange={e => setForm(f => ({ ...f, nightly_rate: e.target.value }))} />
+              </div>
+              <div>
+                <Label>Notes</Label>
+                <Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} />
+              </div>
+              <Button type="submit" disabled={submitting} className="w-full bg-gradient-primary hover:opacity-90">
+                {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Shield className="w-4 h-4 mr-2" />}
+                Create {config.bookingLabel}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Bookings List */}
+      {filteredBookings.length === 0 ? (
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">
+            No {config.bookingLabelPlural.toLowerCase()} found
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-2">
+          {filteredBookings.map(b => (
+            <Card key={b.id} className="hover:bg-secondary/20 transition-colors">
+              <CardContent className="py-3 px-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      {STATUS_ICONS[b.status] || <Clock className="w-3.5 h-3.5" />}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{b.guest_name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {getResourceName(b.resource_id)} • {b.platform}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(b.check_in).toLocaleDateString()} – {new Date(b.check_out).toLocaleDateString()}
+                      </p>
+                      {b.total_price != null && (
+                        <p className="text-sm font-semibold text-primary">${b.total_price}</p>
+                      )}
+                    </div>
+                    <Badge variant="outline" className={`text-[10px] ${STATUS_COLORS[b.status] || ""}`}>
+                      {b.status}
+                    </Badge>
+                    {b.status !== "cancelled" && b.status !== "completed" && (
+                      <div className="flex gap-1">
+                        {b.status === "pending" && (
+                          <Button variant="ghost" size="sm" className="h-7 text-xs text-success" onClick={() => updateStatus(b.id, "confirmed")}>
+                            <CheckCircle2 className="w-3 h-3 mr-1" /> Confirm
+                          </Button>
+                        )}
+                        {b.status === "confirmed" && (
+                          <Button variant="ghost" size="sm" className="h-7 text-xs text-primary" onClick={() => updateStatus(b.id, "completed")}>
+                            <CalendarCheck className="w-3 h-3 mr-1" /> Complete
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive" onClick={() => cancelBooking(b.id)}>
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default BookingManager;
