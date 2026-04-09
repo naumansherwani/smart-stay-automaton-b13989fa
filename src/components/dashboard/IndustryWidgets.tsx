@@ -8,8 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import type { IndustryConfig } from "@/lib/industryConfig";
 
+import type { IndustryFeatureSet } from "@/lib/industryFeatures";
+
 interface IndustryWidgetsProps {
   config: IndustryConfig;
+  features?: IndustryFeatureSet;
 }
 
 function UtilizationWidget({ config }: { config: IndustryConfig }) {
@@ -249,13 +252,15 @@ function SecurityWidget() {
   );
 }
 
-const IndustryWidgets = ({ config }: IndustryWidgetsProps) => {
+const IndustryWidgets = ({ config, features }: IndustryWidgetsProps) => {
+  const showDemand = features?.demandForecast ?? true;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <AIInsightsWidget config={config} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <DemandForecastWidget config={config} />
+          {showDemand && <DemandForecastWidget config={config} />}
           <AutoSchedulerWidget config={config} />
         </div>
         <UtilizationWidget config={config} />
