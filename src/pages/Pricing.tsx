@@ -5,7 +5,8 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Check, AlertTriangle, CreditCard, Globe, Loader2 } from "lucide-react";
+import { Check, AlertTriangle, CreditCard, Globe, Loader2 } from "lucide-react";
+import Logo from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -140,9 +141,7 @@ export default function Pricing() {
       <header className="border-b border-border bg-card/80 backdrop-blur-lg">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <Logo />
             <span className="text-lg font-bold text-foreground">HostFlow AI</span>
           </div>
           <div className="flex items-center gap-2">

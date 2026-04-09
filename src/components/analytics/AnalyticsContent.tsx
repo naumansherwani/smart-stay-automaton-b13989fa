@@ -1,6 +1,7 @@
 import { getRevenueHeatmap, getBookingVelocity, type Booking, type Property } from "@/lib/bookingStore";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as ReTooltip, AreaChart, Area, CartesianGrid } from "recharts";
-import { Activity, Flame, TrendingUp, TrendingDown, Calendar, ArrowLeft } from "lucide-react";
+import { Activity, Flame, TrendingUp, TrendingDown, ArrowLeft } from "lucide-react";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -37,10 +38,8 @@ const AnalyticsContent = ({ bookings, properties }: AnalyticsPageProps) => {
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-lg font-bold text-foreground">HostSync Analytics</span>
+              <Logo />
+              <span className="text-lg font-bold text-foreground">HostFlow AI Analytics</span>
             </div>
           </div>
         </div>

@@ -1,13 +1,11 @@
-import { Calendar } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const Footer = () => (
   <footer className="py-12 bg-foreground">
     <div className="container">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <Logo />
           <span className="text-lg font-bold text-background">HostFlow AI</span>
         </div>
         <p className="text-sm text-muted-foreground">© 2026 HostFlow AI. All rights reserved.</p>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Calendar, LogOut, BarChart3, Shield } from "lucide-react";
+import { LogOut, BarChart3, Shield } from "lucide-react";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useBookingStore } from "@/lib/bookingStore";
@@ -170,9 +171,7 @@ const Dashboard = () => {
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <Logo />
               <span className="text-lg font-bold text-foreground">HostFlow AI</span>
             </div>
             <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
