@@ -357,6 +357,35 @@ const Dashboard = () => {
                   )}
                 </TabsTrigger>
               </>
+            ) : isRailways(currentIndustry) ? (
+              <>
+                <TabsTrigger value="railway" className="gap-1.5 text-xs md:text-sm">
+                  <TrainFront className="w-3.5 h-3.5" /> Railway
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Schedule
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> Bookings
+                </TabsTrigger>
+                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                  <DollarSign className="w-3.5 h-3.5" /> AI Pricing
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
             ) : (
               <>
                 <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
