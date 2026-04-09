@@ -52,7 +52,7 @@ const PricingSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
               {p.popular && (
