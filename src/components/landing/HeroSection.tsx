@@ -54,8 +54,7 @@ const HeroSection = () => {
             </Button>
             <Button 
               size="lg" 
-              variant="outline"
-              className="text-lg px-8 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 transition-all duration-300" 
+              className="text-lg px-8 py-6 bg-primary/15 border border-primary/40 text-primary hover:bg-primary/25 hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] transition-all duration-300 font-semibold backdrop-blur-sm" 
               onClick={() => navigate("/pricing")}
             >
               See Plans & Pricing
