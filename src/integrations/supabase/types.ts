@@ -46,6 +46,8 @@ export type Database = {
       }
       bookings: {
         Row: {
+          assigned_room: string | null
+          assigned_staff: string[] | null
           check_in: string
           check_out: string
           cleaning_fee: number | null
@@ -59,14 +61,19 @@ export type Database = {
           nightly_rate: number | null
           notes: string | null
           platform: string | null
+          reminder_sent: boolean | null
           repeat_guest: boolean | null
+          rescheduled_from: string | null
           resource_id: string
           status: string
+          timezone: string | null
           total_price: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          assigned_room?: string | null
+          assigned_staff?: string[] | null
           check_in: string
           check_out: string
           cleaning_fee?: number | null
@@ -80,14 +87,19 @@ export type Database = {
           nightly_rate?: number | null
           notes?: string | null
           platform?: string | null
+          reminder_sent?: boolean | null
           repeat_guest?: boolean | null
+          rescheduled_from?: string | null
           resource_id: string
           status?: string
+          timezone?: string | null
           total_price?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          assigned_room?: string | null
+          assigned_staff?: string[] | null
           check_in?: string
           check_out?: string
           cleaning_fee?: number | null
@@ -101,14 +113,24 @@ export type Database = {
           nightly_rate?: number | null
           notes?: string | null
           platform?: string | null
+          reminder_sent?: boolean | null
           repeat_guest?: boolean | null
+          rescheduled_from?: string | null
           resource_id?: string
           status?: string
+          timezone?: string | null
           total_price?: number | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "bookings_rescheduled_from_fkey"
+            columns: ["rescheduled_from"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bookings_resource_id_fkey"
             columns: ["resource_id"]
@@ -201,6 +223,71 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      schedule_settings: {
+        Row: {
+          auto_confirm: boolean
+          buffer_minutes: number
+          created_at: string
+          holidays: string[]
+          id: string
+          max_capacity: number
+          overbooking_allowed: boolean
+          overbooking_limit: number
+          resource_id: string
+          slot_duration_minutes: number
+          timezone: string
+          updated_at: string
+          user_id: string
+          working_days: number[]
+          working_hours_end: string
+          working_hours_start: string
+        }
+        Insert: {
+          auto_confirm?: boolean
+          buffer_minutes?: number
+          created_at?: string
+          holidays?: string[]
+          id?: string
+          max_capacity?: number
+          overbooking_allowed?: boolean
+          overbooking_limit?: number
+          resource_id: string
+          slot_duration_minutes?: number
+          timezone?: string
+          updated_at?: string
+          user_id: string
+          working_days?: number[]
+          working_hours_end?: string
+          working_hours_start?: string
+        }
+        Update: {
+          auto_confirm?: boolean
+          buffer_minutes?: number
+          created_at?: string
+          holidays?: string[]
+          id?: string
+          max_capacity?: number
+          overbooking_allowed?: boolean
+          overbooking_limit?: number
+          resource_id?: string
+          slot_duration_minutes?: number
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+          working_days?: number[]
+          working_hours_end?: string
+          working_hours_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_settings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: true
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
