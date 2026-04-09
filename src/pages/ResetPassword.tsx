@@ -38,8 +38,8 @@ export default function ResetPassword() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <div className="flex justify-center mb-4 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="xl" showName
+          <div className="flex justify-center mb-4">
+            <Logo size="xl" showName />
           </div>
           <p className="text-muted-foreground">Set your new password</p>
         </div>
