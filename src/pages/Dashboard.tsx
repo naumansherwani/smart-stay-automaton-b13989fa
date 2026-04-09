@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
+import NotificationsDropdown from "@/components/NotificationsDropdown";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
@@ -129,20 +133,18 @@ const Dashboard = () => {
                 {trialDaysLeft}d trial
               </Badge>
             )}
-            <Button variant="ghost" size="sm" className="relative" onClick={() => {}}>
-              <Bell className="w-4 h-4" />
-              {unreadAlerts > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground text-[10px] rounded-full flex items-center justify-center">
-                  {unreadAlerts}
-                </span>
-              )}
-            </Button>
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <NotificationsDropdown />
             <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </Button>
             <Button size="sm" className="bg-gradient-primary" onClick={() => navigate("/pricing")}>
               <Sparkles className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline">Upgrade</span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
+              <SettingsIcon className="w-4 h-4" />
             </Button>
             <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
               <UserCircle className="w-4 h-4" />
@@ -201,7 +203,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -230,7 +232,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -256,7 +258,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -282,7 +284,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -308,7 +310,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -334,7 +336,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -360,7 +362,7 @@ const Dashboard = () => {
                   <Brain className="w-3.5 h-3.5" /> AI Schedule
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
