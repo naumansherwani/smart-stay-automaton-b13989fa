@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Users, Calendar, TrendingUp, Shield, Globe, Zap } from "lucide-react";
 
 const STATS = [
@@ -13,27 +13,55 @@ const STATS = [
 function AnimatedCounter({ target, suffix, duration = 2000 }: { target: number; suffix: string; duration?: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const [started, setStarted] = useState(false);
+  const hasAnimated = useRef(false);
 
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStarted(true); obs.disconnect(); } }, { threshold: 0.1, rootMargin: "50px" });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!started) return;
+  const startAnimation = useCallback(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+    
     if (suffix === "Zero") { setCount(0); return; }
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) { setCount(target); clearInterval(timer); }
-      else setCount(current);
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [started, target, suffix, duration]);
+    
+    const startTime = performance.now();
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(target * eased);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [target, suffix, duration]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    
+    // Use IntersectionObserver
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startAnimation();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.05, rootMargin: "100px" }
+    );
+    obs.observe(el);
+    
+    // Fallback: if element is already visible on load, start immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      startAnimation();
+      obs.disconnect();
+    }
+    
+    return () => obs.disconnect();
+  }, [startAnimation]);
 
   const display = suffix === "Zero" ? "Zero" :
     suffix === "M+" ? `${count.toFixed(1)}${suffix}` :

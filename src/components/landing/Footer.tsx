@@ -34,7 +34,7 @@ const Footer = () => (
         <div className="space-y-4">
           <Logo size="md" showName />
           <p className="text-sm text-white/40 leading-relaxed">
-            AI-powered scheduling, marketplace & booking platform built for 7 industries. Smarter calendars, zero conflicts, maximum revenue.
+            AI-powered scheduling, marketplace & booking platform built for 8 industries. Smarter calendars, zero conflicts, maximum revenue.
           </p>
         </div>
 

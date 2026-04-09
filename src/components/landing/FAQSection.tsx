@@ -4,19 +4,19 @@ import { HelpCircle } from "lucide-react";
 const FAQS = [
   {
     q: "Is my data safe with HostFlow AI?",
-    a: "Absolutely. We use 256-bit encryption, row-level security policies, and GDPR-compliant data handling. Your data is isolated and never shared with other users or used for AI training."
+    a: "Absolutely. We use 256-bit encryption, row-level security policies, and privacy-first data handling. Your data is isolated and never shared with other users or used for AI training."
   },
   {
     q: "How does the 3-day free trial work?",
     a: "You get full access to all features for 3 days — no credit card required. After the trial, choose a plan that fits your business. You can cancel anytime."
   },
   {
-    q: "Is there a free plan?",
-    a: "Yes! Our Free plan gives you 1 resource and 10 bookings per month — forever free. Perfect for trying out the platform before upgrading."
+    q: "What plans are available?",
+    a: "We offer 3 plans: Basic ($25/mo) for solo operators, Pro ($55/mo) for growing businesses, and Premium ($110/mo) for enterprises. All plans include a 3-day free trial."
   },
   {
     q: "What is the Marketplace?",
-    a: "The Marketplace lets you list your services, connect with other businesses, and close deals — all within HostFlow. It's free for all subscribers. Premium users can feature their listings for more visibility."
+    a: "The Marketplace lets you list your services, connect with other businesses, and close deals — all within HostFlow. It's available for Pro and Premium subscribers."
   },
   {
     q: "Can I use HostFlow for multiple industries?",

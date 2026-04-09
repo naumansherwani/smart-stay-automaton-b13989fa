@@ -1,50 +1,50 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 
 const TESTIMONIALS = [
   {
-    name: "Sarah Mitchell",
-    role: "Hotel Manager, Grand Vista Resort",
+    name: "S. Mitchell",
+    role: "Hotel Manager",
     text: "HostFlow AI eliminated our double-booking nightmares. Revenue up 34% in the first month with AI dynamic pricing.",
     rating: 5,
     industry: "Hospitality",
     avatar: "SM",
   },
   {
-    name: "Dr. Ahmed Khan",
-    role: "Chief of Operations, MedCare Clinic",
+    name: "Dr. A. Khan",
+    role: "Operations Director, Medical Clinic",
     text: "Patient scheduling used to take 3 hours daily. Now AI handles everything. Zero missed appointments since we switched.",
     rating: 5,
     industry: "Healthcare",
     avatar: "AK",
   },
   {
-    name: "James Rodriguez",
-    role: "Fleet Director, AutoRent Global",
+    name: "J. Rodriguez",
+    role: "Fleet Director, Car Rental Agency",
     text: "We manage 500+ vehicles across 12 locations. HostFlow's AI prevents conflicts and maximizes utilization effortlessly.",
     rating: 5,
     industry: "Car Rental",
     avatar: "JR",
   },
   {
-    name: "Emily Chen",
-    role: "Events Coordinator, StarLight Events",
+    name: "E. Chen",
+    role: "Events Coordinator",
     text: "From venue booking to ticket pricing, one platform does it all. The AI pricing alone pays for itself 10x over.",
     rating: 5,
     industry: "Events",
     avatar: "EC",
   },
   {
-    name: "Prof. David Okafor",
-    role: "Academic Director, TechEd University",
+    name: "Prof. D. Okafor",
+    role: "Academic Director, University",
     text: "Scheduling 200+ classes across 50 rooms with no conflicts? HostFlow AI makes the impossible look easy.",
     rating: 5,
     industry: "Education",
     avatar: "DO",
   },
   {
-    name: "Maria Lopez",
-    role: "Operations Lead, SwiftShip Logistics",
+    name: "M. Lopez",
+    role: "Operations Lead, Logistics Company",
     text: "Route optimization and delivery scheduling in one dashboard. Our on-time delivery rate went from 87% to 99%.",
     rating: 5,
     industry: "Logistics",
@@ -68,11 +68,11 @@ const TestimonialsSection = () => (
     
     <div className="container relative z-10 space-y-14">
       <div className="text-center space-y-4">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Testimonials</p>
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">What Our Users Say</p>
         <h2 className="text-3xl md:text-5xl font-extrabold text-white">
-          Loved by <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)]">10,000+</span> Businesses
+          Trusted by <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)]">Growing Businesses</span>
         </h2>
-        <p className="text-white/40 max-w-xl mx-auto text-lg">Real results from real businesses across 7 industries.</p>
+        <p className="text-white/40 max-w-xl mx-auto text-lg">Real results from businesses across 8 industries.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -103,6 +103,10 @@ const TestimonialsSection = () => (
           </Card>
         ))}
       </div>
+
+      <p className="text-center text-[11px] text-white/20 italic">
+        * Names abbreviated for privacy. Results may vary by business.
+      </p>
     </div>
   </section>
 );

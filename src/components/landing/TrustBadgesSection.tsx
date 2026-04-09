@@ -1,21 +1,21 @@
-import { Shield, Lock, Award, CheckCircle, Globe, Server } from "lucide-react";
+import { Shield, Lock, CheckCircle, Globe, Server, Key } from "lucide-react";
 
 const BADGES = [
-  { icon: Shield, label: "GDPR Compliant", desc: "Full EU data protection", color: "hsl(174,62%,50%)" },
+  { icon: Shield, label: "Data Protection", desc: "Privacy-first architecture", color: "hsl(174,62%,50%)" },
   { icon: Lock, label: "256-bit Encryption", desc: "Bank-level security", color: "hsl(217,91%,60%)" },
-  { icon: Award, label: "ISO 27001 Ready", desc: "Security best practices", color: "hsl(270,80%,65%)" },
+  { icon: Key, label: "Row-Level Security", desc: "Data isolation per user", color: "hsl(270,80%,65%)" },
   { icon: CheckCircle, label: "99.9% Uptime", desc: "Always available", color: "hsl(160,60%,45%)" },
   { icon: Globe, label: "Multi-Region", desc: "Global data centers", color: "hsl(38,92%,55%)" },
-  { icon: Server, label: "Row-Level Security", desc: "Data isolation per user", color: "hsl(0,72%,55%)" },
+  { icon: Server, label: "Daily Backups", desc: "Automatic data backups", color: "hsl(0,72%,55%)" },
 ];
 
 const TrustBadgesSection = () => (
   <section className="py-20 bg-background">
     <div className="container space-y-10">
       <div className="text-center space-y-3">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Security & Compliance</p>
-        <h2 className="text-2xl md:text-4xl font-extrabold text-foreground">Enterprise-Grade Protection</h2>
-        <p className="text-muted-foreground max-w-lg mx-auto">Your data is protected by the same security standards used by Fortune 500 companies.</p>
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Security & Reliability</p>
+        <h2 className="text-2xl md:text-4xl font-extrabold text-foreground">Your Data, Protected</h2>
+        <p className="text-muted-foreground max-w-lg mx-auto">Built with enterprise-grade security practices to keep your business data safe.</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {BADGES.map((b) => (
