@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle } from "lucide-react";
+import Logo from "@/components/Logo";
 import { useToast } from "@/hooks/use-toast";
 
 const INDUSTRIES = [
@@ -85,9 +86,7 @@ export default function Signup() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <Logo size="md" />
             <span className="text-2xl font-bold text-foreground">HostFlow AI</span>
           </div>
           <p className="text-muted-foreground">Start your 3-day free trial</p>
