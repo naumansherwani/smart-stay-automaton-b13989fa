@@ -18,6 +18,7 @@ import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import Onboarding from "./pages/Onboarding";
+import OwnerConsole from "./pages/OwnerConsole";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/owner-hq-7x" element={<OwnerConsole />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
