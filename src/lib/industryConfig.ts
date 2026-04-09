@@ -1,6 +1,6 @@
 export type IndustryType =
   | "hospitality" | "airlines" | "car_rental" | "healthcare" | "education"
-  | "logistics" | "events_entertainment";
+  | "logistics" | "events_entertainment" | "railways";
 
 export interface IndustryConfig {
   id: IndustryType;
@@ -155,6 +155,25 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Events/Month", key: "eventsMonth", format: "number" },
     ],
     color: "hsl(310, 60%, 50%)",
+  },
+  railways: {
+    id: "railways", label: "Railways & Train Services", icon: "🚆",
+    resourceLabel: "Train", resourceLabelPlural: "Trains",
+    bookingLabel: "Journey", bookingLabelPlural: "Journeys",
+    clientLabel: "Passenger", clientLabelPlural: "Passengers",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "irctc", label: "IRCTC" },
+      { value: "trainline", label: "Trainline" }, { value: "omio", label: "Omio" },
+    ],
+    statuses: ["scheduled", "boarding", "departed", "arrived", "delayed", "cancelled"],
+    widgets: ["platform-allocation", "crew-roster", "route-scheduler", "delay-tracker", "capacity-monitor", "maintenance-calendar"],
+    kpis: [
+      { label: "On-Time Rate", key: "onTime", format: "percent" },
+      { label: "Seat Occupancy", key: "occupancy", format: "percent" },
+      { label: "Rev/Journey", key: "revJourney", format: "currency" },
+      { label: "Journeys/Day", key: "journeysDay", format: "number" },
+    ],
+    color: "hsl(200, 70%, 50%)",
   },
 };
 

@@ -84,6 +84,8 @@ export function getIndustryFeatures(industry: IndustryType): IndustryFeatureSet 
       return { ...base, crewScheduling: true, demandForecast: true };
     case "logistics":
       return base;
+    case "railways":
+      return { ...base, crewScheduling: true, demandForecast: true };
     default:
       return base;
   }

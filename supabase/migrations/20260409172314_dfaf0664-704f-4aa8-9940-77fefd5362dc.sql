@@ -1,0 +1,1 @@
+ALTER TYPE public.industry_type ADD VALUE 'railways';
