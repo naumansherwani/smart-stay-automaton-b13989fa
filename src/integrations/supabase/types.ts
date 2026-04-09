@@ -274,6 +274,33 @@ export type Database = {
           },
         ]
       }
+      plan_feature_limits: {
+        Row: {
+          created_at: string
+          feature_key: string
+          id: string
+          is_unlimited: boolean
+          limit_value: number
+          plan: Database["public"]["Enums"]["subscription_plan"]
+        }
+        Insert: {
+          created_at?: string
+          feature_key: string
+          id?: string
+          is_unlimited?: boolean
+          limit_value?: number
+          plan: Database["public"]["Enums"]["subscription_plan"]
+        }
+        Update: {
+          created_at?: string
+          feature_key?: string
+          id?: string
+          is_unlimited?: boolean
+          limit_value?: number
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
