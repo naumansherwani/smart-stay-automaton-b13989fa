@@ -334,6 +334,624 @@ export type Database = {
         }
         Relationships: []
       }
+      railway_booking_passengers: {
+        Row: {
+          age: number | null
+          booking_id: string
+          coach_id: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          passenger_name: string
+          seat_id: string | null
+          seat_number: string | null
+          status: string | null
+        }
+        Insert: {
+          age?: number | null
+          booking_id: string
+          coach_id?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          passenger_name: string
+          seat_id?: string | null
+          seat_number?: string | null
+          status?: string | null
+        }
+        Update: {
+          age?: number | null
+          booking_id?: string
+          coach_id?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          passenger_name?: string
+          seat_id?: string | null
+          seat_number?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_booking_passengers_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "railway_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_booking_passengers_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "railway_coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_booking_passengers_seat_id_fkey"
+            columns: ["seat_id"]
+            isOneToOne: false
+            referencedRelation: "railway_seats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_bookings: {
+        Row: {
+          ai_price: number | null
+          base_price: number | null
+          booked_at: string | null
+          booking_reference: string
+          coach_class: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          final_price: number | null
+          from_station_id: string
+          from_stop_sequence: number
+          id: string
+          notes: string | null
+          price_override: boolean | null
+          schedule_id: string
+          status: string | null
+          to_station_id: string
+          to_stop_sequence: number
+          total_passengers: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_price?: number | null
+          base_price?: number | null
+          booked_at?: string | null
+          booking_reference?: string
+          coach_class?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          final_price?: number | null
+          from_station_id: string
+          from_stop_sequence: number
+          id?: string
+          notes?: string | null
+          price_override?: boolean | null
+          schedule_id: string
+          status?: string | null
+          to_station_id: string
+          to_stop_sequence: number
+          total_passengers?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_price?: number | null
+          base_price?: number | null
+          booked_at?: string | null
+          booking_reference?: string
+          coach_class?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          final_price?: number | null
+          from_station_id?: string
+          from_stop_sequence?: number
+          id?: string
+          notes?: string | null
+          price_override?: boolean | null
+          schedule_id?: string
+          status?: string | null
+          to_station_id?: string
+          to_stop_sequence?: number
+          total_passengers?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_bookings_from_station_id_fkey"
+            columns: ["from_station_id"]
+            isOneToOne: false
+            referencedRelation: "railway_stations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_bookings_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "railway_schedules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_bookings_to_station_id_fkey"
+            columns: ["to_station_id"]
+            isOneToOne: false
+            referencedRelation: "railway_stations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_coaches: {
+        Row: {
+          coach_class: string
+          coach_number: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          layout: string | null
+          rows_count: number | null
+          seats_per_row: number | null
+          total_seats: number | null
+          train_id: string
+          updated_at: string
+        }
+        Insert: {
+          coach_class?: string
+          coach_number: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          layout?: string | null
+          rows_count?: number | null
+          seats_per_row?: number | null
+          total_seats?: number | null
+          train_id: string
+          updated_at?: string
+        }
+        Update: {
+          coach_class?: string
+          coach_number?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          layout?: string | null
+          rows_count?: number | null
+          seats_per_row?: number | null
+          total_seats?: number | null
+          train_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_coaches_train_id_fkey"
+            columns: ["train_id"]
+            isOneToOne: false
+            referencedRelation: "railway_trains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_notifications: {
+        Row: {
+          booking_id: string | null
+          channel: string | null
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          schedule_id: string | null
+          sent_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          channel?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          schedule_id?: string | null
+          sent_at?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          channel?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          schedule_id?: string | null
+          sent_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "railway_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_notifications_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "railway_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_pricing_overrides: {
+        Row: {
+          coach_class: string | null
+          created_at: string
+          from_station_id: string | null
+          id: string
+          is_active: boolean | null
+          override_price: number
+          override_type: string | null
+          reason: string | null
+          route_id: string | null
+          to_station_id: string | null
+          train_id: string | null
+          updated_at: string
+          user_id: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          coach_class?: string | null
+          created_at?: string
+          from_station_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          override_price: number
+          override_type?: string | null
+          reason?: string | null
+          route_id?: string | null
+          to_station_id?: string | null
+          train_id?: string | null
+          updated_at?: string
+          user_id: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          coach_class?: string | null
+          created_at?: string
+          from_station_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          override_price?: number
+          override_type?: string | null
+          reason?: string | null
+          route_id?: string | null
+          to_station_id?: string | null
+          train_id?: string | null
+          updated_at?: string
+          user_id?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_pricing_overrides_from_station_id_fkey"
+            columns: ["from_station_id"]
+            isOneToOne: false
+            referencedRelation: "railway_stations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_pricing_overrides_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "railway_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_pricing_overrides_to_station_id_fkey"
+            columns: ["to_station_id"]
+            isOneToOne: false
+            referencedRelation: "railway_stations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_pricing_overrides_train_id_fkey"
+            columns: ["train_id"]
+            isOneToOne: false
+            referencedRelation: "railway_trains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_route_stops: {
+        Row: {
+          arrival_time: string | null
+          created_at: string
+          day_offset: number | null
+          departure_time: string | null
+          distance_km: number | null
+          halt_minutes: number | null
+          id: string
+          platform_number: string | null
+          route_id: string
+          station_id: string
+          stop_sequence: number
+        }
+        Insert: {
+          arrival_time?: string | null
+          created_at?: string
+          day_offset?: number | null
+          departure_time?: string | null
+          distance_km?: number | null
+          halt_minutes?: number | null
+          id?: string
+          platform_number?: string | null
+          route_id: string
+          station_id: string
+          stop_sequence: number
+        }
+        Update: {
+          arrival_time?: string | null
+          created_at?: string
+          day_offset?: number | null
+          departure_time?: string | null
+          distance_km?: number | null
+          halt_minutes?: number | null
+          id?: string
+          platform_number?: string | null
+          route_id?: string
+          station_id?: string
+          stop_sequence?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "railway_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "railway_route_stops_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: false
+            referencedRelation: "railway_stations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_routes: {
+        Row: {
+          created_at: string
+          days_of_operation: number[] | null
+          id: string
+          is_active: boolean | null
+          route_name: string
+          train_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_operation?: number[] | null
+          id?: string
+          is_active?: boolean | null
+          route_name: string
+          train_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_operation?: number[] | null
+          id?: string
+          is_active?: boolean | null
+          route_name?: string
+          train_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_routes_train_id_fkey"
+            columns: ["train_id"]
+            isOneToOne: false
+            referencedRelation: "railway_trains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_schedules: {
+        Row: {
+          ai_optimized: boolean | null
+          created_at: string
+          delay_minutes: number | null
+          id: string
+          notes: string | null
+          route_id: string
+          schedule_date: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_optimized?: boolean | null
+          created_at?: string
+          delay_minutes?: number | null
+          id?: string
+          notes?: string | null
+          route_id: string
+          schedule_date: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_optimized?: boolean | null
+          created_at?: string
+          delay_minutes?: number | null
+          id?: string
+          notes?: string | null
+          route_id?: string
+          schedule_date?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_schedules_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "railway_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_seats: {
+        Row: {
+          coach_id: string
+          created_at: string
+          id: string
+          is_available: boolean | null
+          position: string
+          row_number: number
+          seat_number: string
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          id?: string
+          is_available?: boolean | null
+          position?: string
+          row_number: number
+          seat_number: string
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          id?: string
+          is_available?: boolean | null
+          position?: string
+          row_number?: number
+          seat_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "railway_seats_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "railway_coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      railway_stations: {
+        Row: {
+          city: string | null
+          code: string
+          country: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          code: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          code?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      railway_trains: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          status: string | null
+          total_coaches: number | null
+          train_name: string
+          train_number: string
+          train_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          status?: string | null
+          total_coaches?: number | null
+          train_name: string
+          train_number: string
+          train_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          status?: string | null
+          total_coaches?: number | null
+          train_name?: string
+          train_number?: string
+          train_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           base_price: number | null
