@@ -1,5 +1,12 @@
 import type { IndustryType } from "./industryConfig";
 
+export interface CrmToolConfig {
+  id: string;
+  label: string;
+  icon: string;
+  description: string;
+}
+
 export interface CrmIndustryConfig {
   contactLabel: string;
   contactLabelPlural: string;
@@ -12,6 +19,8 @@ export interface CrmIndustryConfig {
   sources: string[];
   priorityLabels: Record<string, string>;
   aiFeatures: string[];
+  /** Tools available inside CRM for this industry */
+  crmTools: CrmToolConfig[];
 }
 
 const DEFAULT_PRIORITIES: Record<string, string> = {
