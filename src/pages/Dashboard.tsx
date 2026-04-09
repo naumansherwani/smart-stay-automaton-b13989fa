@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, Smartphone } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
+import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import IndustryKPIs from "@/components/dashboard/IndustryKPIs";
@@ -21,6 +22,7 @@ import ScheduleSettingsPanel from "@/components/dashboard/ScheduleSettingsPanel"
 import AIAutoSchedule from "@/components/dashboard/AIAutoSchedule";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
+import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
 import { supabase } from "@/integrations/supabase/client";
 
 const Dashboard = () => {
@@ -36,13 +38,14 @@ const Dashboard = () => {
   const [alerts, setAlerts] = useState<any[]>([]);
 
   const config = getIndustryConfig(currentIndustry);
+  const features = getIndustryFeatures(currentIndustry);
+  const hasPricing = supportsAutoPricing(currentIndustry);
 
   const handleIndustryChange = (industry: IndustryType) => {
     setCurrentIndustry(industry);
     updateIndustry(industry);
   };
 
-  // Fetch bookings with resource names for calendar
   useEffect(() => {
     if (!user) return;
     const fetchBookings = async () => {
@@ -50,16 +53,12 @@ const Dashboard = () => {
         .from("bookings")
         .select("id, guest_name, resource_id, check_in, check_out, status, platform")
         .eq("user_id", user.id);
-      
       if (data) {
-        // Get resource names
         const { data: resources } = await supabase
           .from("resources")
           .select("id, name")
           .eq("user_id", user.id);
-        
         const resourceMap = new Map(resources?.map(r => [r.id, r.name]) || []);
-        
         setCalendarBookings(data.map(b => ({
           ...b,
           resource_name: resourceMap.get(b.resource_id) || "Unknown",
@@ -67,8 +66,6 @@ const Dashboard = () => {
       }
     };
     fetchBookings();
-
-    // Realtime
     const channel = supabase
       .channel("dashboard-bookings")
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` }, () => fetchBookings())
@@ -76,7 +73,6 @@ const Dashboard = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  // Fetch alerts
   useEffect(() => {
     if (!user) return;
     const fetchAlerts = async () => {
@@ -98,9 +94,11 @@ const Dashboard = () => {
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
   };
 
+  // Build visible tabs based on industry
+  const tabCount = hasPricing ? 8 : 7;
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="container flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center gap-3 md:gap-4">
@@ -141,7 +139,6 @@ const Dashboard = () => {
       </header>
 
       <main className="container py-6 md:py-8 space-y-6 md:space-y-8">
-        {/* Mobile Industry Switcher */}
         <div className="sm:hidden">
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
@@ -166,12 +163,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* KPIs */}
         <IndustryKPIs config={config} />
 
-        {/* Main Dashboard Tabs */}
         <Tabs defaultValue="calendar" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 lg:w-auto lg:inline-grid gap-1">
+          <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
             <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
               <Calendar className="w-3.5 h-3.5" /> Calendar
             </TabsTrigger>
@@ -190,6 +185,11 @@ const Dashboard = () => {
             <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
               <Sparkles className="w-3.5 h-3.5" /> AI Tools
             </TabsTrigger>
+            {hasPricing && (
+              <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                <DollarSign className="w-3.5 h-3.5" /> Auto Pricing
+              </TabsTrigger>
+            )}
             <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
               <Bell className="w-3.5 h-3.5" /> Alerts
               {unreadAlerts > 0 && (
@@ -200,7 +200,6 @@ const Dashboard = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Calendar Tab */}
           <TabsContent value="calendar" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3">
@@ -234,27 +233,22 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Bookings Tab */}
           <TabsContent value="bookings">
             <BookingManager config={config} />
           </TabsContent>
 
-          {/* Resources Tab */}
           <TabsContent value="resources">
             <ResourceManager config={config} industry={currentIndustry} />
           </TabsContent>
 
-          {/* AI Schedule Tab */}
           <TabsContent value="ai-schedule">
             <AIAutoSchedule config={config} />
           </TabsContent>
 
-          {/* Schedule Settings Tab */}
           <TabsContent value="settings">
             <ScheduleSettingsPanel config={config} />
           </TabsContent>
 
-          {/* AI Tools Tab */}
           <TabsContent value="ai-tools" className="space-y-6">
             <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/10 flex items-center gap-3">
               <Sparkles className="w-5 h-5 text-primary shrink-0" />
@@ -262,10 +256,15 @@ const Dashboard = () => {
                 <strong className="text-foreground">AI-Powered Tools</strong> — Automate, predict, and optimize your {config.label.toLowerCase()} operations.
               </p>
             </div>
-            <IndustryWidgets config={config} />
+            <IndustryWidgets config={config} features={features} />
           </TabsContent>
 
-          {/* Alerts Tab */}
+          {hasPricing && (
+            <TabsContent value="pricing">
+              <AutoPricingPanel config={config} />
+            </TabsContent>
+          )}
+
           <TabsContent value="alerts">
             <AlertsPanel alerts={alerts.map(a => ({ ...a, timestamp: new Date(a.created_at) }))} onMarkRead={markAlertRead} />
           </TabsContent>
