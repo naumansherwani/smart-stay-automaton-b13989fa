@@ -170,7 +170,7 @@ const Dashboard = () => {
 
         <IndustryKPIs config={config} />
 
-        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : "calendar"} className="space-y-6">
+        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : "calendar"} className="space-y-6">
           <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
             {isAirlines(currentIndustry) ? (
               <>
@@ -179,6 +179,35 @@ const Dashboard = () => {
                 </TabsTrigger>
                 <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
                   <Calendar className="w-3.5 h-3.5" /> Schedule
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> Bookings
+                </TabsTrigger>
+                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                  <DollarSign className="w-3.5 h-3.5" /> Pricing
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <Settings className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
+            ) : isCarRental(currentIndustry) ? (
+              <>
+                <TabsTrigger value="fleet" className="gap-1.5 text-xs md:text-sm">
+                  <Car className="w-3.5 h-3.5" /> Fleet
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Availability
                 </TabsTrigger>
                 <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
                   <ClipboardList className="w-3.5 h-3.5" /> Bookings
