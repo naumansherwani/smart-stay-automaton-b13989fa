@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Brain, CalendarSync, TrendingUp, Shield, Users, BarChart3,
   Plane, Car, Stethoscope, GraduationCap, Truck,
-  Theater, Dumbbell, Scale, Building2, Ship, Landmark, Globe, House
+  Theater, Globe
 } from "lucide-react";
 
 const FEATURES = [
@@ -22,12 +22,6 @@ const INDUSTRIES = [
   { icon: GraduationCap, name: "Education", desc: "Class scheduling, room allocation, tutoring", color: "#8b5cf6", glow: "rgba(139,92,246,0.4)" },
   { icon: Truck, name: "Logistics", desc: "Delivery slots, warehouse scheduling, fleet", color: "#f97316", glow: "rgba(249,115,22,0.4)" },
   { icon: Theater, name: "Events & Entertainment", desc: "Venue booking, performer scheduling", color: "#d946ef", glow: "rgba(217,70,239,0.4)" },
-  { icon: Dumbbell, name: "Fitness & Wellness", desc: "Class schedules, trainer booking, equipment", color: "#22c55e", glow: "rgba(34,197,94,0.4)" },
-  { icon: Scale, name: "Legal Services", desc: "Court dates, meeting rooms, consultations", color: "#eab308", glow: "rgba(234,179,8,0.4)" },
-  { icon: House, name: "Real Estate", desc: "Property viewings, agent scheduling", color: "#f97316", glow: "rgba(249,115,22,0.4)" },
-  { icon: Building2, name: "Coworking", desc: "Desk & room booking, memberships", color: "#06b6d4", glow: "rgba(6,182,212,0.4)" },
-  { icon: Ship, name: "Maritime", desc: "Berth allocation, crew rotation", color: "#3b82f6", glow: "rgba(59,130,246,0.4)" },
-  { icon: Landmark, name: "Government", desc: "Facility booking, appointment scheduling", color: "#6366f1", glow: "rgba(99,102,241,0.4)" },
 ];
 
 const FeaturesSection = () => (
@@ -54,7 +48,7 @@ const FeaturesSection = () => (
 
       <div id="industries" className="space-y-8 pt-8">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-gradient-primary">Built for 13 Industries</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gradient-primary">Built for 7 Industries</h2>
           <p className="text-xl md:text-2xl font-bold max-w-2xl mx-auto">
             <span className="bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(213,97%,75%)] to-[hsl(270,80%,70%)] bg-clip-text text-transparent drop-shadow-[0_0_20px_hsl(174,62%,50%,0.5)] animate-fade-in">
               One AI. Every industry. No limits.
