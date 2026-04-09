@@ -350,13 +350,13 @@ const Dashboard = () => {
             <BookingManager config={config} />
           </TabsContent>
 
-          {!isAirlines(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && (
             <TabsContent value="resources">
               <ResourceManager config={config} industry={currentIndustry} />
             </TabsContent>
           )}
 
-          {!isAirlines(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && (
             <TabsContent value="ai-schedule">
               <AIAutoSchedule config={config} />
             </TabsContent>
