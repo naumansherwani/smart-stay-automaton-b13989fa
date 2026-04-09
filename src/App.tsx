@@ -25,6 +25,7 @@ import Marketplace from "./pages/Marketplace";
 import MyListings from "./pages/MyListings";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
+import RailwayDashboard from "./pages/RailwayDashboard";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
             <Route path="/my-listings" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+            <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
             <Route path="/owner-hq-7x" element={<OwnerConsole />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
