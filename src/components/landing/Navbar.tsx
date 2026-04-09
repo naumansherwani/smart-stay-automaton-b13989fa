@@ -14,20 +14,20 @@ const Navbar = () => {
           <Logo size="lg" showName />
         </div>
         <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
-          <a href="#industries" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Industries</a>
-          <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+          <a href="#features" className="text-sm font-medium text-primary/70 hover:text-primary hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] transition-all duration-300">Features</a>
+          <a href="#industries" className="text-sm font-medium text-primary/70 hover:text-primary hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] transition-all duration-300">Industries</a>
+          <a href="#pricing" className="text-sm font-medium text-primary/70 hover:text-primary hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] transition-all duration-300">Pricing</a>
         </div>
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>Dashboard</Button>
-              <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>Log Out</Button>
+              <Button variant="ghost" size="sm" className="text-primary/70 hover:text-primary hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] transition-all duration-300" onClick={() => navigate("/dashboard")}>Dashboard</Button>
+              <Button variant="outline" size="sm" className="border-primary/40 text-primary hover:bg-primary/10 hover:shadow-[0_0_15px_hsl(var(--primary)/0.4)] transition-all duration-300" onClick={() => { signOut(); navigate("/"); }}>Log Out</Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>Log In</Button>
-              <Button size="sm" className="bg-gradient-primary hover:opacity-90" onClick={() => navigate("/signup")}>Start Free Trial</Button>
+              <Button variant="ghost" size="sm" className="text-primary/70 hover:text-primary hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] transition-all duration-300" onClick={() => navigate("/login")}>Log In</Button>
+              <Button size="sm" className="bg-gradient-primary border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.6),0_0_50px_hsl(var(--primary)/0.3)] hover:border-primary/80 transition-all duration-300" onClick={() => navigate("/signup")}>Start Free Trial</Button>
             </>
           )}
         </div>
