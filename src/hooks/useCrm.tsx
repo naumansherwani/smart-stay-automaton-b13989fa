@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useProfile } from "./useProfile";
 import type { IndustryType } from "@/lib/industryConfig";
+import type { Json } from "@/integrations/supabase/types";
 
 export interface CrmContact {
   id: string;
@@ -24,7 +25,7 @@ export interface CrmContact {
   total_revenue: number;
   churn_risk: string;
   notes: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Json;
   created_at: string;
   updated_at: string;
 }
@@ -49,10 +50,10 @@ export interface CrmTicket {
   resolved_at: string | null;
   sla_deadline: string | null;
   source: string;
-  metadata: Record<string, unknown>;
+  metadata: Json;
   created_at: string;
   updated_at: string;
-  contact?: CrmContact;
+  contact?: { id: string; name: string; email: string | null };
 }
 
 export interface CrmDeal {
@@ -71,10 +72,10 @@ export interface CrmDeal {
   lost_at: string | null;
   lost_reason: string | null;
   notes: string | null;
-  metadata: Record<string, unknown>;
+  metadata: Json;
   created_at: string;
   updated_at: string;
-  contact?: CrmContact;
+  contact?: { id: string; name: string; email: string | null };
 }
 
 export interface CrmActivity {
@@ -91,7 +92,7 @@ export interface CrmActivity {
   completed_at: string | null;
   is_completed: boolean;
   ai_generated: boolean;
-  metadata: Record<string, unknown>;
+  metadata: Json;
   created_at: string;
   updated_at: string;
 }
@@ -101,10 +102,10 @@ export interface CrmPipeline {
   user_id: string;
   industry: IndustryType;
   name: string;
-  stages: { name: string; order: number }[];
+  stages: Json;
   is_default: boolean;
   color: string;
-  metadata: Record<string, unknown>;
+  metadata: Json;
   created_at: string;
   updated_at: string;
 }
@@ -125,13 +126,13 @@ export function useCrmContacts() {
       .select("*")
       .eq("industry", industry)
       .order("created_at", { ascending: false });
-    setContacts((data as CrmContact[]) || []);
+    setContacts((data as unknown as CrmContact[]) || []);
     setLoading(false);
   }, [user, industry]);
 
   useEffect(() => { fetchContacts(); }, [fetchContacts]);
 
-  const addContact = async (contact: Partial<CrmContact>) => {
+  const addContact = async (contact: { name: string; email?: string; phone?: string; company?: string; lifecycle_stage?: string; source?: string; notes?: string }) => {
     if (!user) return;
     const { data, error } = await supabase
       .from("crm_contacts")
@@ -139,14 +140,14 @@ export function useCrmContacts() {
       .select()
       .single();
     if (!error && data) {
-      setContacts(prev => [data as CrmContact, ...prev]);
+      setContacts(prev => [data as unknown as CrmContact, ...prev]);
     }
     return { data, error };
   };
 
-  const updateContact = async (id: string, updates: Partial<CrmContact>) => {
-    const { error } = await supabase.from("crm_contacts").update(updates).eq("id", id);
-    if (!error) setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+  const updateContact = async (id: string, updates: Record<string, unknown>) => {
+    const { error } = await supabase.from("crm_contacts").update(updates as any).eq("id", id);
+    if (!error) setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } as CrmContact : c));
     return { error };
   };
 
@@ -181,7 +182,7 @@ export function useCrmTickets() {
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
 
-  const addTicket = async (ticket: Partial<CrmTicket>) => {
+  const addTicket = async (ticket: { subject: string; description?: string; category?: string; priority?: string; contact_id?: string }) => {
     if (!user) return;
     const { data, error } = await supabase
       .from("crm_tickets")
@@ -192,9 +193,9 @@ export function useCrmTickets() {
     return { data, error };
   };
 
-  const updateTicket = async (id: string, updates: Partial<CrmTicket>) => {
-    const { error } = await supabase.from("crm_tickets").update(updates).eq("id", id);
-    if (!error) setTickets(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  const updateTicket = async (id: string, updates: Record<string, unknown>) => {
+    const { error } = await supabase.from("crm_tickets").update(updates as any).eq("id", id);
+    if (!error) setTickets(prev => prev.map(t => t.id === id ? { ...t, ...updates } as CrmTicket : t));
     return { error };
   };
 
@@ -229,7 +230,7 @@ export function useCrmDeals() {
 
   useEffect(() => { fetchDeals(); }, [fetchDeals]);
 
-  const addDeal = async (deal: Partial<CrmDeal>) => {
+  const addDeal = async (deal: { title: string; value?: number; stage?: string; contact_id?: string; pipeline_id?: string; probability?: number; expected_close_date?: string }) => {
     if (!user) return;
     const { data, error } = await supabase
       .from("crm_deals")
@@ -240,9 +241,9 @@ export function useCrmDeals() {
     return { data, error };
   };
 
-  const updateDeal = async (id: string, updates: Partial<CrmDeal>) => {
-    const { error } = await supabase.from("crm_deals").update(updates).eq("id", id);
-    if (!error) setDeals(prev => prev.map(d => d.id === id ? { ...d, ...updates } : d));
+  const updateDeal = async (id: string, updates: Record<string, unknown>) => {
+    const { error } = await supabase.from("crm_deals").update(updates as any).eq("id", id);
+    if (!error) setDeals(prev => prev.map(d => d.id === id ? { ...d, ...updates } as CrmDeal : d));
     return { error };
   };
 
@@ -268,20 +269,20 @@ export function useCrmActivities(contactId?: string) {
       .limit(100);
     if (contactId) query = query.eq("contact_id", contactId);
     const { data } = await query;
-    setActivities((data as CrmActivity[]) || []);
+    setActivities((data as unknown as CrmActivity[]) || []);
     setLoading(false);
   }, [user, industry, contactId]);
 
   useEffect(() => { fetchActivities(); }, [fetchActivities]);
 
-  const addActivity = async (activity: Partial<CrmActivity>) => {
+  const addActivity = async (activity: { type: string; subject?: string; description?: string; contact_id?: string; deal_id?: string; ticket_id?: string; scheduled_at?: string }) => {
     if (!user) return;
     const { data, error } = await supabase
       .from("crm_activities")
       .insert({ ...activity, user_id: user.id, industry })
       .select()
       .single();
-    if (!error && data) setActivities(prev => [data as CrmActivity, ...prev]);
+    if (!error && data) setActivities(prev => [data as unknown as CrmActivity, ...prev]);
     return { data, error };
   };
 
@@ -310,7 +311,7 @@ export function useCrmPipelines() {
 
   useEffect(() => { fetchPipelines(); }, [fetchPipelines]);
 
-  const addPipeline = async (pipeline: Partial<CrmPipeline>) => {
+  const addPipeline = async (pipeline: { name: string; stages?: Json; is_default?: boolean }) => {
     if (!user) return;
     const { data, error } = await supabase
       .from("crm_pipelines")
