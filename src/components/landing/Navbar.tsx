@@ -22,6 +22,7 @@ const Navbar = () => {
           <a href="#industries" className="text-sm font-semibold bg-gradient-to-r from-[hsl(270,80%,70%)] to-[hsl(300,80%,75%)] bg-clip-text text-transparent hover:drop-shadow-[0_0_12px_hsl(270,80%,70%,0.6)] transition-all duration-300">{t("nav.industries")}</a>
           <a href="#pricing" className="text-sm font-semibold bg-gradient-to-r from-[hsl(38,92%,60%)] to-[hsl(25,95%,65%)] bg-clip-text text-transparent hover:drop-shadow-[0_0_12px_hsl(38,92%,60%,0.6)] transition-all duration-300">{t("nav.pricing")}</a>
           <a href="/about" className="text-sm font-semibold bg-gradient-to-r from-[hsl(160,60%,45%)] to-[hsl(174,62%,50%)] bg-clip-text text-transparent hover:drop-shadow-[0_0_12px_hsl(160,60%,45%,0.6)] transition-all duration-300">{t("nav.about")}</a>
+          <a href="/marketplace" className="text-sm font-semibold bg-gradient-to-r from-[hsl(217,91%,60%)] to-[hsl(230,80%,70%)] bg-clip-text text-transparent hover:drop-shadow-[0_0_12px_hsl(217,91%,60%,0.6)] transition-all duration-300">Marketplace</a>
         </div>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
