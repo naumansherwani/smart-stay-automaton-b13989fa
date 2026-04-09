@@ -1,46 +1,78 @@
 
-# Universal AI Auto-Scheduling SaaS Platform
+# CalendarAI Marketplace & Chat Implementation Plan
 
-## Phase 1: Core Scheduling Engine (Database + Backend)
-1. **New tables**: `schedule_settings` (working hours, days, holidays, slot duration, capacity, buffer time per resource)
-2. **Slot generation logic**: Edge function that auto-generates available time slots based on settings
-3. **Double-booking prevention**: Database constraints + validation in booking creation
-4. **Auto-assign resources**: Match bookings to available resources automatically
+## Revenue Model: Subscription + Featured Listings (No Commission)
+- Primary income: Monthly subscriptions (Basic $15 / Standard $39 / Premium $99)
+- Secondary income: Featured Listings (pay to promote services/profile)
+- Marketplace access: Free for all subscribers
+- No commission on deals = users stay on platform
 
-## Phase 2: Enhanced Booking System
-1. **Booking CRUD**: Create, update, cancel, reschedule with proper status flow (pending → confirmed → completed / cancelled)
-2. **Free slots on cancellation**: Auto-release slots when booking cancelled
-3. **Multi-resource support**: Assign multiple staff/rooms/assets per booking
-4. **Timezone support**: Store in UTC, auto-detect user timezone, convert for display
-5. **Buffer time enforcement**: Prevent bookings within buffer period
-6. **Optional overbooking rules**: Allow configurable overbooking per resource
+## Phase 1: Database Schema (Migration)
+### New Tables:
+1. **service_listings** - Users list their services/products
+   - title, description, price_range, category, industry, location
+   - is_featured (paid promotion), featured_until
+   - status (active/paused/draft)
+   - user_id (owner)
 
-## Phase 3: AI Features (using Lovable AI)
-1. **Smart slot suggestions**: AI recommends best available times based on patterns
-2. **Gap optimization**: AI identifies and fills schedule gaps
-3. **Dynamic pricing**: Adjust rates based on demand/peak times
-4. **Peak time prediction**: Analyze booking patterns to predict busy periods
+2. **listing_inquiries** - Deal/inquiry requests
+   - listing_id, sender_id, message, status (pending/accepted/rejected)
+   - Privacy: only sender and listing owner can see
 
-## Phase 4: Dashboard UI Overhaul
-1. **New calendar views**: Daily, Weekly, Monthly with drag-and-drop
-2. **Schedule settings panel**: Configure working hours, holidays, capacity per resource
-3. **Resource management**: Staff/rooms/assets CRUD with availability
-4. **Booking creation wizard**: Step-by-step easy booking with AI suggestions
-5. **Real-time updates**: Live calendar sync across users
+3. **conversations** - Chat threads (created from inquiries)
+   - type: deal_based (from inquiry) 
+   - participants stored separately
 
-## Phase 5: Notifications
-1. **Booking confirmations**: Email on create/update/cancel
-2. **Reminders**: Automated reminders before bookings
-3. **Staff notifications**: Alert assigned staff of new bookings
+4. **conversation_participants** - Who's in which conversation
+   - conversation_id, user_id, last_read_at
 
-## Phase 6: Industry Templates
-1. **Pre-built configs**: Healthcare (15-min slots), Hospitality (nightly), Rentals (hourly/daily), Education (class periods)
-2. **Custom rules engine**: Per-industry booking rules and constraints
+5. **messages** - Chat messages
+   - conversation_id, sender_id, content, read status
+   - Realtime enabled for live chat
 
-## Phase 7: Mobile App (PWA)
-1. **Installable PWA**: Add to home screen on iPhone/Android
-2. **Mobile-optimized UI**: Touch-friendly calendar and booking forms
-3. **Offline support**: View schedule offline
+6. **profile extensions** - Industry-specific extra fields
+   - Add to profiles: bio, website, address, social_links (jsonb), business_hours (jsonb), certifications (text[]), gallery_urls (text[]), verified (boolean)
 
-## Implementation Order
-Start with **Phase 1 + 2 + 4** (core functionality + UI) → then **Phase 3** (AI) → **Phase 5** (notifications) → **Phase 6** (templates) → **Phase 7** (PWA)
+### RLS Policies:
+- Listings: Public read (all authenticated), owner CRUD
+- Inquiries: Only sender and listing owner
+- Messages: Only conversation participants
+- Profiles: Public read (for marketplace), owner update
+
+## Phase 2: Frontend Pages & Components
+1. **Marketplace Page** (`/marketplace`)
+   - Browse all service listings by industry
+   - Search, filter by category/location/price
+   - Featured listings appear at top (highlighted)
+
+2. **Listing Detail Page** (`/marketplace/:id`)
+   - Service details, provider profile
+   - "Send Inquiry" button → creates inquiry + conversation
+
+3. **My Listings Page** (in dashboard)
+   - Create/edit/pause listings
+   - View inquiries received
+   - "Promote to Featured" button (links to payment)
+
+4. **Chat/Messages Page** (`/messages`)
+   - Conversation list (sidebar)
+   - Real-time messaging
+   - Deal-based: shows linked listing info
+
+5. **Enhanced Profile Page**
+   - Industry-specific fields
+   - Public profile view for marketplace
+   - Services gallery
+
+## Phase 3: Featured Listings Payment
+- Use existing Stripe integration
+- Create "Featured Listing" product in Stripe
+- One-time payment to feature a listing for 7/30 days
+- Auto-expire featured status
+
+## Privacy & Security
+- Chat only through inquiries (no random DMs)
+- Messages encrypted in transit (Supabase default)
+- Block/report functionality
+- RLS ensures data isolation
+- No personal info shared until user chooses to
