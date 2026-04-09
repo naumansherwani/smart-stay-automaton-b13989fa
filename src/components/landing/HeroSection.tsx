@@ -33,7 +33,7 @@ const HeroSection = () => {
             <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8" onClick={() => navigate("/signup")}>
               Start 3-Day Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10" onClick={() => navigate("/pricing")}>
+            <Button size="lg" variant="outline" className="text-lg px-8 border-primary/50 text-primary bg-primary/10 hover:bg-primary/20" onClick={() => navigate("/pricing")}>
               View Pricing
             </Button>
           </div>
