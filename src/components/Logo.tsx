@@ -35,7 +35,7 @@ const Logo = ({ size = "md", className, showName = false }: LogoProps) => (
       height={1024}
     />
     {showName && (
-      <span className={`${textSizeMap[size]} font-bold text-foreground leading-none`}>
+      <span className={`${textSizeMap[size]} font-extrabold leading-none bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(213,97%,87%)] bg-clip-text text-transparent drop-shadow-[0_0_10px_hsl(174,62%,50%,0.5)]`}>
         HostFlow AI
       </span>
     )}
