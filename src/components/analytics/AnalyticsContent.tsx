@@ -38,7 +38,6 @@ const AnalyticsContent = ({ bookings, properties }: AnalyticsPageProps) => {
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <Logo size="lg" showName />
-            </div>
           </div>
         </div>
       </header>
