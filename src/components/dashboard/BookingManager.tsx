@@ -193,9 +193,9 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       nightly_rate: rate,
       total_price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
       notes: form.notes || null,
-      status: "confirmed",
-      metadata,
-    });
+      status: "confirmed" as const,
+      metadata: metadata as Record<string, unknown>,
+    } as any);
 
     if (error) {
       toast.error("Failed to create booking");

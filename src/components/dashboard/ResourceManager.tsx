@@ -104,7 +104,7 @@ const ResourceManager = ({ config, industry }: ResourceManagerProps) => {
     e.preventDefault();
     if (!user) return;
 
-    const payload: Record<string, unknown> = {
+    const payload = {
       name: form.name,
       location: form.location || null,
       base_price: Number(form.base_price) || 0,
@@ -112,7 +112,7 @@ const ResourceManager = ({ config, industry }: ResourceManagerProps) => {
       turnaround_minutes: Number(form.turnaround_minutes) || 60,
       cleaning_cost: Number(form.cleaning_cost) || 0,
       is_active: form.is_active,
-      industry,
+      industry: industry as "hospitality" | "airlines" | "car_rental" | "healthcare" | "education" | "logistics" | "events_entertainment" | "fitness_wellness" | "legal_services" | "real_estate" | "coworking" | "marine_maritime" | "government" | "travel_tourism",
       user_id: user.id,
       business_type: form.business_type,
       minimum_stay: Number(form.minimum_stay) || 1,
