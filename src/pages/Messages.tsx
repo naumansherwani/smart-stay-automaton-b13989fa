@@ -109,7 +109,7 @@ const Messages = () => {
       let other_user_name = "Unknown";
       if (participants?.[0]) {
         const { data: profile } = await supabase
-          .from("profiles")
+          .from("profiles_public")
           .select("display_name, company_name")
           .eq("user_id", participants[0].user_id)
           .single();
