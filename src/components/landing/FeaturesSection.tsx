@@ -55,7 +55,7 @@ const FeaturesSection = () => (
       <div id="industries" className="space-y-8 pt-8">
         <div className="text-center space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold text-gradient-primary">Built for 13 Industries</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">One platform, tailored dashboards. Switch industries or manage multiple verticals from a single account.</p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">One AI. Every industry. Zero excuses.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
