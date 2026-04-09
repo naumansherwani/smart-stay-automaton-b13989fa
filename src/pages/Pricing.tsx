@@ -140,7 +140,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="container py-16 space-y-12">
+      <main className="container pt-24 pb-16 space-y-12">
         {isExpired && (
           <div className="max-w-2xl mx-auto bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
