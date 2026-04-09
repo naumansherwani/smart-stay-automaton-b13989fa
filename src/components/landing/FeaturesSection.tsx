@@ -71,7 +71,7 @@ const FeaturesSection = () => (
             One Platform. <span className="text-gradient-primary">8 Industries.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Purpose-built AI for each industry — not a one-size-fits-all calendar.
+            One AI. Every industry. No limits.
           </p>
         </div>
 
