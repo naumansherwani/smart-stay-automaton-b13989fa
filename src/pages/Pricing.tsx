@@ -138,25 +138,7 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/80 backdrop-blur-lg">
-        <div className="container flex items-center justify-between h-16">
-          <div className="cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="lg" showName />
-          </div>
-          <div className="flex items-center gap-2">
-            {user && subscription?.status === "active" && (
-              <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                Manage Subscription
-              </Button>
-            )}
-            {user && (
-              <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
-                Back to Dashboard
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <main className="container py-16 space-y-12">
         {isExpired && (
