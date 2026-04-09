@@ -10,14 +10,18 @@ import CrmTicketsTab from "@/components/crm/CrmTicketsTab";
 import CrmDealsTab from "@/components/crm/CrmDealsTab";
 import CrmActivitiesTab from "@/components/crm/CrmActivitiesTab";
 import CrmAiInsightsTab from "@/components/crm/CrmAiInsightsTab";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import CrmWorkTimer from "@/components/crm/CrmWorkTimer";
+import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
+import CrmQuickActions from "@/components/crm/CrmQuickActions";
+import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
   const { subscription, isActive, loading: subLoading } = useSubscription();
-  const [tab, setTab] = useState("contacts");
+  const [tab, setTab] = useState("overview");
   const navigate = useNavigate();
 
   if (profileLoading || subLoading) {
@@ -29,7 +33,6 @@ export default function CRM() {
   const crmConfig = getCrmConfig(industry);
   const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || false;
 
-  // Show upgrade prompt for non-premium non-trial users
   if (!isActive) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -37,7 +40,7 @@ export default function CRM() {
           <CardContent className="text-center py-12">
             <Crown className="h-16 w-16 mx-auto text-yellow-500 mb-4" />
             <h2 className="text-2xl font-bold mb-2">AI CRM — Premium Feature</h2>
-            <p className="text-muted-foreground mb-6">The world's most advanced AI CRM is available for Premium subscribers. Upgrade now to unlock industry-specific CRM with AI-powered insights.</p>
+            <p className="text-muted-foreground mb-6">The world's most advanced AI CRM is available for Premium subscribers.</p>
             <div className="space-y-2">
               <Button className="w-full" onClick={() => navigate("/pricing")}>Upgrade to Premium</Button>
               <Button variant="ghost" className="w-full" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
@@ -50,7 +53,8 @@ export default function CRM() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b bg-card">
+      {/* Header */}
+      <div className="border-b bg-card sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -70,9 +74,22 @@ export default function CRM() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-4 space-y-4">
+        {/* Work Timer - always visible */}
+        <CrmWorkTimer />
+
+        {/* Live KPIs */}
+        <CrmLiveKPIs industry={industry} />
+
+        {/* Admin Panel (only shows for admins) */}
+        <CrmAdminPanel />
+
+        {/* Main Tabs */}
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="grid grid-cols-5 w-full max-w-2xl mx-auto mb-4">
+          <TabsList className="grid grid-cols-6 w-full max-w-3xl mx-auto">
+            <TabsTrigger value="overview" className="flex items-center gap-1.5">
+              <LayoutDashboard className="h-4 w-4" /><span className="hidden sm:inline">Overview</span>
+            </TabsTrigger>
             <TabsTrigger value="contacts" className="flex items-center gap-1.5">
               <Users className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.contactLabelPlural}</span>
             </TabsTrigger>
@@ -86,10 +103,13 @@ export default function CRM() {
               <Clock className="h-4 w-4" /><span className="hidden sm:inline">Activities</span>
             </TabsTrigger>
             <TabsTrigger value="ai-insights" className="flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI Insights</span>
+              <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI</span>
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="overview">
+            <CrmQuickActions industry={industry} onNavigate={setTab} />
+          </TabsContent>
           <TabsContent value="contacts"><CrmContactsTab industry={industry} /></TabsContent>
           <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={isPremium} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
