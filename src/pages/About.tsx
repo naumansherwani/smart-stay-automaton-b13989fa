@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/components/Logo";
-import { Brain, Globe, Shield, TrendingUp, ArrowRight, Users, Sparkles } from "lucide-react";
+import { Brain, Globe, Shield, TrendingUp, ArrowRight, Users, Sparkles, Eye } from "lucide-react";
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
 
@@ -36,6 +36,15 @@ const About = () => {
               <Sparkles className="w-8 h-8 text-primary mx-auto" />
               <h2 className="text-2xl font-bold text-foreground">{t("about.missionTitle")}</h2>
               <p className="text-muted-foreground text-lg">{t("about.mission")}</p>
+            </CardContent>
+          </Card>
+
+          {/* Vision */}
+          <Card className="border-[hsl(270,80%,70%)]/20 bg-[hsl(270,80%,70%)]/5">
+            <CardContent className="p-8 text-center space-y-3">
+              <Eye className="w-8 h-8 text-[hsl(270,80%,70%)] mx-auto" />
+              <h2 className="text-2xl font-bold text-foreground">{t("about.visionTitle")}</h2>
+              <p className="text-muted-foreground text-lg">{t("about.vision")}</p>
             </CardContent>
           </Card>
 
