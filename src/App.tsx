@@ -26,6 +26,7 @@ import MyListings from "./pages/MyListings";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import RailwayDashboard from "./pages/RailwayDashboard";
+import Earnings from "./pages/Earnings";
 
 const queryClient = new QueryClient();
 
