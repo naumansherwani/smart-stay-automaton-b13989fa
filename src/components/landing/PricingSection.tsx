@@ -45,7 +45,7 @@ const PricingSection = () => {
             <Sparkles className="w-4 h-4" /> Simple Pricing
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
-            Start Free. <span className="text-gradient-primary">Scale As You Grow.</span>
+            One Price. <span className="text-gradient-primary">Unlimited Power.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             3-day free trial on all paid plans. No credit card required. Cancel anytime.
