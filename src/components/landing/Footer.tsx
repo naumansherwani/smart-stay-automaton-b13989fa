@@ -34,7 +34,7 @@ const Footer = () => (
             <li><a href="#features" className="text-sm text-[hsl(213,97%,87%)]/70 hover:text-[hsl(174,62%,50%)] hover:drop-shadow-[0_0_8px_hsl(174,62%,50%,0.5)] transition-all duration-300">Features</a></li>
             <li><a href="#pricing" className="text-sm text-[hsl(213,97%,87%)]/70 hover:text-[hsl(174,62%,50%)] hover:drop-shadow-[0_0_8px_hsl(174,62%,50%,0.5)] transition-all duration-300">Pricing</a></li>
             <li><a href="#industries" className="text-sm text-[hsl(213,97%,87%)]/70 hover:text-[hsl(174,62%,50%)] hover:drop-shadow-[0_0_8px_hsl(174,62%,50%,0.5)] transition-all duration-300">Industries</a></li>
-            <li><a href="mailto:contact@hostflow.ai" className="text-sm text-[hsl(213,97%,87%)]/70 hover:text-[hsl(174,62%,50%)] hover:drop-shadow-[0_0_8px_hsl(174,62%,50%,0.5)] transition-all duration-300">Contact</a></li>
+            <li><a href="/contact" className="text-sm text-[hsl(213,97%,87%)]/70 hover:text-[hsl(174,62%,50%)] hover:drop-shadow-[0_0_8px_hsl(174,62%,50%,0.5)] transition-all duration-300">Contact</a></li>
           </ul>
         </div>
 

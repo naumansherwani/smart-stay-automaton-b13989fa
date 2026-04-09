@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -143,6 +143,9 @@ const Dashboard = () => {
             <Button size="sm" className="bg-gradient-primary" onClick={() => navigate("/pricing")}>
               <Sparkles className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline">Upgrade</span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+              <UserCircle className="w-4 h-4" />
             </Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
