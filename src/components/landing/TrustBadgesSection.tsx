@@ -3,7 +3,7 @@ import { Shield, Lock, Award, CheckCircle, Globe, Server } from "lucide-react";
 const BADGES = [
   { icon: Shield, label: "GDPR Compliant", desc: "Full EU data protection", color: "hsl(174,62%,50%)" },
   { icon: Lock, label: "256-bit Encryption", desc: "Bank-level security", color: "hsl(217,91%,60%)" },
-  { icon: Award, label: "SOC 2 Type II", desc: "Enterprise audit ready", color: "hsl(270,80%,65%)" },
+  { icon: Award, label: "ISO 27001 Ready", desc: "Security best practices", color: "hsl(270,80%,65%)" },
   { icon: CheckCircle, label: "99.9% Uptime", desc: "Always available", color: "hsl(160,60%,45%)" },
   { icon: Globe, label: "Multi-Region", desc: "Global data centers", color: "hsl(38,92%,55%)" },
   { icon: Server, label: "Row-Level Security", desc: "Data isolation per user", color: "hsl(0,72%,55%)" },
