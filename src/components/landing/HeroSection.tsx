@@ -44,16 +44,16 @@ const HeroSection = () => {
           </div>
 
           {/* Main headline */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] tracking-tight">
-              <span className="text-white">One Calendar.</span>
+              <span className="text-white">AI Calendar That</span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)]">
-                Every Industry.
+                Prices, Schedules &
               </span>
               <br />
-              <span className="text-white/90 text-4xl md:text-5xl lg:text-6xl">
-                Built for{" "}
+              <span className="text-white/90">
+                Fills Your{" "}
                 <span className="relative inline-block w-[180px] md:w-[240px] text-left">
                   <span 
                     key={wordIndex}
@@ -68,9 +68,9 @@ const HeroSection = () => {
 
           {/* Sub-headline */}
           <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed font-medium">
-            AI scheduling, dynamic pricing & marketplace — all in one platform.
+            The only AI platform that auto-adjusts pricing, prevents double-bookings,
             <br className="hidden md:block" />
-            Zero double-bookings. Maximum revenue. 7 industries.
+            and maximizes revenue — across 7 industries, on autopilot.
           </p>
 
           {/* CTA buttons */}
