@@ -37,7 +37,7 @@ const FeaturesSection = () => (
             <Sparkles className="w-4 h-4" /> AI-Powered Features
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
-            Features That <span className="text-gradient-primary">No One Else</span> Offers
+            AI That <span className="text-gradient-primary">Thinks Ahead</span> So You Don't Have To
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Cutting-edge AI that learns your patterns and optimizes everything automatically.</p>
         </div>
