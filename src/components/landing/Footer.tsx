@@ -16,12 +16,12 @@ const XIcon = ({ className }: { className?: string }) => (
 );
 
 const SOCIAL_LINKS = [
-  { href: "mailto:contact@hostflow.ai", icon: Mail, label: "contact@hostflow.ai" },
-  { href: "https://instagram.com", icon: InstagramIcon, label: "Instagram" },
-  { href: "https://wa.me/1234567890", icon: Phone, label: "WhatsApp" },
-  { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
-  { href: "https://x.com", icon: XIcon, label: "X" },
-  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
+  { href: "mailto:contact@hostflowai.live", icon: Mail, label: "contact@hostflowai.live" },
+  { href: "https://instagram.com/hostflowai", icon: InstagramIcon, label: "Instagram" },
+  { href: "https://wa.me/923001234567", icon: Phone, label: "WhatsApp" },
+  { href: "https://facebook.com/hostflowai", icon: Facebook, label: "Facebook" },
+  { href: "https://x.com/hostflowai", icon: XIcon, label: "X (Twitter)" },
+  { href: "https://linkedin.com/company/hostflowai", icon: Linkedin, label: "LinkedIn" },
 ];
 
 const Footer = () => (
