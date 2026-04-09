@@ -39,6 +39,7 @@ const PRICING_INDUSTRIES: IndustryType[] = [
   "hospitality",
   "car_rental",
   "events_entertainment",
+  "airlines",
 ];
 
 export function supportsAutoPricing(industry: IndustryType): boolean {
@@ -88,7 +89,7 @@ export function getIndustryFeatures(industry: IndustryType): IndustryFeatureSet 
     case "legal_services":
       return { ...base, courtDates: true };
     case "airlines":
-      return { ...base, crewScheduling: true };
+      return { ...base, crewScheduling: true, demandForecast: true };
     case "coworking":
       return { ...base, deskMap: true, memberCheckins: true };
     case "marine_maritime":
