@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,11 +26,13 @@ import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
 import FlightManager from "@/components/dashboard/FlightManager";
 import VehicleManager from "@/components/dashboard/VehicleManager";
 import TimetableManager from "@/components/dashboard/TimetableManager";
+import LogisticsManager from "@/components/dashboard/LogisticsManager";
 import { supabase } from "@/integrations/supabase/client";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
 const isEducation = (industry: IndustryType) => industry === "education";
+const isLogistics = (industry: IndustryType) => industry === "logistics";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -172,7 +174,7 @@ const Dashboard = () => {
 
         <IndustryKPIs config={config} />
 
-        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : "calendar"} className="space-y-6">
+        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : isLogistics(currentIndustry) ? "logistics" : "calendar"} className="space-y-6">
           <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
             {isAirlines(currentIndustry) ? (
               <>
@@ -258,6 +260,32 @@ const Dashboard = () => {
                   )}
                 </TabsTrigger>
               </>
+            ) : isLogistics(currentIndustry) ? (
+              <>
+                <TabsTrigger value="logistics" className="gap-1.5 text-xs md:text-sm">
+                  <Truck className="w-3.5 h-3.5" /> Logistics
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Calendar
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> Bookings
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <Settings className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
             ) : (
               <>
                 <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
@@ -311,6 +339,13 @@ const Dashboard = () => {
           {isEducation(currentIndustry) && (
             <TabsContent value="timetable">
               <TimetableManager config={config} />
+            </TabsContent>
+          )}
+
+          {/* Logistics Tab */}
+          {isLogistics(currentIndustry) && (
+            <TabsContent value="logistics">
+              <LogisticsManager config={config} />
             </TabsContent>
           )}
 
@@ -374,6 +409,21 @@ const Dashboard = () => {
                           <p className="text-xs text-muted-foreground">AI prevents teacher & room conflicts</p>
                         </div>
                       </>
+                    ) : isLogistics(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add vehicles & drivers in the Logistics tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Create delivery bookings with time windows</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">AI optimizes routes & prevents conflicts</p>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <div className="flex items-start gap-2">
@@ -400,13 +450,13 @@ const Dashboard = () => {
             <BookingManager config={config} />
           </TabsContent>
 
-          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && (
             <TabsContent value="resources">
               <ResourceManager config={config} industry={currentIndustry} />
             </TabsContent>
           )}
 
-          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && (
             <TabsContent value="ai-schedule">
               <AIAutoSchedule config={config} />
             </TabsContent>
