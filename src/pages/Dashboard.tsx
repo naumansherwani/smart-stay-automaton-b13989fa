@@ -121,8 +121,10 @@ const Dashboard = () => {
       <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50 shadow-sm">
         <div className="container flex items-center justify-between h-16 md:h-[72px]">
           <div className="flex items-center gap-3 md:gap-4">
-            <div className="cursor-pointer" onClick={() => navigate("/")}>
-              <Logo size="lg" showName />
+            <div className="cursor-pointer flex items-center gap-2.5" onClick={() => navigate("/")}>
+              <span className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-[hsl(174,62%,55%)] via-[hsl(200,80%,65%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent">
+                HostFlow AI
+              </span>
             </div>
             <div className="hidden md:block h-8 w-px bg-border/50" />
             <div className="hidden sm:block">
@@ -169,17 +171,19 @@ const Dashboard = () => {
         {/* Premium Welcome Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl p-5 md:p-8 border border-primary/15 shadow-lg">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle,hsl(var(--primary)/0.06),transparent_70%)] blur-2xl" />
           <div className="relative flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-inner">
                 <IndustryIcon industry={currentIndustry} size={28} />
               </div>
               <div>
+                <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary/70 mb-1">Welcome back</p>
                 <h1 className="text-xl md:text-3xl font-extrabold text-foreground tracking-tight">
-                  {config.label} Dashboard
+                  {user?.user_metadata?.full_name || profile?.display_name || "Commander"} ✨
                 </h1>
                 <p className="text-sm md:text-base text-muted-foreground mt-0.5">
-                  AI-powered scheduling for your {config.resourceLabelPlural.toLowerCase()}
+                  Your <span className="text-primary font-semibold">{config.label}</span> AI dashboard is live &amp; optimizing
                 </p>
               </div>
             </div>
