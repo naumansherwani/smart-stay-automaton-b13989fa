@@ -182,7 +182,7 @@ const Dashboard = () => {
         <IndustryKPIs config={config} />
 
         <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : isLogistics(currentIndustry) ? "logistics" : isEvents(currentIndustry) ? "events" : isHealthcare(currentIndustry) ? "healthcare" : "calendar"} className="space-y-6">
-          <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
+          <TabsList className="flex flex-wrap w-full lg:w-auto gap-1 h-auto p-1">
             {isAirlines(currentIndustry) ? (
               <>
                 <TabsTrigger value="flights" className="gap-1.5 text-xs md:text-sm">
