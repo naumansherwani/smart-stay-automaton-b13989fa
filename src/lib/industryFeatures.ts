@@ -80,20 +80,8 @@ export function getIndustryFeatures(industry: IndustryType): IndustryFeatureSet 
       return { ...base, patientFlow: true };
     case "education":
       return { ...base, classSchedule: true };
-    case "legal_services":
-      return { ...base, courtDates: true };
     case "airlines":
       return { ...base, crewScheduling: true, demandForecast: true };
-    case "coworking":
-      return { ...base, deskMap: true, memberCheckins: true };
-    case "marine_maritime":
-      return { ...base, berthSchedule: true };
-    case "government":
-      return { ...base, citizenQueue: true };
-    case "fitness_wellness":
-      return { ...base, memberCheckins: true };
-    case "real_estate":
-      return { ...base, showingCalendar: true };
     case "logistics":
       return base;
     default:
