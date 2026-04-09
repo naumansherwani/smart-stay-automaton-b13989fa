@@ -122,7 +122,7 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       return;
     }
 
-    // Minimum stay validation for non-tour resources
+    // Client-side minimum stay check (fast feedback)
     if (!isTourBooking && selectedResource?.minimum_stay && selectedResource.minimum_stay > 1) {
       const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
       if (nights < selectedResource.minimum_stay) {
@@ -132,7 +132,7 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       }
     }
 
-    // Group size validation for tours
+    // Client-side group size check (fast feedback)
     if (isTourBooking && selectedResource?.max_capacity) {
       const groupSize = Number(form.group_size) || 1;
       if (groupSize > selectedResource.max_capacity) {
@@ -142,67 +142,87 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       }
     }
 
-    // Double booking check
-    const { data: overlaps } = await supabase
-      .from("bookings")
-      .select("id, guest_name")
-      .eq("resource_id", form.resource_id)
-      .eq("user_id", user.id)
-      .neq("status", "cancelled")
-      .lt("check_in", form.check_out)
-      .gt("check_out", form.check_in);
+    // === AI-Powered Server-Side Validation ===
+    try {
+      const { data: validation, error: valError } = await supabase.functions.invoke("validate-booking", {
+        body: {
+          resource_id: form.resource_id,
+          check_in: form.check_in,
+          check_out: form.check_out,
+          group_size: Number(form.group_size) || 1,
+          business_type: selectedResource?.business_type,
+        },
+      });
 
-    if (overlaps && overlaps.length > 0 && !isTourBooking) {
-      toast.error(`🛡️ Double booking prevented! Conflicts with ${overlaps[0].guest_name}'s reservation.`);
-      setSubmitting(false);
-      return;
-    }
-
-    // For tours, check capacity instead
-    if (isTourBooking && overlaps && selectedResource?.max_capacity) {
-      const groupSize = Number(form.group_size) || 1;
-      const totalBooked = overlaps.length; // simplified - each overlap = 1 group
-      if (totalBooked + 1 > selectedResource.max_capacity) {
-        toast.error(`Tour is at full capacity for this time slot.`);
+      if (valError) {
+        toast.error("Booking validation failed. Please try again.");
         setSubmitting(false);
         return;
       }
-    }
 
-    const diffMs = checkOut.getTime() - checkIn.getTime();
-    const nights = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) || 1;
-    const rate = Number(form.nightly_rate) || selectedResource?.base_price || 0;
+      if (!validation.allowed) {
+        toast.error(`🛡️ AI Declined: ${validation.reason || "Selected time or resource is no longer available."}`, {
+          duration: 6000,
+          description: validation.conflicting_bookings?.length
+            ? `Conflicts with: ${validation.conflicting_bookings.map((c: any) => c.guest_name).join(", ")}`
+            : undefined,
+        });
+        setSubmitting(false);
+        return;
+      }
 
-    const metadata: Record<string, unknown> = {};
-    if (isTourBooking) {
-      metadata.group_size = Number(form.group_size) || 1;
-      metadata.booking_type = "tour";
-    } else {
-      metadata.booking_type = "stay";
-    }
+      // Handle auto-reassignment
+      const finalResourceId = validation.auto_reassigned
+        ? validation.reassigned_resource_id
+        : form.resource_id;
 
-    const { error } = await supabase.from("bookings").insert({
-      user_id: user.id,
-      resource_id: form.resource_id,
-      guest_name: form.guest_name,
-      guest_email: form.guest_email || null,
-      guest_phone: form.guest_phone || null,
-      check_in: form.check_in,
-      check_out: form.check_out,
-      platform: form.platform,
-      nightly_rate: rate,
-      total_price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
-      notes: form.notes || null,
-      status: "confirmed" as const,
-      metadata: metadata as Record<string, unknown>,
-    } as any);
+      if (validation.auto_reassigned) {
+        toast.info(`🤖 AI Auto-Reassigned to ${validation.reassigned_resource_name} (original was unavailable)`, {
+          duration: 5000,
+        });
+      }
 
-    if (error) {
-      toast.error("Failed to create booking");
-    } else {
-      toast.success(`${config.bookingLabel} created successfully!`);
-      setDialogOpen(false);
-      setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "", group_size: "1" });
+      const diffMs = checkOut.getTime() - checkIn.getTime();
+      const nights = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) || 1;
+      const rate = Number(form.nightly_rate) || selectedResource?.base_price || 0;
+
+      const metadata: Record<string, unknown> = {};
+      if (isTourBooking) {
+        metadata.group_size = Number(form.group_size) || 1;
+        metadata.booking_type = "tour";
+      } else {
+        metadata.booking_type = "stay";
+      }
+      if (validation.auto_reassigned) {
+        metadata.auto_reassigned = true;
+        metadata.original_resource_id = form.resource_id;
+      }
+
+      const { error } = await supabase.from("bookings").insert({
+        user_id: user.id,
+        resource_id: finalResourceId,
+        guest_name: form.guest_name,
+        guest_email: form.guest_email || null,
+        guest_phone: form.guest_phone || null,
+        check_in: form.check_in,
+        check_out: form.check_out,
+        platform: form.platform,
+        nightly_rate: rate,
+        total_price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
+        notes: form.notes || null,
+        status: "confirmed" as const,
+        metadata: metadata as Record<string, unknown>,
+      } as any);
+
+      if (error) {
+        toast.error("Failed to create booking");
+      } else {
+        toast.success(`${config.bookingLabel} created successfully!`);
+        setDialogOpen(false);
+        setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "", group_size: "1" });
+      }
+    } catch (err) {
+      toast.error("Booking validation error. Please try again.");
     }
     setSubmitting(false);
   };
