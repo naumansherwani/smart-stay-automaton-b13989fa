@@ -240,13 +240,6 @@ export default function Pricing() {
                           </Button>
                         )}
                       </>
-                    ) : (
-                      <Button
-                        className="w-full bg-primary/10 text-primary hover:bg-primary/20"
-                        onClick={() => navigate("/signup")}
-                      >
-                        Get Started Free
-                      </Button>
                     )}
                   </div>
                 </CardContent>
