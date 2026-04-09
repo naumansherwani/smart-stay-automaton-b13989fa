@@ -46,14 +46,14 @@ const HeroSection = () => {
           {/* Main headline */}
           <div className="space-y-5">
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] tracking-tight">
-              <span className="text-white">Stop Losing Money.</span>
+              <span className="text-white">Grow Faster.</span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)]">
-                Let AI Price & Fill
+                AI Prices & Fills
               </span>
               <br />
               <span className="text-white/90">
-                Your{" "}
+                Every{" "}
                 <span className="relative inline-block w-[180px] md:w-[240px] text-left">
                   <span 
                     key={wordIndex}
