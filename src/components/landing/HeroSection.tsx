@@ -46,21 +46,26 @@ const HeroSection = () => {
           {/* Main headline */}
           <div className="space-y-5">
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] tracking-tight">
-              <span className="text-white">The Smart Calendar AI</span>
+              <span className="text-white">Grow Smarter.</span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)]">
-                That Runs Your Business
+                AI Runs Your
               </span>
-              <br />
-              <span className="text-white/60 text-4xl md:text-5xl lg:text-6xl">— Not Just Your Schedule.</span>
+              {" "}
+              <span 
+                key={wordIndex}
+                className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,60%)] to-[hsl(25,95%,55%)] animate-fade-in min-w-[180px] md:min-w-[240px]"
+              >
+                {ROTATING_WORDS[wordIndex]}
+              </span>
             </h1>
           </div>
 
           {/* Sub-headline */}
           <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed font-medium">
-            AI auto-adjusts pricing, kills double-bookings & maximizes every slot
+            The Smart Calendar AI That Runs Your Business
             <br className="hidden md:block" />
-            — 7 industries, zero manual work.
+            — Not Just Your Schedule.
           </p>
 
           {/* CTA buttons */}
