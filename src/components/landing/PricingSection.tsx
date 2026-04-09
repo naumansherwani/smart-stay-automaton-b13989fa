@@ -1,21 +1,42 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Check, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
   {
-    name: "Basic", price: 25,
-    features: ["3 resources", "1 industry", "Basic calendar sync", "Double-booking prevention", "Email alerts", "Basic reports"],
+    name: "Free",
+    price: 0,
+    desc: "Try it out — forever free",
+    features: ["1 resource", "10 bookings/month", "Basic calendar", "1 industry", "Community support"],
+    cta: "Get Started Free",
+    style: "border-border/50",
   },
   {
-    name: "Pro", price: 55, popular: true,
-    features: ["15 resources", "1 industry", "Multi-platform sync", "AI smart pricing", "Gap-night filler", "Guest scoring", "Analytics dashboard", "Competitor radar", "Priority support"],
+    name: "Basic",
+    price: 25,
+    desc: "For small businesses",
+    features: ["3 resources", "Unlimited bookings", "Calendar sync", "Double-booking guard", "Email alerts", "Basic reports"],
+    cta: "Start Free Trial",
+    style: "border-border/50",
   },
   {
-    name: "Premium", price: 110,
-    features: ["Unlimited resources", "1 industry", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Dedicated manager", "Custom AI training"],
+    name: "Pro",
+    price: 55,
+    popular: true,
+    desc: "Most popular for growing teams",
+    features: ["15 resources", "Multi-platform sync", "AI smart pricing", "Gap-night filler", "Guest scoring", "Analytics dashboard", "Competitor radar", "Marketplace access", "Priority support"],
+    cta: "Start Free Trial",
+    style: "border-primary ring-2 ring-primary/20",
+  },
+  {
+    name: "Premium",
+    price: 110,
+    desc: "For enterprises & power users",
+    features: ["Unlimited resources", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "White-label", "API access", "Multi-team", "Featured listings", "Dedicated manager", "Custom AI training"],
+    cta: "Start Free Trial",
+    style: "border-border/50",
   },
 ];
 
@@ -23,35 +44,65 @@ const PricingSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="py-20 bg-muted/30">
-      <div className="container space-y-12">
+    <section id="pricing" className="py-24 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(174,62%,50%,0.03),transparent_60%)]" />
+      
+      <div className="container relative z-10 space-y-14">
         <div className="text-center space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">Simple, Transparent Pricing</h2>
-          <p className="text-lg text-muted-foreground">3-day free trial. 1 industry per plan. Pay via Card or Payoneer.</p>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold">
+            <Sparkles className="w-4 h-4" /> Simple Pricing
+          </div>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
+            Start Free. <span className="text-gradient-primary">Scale As You Grow.</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            3-day free trial on all paid plans. No credit card required. Cancel anytime.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
           {PLANS.map((p) => (
-            <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20 scale-105" : ""}`}>
-              {p.popular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">Most Popular</Badge>}
-              <CardHeader className="text-center pb-2">
-                <CardTitle>{p.name}</CardTitle>
+            <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+              {p.popular && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
+                  <Crown className="w-3 h-3 mr-1" /> Most Popular
+                </Badge>
+              )}
+              <CardHeader className="text-center pb-2 pt-8">
+                <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
+                <p className="text-xs text-muted-foreground">{p.desc}</p>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-foreground">${p.price}</span>
-                  <span className="text-muted-foreground">/mo</span>
+                  {p.price === 0 ? (
+                    <span className="text-4xl font-extrabold text-foreground">Free</span>
+                  ) : (
+                    <>
+                      <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
+                      <span className="text-muted-foreground">/mo</span>
+                    </>
+                  )}
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col">
-                <ul className="space-y-2 flex-1 mb-6">
+              <CardContent className="flex-1 flex flex-col pt-4">
+                <ul className="space-y-2.5 flex-1 mb-6">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm">
-                      <Check className="w-4 h-4 text-success shrink-0" />
-                      <span className="text-foreground">{f}</span>
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <span className="text-foreground/80">{f}</span>
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full bg-gradient-primary hover:shadow-[0_0_25px_hsl(var(--primary)/0.6),0_0_50px_hsl(var(--primary)/0.3)] hover:border-primary/80 transition-all duration-300 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)] text-primary-foreground" onClick={() => navigate("/signup")}>
-                  Start Free Trial
+                <Button
+                  className={`w-full font-semibold ${
+                    p.popular
+                      ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                      : p.price === 0
+                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      : ""
+                  }`}
+                  variant={p.popular || p.price === 0 ? "default" : "outline"}
+                  onClick={() => navigate(p.price === 0 ? "/signup" : "/pricing")}
+                >
+                  {p.cta}
                 </Button>
               </CardContent>
             </Card>

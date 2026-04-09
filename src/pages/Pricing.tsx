@@ -34,12 +34,24 @@ const TIERS = {
 
 const PLANS = [
   {
+    name: "Free",
+    price: 0,
+    plan: null,
+    features: [
+      "1 resource/property",
+      "10 bookings per month",
+      "Basic calendar view",
+      "1 industry",
+      "Community support",
+    ],
+  },
+  {
     name: "Basic",
     price: 25,
     plan: "basic" as const,
     features: [
       "Up to 3 resources/properties",
-      "1 industry per subscription",
+      "Unlimited bookings",
       "Basic calendar sync",
       "Double-booking prevention",
       "Email alerts",
@@ -53,13 +65,13 @@ const PLANS = [
     popular: true,
     features: [
       "Up to 15 resources/properties",
-      "1 industry per subscription",
       "Multi-platform sync",
       "AI smart pricing engine",
       "Gap-night filler",
       "Guest scoring system",
-      "Advanced analytics dashboard",
+      "Advanced analytics",
       "Competitor radar",
+      "Marketplace access",
       "Priority support",
     ],
   },
@@ -68,21 +80,19 @@ const PLANS = [
     price: 110,
     plan: "premium" as const,
     features: [
-      "Unlimited resources/properties",
-      "1 industry per subscription",
+      "Unlimited resources",
       "AI demand forecasting",
       "AI conflict auto-resolution",
-      "Revenue optimization engine",
+      "Revenue optimization",
       "White-label branding",
       "API access & integrations",
-      "Turnover profit analysis",
+      "Featured listings",
       "Multi-team collaboration",
       "Dedicated account manager",
       "Custom AI training",
     ],
   },
 ];
-
 const PAYONEER_EMAIL = "your-payoneer@email.com"; // Replace with actual Payoneer email
 
 export default function Pricing() {
@@ -182,9 +192,9 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {PLANS.map((p) => {
-            const isCurrent = subscription?.plan === p.plan && subscription?.status === "active";
+            const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
             return (
               <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20" : ""}`}>
                 {p.popular && (
@@ -196,8 +206,14 @@ export default function Pricing() {
                 <CardHeader className="text-center pb-2">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold text-foreground">${p.price}</span>
-                    <span className="text-muted-foreground">/month</span>
+                    {p.price === 0 ? (
+                      <span className="text-4xl font-bold text-foreground">Free</span>
+                    ) : (
+                      <>
+                        <span className="text-4xl font-bold text-foreground">${p.price}</span>
+                        <span className="text-muted-foreground">/month</span>
+                      </>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
@@ -210,27 +226,38 @@ export default function Pricing() {
                     ))}
                   </ul>
                   <div className="space-y-2">
-                    <Button
-                      className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
-                      variant={p.popular ? "default" : "outline"}
-                      disabled={isCurrent || loadingPlan === p.plan}
-                      onClick={() => handleCardPayment(p.plan)}
-                    >
-                      {loadingPlan === p.plan ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
-                      ) : isCurrent ? (
-                        "Current Plan"
-                      ) : (
-                        <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
-                      )}
-                    </Button>
-                    {!isCurrent && (
+                    {p.plan ? (
+                      <>
+                        <Button
+                          className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
+                          variant={p.popular ? "default" : "outline"}
+                          disabled={!!isCurrent || loadingPlan === p.plan}
+                          onClick={() => handleCardPayment(p.plan!)}
+                        >
+                          {loadingPlan === p.plan ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                          ) : isCurrent ? (
+                            "Current Plan"
+                          ) : (
+                            <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
+                          )}
+                        </Button>
+                        {!isCurrent && (
+                          <Button
+                            variant="ghost"
+                            className="w-full text-muted-foreground hover:text-foreground"
+                            onClick={() => handlePayoneer(p)}
+                          >
+                            <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
+                          </Button>
+                        )}
+                      </>
+                    ) : (
                       <Button
-                        variant="ghost"
-                        className="w-full text-muted-foreground hover:text-foreground"
-                        onClick={() => handlePayoneer(p)}
+                        className="w-full bg-primary/10 text-primary hover:bg-primary/20"
+                        onClick={() => navigate("/signup")}
                       >
-                        <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
+                        Get Started Free
                       </Button>
                     )}
                   </div>

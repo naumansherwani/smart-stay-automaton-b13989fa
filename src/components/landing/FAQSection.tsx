@@ -1,4 +1,5 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { HelpCircle } from "lucide-react";
 
 const FAQS = [
   {
@@ -8,6 +9,14 @@ const FAQS = [
   {
     q: "How does the 3-day free trial work?",
     a: "You get full access to all features for 3 days — no credit card required. After the trial, choose a plan that fits your business. You can cancel anytime."
+  },
+  {
+    q: "Is there a free plan?",
+    a: "Yes! Our Free plan gives you 1 resource and 10 bookings per month — forever free. Perfect for trying out the platform before upgrading."
+  },
+  {
+    q: "What is the Marketplace?",
+    a: "The Marketplace lets you list your services, connect with other businesses, and close deals — all within HostFlow. It's free for all subscribers. Premium users can feature their listings for more visibility."
   },
   {
     q: "Can I use HostFlow for multiple industries?",
@@ -22,33 +31,28 @@ const FAQS = [
     a: "You always have full control. Every AI recommendation can be overridden. The AI learns from your corrections to improve future suggestions."
   },
   {
-    q: "Do you support integrations with other platforms?",
+    q: "Do you support integrations?",
     a: "Yes! We sync with major booking platforms, calendar apps, and payment processors. Our API is available on Premium plans for custom integrations."
-  },
-  {
-    q: "Can I export or delete my data?",
-    a: "Yes. You can export all your data anytime from your profile settings. For account deletion, we remove all personal data within 30 days as per our privacy policy."
-  },
-  {
-    q: "Is there a mobile app?",
-    a: "HostFlow AI is fully responsive and works beautifully on all devices. A dedicated mobile app is coming soon — join our waitlist!"
   },
 ];
 
 const FAQSection = () => (
-  <section className="py-20 bg-background">
-    <div className="container max-w-3xl space-y-10">
+  <section className="py-24 bg-background">
+    <div className="container max-w-3xl space-y-12">
       <div className="text-center space-y-4">
-        <p className="text-primary font-semibold text-sm uppercase tracking-widest">FAQ</p>
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground">Frequently Asked Questions</h2>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold">
+          <HelpCircle className="w-4 h-4" /> FAQ
+        </div>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-foreground">Frequently Asked Questions</h2>
+        <p className="text-muted-foreground">Everything you need to know about HostFlow AI.</p>
       </div>
-      <Accordion type="single" collapsible className="space-y-2">
+      <Accordion type="single" collapsible className="space-y-3">
         {FAQS.map((faq, i) => (
-          <AccordionItem key={i} value={`faq-${i}`} className="border border-border rounded-xl px-4 data-[state=open]:border-primary/30">
-            <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4">
+          <AccordionItem key={i} value={`faq-${i}`} className="border border-border/50 rounded-xl px-5 data-[state=open]:border-primary/30 data-[state=open]:bg-primary/[0.02] transition-all">
+            <AccordionTrigger className="text-sm font-semibold text-foreground hover:text-primary py-5 hover:no-underline">
               {faq.q}
             </AccordionTrigger>
-            <AccordionContent className="text-sm text-muted-foreground pb-4">
+            <AccordionContent className="text-sm text-muted-foreground pb-5 leading-relaxed">
               {faq.a}
             </AccordionContent>
           </AccordionItem>
