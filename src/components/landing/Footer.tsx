@@ -5,8 +5,7 @@ const Footer = () => (
     <div className="container">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-3">
-          <Logo size="md" />
-          <span className="text-xl font-bold text-background">HostFlow AI</span>
+          <Logo size="lg" showName />
         </div>
         <p className="text-sm text-muted-foreground">© 2026 HostFlow AI. All rights reserved.</p>
       </div>

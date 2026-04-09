@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { LogOut, BarChart3, Shield } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Plus, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useBookingStore } from "@/lib/bookingStore";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
@@ -165,26 +167,40 @@ const Dashboard = () => {
     updateIndustry(industry);
   };
 
+  const unreadAlerts = alerts.filter(a => !a.read).length;
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <Logo size="md" />
-              <span className="text-xl font-bold text-foreground">HostFlow AI</span>
+        <div className="container flex items-center justify-between h-20">
+          <div className="flex items-center gap-4">
+            <div className="cursor-pointer" onClick={() => navigate("/")}>
+              <Logo size="lg" showName />
             </div>
+            <div className="hidden md:block h-8 w-px bg-border" />
             <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
           </div>
           <div className="flex items-center gap-2">
             {isTrialing && trialDaysLeft > 0 && (
-              <Badge variant="outline" className="border-primary text-primary">{trialDaysLeft}d trial left</Badge>
+              <Badge variant="outline" className="border-primary text-primary animate-pulse">
+                {trialDaysLeft}d trial left
+              </Badge>
             )}
+            <Button variant="ghost" size="sm" className="relative" onClick={() => {}}>
+              <Bell className="w-4 h-4" />
+              {unreadAlerts > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground text-[10px] rounded-full flex items-center justify-center">
+                  {unreadAlerts}
+                </span>
+              )}
+            </Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4 mr-2" /> Analytics
             </Button>
-            <AddBookingDialog properties={properties} onAdd={addBooking} config={config} />
-            <Button variant="ghost" size="sm" onClick={() => navigate("/pricing")}>Upgrade</Button>
+            <Button size="sm" className="bg-gradient-primary" onClick={() => navigate("/pricing")}>
+              <Sparkles className="w-4 h-4 mr-2" /> Upgrade
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
@@ -193,36 +209,126 @@ const Dashboard = () => {
       </header>
 
       <main className="container py-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <IndustryIcon industry={currentIndustry} size={24} />
-              {config.label} Dashboard
-            </h1>
-            <p className="text-muted-foreground">
-              Manage your {config.resourceLabelPlural.toLowerCase()}, {config.bookingLabelPlural.toLowerCase()}, and {config.clientLabelPlural.toLowerCase()} with AI.
-            </p>
+        {/* Welcome Section */}
+        <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-transparent rounded-2xl p-6 border border-primary/20">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <IndustryIcon industry={currentIndustry} size={40} />
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                  {config.label} Dashboard
+                </h1>
+                <p className="text-muted-foreground mt-1">
+                  Manage your {config.resourceLabelPlural.toLowerCase()} with AI-powered tools
+                </p>
+              </div>
+            </div>
+            <Badge variant="secondary" className="bg-success/10 text-success border-success/20 px-3 py-1">
+              <Shield className="w-4 h-4 mr-1" /> AI Protected
+            </Badge>
           </div>
-          <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
-            <Shield className="w-3 h-3 mr-1" /> Protected
-          </Badge>
+
+          {/* Quick Actions - Beginner Friendly */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+            <AddBookingDialog properties={properties} onAdd={addBooking} config={config} />
+            <Button variant="outline" className="h-auto py-3 flex-col gap-1" onClick={() => navigate("/analytics")}>
+              <TrendingUp className="w-5 h-5 text-primary" />
+              <span className="text-xs">View Analytics</span>
+            </Button>
+            <Button variant="outline" className="h-auto py-3 flex-col gap-1" onClick={() => navigate("/pricing")}>
+              <Zap className="w-5 h-5 text-accent" />
+              <span className="text-xs">Upgrade Plan</span>
+            </Button>
+            <Button variant="outline" className="h-auto py-3 flex-col gap-1">
+              <HelpCircle className="w-5 h-5 text-muted-foreground" />
+              <span className="text-xs">Help Guide</span>
+            </Button>
+          </div>
         </div>
 
+        {/* KPIs */}
         <IndustryKPIs config={config} />
-        <ScheduleTimeline config={config} />
-        <IndustryWidgets config={config} />
-        <IndustrySpecificWidgets industry={currentIndustry} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        {/* Main Dashboard Tabs - Easy Navigation */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="overview" className="gap-2">
+              <Calendar className="w-4 h-4" /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="ai-tools" className="gap-2">
+              <Brain className="w-4 h-4" /> AI Tools
+            </TabsTrigger>
+            <TabsTrigger value="schedule" className="gap-2">
+              <BarChart3 className="w-4 h-4" /> Schedule
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="gap-2">
+              <Bell className="w-4 h-4" /> Alerts
+              {unreadAlerts > 0 && (
+                <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
+                  {unreadAlerts}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Tab 1: Overview - Beginner Friendly */}
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-6">
+                <BookingCalendar bookings={bookings} />
+                <BookingsList bookings={bookings} />
+              </div>
+              <div className="space-y-6">
+                <DoubleBookingGuard config={config} />
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <HelpCircle className="w-4 h-4 text-primary" />
+                      Getting Started
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                      <p className="text-sm text-muted-foreground">Add your {config.resourceLabelPlural.toLowerCase()} to start managing them</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                      <p className="text-sm text-muted-foreground">Create {config.bookingLabelPlural.toLowerCase()} and the AI will optimize scheduling</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                      <p className="text-sm text-muted-foreground">Use AI Tools tab for advanced features like pricing & forecasting</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Tab 2: AI Tools - Advanced Features */}
+          <TabsContent value="ai-tools" className="space-y-6">
+            <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/10 flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">AI-Powered Tools</strong> — These features use artificial intelligence to automate, predict, and optimize your {config.label.toLowerCase()} operations.
+              </p>
+            </div>
+            <IndustryWidgets config={config} />
+            <IndustrySpecificWidgets industry={currentIndustry} />
+          </TabsContent>
+
+          {/* Tab 3: Schedule */}
+          <TabsContent value="schedule" className="space-y-6">
+            <ScheduleTimeline config={config} />
             <BookingCalendar bookings={bookings} />
-            <BookingsList bookings={bookings} />
-          </div>
-          <div className="space-y-8">
-            <DoubleBookingGuard config={config} />
+          </TabsContent>
+
+          {/* Tab 4: Alerts */}
+          <TabsContent value="alerts" className="space-y-6">
             <AlertsPanel alerts={alerts} onMarkRead={markAlertRead} />
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

@@ -56,9 +56,8 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-4 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="lg" />
-            <span className="text-2xl font-bold text-foreground">HostFlow AI</span>
+          <div className="flex justify-center mb-4 cursor-pointer" onClick={() => navigate("/")}>
+            <Logo size="xl" showName />
           </div>
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
