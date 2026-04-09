@@ -208,6 +208,7 @@ const Earnings = () => {
                       <SelectItem value="paypal">PayPal</SelectItem>
                       <SelectItem value="stripe">Stripe Payout</SelectItem>
                       <SelectItem value="wise">Wise</SelectItem>
+                      <SelectItem value="payoneer">Payoneer</SelectItem>
                       <SelectItem value="easypaisa">Easypaisa</SelectItem>
                       <SelectItem value="jazzcash">JazzCash</SelectItem>
                     </SelectContent>
@@ -218,6 +219,7 @@ const Earnings = () => {
                   <Textarea
                     placeholder={paymentMethod === 'bank_transfer' ? 'Bank name, account number, IBAN, branch code...' :
                       paymentMethod === 'paypal' ? 'PayPal email address...' :
+                      paymentMethod === 'payoneer' ? 'Payoneer email or account ID...' :
                       paymentMethod === 'easypaisa' || paymentMethod === 'jazzcash' ? 'Mobile number...' :
                       'Account details...'}
                     value={accountDetails}
