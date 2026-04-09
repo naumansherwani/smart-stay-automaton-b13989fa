@@ -463,7 +463,30 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          <TabsContent value="calendar" className="space-y-6">
+          {/* Railways Tab */}
+          {isRailways(currentIndustry) && (
+            <TabsContent value="railway" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { title: "🚆 Railway Command Center", desc: "Full train scheduling, routes, coaches, seats, and booking management", href: "/railway", color: "from-[hsl(200,70%,50%)] to-[hsl(220,80%,55%)]" },
+                ].map(item => (
+                  <Card key={item.title} className="group border-border/50 hover:border-primary/30 cursor-pointer transition-all hover:shadow-xl hover:-translate-y-1" onClick={() => navigate(item.href)}>
+                    <CardContent className="p-6">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4`}>
+                        <TrainFront className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-bold text-lg text-foreground mb-1">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      <Button className="mt-4 gap-2" size="sm">
+                        Open Command Center <Sparkles className="w-3.5 h-3.5" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          )}
+
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3">
                 <SmartCalendarView bookings={calendarBookings} config={config} industry={currentIndustry} />
