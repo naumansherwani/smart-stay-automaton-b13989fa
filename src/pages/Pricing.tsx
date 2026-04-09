@@ -143,7 +143,7 @@ export default function Pricing() {
             <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
               <Calendar className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-lg font-bold text-foreground">CalendarAI</span>
+            <span className="text-lg font-bold text-foreground">HostFlow AI</span>
           </div>
           <div className="flex items-center gap-2">
             {user && subscription?.status === "active" && (
@@ -164,7 +164,7 @@ export default function Pricing() {
         {isExpired && (
           <div className="max-w-2xl mx-auto bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
-            <p className="text-sm text-foreground">Your trial has expired. Choose a plan to continue using CalendarAI.</p>
+            <p className="text-sm text-foreground">Your trial has expired. Choose a plan to continue using HostFlow AI.</p>
           </div>
         )}
         {isTrialing && trialDaysLeft > 0 && (
@@ -265,7 +265,7 @@ export default function Pricing() {
             </ol>
             <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
               <p className="text-xs text-muted-foreground">
-                💡 After sending payment, email us at <strong>support@calendarai.com</strong> with your Payoneer transaction ID for faster activation.
+                💡 After sending payment, email us at <strong>support@hostflowai.com</strong> with your Payoneer transaction ID for faster activation.
               </p>
             </div>
           </div>
