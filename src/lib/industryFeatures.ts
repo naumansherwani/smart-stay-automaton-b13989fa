@@ -35,19 +35,13 @@ export type DashboardTab =
 
 const BASE_TABS: DashboardTab[] = ["calendar", "bookings", "resources", "ai-schedule", "settings", "alerts"];
 
-const PRICING_INDUSTRIES: IndustryType[] = [
-  "hospitality",
-  "car_rental",
-  "events_entertainment",
-  "airlines",
-];
-
-export function supportsAutoPricing(industry: IndustryType): boolean {
-  return PRICING_INDUSTRIES.includes(industry);
+// AI Calendar + AI Pricing enabled for ALL industries
+export function supportsAutoPricing(_industry: IndustryType): boolean {
+  return true;
 }
 
 export function getIndustryFeatures(industry: IndustryType): IndustryFeatureSet {
-  const hasPricing = supportsAutoPricing(industry);
+  const hasPricing = true; // AI pricing for all industries
   const tabs: DashboardTab[] = [
     ...BASE_TABS,
     "ai-tools",
