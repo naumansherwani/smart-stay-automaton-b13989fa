@@ -179,6 +179,7 @@ export type Database = {
       resources: {
         Row: {
           base_price: number | null
+          business_type: string | null
           cleaning_cost: number | null
           created_at: string
           id: string
@@ -187,6 +188,7 @@ export type Database = {
           location: string | null
           max_capacity: number | null
           metadata: Json | null
+          minimum_stay: number | null
           name: string
           turnaround_minutes: number | null
           updated_at: string
@@ -194,6 +196,7 @@ export type Database = {
         }
         Insert: {
           base_price?: number | null
+          business_type?: string | null
           cleaning_cost?: number | null
           created_at?: string
           id?: string
@@ -202,6 +205,7 @@ export type Database = {
           location?: string | null
           max_capacity?: number | null
           metadata?: Json | null
+          minimum_stay?: number | null
           name: string
           turnaround_minutes?: number | null
           updated_at?: string
@@ -209,6 +213,7 @@ export type Database = {
         }
         Update: {
           base_price?: number | null
+          business_type?: string | null
           cleaning_cost?: number | null
           created_at?: string
           id?: string
@@ -217,6 +222,7 @@ export type Database = {
           location?: string | null
           max_capacity?: number | null
           metadata?: Json | null
+          minimum_stay?: number | null
           name?: string
           turnaround_minutes?: number | null
           updated_at?: string
