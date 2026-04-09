@@ -170,9 +170,8 @@ const Dashboard = () => {
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <Logo size="md" />
-              <span className="text-xl font-bold text-foreground">HostFlow AI</span>
+            <div className="cursor-pointer" onClick={() => navigate("/")}>
+              <Logo size="lg" showName />
             </div>
             <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
           </div>

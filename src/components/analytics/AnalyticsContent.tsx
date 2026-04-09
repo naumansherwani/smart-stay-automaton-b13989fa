@@ -37,9 +37,7 @@ const AnalyticsContent = ({ bookings, properties }: AnalyticsPageProps) => {
             <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <div className="flex items-center gap-3">
-              <Logo size="md" />
-              <span className="text-xl font-bold text-foreground">HostFlow AI Analytics</span>
+            <Logo size="lg" showName />
             </div>
           </div>
         </div>
