@@ -116,40 +116,41 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-        <div className="container flex items-center justify-between h-16 md:h-20">
+      {/* Premium Glass Header */}
+      <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50 shadow-sm">
+        <div className="container flex items-center justify-between h-16 md:h-[72px]">
           <div className="flex items-center gap-3 md:gap-4">
             <div className="cursor-pointer" onClick={() => navigate("/")}>
               <Logo size="lg" showName />
             </div>
-            <div className="hidden md:block h-8 w-px bg-border" />
+            <div className="hidden md:block h-8 w-px bg-border/50" />
             <div className="hidden sm:block">
               <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
             </div>
           </div>
           <div className="flex items-center gap-1 md:gap-2">
             {isTrialing && trialDaysLeft > 0 && (
-              <Badge variant="outline" className="border-primary text-primary animate-pulse hidden sm:flex">
-                {trialDaysLeft}d trial
+              <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5 animate-pulse hidden sm:flex font-semibold">
+                <Zap className="w-3 h-3 mr-1" /> {trialDaysLeft}d trial
               </Badge>
             )}
             <LanguageSwitcher />
             <ThemeToggle />
             <NotificationsDropdown />
-            <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => navigate("/analytics")}>
-              <BarChart3 className="w-4 h-4 mr-2" /> Analytics
+            <Button variant="outline" size="sm" className="hidden md:flex gap-1.5 font-semibold" onClick={() => navigate("/analytics")}>
+              <BarChart3 className="w-4 h-4" /> Analytics
             </Button>
-            <Button size="sm" className="bg-gradient-primary" onClick={() => navigate("/pricing")}>
-              <Sparkles className="w-4 h-4 md:mr-2" />
+            <Button size="sm" className="bg-gradient-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] font-semibold" onClick={() => navigate("/pricing")}>
+              <Sparkles className="w-4 h-4 md:mr-1.5" />
               <span className="hidden md:inline">Upgrade</span>
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
+            <Button variant="ghost" size="icon" className="hover:bg-secondary/80" onClick={() => navigate("/settings")}>
               <SettingsIcon className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+            <Button variant="ghost" size="icon" className="hover:bg-secondary/80" onClick={() => navigate("/profile")}>
               <UserCircle className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
+            <Button variant="ghost" size="icon" className="hover:bg-destructive/10 hover:text-destructive" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
           </div>
@@ -161,23 +162,31 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
-        {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-transparent rounded-2xl p-4 md:p-6 border border-primary/20">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <IndustryIcon industry={currentIndustry} size={36} />
+        {/* Premium Welcome Section */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl p-5 md:p-8 border border-primary/15 shadow-lg">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="relative flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-inner">
+                <IndustryIcon industry={currentIndustry} size={28} />
+              </div>
               <div>
-                <h1 className="text-xl md:text-3xl font-bold text-foreground">
+                <h1 className="text-xl md:text-3xl font-extrabold text-foreground tracking-tight">
                   {config.label} Dashboard
                 </h1>
-                <p className="text-sm text-muted-foreground mt-0.5">
+                <p className="text-sm md:text-base text-muted-foreground mt-0.5">
                   AI-powered scheduling for your {config.resourceLabelPlural.toLowerCase()}
                 </p>
               </div>
             </div>
-            <Badge variant="secondary" className="bg-success/10 text-success border-success/20 px-3 py-1">
-              <Shield className="w-4 h-4 mr-1" /> AI Protected
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="bg-success/10 text-success border-success/20 px-3 py-1.5 text-xs font-semibold shadow-sm">
+                <Shield className="w-4 h-4 mr-1.5" /> AI Protected
+              </Badge>
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 py-1.5 text-xs font-semibold shadow-sm">
+                <TrendingUp className="w-4 h-4 mr-1.5" /> Live
+              </Badge>
+            </div>
           </div>
         </div>
 
