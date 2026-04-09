@@ -359,6 +359,21 @@ const Dashboard = () => {
                           <p className="text-xs text-muted-foreground">Monitor utilization & AI pricing</p>
                         </div>
                       </>
+                    ) : isEducation(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add rooms & labs in the Timetable tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Schedule classes with teachers & rooms</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">AI prevents teacher & room conflicts</p>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <div className="flex items-start gap-2">
