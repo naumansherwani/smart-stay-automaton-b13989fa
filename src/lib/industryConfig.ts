@@ -1,6 +1,8 @@
 export type IndustryType =
   | "hospitality" | "airlines" | "car_rental" | "healthcare" | "education"
-  | "logistics" | "events_entertainment" | "railways";
+  | "logistics" | "events_entertainment" | "fitness_wellness" | "legal_services"
+  | "real_estate" | "coworking" | "marine_maritime" | "government"
+  | "travel_tourism" | "railways";
 
 export interface IndustryConfig {
   id: IndustryType;
@@ -155,6 +157,137 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Events/Month", key: "eventsMonth", format: "number" },
     ],
     color: "hsl(310, 60%, 50%)",
+  },
+  fitness_wellness: {
+    id: "fitness_wellness", label: "Fitness & Wellness", icon: "💪",
+    resourceLabel: "Studio", resourceLabelPlural: "Studios",
+    bookingLabel: "Session", bookingLabelPlural: "Sessions",
+    clientLabel: "Member", clientLabelPlural: "Members",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "classpass", label: "ClassPass" },
+      { value: "mindbody", label: "Mindbody" },
+    ],
+    statuses: ["scheduled", "checked-in", "in-progress", "completed", "no-show", "cancelled"],
+    widgets: ["class-schedule", "trainer-roster", "membership-tracker", "attendance-heatmap", "retention-chart", "peak-hours"],
+    kpis: [
+      { label: "Class Occupancy", key: "occupancy", format: "percent" },
+      { label: "Retention Rate", key: "retention", format: "percent" },
+      { label: "Rev/Member", key: "revMember", format: "currency" },
+      { label: "Sessions/Day", key: "sessionsDay", format: "number" },
+    ],
+    color: "hsl(145, 65%, 42%)",
+  },
+  legal_services: {
+    id: "legal_services", label: "Legal Services", icon: "⚖️",
+    resourceLabel: "Office", resourceLabelPlural: "Offices",
+    bookingLabel: "Consultation", bookingLabelPlural: "Consultations",
+    clientLabel: "Client", clientLabelPlural: "Clients",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "avvo", label: "Avvo" },
+      { value: "justia", label: "Justia" },
+    ],
+    statuses: ["scheduled", "in-progress", "completed", "cancelled", "rescheduled"],
+    widgets: ["case-tracker", "billing-hours", "deadline-calendar", "document-vault", "court-calendar", "conflict-checker"],
+    kpis: [
+      { label: "Billable Hours", key: "billableHours", format: "number" },
+      { label: "Avg Case Value", key: "avgCaseValue", format: "currency" },
+      { label: "Win Rate", key: "winRate", format: "percent" },
+      { label: "Cases Active", key: "activeCases", format: "number" },
+    ],
+    color: "hsl(210, 50%, 45%)",
+  },
+  real_estate: {
+    id: "real_estate", label: "Real Estate", icon: "🏠",
+    resourceLabel: "Property", resourceLabelPlural: "Properties",
+    bookingLabel: "Showing", bookingLabelPlural: "Showings",
+    clientLabel: "Client", clientLabelPlural: "Clients",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "zillow", label: "Zillow" },
+      { value: "realtor", label: "Realtor.com" }, { value: "redfin", label: "Redfin" },
+    ],
+    statuses: ["scheduled", "shown", "offer-made", "under-contract", "closed", "cancelled"],
+    widgets: ["listing-tracker", "showing-calendar", "market-analysis", "commission-tracker", "lead-pipeline", "price-history"],
+    kpis: [
+      { label: "Listings Active", key: "activeListings", format: "number" },
+      { label: "Avg Days on Market", key: "daysOnMarket", format: "number" },
+      { label: "Closing Rate", key: "closingRate", format: "percent" },
+      { label: "Commission YTD", key: "commissionYtd", format: "currency" },
+    ],
+    color: "hsl(25, 70%, 50%)",
+  },
+  coworking: {
+    id: "coworking", label: "Coworking Spaces", icon: "🏢",
+    resourceLabel: "Desk/Room", resourceLabelPlural: "Desks & Rooms",
+    bookingLabel: "Reservation", bookingLabelPlural: "Reservations",
+    clientLabel: "Member", clientLabelPlural: "Members",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "deskpass", label: "Deskpass" },
+      { value: "liquidspace", label: "LiquidSpace" },
+    ],
+    statuses: ["reserved", "checked-in", "active", "completed", "cancelled"],
+    widgets: ["floor-plan", "occupancy-live", "meeting-rooms", "event-calendar", "community-board", "invoice-tracker"],
+    kpis: [
+      { label: "Desk Occupancy", key: "occupancy", format: "percent" },
+      { label: "Rev/Desk", key: "revDesk", format: "currency" },
+      { label: "Member Retention", key: "retention", format: "percent" },
+      { label: "Active Members", key: "activeMembers", format: "number" },
+    ],
+    color: "hsl(190, 60%, 45%)",
+  },
+  marine_maritime: {
+    id: "marine_maritime", label: "Marine & Maritime", icon: "🚢",
+    resourceLabel: "Vessel", resourceLabelPlural: "Vessels",
+    bookingLabel: "Voyage", bookingLabelPlural: "Voyages",
+    clientLabel: "Client", clientLabelPlural: "Clients",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "maritime-exchange", label: "Maritime Exchange" },
+    ],
+    statuses: ["scheduled", "loading", "at-sea", "docked", "completed", "delayed", "cancelled"],
+    widgets: ["vessel-tracker", "port-schedule", "cargo-manifest", "crew-roster", "weather-monitor", "compliance-checker"],
+    kpis: [
+      { label: "Fleet Utilization", key: "utilization", format: "percent" },
+      { label: "Avg Voyage Time", key: "avgVoyage", format: "duration" },
+      { label: "Rev/Voyage", key: "revVoyage", format: "currency" },
+      { label: "Active Voyages", key: "activeVoyages", format: "number" },
+    ],
+    color: "hsl(205, 70%, 45%)",
+  },
+  government: {
+    id: "government", label: "Government Services", icon: "🏛️",
+    resourceLabel: "Facility", resourceLabelPlural: "Facilities",
+    bookingLabel: "Appointment", bookingLabelPlural: "Appointments",
+    clientLabel: "Citizen", clientLabelPlural: "Citizens",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "portal", label: "Gov Portal" },
+    ],
+    statuses: ["scheduled", "in-progress", "completed", "cancelled", "pending-review"],
+    widgets: ["service-queue", "department-load", "permit-tracker", "citizen-feedback", "compliance-dashboard", "budget-monitor"],
+    kpis: [
+      { label: "Avg Wait Time", key: "waitTime", format: "duration" },
+      { label: "Cases Resolved", key: "resolved", format: "number" },
+      { label: "Satisfaction", key: "satisfaction", format: "percent" },
+      { label: "Services/Day", key: "servicesDay", format: "number" },
+    ],
+    color: "hsl(240, 40%, 50%)",
+  },
+  travel_tourism: {
+    id: "travel_tourism", label: "Travel & Tourism", icon: "🗺️",
+    resourceLabel: "Tour/Package", resourceLabelPlural: "Tours & Packages",
+    bookingLabel: "Booking", bookingLabelPlural: "Bookings",
+    clientLabel: "Traveler", clientLabelPlural: "Travelers",
+    platforms: [
+      { value: "direct", label: "Direct" }, { value: "viator", label: "Viator" },
+      { value: "getyourguide", label: "GetYourGuide" }, { value: "klook", label: "Klook" },
+    ],
+    statuses: ["confirmed", "pending", "in-progress", "completed", "cancelled", "refunded"],
+    widgets: ["tour-calendar", "guide-roster", "group-capacity", "seasonal-demand", "review-tracker", "package-builder"],
+    kpis: [
+      { label: "Booking Rate", key: "bookingRate", format: "percent" },
+      { label: "Rev/Tour", key: "revTour", format: "currency" },
+      { label: "Avg Group Size", key: "groupSize", format: "number" },
+      { label: "Satisfaction", key: "satisfaction", format: "percent" },
+    ],
+    color: "hsl(170, 60%, 40%)",
   },
   railways: {
     id: "railways", label: "Railways & Train Services", icon: "🚆",
