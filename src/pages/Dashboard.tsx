@@ -272,6 +272,13 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
+          {/* Car Rental Fleet Tab */}
+          {isCarRental(currentIndustry) && (
+            <TabsContent value="fleet">
+              <VehicleManager config={config} />
+            </TabsContent>
+          )}
+
           <TabsContent value="calendar" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3">
@@ -300,6 +307,21 @@ const Dashboard = () => {
                         <div className="flex items-start gap-2">
                           <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
                           <p className="text-xs text-muted-foreground">Monitor load factors & revenue in Pricing</p>
+                        </div>
+                      </>
+                    ) : isCarRental(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add vehicles to your fleet</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Create rental bookings with AI guard</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">Monitor utilization & AI pricing</p>
                         </div>
                       </>
                     ) : (
