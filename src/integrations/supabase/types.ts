@@ -1334,6 +1334,10 @@ export type Database = {
         Args: { _conversation_id: string }
         Returns: boolean
       }
+      create_conversation_with_participant: {
+        Args: { _listing_id?: string; _type?: string }
+        Returns: string
+      }
       has_lifetime_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
