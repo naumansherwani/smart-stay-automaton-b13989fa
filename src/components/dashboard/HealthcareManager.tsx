@@ -1,0 +1,643 @@
+import { useState } from "react";
+import {
+  Stethoscope, Heart, Clock, Users, Calendar, AlertTriangle, Activity,
+  Plus, Search, Phone, Mail, MapPin, Star, Shield, Zap, Brain,
+  CheckCircle2, XCircle, Timer, Gauge, UserCheck, UserX, Bell,
+  ArrowUpRight, ArrowDownRight, DollarSign, ClipboardList,
+  CalendarClock, Pill, Thermometer, FileText, BadgeCheck, CircleDot
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import type { IndustryConfig } from "@/lib/industryConfig";
+
+interface Doctor {
+  id: string;
+  name: string;
+  specialization: string;
+  status: "available" | "with-patient" | "break" | "off-duty" | "emergency";
+  room: string;
+  patientsToday: number;
+  maxPatients: number;
+  nextAvailable: string;
+  rating: number;
+  workingHours: string;
+  workingDays: string;
+  slotDuration: number;
+  phone: string;
+  avatar: string;
+}
+
+interface Appointment {
+  id: string;
+  patientName: string;
+  patientPhone: string;
+  doctorName: string;
+  doctorId: string;
+  specialization: string;
+  time: string;
+  duration: string;
+  type: "consultation" | "follow-up" | "procedure" | "emergency" | "checkup" | "lab";
+  status: "scheduled" | "checked-in" | "in-progress" | "completed" | "no-show" | "cancelled" | "rescheduled";
+  fee: number;
+  notes: string;
+  noShowRisk: number;
+}
+
+interface Patient {
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  phone: string;
+  email: string;
+  lastVisit: string;
+  totalVisits: number;
+  upcomingAppt: string;
+  condition: string;
+  doctor: string;
+  status: "active" | "new" | "inactive";
+  noShowCount: number;
+}
+
+interface TimeSlot {
+  time: string;
+  booked: number;
+  capacity: number;
+  doctor: string;
+  type: string;
+  status: "available" | "booked" | "break" | "blocked";
+}
+
+const specIcons: Record<string, string> = {
+  "Cardiology": "❤️", "Dermatology": "🧴", "Orthopedics": "🦴", "General Medicine": "🩺",
+  "Pediatrics": "👶", "Neurology": "🧠", "Ophthalmology": "👁️", "ENT": "👂",
+  "Psychiatry": "🧘", "Surgery": "🔪"
+};
+
+const statusColors: Record<string, string> = {
+  "available": "text-success", "with-patient": "text-primary", "break": "text-warning",
+  "off-duty": "text-muted-foreground", "emergency": "text-destructive",
+  "scheduled": "text-primary", "checked-in": "text-warning", "in-progress": "text-success",
+  "completed": "text-muted-foreground", "no-show": "text-destructive", "cancelled": "text-destructive",
+  "rescheduled": "text-warning", "booked": "text-primary", "blocked": "text-destructive",
+  "active": "text-success", "new": "text-primary", "inactive": "text-muted-foreground",
+};
+
+const typeColors: Record<string, string> = {
+  consultation: "bg-primary/15 text-primary",
+  "follow-up": "bg-secondary text-secondary-foreground",
+  procedure: "bg-warning/15 text-warning",
+  emergency: "bg-destructive/15 text-destructive",
+  checkup: "bg-success/15 text-success",
+  lab: "bg-accent/30 text-accent-foreground",
+};
+
+const MOCK_DOCTORS: Doctor[] = [
+  { id: "DR-001", name: "Dr. Sarah Ahmed", specialization: "Cardiology", status: "with-patient", room: "Room 101", patientsToday: 8, maxPatients: 16, nextAvailable: "10:30 AM", rating: 4.9, workingHours: "09:00–17:00", workingDays: "Mon–Sat", slotDuration: 30, phone: "+1 555-0201", avatar: "❤️" },
+  { id: "DR-002", name: "Dr. Omar Khalid", specialization: "Orthopedics", status: "available", room: "Room 102", patientsToday: 5, maxPatients: 12, nextAvailable: "Now", rating: 4.8, workingHours: "08:00–16:00", workingDays: "Mon–Fri", slotDuration: 30, phone: "+1 555-0202", avatar: "🦴" },
+  { id: "DR-003", name: "Dr. Aisha Malik", specialization: "Dermatology", status: "with-patient", room: "Room 103", patientsToday: 11, maxPatients: 20, nextAvailable: "11:00 AM", rating: 4.95, workingHours: "09:00–18:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0203", avatar: "🧴" },
+  { id: "DR-004", name: "Dr. Chen Wei", specialization: "Pediatrics", status: "break", room: "Room 104", patientsToday: 14, maxPatients: 24, nextAvailable: "11:30 AM", rating: 4.85, workingHours: "08:00–17:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0204", avatar: "👶" },
+  { id: "DR-005", name: "Dr. Fatima Noor", specialization: "Neurology", status: "with-patient", room: "Room 105", patientsToday: 4, maxPatients: 10, nextAvailable: "12:00 PM", rating: 4.7, workingHours: "10:00–18:00", workingDays: "Mon–Fri", slotDuration: 45, phone: "+1 555-0205", avatar: "🧠" },
+  { id: "DR-006", name: "Dr. James Park", specialization: "General Medicine", status: "available", room: "Room 106", patientsToday: 9, maxPatients: 20, nextAvailable: "Now", rating: 4.6, workingHours: "08:00–16:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0206", avatar: "🩺" },
+  { id: "DR-007", name: "Dr. Maria Garcia", specialization: "Psychiatry", status: "off-duty", room: "Room 107", patientsToday: 0, maxPatients: 8, nextAvailable: "Tomorrow", rating: 4.92, workingHours: "10:00–17:00", workingDays: "Tue–Sat", slotDuration: 60, phone: "+1 555-0207", avatar: "🧘" },
+  { id: "DR-008", name: "Dr. Ali Hassan", specialization: "ENT", status: "available", room: "Room 108", patientsToday: 6, maxPatients: 16, nextAvailable: "Now", rating: 4.75, workingHours: "09:00–17:00", workingDays: "Mon–Fri", slotDuration: 20, phone: "+1 555-0208", avatar: "👂" },
+];
+
+const MOCK_APPOINTMENTS: Appointment[] = [
+  { id: "APT-3001", patientName: "Muhammad Ali", patientPhone: "+1 555-1001", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "09:00 AM", duration: "30 min", type: "consultation", status: "completed", fee: 150, notes: "ECG required", noShowRisk: 5 },
+  { id: "APT-3002", patientName: "Zara Khan", patientPhone: "+1 555-1002", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "09:30 AM", duration: "30 min", type: "follow-up", status: "completed", fee: 100, notes: "Post-op check", noShowRisk: 8 },
+  { id: "APT-3003", patientName: "Ravi Patel", patientPhone: "+1 555-1003", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "10:00 AM", duration: "30 min", type: "procedure", status: "in-progress", fee: 300, notes: "Stress test", noShowRisk: 3 },
+  { id: "APT-3004", patientName: "Emily Brown", patientPhone: "+1 555-1004", doctorName: "Dr. Aisha Malik", doctorId: "DR-003", specialization: "Dermatology", time: "10:15 AM", duration: "15 min", type: "checkup", status: "checked-in", fee: 80, notes: "Skin screening", noShowRisk: 12 },
+  { id: "APT-3005", patientName: "Hassan Shah", patientPhone: "+1 555-1005", doctorName: "Dr. Omar Khalid", doctorId: "DR-002", specialization: "Orthopedics", time: "10:30 AM", duration: "30 min", type: "consultation", status: "scheduled", fee: 120, notes: "Knee pain evaluation", noShowRisk: 22 },
+  { id: "APT-3006", patientName: "Lisa Chen", patientPhone: "+1 555-1006", doctorName: "Dr. Chen Wei", doctorId: "DR-004", specialization: "Pediatrics", time: "11:30 AM", duration: "15 min", type: "checkup", status: "scheduled", fee: 60, notes: "Vaccination", noShowRisk: 15 },
+  { id: "APT-3007", patientName: "Ahmed Rizvi", patientPhone: "+1 555-1007", doctorName: "Dr. Fatima Noor", doctorId: "DR-005", specialization: "Neurology", time: "12:00 PM", duration: "45 min", type: "consultation", status: "scheduled", fee: 200, notes: "Migraine assessment", noShowRisk: 42 },
+  { id: "APT-3008", patientName: "Sophie Turner", patientPhone: "+1 555-1008", doctorName: "Dr. James Park", doctorId: "DR-006", specialization: "General Medicine", time: "01:00 PM", duration: "15 min", type: "follow-up", status: "scheduled", fee: 60, notes: "Blood results review", noShowRisk: 8 },
+  { id: "APT-3009", patientName: "— EMERGENCY —", patientPhone: "—", doctorName: "Dr. Omar Khalid", doctorId: "DR-002", specialization: "Orthopedics", time: "02:00 PM", duration: "60 min", type: "emergency", status: "scheduled", fee: 0, notes: "Fracture - ER referral", noShowRisk: 0 },
+  { id: "APT-3010", patientName: "Nadia Abbas", patientPhone: "+1 555-1010", doctorName: "Dr. Ali Hassan", doctorId: "DR-008", specialization: "ENT", time: "02:30 PM", duration: "20 min", type: "consultation", status: "scheduled", fee: 100, notes: "Hearing test", noShowRisk: 55 },
+];
+
+const MOCK_PATIENTS: Patient[] = [
+  { id: "PT-001", name: "Muhammad Ali", age: 52, gender: "Male", phone: "+1 555-1001", email: "mali@email.com", lastVisit: "Today", totalVisits: 12, upcomingAppt: "—", condition: "Hypertension", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 0 },
+  { id: "PT-002", name: "Zara Khan", age: 34, gender: "Female", phone: "+1 555-1002", email: "zara@email.com", lastVisit: "Today", totalVisits: 4, upcomingAppt: "Apr 20", condition: "Post-surgery", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 1 },
+  { id: "PT-003", name: "Ravi Patel", age: 45, gender: "Male", phone: "+1 555-1003", email: "ravi@email.com", lastVisit: "Today", totalVisits: 8, upcomingAppt: "—", condition: "Cardiac monitoring", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 0 },
+  { id: "PT-004", name: "Emily Brown", age: 28, gender: "Female", phone: "+1 555-1004", email: "emily@email.com", lastVisit: "Today", totalVisits: 1, upcomingAppt: "—", condition: "Skin screening", doctor: "Dr. Aisha Malik", status: "new", noShowCount: 0 },
+  { id: "PT-005", name: "Hassan Shah", age: 60, gender: "Male", phone: "+1 555-1005", email: "hassan@email.com", lastVisit: "Mar 28", totalVisits: 6, upcomingAppt: "Today", condition: "Knee replacement", doctor: "Dr. Omar Khalid", status: "active", noShowCount: 2 },
+  { id: "PT-006", name: "Lisa Chen", age: 4, gender: "Female", phone: "+1 555-1006", email: "lchen@email.com", lastVisit: "Feb 15", totalVisits: 10, upcomingAppt: "Today", condition: "Routine checkup", doctor: "Dr. Chen Wei", status: "active", noShowCount: 0 },
+  { id: "PT-007", name: "Ahmed Rizvi", age: 38, gender: "Male", phone: "+1 555-1007", email: "arizvi@email.com", lastVisit: "Mar 10", totalVisits: 3, upcomingAppt: "Today", condition: "Chronic migraine", doctor: "Dr. Fatima Noor", status: "active", noShowCount: 3 },
+  { id: "PT-008", name: "Nadia Abbas", age: 42, gender: "Female", phone: "+1 555-1008", email: "nadia@email.com", lastVisit: "Jan 20", totalVisits: 2, upcomingAppt: "Today", condition: "Hearing loss", doctor: "Dr. Ali Hassan", status: "active", noShowCount: 4 },
+];
+
+// ─── KPIs ───
+function HealthcareKPIs() {
+  const kpis = [
+    { label: "Today's Appointments", value: "42", change: "+6", up: true, icon: Calendar },
+    { label: "Patients Seen", value: "28", change: "+4", up: true, icon: UserCheck },
+    { label: "Avg Wait Time", value: "12 min", change: "-3 min", up: true, icon: Timer },
+    { label: "No-Show Rate", value: "4.2%", change: "-1.8%", up: true, icon: UserX },
+    { label: "Room Utilization", value: "86%", change: "+5%", up: true, icon: Gauge },
+    { label: "Revenue Today", value: "$6,840", change: "+22%", up: true, icon: DollarSign },
+  ];
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      {kpis.map(k => (
+        <Card key={k.label} className="bg-card/50">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between mb-2">
+              <k.icon className="w-4 h-4 text-primary" />
+              <span className={`text-[10px] flex items-center gap-0.5 ${k.up ? "text-success" : "text-destructive"}`}>
+                {k.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                {k.change}
+              </span>
+            </div>
+            <p className="text-lg font-bold text-foreground">{k.value}</p>
+            <p className="text-[10px] text-muted-foreground">{k.label}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+// ─── Appointments Tab ───
+function AppointmentsPanel() {
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const filtered = MOCK_APPOINTMENTS.filter(a => {
+    const matchSearch = a.patientName.toLowerCase().includes(search.toLowerCase()) || a.doctorName.toLowerCase().includes(search.toLowerCase()) || a.id.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === "all" || a.status === filterStatus;
+    return matchSearch && matchStatus;
+  });
+
+  const upcoming = filtered.filter(a => ["scheduled", "checked-in"].includes(a.status));
+  const active = filtered.filter(a => a.status === "in-progress");
+  const completed = filtered.filter(a => ["completed", "no-show", "cancelled"].includes(a.status));
+
+  return (
+    <div className="space-y-4">
+      {/* AI Alerts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">AI No-Show Alert</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Nadia Abbas (2:30 PM, ENT) has 55% no-show risk — 4 previous no-shows. AI suggests sending reminder & preparing waitlist patient.</p>
+            <div className="flex gap-2 mt-2">
+              <Button size="sm" variant="destructive" className="h-7 text-xs gap-1"><Bell className="w-3 h-3" />Send Reminder</Button>
+              <Button size="sm" variant="outline" className="h-7 text-xs">Activate Waitlist</Button>
+            </div>
+          </div>
+        </div>
+        <div className="bg-warning/10 border border-warning/20 rounded-xl p-4 flex items-start gap-3">
+          <Zap className="w-5 h-5 text-warning shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">Emergency Override</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Emergency fracture patient added to Dr. Omar Khalid's schedule at 2:00 PM. Following appointments shifted by 30 min automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search appointments..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+        </div>
+        <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="scheduled">Scheduled</SelectItem>
+            <SelectItem value="checked-in">Checked In</SelectItem>
+            <SelectItem value="in-progress">In Progress</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="no-show">No Show</SelectItem>
+            <SelectItem value="cancelled">Cancelled</SelectItem>
+          </SelectContent>
+        </Select>
+        <Dialog>
+          <DialogTrigger asChild><Button className="bg-gradient-primary gap-2"><Plus className="w-4 h-4" />Book Appointment</Button></DialogTrigger>
+          <DialogContent className="max-w-lg">
+            <DialogHeader><DialogTitle>Book New Appointment</DialogTitle></DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2"><Label>Patient Name</Label><Input placeholder="Full name" /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2"><Label>Phone</Label><Input placeholder="+1 555-0000" /></div>
+                <div className="space-y-2"><Label>Email</Label><Input placeholder="patient@email.com" /></div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2"><Label>Doctor</Label>
+                  <Select><SelectTrigger><SelectValue placeholder="Select doctor" /></SelectTrigger>
+                    <SelectContent>{MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => <SelectItem key={d.id} value={d.id}>{d.avatar} {d.name} — {d.specialization}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2"><Label>Appointment Type</Label>
+                  <Select><SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="consultation">Consultation</SelectItem>
+                      <SelectItem value="follow-up">Follow-up</SelectItem>
+                      <SelectItem value="procedure">Procedure</SelectItem>
+                      <SelectItem value="checkup">Checkup</SelectItem>
+                      <SelectItem value="lab">Lab Work</SelectItem>
+                      <SelectItem value="emergency">Emergency</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2"><Label>Date</Label><Input type="date" /></div>
+                <div className="space-y-2"><Label>Time Slot</Label>
+                  <Select><SelectTrigger><SelectValue placeholder="Select slot" /></SelectTrigger>
+                    <SelectContent>
+                      {["09:00 AM","09:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","01:00 PM","01:30 PM","02:00 PM","02:30 PM","03:00 PM","03:30 PM","04:00 PM"].map(t => (
+                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="space-y-2"><Label>Notes</Label><Input placeholder="e.g. Allergies, referral info..." /></div>
+              <Button className="w-full bg-gradient-primary">Confirm Appointment</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Active Now */}
+      {active.length > 0 && (
+        <div>
+          <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><Activity className="w-4 h-4 text-success" />In Progress</h3>
+          <div className="space-y-2">
+            {active.map(a => <AppointmentCard key={a.id} apt={a} />)}
+          </div>
+        </div>
+      )}
+
+      {/* Upcoming */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><Clock className="w-4 h-4 text-primary" />Upcoming ({upcoming.length})</h3>
+        <div className="space-y-2">
+          {upcoming.map(a => <AppointmentCard key={a.id} apt={a} />)}
+        </div>
+      </div>
+
+      {/* Completed */}
+      {completed.length > 0 && (
+        <div>
+          <h3 className="text-sm font-bold text-foreground mb-2 flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-muted-foreground" />Completed ({completed.length})</h3>
+          <div className="space-y-2">
+            {completed.map(a => <AppointmentCard key={a.id} apt={a} />)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AppointmentCard({ apt }: { apt: Appointment }) {
+  return (
+    <Card className={`transition-all hover:shadow-md ${apt.type === "emergency" ? "border-destructive/40 bg-destructive/5" : apt.noShowRisk > 40 ? "border-warning/30" : ""}`}>
+      <CardContent className="p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-bold text-foreground">{apt.id}</span>
+              <Badge className={`text-[10px] ${typeColors[apt.type]}`}>{apt.type}</Badge>
+              <span className={`text-xs capitalize font-medium ${statusColors[apt.status]}`}>● {apt.status}</span>
+              {apt.noShowRisk > 30 && (
+                <Badge variant="outline" className="text-[9px] text-destructive border-destructive/30 gap-0.5">
+                  <AlertTriangle className="w-2.5 h-2.5" />{apt.noShowRisk}% risk
+                </Badge>
+              )}
+            </div>
+            <p className="text-sm text-foreground mt-1 font-medium">{apt.patientName}</p>
+            <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground flex-wrap">
+              <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{apt.time} · {apt.duration}</span>
+              <span className="flex items-center gap-1"><Stethoscope className="w-3 h-3" />{apt.doctorName}</span>
+              <span className="flex items-center gap-1">{specIcons[apt.specialization] || "🩺"} {apt.specialization}</span>
+            </div>
+            {apt.notes && <p className="text-[10px] text-muted-foreground mt-1 italic">📝 {apt.notes}</p>}
+          </div>
+          <div className="text-right shrink-0">
+            {apt.fee > 0 && <p className="text-lg font-bold text-foreground">${apt.fee}</p>}
+            {apt.fee === 0 && <Badge className="bg-destructive/15 text-destructive text-[10px]">Emergency</Badge>}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Doctors Tab ───
+function DoctorsPanel() {
+  const [filterSpec, setFilterSpec] = useState("all");
+  const filtered = MOCK_DOCTORS.filter(d => filterSpec === "all" || d.specialization === filterSpec);
+  const specs = [...new Set(MOCK_DOCTORS.map(d => d.specialization))];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row justify-between gap-3">
+        <div className="flex gap-2 flex-wrap">
+          <Badge variant={filterSpec === "all" ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec("all")}>All ({MOCK_DOCTORS.length})</Badge>
+          {specs.map(s => (
+            <Badge key={s} variant={filterSpec === s ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec(s)}>
+              {specIcons[s]} {s}
+            </Badge>
+          ))}
+        </div>
+        <Button className="bg-gradient-primary gap-2"><Plus className="w-4 h-4" />Add Doctor</Button>
+      </div>
+
+      {/* Patient Flow Board */}
+      <Card>
+        <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Activity className="w-4 h-4 text-primary" />Live Patient Flow</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => (
+              <div key={d.id} className={`p-3 rounded-lg border ${d.status === "with-patient" ? "border-primary/30 bg-primary/5" : d.status === "break" ? "border-warning/30 bg-warning/5" : "border-border"}`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg">{d.avatar}</span>
+                  <div>
+                    <p className="text-xs font-bold text-foreground truncate">{d.name.replace("Dr. ", "")}</p>
+                    <span className={`text-[10px] capitalize ${statusColors[d.status]}`}>● {d.status.replace("-", " ")}</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-muted-foreground">{d.room} · {d.patientsToday}/{d.maxPatients} patients</p>
+                <Progress value={(d.patientsToday / d.maxPatients) * 100} className="h-1 mt-1.5" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Doctor Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filtered.map(d => (
+          <Card key={d.id} className={`transition-all hover:shadow-md ${d.status === "off-duty" ? "opacity-60" : ""}`}>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">{d.avatar}</div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{d.name}</p>
+                    <p className="text-xs text-muted-foreground">{d.specialization} · {d.id}</p>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <Star className="w-3 h-3 text-warning fill-warning" />
+                      <span className="text-xs font-medium text-foreground">{d.rating}</span>
+                    </div>
+                  </div>
+                </div>
+                <span className={`text-xs capitalize font-medium ${statusColors[d.status]}`}>● {d.status.replace("-", " ")}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                <div className="bg-secondary/50 rounded-lg p-2">
+                  <p className="text-lg font-bold text-foreground">{d.patientsToday}</p>
+                  <p className="text-[10px] text-muted-foreground">Today</p>
+                </div>
+                <div className="bg-secondary/50 rounded-lg p-2">
+                  <p className="text-lg font-bold text-foreground">{d.maxPatients}</p>
+                  <p className="text-[10px] text-muted-foreground">Max/Day</p>
+                </div>
+                <div className="bg-secondary/50 rounded-lg p-2">
+                  <p className="text-lg font-bold text-foreground">{d.slotDuration}m</p>
+                  <p className="text-[10px] text-muted-foreground">Per Slot</p>
+                </div>
+              </div>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="flex justify-between"><span>🕐 {d.workingHours}</span><span>📅 {d.workingDays}</span></div>
+                <div className="flex justify-between"><span>🏥 {d.room}</span><span>📱 {d.phone}</span></div>
+                <div className="flex items-center gap-1 mt-1">
+                  <span className="text-foreground font-medium">Next available:</span>
+                  <Badge variant="outline" className={`text-[10px] ${d.nextAvailable === "Now" ? "text-success border-success/30" : ""}`}>{d.nextAvailable}</Badge>
+                </div>
+              </div>
+              <div className="mt-3">
+                <Progress value={(d.patientsToday / d.maxPatients) * 100} className="h-1.5" />
+                <p className="text-[10px] text-muted-foreground mt-1">{Math.round((d.patientsToday / d.maxPatients) * 100)}% daily capacity used</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Schedule Tab ───
+function SchedulePanel() {
+  const hours = ["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30"];
+  const activeDoctors = MOCK_DOCTORS.filter(d => d.status !== "off-duty");
+
+  const getSlotStatus = (doctor: string, time: string): { status: string; patient?: string; type?: string } => {
+    const apt = MOCK_APPOINTMENTS.find(a => a.doctorName === doctor && a.time.replace(" ", "").toLowerCase().includes(time.replace(":","").toLowerCase().slice(0,4)));
+    if (apt) return { status: apt.status, patient: apt.patientName, type: apt.type };
+    if (time === "12:00" || time === "12:30") return { status: "break" };
+    return { status: "available" };
+  };
+
+  const slotBg: Record<string, string> = {
+    "available": "bg-success/10 border-success/20 hover:bg-success/20 cursor-pointer",
+    "scheduled": "bg-primary/10 border-primary/20",
+    "checked-in": "bg-warning/10 border-warning/20",
+    "in-progress": "bg-primary/20 border-primary/40",
+    "completed": "bg-muted/50 border-border",
+    "break": "bg-secondary border-border",
+    "no-show": "bg-destructive/10 border-destructive/20",
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-start gap-3">
+        <Brain className="w-5 h-5 text-primary shrink-0" />
+        <div>
+          <p className="text-sm font-medium text-foreground">AI Smart Scheduling</p>
+          <p className="text-xs text-muted-foreground">AI detects 3 available gaps today. Suggested: Move waitlist patient "E. Williams" (urgent, Dermatology) to Dr. Aisha Malik at 11:15 AM.</p>
+          <Button size="sm" variant="outline" className="mt-2 h-7 text-xs border-primary/30 text-primary">Auto-Fill Gaps</Button>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex gap-3 flex-wrap">
+        {[
+          { label: "Available", color: "bg-success/30" },
+          { label: "Scheduled", color: "bg-primary/30" },
+          { label: "In Progress", color: "bg-primary/50" },
+          { label: "Checked In", color: "bg-warning/30" },
+          { label: "Completed", color: "bg-muted" },
+          { label: "Break", color: "bg-secondary" },
+        ].map(l => (
+          <div key={l.label} className="flex items-center gap-1.5">
+            <div className={`w-3 h-3 rounded ${l.color}`} />
+            <span className="text-[10px] text-muted-foreground">{l.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Schedule Grid */}
+      <div className="overflow-x-auto">
+        <div className="min-w-[700px]">
+          {/* Header */}
+          <div className="grid gap-1" style={{ gridTemplateColumns: `80px repeat(${activeDoctors.length}, 1fr)` }}>
+            <div className="p-2 text-xs font-bold text-muted-foreground">Time</div>
+            {activeDoctors.map(d => (
+              <div key={d.id} className="p-2 text-center">
+                <span className="text-sm">{d.avatar}</span>
+                <p className="text-[10px] font-bold text-foreground truncate">{d.name.replace("Dr. ", "")}</p>
+                <span className={`text-[8px] capitalize ${statusColors[d.status]}`}>● {d.status.replace("-", " ")}</span>
+              </div>
+            ))}
+          </div>
+          {/* Rows */}
+          {hours.map(h => (
+            <div key={h} className="grid gap-1" style={{ gridTemplateColumns: `80px repeat(${activeDoctors.length}, 1fr)` }}>
+              <div className="p-1.5 text-[10px] font-medium text-muted-foreground flex items-center">{h}</div>
+              {activeDoctors.map(d => {
+                const slot = getSlotStatus(d.name, h);
+                return (
+                  <div key={`${d.id}-${h}`} className={`p-1.5 rounded border text-center ${slotBg[slot.status] || slotBg.available}`}>
+                    {slot.patient ? (
+                      <>
+                        <p className="text-[9px] font-medium text-foreground truncate">{slot.patient}</p>
+                        <p className="text-[8px] text-muted-foreground">{slot.type}</p>
+                      </>
+                    ) : slot.status === "break" ? (
+                      <p className="text-[9px] text-muted-foreground">☕ Break</p>
+                    ) : (
+                      <p className="text-[9px] text-success">+</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* AI No-Show Predictor */}
+      <Card>
+        <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-warning" />AI No-Show Predictor</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          {MOCK_APPOINTMENTS.filter(a => a.noShowRisk > 20 && a.status === "scheduled").sort((a, b) => b.noShowRisk - a.noShowRisk).map(a => (
+            <div key={a.id} className={`p-2.5 rounded-lg border ${a.noShowRisk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{a.patientName}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.time} · {a.doctorName} · {a.specialization}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className={`text-[10px] ${a.noShowRisk > 40 ? "text-destructive border-destructive/30" : "text-warning border-warning/30"}`}>
+                    {a.noShowRisk}% risk
+                  </Badge>
+                  <Button size="sm" variant="ghost" className="h-6 text-[10px]"><Bell className="w-3 h-3" /></Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// ─── Patients Tab ───
+function PatientsPanel() {
+  const [search, setSearch] = useState("");
+  const filtered = MOCK_PATIENTS.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) || p.condition.toLowerCase().includes(search.toLowerCase()) || p.doctor.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { label: "Total Patients", value: MOCK_PATIENTS.length.toString(), icon: Users },
+          { label: "New This Month", value: "1", icon: UserCheck },
+          { label: "Active", value: MOCK_PATIENTS.filter(p => p.status === "active").length.toString(), icon: Heart },
+          { label: "High No-Show Risk", value: MOCK_PATIENTS.filter(p => p.noShowCount >= 3).length.toString(), icon: AlertTriangle },
+        ].map(s => (
+          <Card key={s.label}>
+            <CardContent className="p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center"><s.icon className="w-5 h-5 text-primary" /></div>
+              <div><p className="text-lg font-bold text-foreground">{s.value}</p><p className="text-[10px] text-muted-foreground">{s.label}</p></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search patients..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+        </div>
+        <Button className="bg-gradient-primary gap-2"><Plus className="w-4 h-4" />Add Patient</Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {filtered.map(p => (
+          <Card key={p.id} className="transition-all hover:shadow-md">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold text-foreground">{p.name}</p>
+                    <Badge variant="outline" className={`text-[9px] ${statusColors[p.status]}`}>{p.status}</Badge>
+                    {p.noShowCount >= 3 && <Badge variant="outline" className="text-[9px] text-destructive border-destructive/30">⚠️ {p.noShowCount} no-shows</Badge>}
+                  </div>
+                  <p className="text-xs text-muted-foreground">{p.id} · {p.age}y · {p.gender}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs font-medium text-foreground">{p.totalVisits} visits</p>
+                  <p className="text-[10px] text-muted-foreground">Last: {p.lastVisit}</p>
+                </div>
+              </div>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1"><Stethoscope className="w-3 h-3" />{p.doctor}</span>
+                  <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{p.condition}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{p.phone}</span>
+                  <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{p.email}</span>
+                </div>
+                {p.upcomingAppt !== "—" && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <Calendar className="w-3 h-3 text-primary" />
+                    <span className="text-primary font-medium">Next: {p.upcomingAppt}</span>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Component ───
+export default function HealthcareManager({ config }: { config: IndustryConfig }) {
+  return (
+    <div className="space-y-6">
+      <HealthcareKPIs />
+
+      <Tabs defaultValue="appointments" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:w-auto lg:inline-grid gap-1">
+          <TabsTrigger value="appointments" className="gap-1.5 text-xs md:text-sm"><ClipboardList className="w-3.5 h-3.5" />Appointments</TabsTrigger>
+          <TabsTrigger value="doctors" className="gap-1.5 text-xs md:text-sm"><Stethoscope className="w-3.5 h-3.5" />Doctors</TabsTrigger>
+          <TabsTrigger value="schedule" className="gap-1.5 text-xs md:text-sm"><CalendarClock className="w-3.5 h-3.5" />Schedule</TabsTrigger>
+          <TabsTrigger value="patients" className="gap-1.5 text-xs md:text-sm"><Users className="w-3.5 h-3.5" />Patients</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="appointments"><AppointmentsPanel /></TabsContent>
+        <TabsContent value="doctors"><DoctorsPanel /></TabsContent>
+        <TabsContent value="schedule"><SchedulePanel /></TabsContent>
+        <TabsContent value="patients"><PatientsPanel /></TabsContent>
+      </Tabs>
+    </div>
+  );
+}
