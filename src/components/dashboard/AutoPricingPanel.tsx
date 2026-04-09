@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, Minus, Zap, DollarSign, BarChart3, Pencil, Check, X, Brain, Hand } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Zap, DollarSign, BarChart3, Pencil, Check, X, Brain, Hand, RotateCcw, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import type { IndustryConfig } from "@/lib/industryConfig";
@@ -25,15 +25,49 @@ interface Resource {
 
 type PricingMode = "ai" | "manual";
 
+export interface PriceOverrides {
+  [dateKey: string]: number;
+}
+
+export interface PricingState {
+  mode: PricingMode;
+  overrides: PriceOverrides;
+  basePrice: number;
+  aiSupported: boolean;
+}
+
+// Export helper for calendar integration
+export function getDayPrice(
+  basePrice: number,
+  date: Date,
+  mode: PricingMode,
+  overrides: PriceOverrides,
+  aiSupported: boolean
+): { price: number; isOverride: boolean; isAI: boolean; reasoning: string } {
+  const key = date.toISOString().split("T")[0];
+  if (key in overrides) {
+    return { price: overrides[key], isOverride: true, isAI: false, reasoning: "Manual override" };
+  }
+  if (mode === "ai" && aiSupported) {
+    const suggestion = calculateSmartPrice(basePrice, date);
+    return { price: suggestion.suggestedPrice, isOverride: false, isAI: true, reasoning: suggestion.reasoning };
+  }
+  return { price: basePrice, isOverride: false, isAI: false, reasoning: "Base rate" };
+}
+
 const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
   const { user } = useAuth();
   const aiSupported = supportsAutoPricing(industry);
   const [mode, setMode] = useState<PricingMode>(aiSupported ? "ai" : "manual");
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<string | null>(null);
-  const [overrides, setOverrides] = useState<Record<string, number>>({});
+  const [overrides, setOverrides] = useState<PriceOverrides>({});
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+
+  useEffect(() => {
+    if (!aiSupported) setMode("manual");
+  }, [aiSupported]);
 
   useEffect(() => {
     if (!user) return;
@@ -60,23 +94,18 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
   });
 
   const priceSuggestions = nextDays.map(date => {
+    const dayPrice = getDayPrice(basePrice, date, mode, overrides, aiSupported);
     const key = date.toISOString().split("T")[0];
-    const suggestion = calculateSmartPrice(basePrice, date);
-    const hasOverride = key in overrides;
-    const finalPrice = hasOverride
-      ? overrides[key]
-      : mode === "ai"
-      ? suggestion.suggestedPrice
-      : basePrice;
-    const diff = finalPrice - basePrice;
+    const diff = dayPrice.price - basePrice;
     const pct = basePrice > 0 ? Math.round((diff / basePrice) * 100) : 0;
-    return { date, key, suggestion, finalPrice, diff, pct, hasOverride };
+    return { date, key, ...dayPrice, diff, pct };
   });
 
-  const totalRevenue = priceSuggestions.reduce((sum, p) => sum + p.finalPrice, 0);
+  const totalRevenue = priceSuggestions.reduce((sum, p) => sum + p.price, 0);
   const baseRevenue = basePrice * 14;
   const revenueGain = totalRevenue - baseRevenue;
   const avgChange = Math.round(priceSuggestions.reduce((s, p) => s + p.pct, 0) / priceSuggestions.length);
+  const overrideCount = Object.keys(overrides).length;
 
   const startEdit = (key: string, currentPrice: number) => {
     setEditingDate(key);
@@ -91,13 +120,15 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
     setEditingDate(null);
   };
 
-  const clearOverride = (key: string) => {
+  const resetOverride = (key: string) => {
     setOverrides(prev => {
       const next = { ...prev };
       delete next[key];
       return next;
     });
   };
+
+  const resetAllOverrides = () => setOverrides({});
 
   return (
     <div className="space-y-6">
@@ -139,22 +170,29 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                 <Brain className="w-3.5 h-3.5" /> AI Pricing
               </button>
             ) : (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-muted-foreground cursor-not-allowed opacity-50">
-                <Brain className="w-3.5 h-3.5" /> AI (N/A for {config.label})
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-muted-foreground cursor-not-allowed opacity-40">
+                    <Brain className="w-3.5 h-3.5" /> AI Pricing
+                    <Info className="w-3 h-3" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[220px]">
+                  <p className="text-xs">AI pricing is not available for this industry. It's designed for demand-driven industries like Hospitality, Car Rental, and Events.</p>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
         </div>
-        {!aiSupported && (
-          <p className="text-xs text-muted-foreground mt-3 bg-muted/50 rounded-lg px-3 py-2">
-            AI dynamic pricing is designed for demand-driven industries (Hospitality, Car Rental, Events). 
-            You can still set manual prices per day for your {config.resourceLabelPlural.toLowerCase()}.
+        {mode === "ai" && aiSupported && (
+          <p className="text-xs text-muted-foreground mt-3 bg-success/5 rounded-lg px-3 py-2 border border-success/10">
+            🤖 AI is actively adjusting prices based on demand, seasonality, and availability. Manual overrides always take priority.
           </p>
         )}
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-5">
             <div className="flex items-center gap-3">
@@ -198,6 +236,19 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
             </div>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="pt-5">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                <Pencil className="w-4 h-4 text-warning" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Manual Overrides</p>
+                <p className="text-xl font-bold text-foreground">{overrideCount}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Resource Selector */}
@@ -227,9 +278,9 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                 <Badge variant="outline" className="ml-2">{resource.name} · Base: ${basePrice}</Badge>
               )}
             </CardTitle>
-            {Object.keys(overrides).length > 0 && (
-              <Button variant="ghost" size="sm" className="text-xs" onClick={() => setOverrides({})}>
-                Clear all overrides
+            {overrideCount > 0 && (
+              <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={resetAllOverrides}>
+                <RotateCcw className="w-3 h-3" /> Reset all ({overrideCount})
               </Button>
             )}
           </div>
@@ -241,29 +292,37 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
             </p>
           ) : (
             <div className="space-y-2">
-              {priceSuggestions.map(({ date, key, suggestion, finalPrice, diff, pct, hasOverride }) => (
+              {priceSuggestions.map(({ date, key, price, isOverride, isAI, reasoning, diff, pct }) => (
                 <div
                   key={key}
                   className={`flex items-center justify-between py-2.5 px-4 rounded-lg transition-colors ${
-                    hasOverride
-                      ? "bg-warning/10 border border-warning/20"
+                    isOverride
+                      ? "bg-warning/10 border border-warning/30 ring-1 ring-warning/10"
+                      : isAI
+                      ? "bg-primary/5 border border-primary/10"
                       : "bg-secondary/50 hover:bg-secondary"
                   }`}
                 >
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-foreground">
-                      {date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {hasOverride
-                        ? "Manual override"
-                        : mode === "ai"
-                        ? suggestion.reasoning
-                        : "Base rate"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-foreground">
+                        {date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                      </span>
+                      {isOverride && (
+                        <Badge variant="outline" className="text-[9px] h-4 border-warning/40 text-warning bg-warning/5">
+                          OVERRIDE
+                        </Badge>
+                      )}
+                      {isAI && !isOverride && (
+                        <Badge variant="outline" className="text-[9px] h-4 border-primary/40 text-primary bg-primary/5">
+                          AI
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="text-xs text-muted-foreground">{reasoning}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {mode === "ai" && !hasOverride && (
+                    {(isAI || isOverride) && (
                       <span className="text-xs text-muted-foreground line-through">${basePrice}</span>
                     )}
 
@@ -286,7 +345,7 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                       </div>
                     ) : (
                       <>
-                        <span className="text-sm font-bold text-foreground">${finalPrice}</span>
+                        <span className={`text-sm font-bold ${isOverride ? "text-warning" : "text-foreground"}`}>${price}</span>
                         {diff !== 0 && (
                           <span className={`flex items-center text-xs font-medium ${
                             diff > 0 ? "text-success" : "text-destructive"
@@ -295,30 +354,40 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                             {pct > 0 ? "+" : ""}{pct}%
                           </span>
                         )}
-                        {diff === 0 && !hasOverride && (
+                        {diff === 0 && !isOverride && (
                           <span className="flex items-center text-xs text-muted-foreground">
                             <Minus className="w-3 h-3 mr-0.5" />0%
                           </span>
                         )}
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-7 w-7 opacity-60 hover:opacity-100"
-                          onClick={() => startEdit(key, finalPrice)}
-                          title="Override price"
-                        >
-                          <Pencil className="w-3 h-3" />
-                        </Button>
-                        {hasOverride && (
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-7 w-7 opacity-60 hover:opacity-100"
-                            onClick={() => clearOverride(key)}
-                            title="Remove override"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 opacity-60 hover:opacity-100"
+                              onClick={() => startEdit(key, price)}
+                            >
+                              <Pencil className="w-3 h-3" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent><p className="text-xs">Override price for this day</p></TooltipContent>
+                        </Tooltip>
+                        {isOverride && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7 opacity-60 hover:opacity-100"
+                                onClick={() => resetOverride(key)}
+                              >
+                                <RotateCcw className="w-3 h-3 text-muted-foreground" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Reset to {mode === "ai" ? "AI suggested" : "base"} price</p>
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                       </>
                     )}
@@ -368,7 +437,7 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-              💡 You can override any AI suggestion by clicking the pencil icon next to any price.
+              💡 Manual overrides always take priority. AI will never overwrite your manual prices. Remove an override to let AI resume.
             </p>
           </CardContent>
         </Card>
