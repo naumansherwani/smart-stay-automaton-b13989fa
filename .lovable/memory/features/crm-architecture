@@ -1,0 +1,12 @@
+---
+name: CRM Architecture
+description: CRM is premium-only hub with industry-specific embedded tools (AI Calendar, AI Pricing, etc.)
+type: feature
+---
+- CRM (/crm) is ONLY for Premium subscribers and trial users
+- Basic & Standard users see "Upgrade to Premium" gate
+- Each industry gets different tools inside CRM based on crmTools config in crmConfig.ts
+- Dashboard (/dashboard) remains accessible to ALL plans for basic scheduling
+- Industries that need AI Pricing: hospitality, airlines, car_rental, events, railways, real_estate, coworking, travel_tourism
+- Industries WITHOUT AI Pricing: healthcare, education, legal_services, government, fitness_wellness
+- All industries get some form of scheduling (AI Calendar or AI Scheduling)

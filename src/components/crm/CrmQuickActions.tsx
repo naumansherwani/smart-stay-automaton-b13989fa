@@ -5,8 +5,7 @@ import type { IndustryType } from "@/lib/industryConfig";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, ArrowRight, TicketCheck, TrendingUp, Clock, Users, Sparkles, Zap } from "lucide-react";
-import { format } from "date-fns";
+import { Plus, ArrowRight, TicketCheck, TrendingUp, Clock, Users, Sparkles, Zap, Calendar, DollarSign, PenLine, Wrench } from "lucide-react";
 
 interface Props {
   industry: IndustryType;
@@ -23,11 +22,21 @@ export default function CrmQuickActions({ industry, onNavigate }: Props) {
 
   const recentTickets = tickets.filter(t => t.status === "open" || t.status === "in_progress").slice(0, 3);
   const topDeals = deals.filter(d => d.stage !== "Won" && d.stage !== "Lost").sort((a, b) => (b.value || 0) - (a.value || 0)).slice(0, 3);
-  const recentActivities = activities.slice(0, 5);
+
+  const toolIconMap: Record<string, React.ReactNode> = {
+    "ai-calendar": <Calendar className="h-4 w-4 mr-2 text-blue-500" />,
+    "ai-pricing": <DollarSign className="h-4 w-4 mr-2 text-green-500" />,
+    "manual-booking": <PenLine className="h-4 w-4 mr-2 text-orange-500" />,
+    "ai-scheduling": <Calendar className="h-4 w-4 mr-2 text-purple-500" />,
+    "resource-mgmt": <Wrench className="h-4 w-4 mr-2 text-slate-500" />,
+    "fleet-mgmt": <Wrench className="h-4 w-4 mr-2 text-blue-600" />,
+    "route-optimizer": <ArrowRight className="h-4 w-4 mr-2 text-teal-500" />,
+    "capacity-planner": <TrendingUp className="h-4 w-4 mr-2 text-amber-500" />,
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {/* Quick Actions */}
+      {/* Quick Actions + Industry Tools */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2"><Zap className="h-4 w-4 text-yellow-500" />Quick Actions</CardTitle>
@@ -42,12 +51,33 @@ export default function CrmQuickActions({ industry, onNavigate }: Props) {
           <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => onNavigate("deals")}>
             <Plus className="h-4 w-4 mr-2" />New {config.dealLabel}
           </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => onNavigate("activities")}>
-            <Plus className="h-4 w-4 mr-2" />Log Activity
-          </Button>
           <Button variant="outline" size="sm" className="w-full justify-start text-primary" onClick={() => onNavigate("ai-insights")}>
             <Sparkles className="h-4 w-4 mr-2" />AI Insights
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Industry-Specific Tools */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <span>{industryConfig.icon}</span>
+            {industryConfig.label} Tools
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {config.crmTools.map(tool => (
+            <Button
+              key={tool.id}
+              variant="outline"
+              size="sm"
+              className="w-full justify-start"
+              onClick={() => onNavigate(`tool-${tool.id}`)}
+            >
+              {toolIconMap[tool.id] || <Wrench className="h-4 w-4 mr-2" />}
+              {tool.label}
+            </Button>
+          ))}
         </CardContent>
       </Card>
 
@@ -73,33 +103,6 @@ export default function CrmQuickActions({ industry, onNavigate }: Props) {
                   <Badge variant={t.priority === "critical" ? "destructive" : t.priority === "high" ? "secondary" : "outline"} className="text-xs shrink-0">
                     {t.priority}
                   </Badge>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Top Deals */}
-      <Card>
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="h-4 w-4 text-green-500" />Top {config.dealLabelPlural}</CardTitle>
-            <Button variant="ghost" size="sm" className="text-xs h-6" onClick={() => onNavigate("deals")}>View all<ArrowRight className="h-3 w-3 ml-1" /></Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {topDeals.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">No active {config.dealLabelPlural.toLowerCase()}</p>
-          ) : (
-            <div className="space-y-2">
-              {topDeals.map(d => (
-                <div key={d.id} className="flex items-center justify-between p-2 bg-muted/50 rounded">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{d.title}</p>
-                    <p className="text-xs text-muted-foreground">{d.stage}</p>
-                  </div>
-                  <span className="text-sm font-bold text-primary shrink-0">${(d.value || 0).toLocaleString()}</span>
                 </div>
               ))}
             </div>
