@@ -140,9 +140,9 @@ export default function Pricing() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card/80 backdrop-blur-lg">
         <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo />
-            <span className="text-lg font-bold text-foreground">HostFlow AI</span>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+            <Logo size="md" />
+            <span className="text-xl font-bold text-foreground">HostFlow AI</span>
           </div>
           <div className="flex items-center gap-2">
             {user && subscription?.status === "active" && (
