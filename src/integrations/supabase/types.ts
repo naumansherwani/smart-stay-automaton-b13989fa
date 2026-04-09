@@ -140,39 +140,197 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      conversation_participants: {
         Row: {
-          avatar_url: string | null
-          company_name: string | null
+          conversation_id: string
           created_at: string
-          display_name: string | null
           id: string
-          industry: Database["public"]["Enums"]["industry_type"] | null
-          phone: string | null
-          updated_at: string
+          last_read_at: string | null
           user_id: string
         }
         Insert: {
-          avatar_url?: string | null
-          company_name?: string | null
+          conversation_id: string
           created_at?: string
-          display_name?: string | null
           id?: string
-          industry?: Database["public"]["Enums"]["industry_type"] | null
-          phone?: string | null
-          updated_at?: string
+          last_read_at?: string | null
           user_id: string
         }
         Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          last_read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message_at: string | null
+          listing_id: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          listing_id?: string | null
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          listing_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "service_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listing_inquiries: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          message: string
+          sender_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          message: string
+          sender_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          message?: string
+          sender_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_inquiries_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "service_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          bio: string | null
+          business_hours: Json | null
+          certifications: string[] | null
+          company_name: string | null
+          created_at: string
+          display_name: string | null
+          gallery_urls: string[] | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"] | null
+          phone: string | null
+          social_links: Json | null
+          updated_at: string
+          user_id: string
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
           avatar_url?: string | null
+          bio?: string | null
+          business_hours?: Json | null
+          certifications?: string[] | null
           company_name?: string | null
           created_at?: string
           display_name?: string | null
+          gallery_urls?: string[] | null
           id?: string
           industry?: Database["public"]["Enums"]["industry_type"] | null
           phone?: string | null
+          social_links?: Json | null
+          updated_at?: string
+          user_id: string
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          business_hours?: Json | null
+          certifications?: string[] | null
+          company_name?: string | null
+          created_at?: string
+          display_name?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"] | null
+          phone?: string | null
+          social_links?: Json | null
           updated_at?: string
           user_id?: string
+          verified?: boolean | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -294,6 +452,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      service_listings: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          featured_until: string | null
+          id: string
+          industry: string | null
+          is_featured: boolean | null
+          location: string | null
+          price_max: number | null
+          price_min: number | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          featured_until?: string | null
+          id?: string
+          industry?: string | null
+          is_featured?: boolean | null
+          location?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          featured_until?: string | null
+          id?: string
+          industry?: string | null
+          is_featured?: boolean | null
+          location?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       subscriptions: {
         Row: {
