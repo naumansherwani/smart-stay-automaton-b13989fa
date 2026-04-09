@@ -1,13 +1,12 @@
 # Project Memory
 
 ## Core
-CalendarAI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
-3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
-13 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government.
+HostFlow AI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
+3-day free trial, then Basic $25/Standard $55/Premium $110 monthly.
+8 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, railways.
 Auth: Email + Google + Apple. No anonymous signups. Email verification required.
-Revenue: Subscription-first, NO commission. Featured listings as paid add-on.
+Domain: hostflowai.live. No SOC2/GDPR claims — only verified security features.
 
 ## Memories
-- [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Standard/Premium
-- [Industries](mem://features/industries) — All 13 supported industry types and their use cases
-- [Marketplace & Chat](mem://features/marketplace) — Service listings, deal-based chat, featured listings, no commission model
+- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette, teal primary, blue-purple secondary
+- [Marketplace](mem://features/marketplace) — B2B marketplace feature details
