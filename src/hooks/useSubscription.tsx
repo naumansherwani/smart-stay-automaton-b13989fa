@@ -7,6 +7,7 @@ export interface Subscription {
   plan: "trial" | "basic" | "standard" | "premium";
   status: "active" | "trialing" | "past_due" | "canceled" | "expired";
   trial_ends_at: string;
+  is_lifetime?: boolean;
 }
 
 export function useSubscription() {
@@ -25,6 +26,13 @@ export function useSubscription() {
       .single();
 
     if (data) {
+      // Check lifetime access first
+      if ((data as any).is_lifetime) {
+        setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
+        setLoading(false);
+        return;
+      }
+
       const trialEnd = new Date(data.trial_ends_at);
       if (data.status === "trialing" && trialEnd < new Date()) {
         setSubscription({ ...data, status: "expired" } as Subscription);
@@ -59,9 +67,9 @@ export function useSubscription() {
     return () => clearInterval(interval);
   }, [user, checkSubscription]);
 
-  const isActive = subscription?.status === "active" || subscription?.status === "trialing";
-  const isTrialing = subscription?.status === "trialing";
-  const isExpired = subscription?.status === "expired" || subscription?.status === "canceled";
+  const isActive = subscription?.is_lifetime || subscription?.status === "active" || subscription?.status === "trialing";
+  const isTrialing = subscription?.status === "trialing" && !subscription?.is_lifetime;
+  const isExpired = !subscription?.is_lifetime && (subscription?.status === "expired" || subscription?.status === "canceled");
   const trialDaysLeft = subscription?.trial_ends_at
     ? Math.max(0, Math.ceil((new Date(subscription.trial_ends_at).getTime() - Date.now()) / 86400000))
     : 0;
