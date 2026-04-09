@@ -52,8 +52,18 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-[hsl(222,47%,11%)] flex flex-col">
-      <header className="container flex items-center justify-center h-20">
-        <Logo size="lg" showName />
+      <header className="container flex flex-col items-center justify-center pt-8 pb-2 space-y-1">
+        <p className="text-xs font-medium tracking-[0.35em] uppercase text-primary/70">Welcome to</p>
+        <h1 className="text-3xl font-extrabold leading-tight">
+          <span className="bg-gradient-to-r from-[hsl(174,62%,55%)] via-[hsl(200,80%,65%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent drop-shadow-[0_0_30px_hsl(174,62%,50%,0.3)]">
+            HostFlow AI
+          </span>
+        </h1>
+        <div className="flex items-center gap-3">
+          <span className="h-px w-10 bg-gradient-to-r from-transparent to-primary/40" />
+          <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
+          <span className="h-px w-10 bg-gradient-to-l from-transparent to-primary/40" />
+        </div>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-4 pb-12">
