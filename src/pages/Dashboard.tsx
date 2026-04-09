@@ -316,6 +316,32 @@ const Dashboard = () => {
                   )}
                 </TabsTrigger>
               </>
+            ) : isHealthcare(currentIndustry) ? (
+              <>
+                <TabsTrigger value="healthcare" className="gap-1.5 text-xs md:text-sm">
+                  <Stethoscope className="w-3.5 h-3.5" /> Healthcare
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Calendar
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> Bookings
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <Settings className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
             ) : (
               <>
                 <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
