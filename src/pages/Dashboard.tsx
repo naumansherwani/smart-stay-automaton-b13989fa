@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle, TrainFront } from "lucide-react";
-import Logo from "@/components/Logo";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
