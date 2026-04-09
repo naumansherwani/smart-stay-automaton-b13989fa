@@ -34,12 +34,24 @@ const TIERS = {
 
 const PLANS = [
   {
+    name: "Free",
+    price: 0,
+    plan: null,
+    features: [
+      "1 resource/property",
+      "10 bookings per month",
+      "Basic calendar view",
+      "1 industry",
+      "Community support",
+    ],
+  },
+  {
     name: "Basic",
     price: 25,
     plan: "basic" as const,
     features: [
       "Up to 3 resources/properties",
-      "1 industry per subscription",
+      "Unlimited bookings",
       "Basic calendar sync",
       "Double-booking prevention",
       "Email alerts",
@@ -53,13 +65,13 @@ const PLANS = [
     popular: true,
     features: [
       "Up to 15 resources/properties",
-      "1 industry per subscription",
       "Multi-platform sync",
       "AI smart pricing engine",
       "Gap-night filler",
       "Guest scoring system",
-      "Advanced analytics dashboard",
+      "Advanced analytics",
       "Competitor radar",
+      "Marketplace access",
       "Priority support",
     ],
   },
@@ -68,21 +80,19 @@ const PLANS = [
     price: 110,
     plan: "premium" as const,
     features: [
-      "Unlimited resources/properties",
-      "1 industry per subscription",
+      "Unlimited resources",
       "AI demand forecasting",
       "AI conflict auto-resolution",
-      "Revenue optimization engine",
+      "Revenue optimization",
       "White-label branding",
       "API access & integrations",
-      "Turnover profit analysis",
+      "Featured listings",
       "Multi-team collaboration",
       "Dedicated account manager",
       "Custom AI training",
     ],
   },
 ];
-
 const PAYONEER_EMAIL = "your-payoneer@email.com"; // Replace with actual Payoneer email
 
 export default function Pricing() {
