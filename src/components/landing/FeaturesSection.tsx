@@ -68,7 +68,7 @@ const FeaturesSection = () => (
             <Zap className="w-4 h-4" /> Multi-Industry
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
-            One Platform. <span className="text-gradient-primary">7 Industries.</span>
+            One Platform. <span className="text-gradient-primary">8 Industries.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Purpose-built AI for each industry — not a one-size-fits-all calendar.
