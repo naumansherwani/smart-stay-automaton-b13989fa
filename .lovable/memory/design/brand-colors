@@ -1,0 +1,9 @@
+---
+name: Brand Colors
+description: Teal-to-Deep-Blue gradient palette for CalendarAI
+type: design
+---
+Primary: #2DD4BF (teal) → HSL 174 62% 50%
+Secondary/Accent: #0F66EE (deep blue) → HSL 216 88% 49%
+Gradient: Teal top → Deep Blue bottom
+Hero gradient: Dark navy → Deep blue
