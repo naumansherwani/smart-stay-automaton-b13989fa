@@ -214,32 +214,28 @@ export default function Pricing() {
                     ))}
                   </ul>
                   <div className="space-y-2">
-                    {p.plan ? (
-                      <>
-                        <Button
-                          className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
-                          variant={p.popular ? "default" : "outline"}
-                          disabled={!!isCurrent || loadingPlan === p.plan}
-                          onClick={() => handleCardPayment(p.plan!)}
-                        >
-                          {loadingPlan === p.plan ? (
-                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
-                          ) : isCurrent ? (
-                            "Current Plan"
-                          ) : (
-                            <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
-                          )}
-                        </Button>
-                        {!isCurrent && (
-                          <Button
-                            variant="ghost"
-                            className="w-full text-muted-foreground hover:text-foreground"
-                            onClick={() => handlePayoneer(p)}
-                          >
-                            <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
-                          </Button>
-                        )}
-                      </>
+                    <Button
+                      className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
+                      variant={p.popular ? "default" : "outline"}
+                      disabled={!!isCurrent || loadingPlan === p.plan}
+                      onClick={() => handleCardPayment(p.plan)}
+                    >
+                      {loadingPlan === p.plan ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                      ) : isCurrent ? (
+                        "Current Plan"
+                      ) : (
+                        <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
+                      )}
+                    </Button>
+                    {!isCurrent && (
+                      <Button
+                        variant="ghost"
+                        className="w-full text-muted-foreground hover:text-foreground"
+                        onClick={() => handlePayoneer(p)}
+                      >
+                        <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
+                      </Button>
                     )}
                   </div>
                 </CardContent>
