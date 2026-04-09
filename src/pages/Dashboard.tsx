@@ -201,7 +201,7 @@ const Dashboard = () => {
           <TabsContent value="calendar" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3">
-                <SmartCalendarView bookings={calendarBookings} config={config} />
+                <SmartCalendarView bookings={calendarBookings} config={config} industry={currentIndustry} />
               </div>
               <div className="space-y-4">
                 <DoubleBookingGuard config={config} />
