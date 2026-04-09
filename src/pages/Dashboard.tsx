@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -144,6 +144,9 @@ const Dashboard = () => {
               <Sparkles className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline">Upgrade</span>
             </Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+              <UserCircle className="w-4 h-4" />
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
@@ -179,7 +182,7 @@ const Dashboard = () => {
         <IndustryKPIs config={config} />
 
         <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : isLogistics(currentIndustry) ? "logistics" : isEvents(currentIndustry) ? "events" : isHealthcare(currentIndustry) ? "healthcare" : "calendar"} className="space-y-6">
-          <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
+          <TabsList className="flex flex-wrap w-full lg:w-auto gap-1 h-auto p-1">
             {isAirlines(currentIndustry) ? (
               <>
                 <TabsTrigger value="flights" className="gap-1.5 text-xs md:text-sm">
