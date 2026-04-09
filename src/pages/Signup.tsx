@@ -89,7 +89,7 @@ export default function Signup() {
             <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
-          <p className="text-base font-medium text-muted-foreground italic">"Your competitors already use AI — don't get left behind."</p>
+          <p className="text-base font-medium text-muted-foreground italic">"Built for visionaries like you — your empire starts here."</p>
           <p className="text-sm text-muted-foreground">Start your 3-day free trial</p>
         </div>
 
