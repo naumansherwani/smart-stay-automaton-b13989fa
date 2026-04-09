@@ -199,11 +199,11 @@ const FlightManager = ({ config }: FlightManagerProps) => {
     };
 
     if (editingFlight) {
-      const { error } = await supabase.from("resources").update(payload).eq("id", editingFlight.id);
+      const { error } = await supabase.from("resources").update(payload as any).eq("id", editingFlight.id);
       if (error) { toast.error("Failed to update flight"); setSubmitting(false); return; }
       toast.success("Flight updated!");
     } else {
-      const { error } = await supabase.from("resources").insert(payload);
+      const { error } = await supabase.from("resources").insert(payload as any);
       if (error) { toast.error("Failed to create flight"); setSubmitting(false); return; }
       toast.success("Flight created!");
     }
