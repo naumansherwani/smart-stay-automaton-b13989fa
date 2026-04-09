@@ -30,10 +30,10 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]" onClick={() => navigate("/signup")}>
+            <Button size="lg" className="bg-gradient-primary hover:shadow-[0_0_25px_hsl(var(--primary)/0.6),0_0_50px_hsl(var(--primary)/0.3)] hover:border-primary/80 transition-all duration-300 text-lg px-8 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]" onClick={() => navigate("/signup")}>
               Start 3-Day Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]" onClick={() => navigate("/pricing")}>
+            <Button size="lg" className="bg-gradient-primary hover:shadow-[0_0_25px_hsl(var(--primary)/0.6),0_0_50px_hsl(var(--primary)/0.3)] hover:border-primary/80 transition-all duration-300 text-lg px-8 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]" onClick={() => navigate("/pricing")}>
               View Pricing
             </Button>
           </div>
