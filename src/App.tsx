@@ -21,6 +21,9 @@ import Onboarding from "./pages/Onboarding";
 import OwnerConsole from "./pages/OwnerConsole";
 import Settings from "./pages/Settings";
 import About from "./pages/About";
+import Marketplace from "./pages/Marketplace";
+import MyListings from "./pages/MyListings";
+import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
