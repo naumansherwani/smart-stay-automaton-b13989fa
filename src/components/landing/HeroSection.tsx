@@ -46,18 +46,13 @@ const HeroSection = () => {
           {/* Main headline */}
           <div className="space-y-5">
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] tracking-tight">
-              <span className="text-white">Grow Smarter.</span>
+              <span className="text-white">The Smart Calendar AI</span>
               <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)]">
-                AI Runs Your
+                That Runs Your Business
               </span>
-              {" "}
-              <span 
-                key={wordIndex}
-                className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,60%)] to-[hsl(25,95%,55%)] animate-fade-in min-w-[180px] md:min-w-[240px]"
-              >
-                {ROTATING_WORDS[wordIndex]}
-              </span>
+              <br />
+              <span className="text-white/60 text-4xl md:text-5xl lg:text-6xl">— Not Just Your Schedule.</span>
             </h1>
           </div>
 
