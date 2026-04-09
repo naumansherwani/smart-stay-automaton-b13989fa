@@ -48,5 +48,14 @@ export function useProfile() {
     setProfile(prev => prev ? { ...prev, industry } : null);
   };
 
-  return { profile, loading, updateIndustry };
+  const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string }) => {
+    if (!user) return;
+    await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("user_id", user.id);
+    setProfile(prev => prev ? { ...prev, ...updates } : null);
+  };
+
+  return { profile, loading, updateIndustry, updateProfile };
 }
