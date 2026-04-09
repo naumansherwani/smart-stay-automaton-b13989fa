@@ -39,6 +39,15 @@ const About = () => {
             </CardContent>
           </Card>
 
+          {/* Vision */}
+          <Card className="border-[hsl(270,80%,70%)]/20 bg-[hsl(270,80%,70%)]/5">
+            <CardContent className="p-8 text-center space-y-3">
+              <Eye className="w-8 h-8 text-[hsl(270,80%,70%)] mx-auto" />
+              <h2 className="text-2xl font-bold text-foreground">{t("about.visionTitle")}</h2>
+              <p className="text-muted-foreground text-lg">{t("about.vision")}</p>
+            </CardContent>
+          </Card>
+
           {/* Story */}
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-foreground">{t("about.storyTitle")}</h2>
