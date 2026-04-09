@@ -17,15 +17,15 @@ const HeroSection = () => {
             <span className="text-sm font-medium text-primary">AI-Powered Multi-Industry Scheduling</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-primary-foreground leading-tight">
             One Calendar.<br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Every Industry.</span>
           </h1>
           
-          <p className="text-2xl md:text-3xl font-semibold text-foreground/90 max-w-3xl mx-auto">
+          <p className="text-2xl md:text-3xl font-semibold text-primary-foreground/90 max-w-3xl mx-auto">
             The Smart Calendar AI That Runs Your Business — Not Just Your Schedule.
           </p>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-primary-foreground/60 max-w-2xl mx-auto">
             The only AI scheduling platform built for travel, tourism & hospitality, airlines, car rentals, healthcare, logistics, and 9 more industries.
           </p>
 
@@ -33,21 +33,21 @@ const HeroSection = () => {
             <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8" onClick={() => navigate("/signup")}>
               Start 3-Day Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 border-primary/50 text-primary hover:bg-primary/10" onClick={() => navigate("/pricing")}>
+            <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10" onClick={() => navigate("/pricing")}>
               View Pricing
             </Button>
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 pt-8">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-primary-foreground/60">
               <Shield className="w-5 h-5 text-primary" />
               <span className="text-sm">No credit card required</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-primary-foreground/60">
               <Zap className="w-5 h-5 text-accent" />
               <span className="text-sm">AI-powered automation</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-primary-foreground/60">
               <Calendar className="w-5 h-5 text-success" />
               <span className="text-sm">13 industries supported</span>
             </div>
