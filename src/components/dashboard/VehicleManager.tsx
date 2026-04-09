@@ -218,7 +218,7 @@ const VehicleManager = ({ config }: VehicleManagerProps) => {
       user_id: user.id,
       business_type: form.business_type,
       minimum_stay: Number(form.minimum_stay) || 1,
-      metadata,
+      metadata: metadata as unknown as Record<string, never>,
     };
 
     if (editing) {
