@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Brain, Shield, TrendingUp, Users, BarChart3,
   Plane, Car, Stethoscope, GraduationCap, Truck,
-  Theater, Globe, Sparkles, Zap, MessageSquare, Crown
+  Theater, Globe, Sparkles, Zap, MessageSquare, Crown, TrainFront
 } from "lucide-react";
 
 const FEATURES = [
