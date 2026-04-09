@@ -14,11 +14,13 @@ import CrmWorkTimer from "@/components/crm/CrmWorkTimer";
 import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
 import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle } from "lucide-react";
+import CrmToolPanel from "@/components/crm/CrmToolPanel";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
@@ -34,25 +36,27 @@ export default function CRM() {
   const industryConfig = getIndustryConfig(industry);
   const crmConfig = getCrmConfig(industry);
 
-  // Trial users get FULL unlimited access (same as premium) for 3 days
-  // After trial, they must pick a plan
-  const isPremiumOrTrial = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
+  // Only premium + trial users get CRM access
+  const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
 
-  if (!isActive) {
+  if (!isActive || !isPremium) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="text-center py-12">
             <Crown className="h-16 w-16 mx-auto text-yellow-500 mb-4" />
-            <h2 className="text-2xl font-bold mb-2">AI CRM — Subscription Required</h2>
+            <h2 className="text-2xl font-bold mb-2">AI CRM — Premium Only</h2>
             <p className="text-muted-foreground mb-4">
-              Your trial has expired. Choose a plan to continue using the world's most advanced AI CRM.
+              {!isActive 
+                ? "Your trial has expired. Upgrade to Premium to access the full AI CRM."
+                : "AI CRM is exclusively available for Premium subscribers. Upgrade to unlock the most advanced AI-powered CRM."
+              }
             </p>
             <p className="text-sm text-muted-foreground mb-6">
-              Basic, Standard, or Premium — pick what suits you best!
+              Premium includes: AI Calendar, AI Pricing, Full CRM, Priority Support & more!
             </p>
             <div className="space-y-2">
-              <Button className="w-full" onClick={() => navigate("/pricing")}>View Plans & Upgrade</Button>
+              <Button className="w-full" onClick={() => navigate("/pricing")}>Upgrade to Premium</Button>
               <Button variant="ghost" className="w-full" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
             </div>
           </CardContent>
@@ -60,6 +64,14 @@ export default function CRM() {
       </div>
     );
   }
+
+  // Build dynamic tabs based on industry tools
+  const toolTabs = crmConfig.crmTools.map(tool => ({
+    id: `tool-${tool.id}`,
+    label: tool.label,
+    icon: tool.icon,
+    tool,
+  }));
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,7 +87,7 @@ export default function CRM() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{industryConfig.icon}</span>
                   <h1 className="text-xl font-bold">AI CRM</h1>
-                  {isPremiumOrTrial && <Crown className="h-4 w-4 text-yellow-500" />}
+                  <Crown className="h-4 w-4 text-yellow-500" />
                   {isTrialing && (
                     <Badge variant="secondary" className="text-xs bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
                       Trial — {trialDaysLeft}d left
@@ -97,7 +109,7 @@ export default function CRM() {
               <div className="flex items-center gap-2 text-sm">
                 <AlertTriangle className="h-4 w-4 text-yellow-600 shrink-0" />
                 <span className="text-yellow-800 dark:text-yellow-200">
-                  <strong>Free Trial:</strong> {trialDaysLeft} days remaining — All features unlocked!
+                  <strong>Free Trial:</strong> {trialDaysLeft} days remaining — All Premium features unlocked!
                 </span>
               </div>
               <div className="flex items-center gap-3 shrink-0">
@@ -112,46 +124,61 @@ export default function CRM() {
       )}
 
       <div className="container mx-auto px-4 py-4 space-y-4">
-        {/* Work Timer - always visible */}
+        {/* Work Timer */}
         <CrmWorkTimer />
 
         {/* Live KPIs */}
         <CrmLiveKPIs industry={industry} />
 
-        {/* Admin Panel (only shows for admins) */}
+        {/* Admin Panel */}
         <CrmAdminPanel />
 
-        {/* Main Tabs */}
+        {/* Main Tabs - dynamic based on industry */}
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="grid grid-cols-6 w-full max-w-3xl mx-auto">
-            <TabsTrigger value="overview" className="flex items-center gap-1.5">
-              <LayoutDashboard className="h-4 w-4" /><span className="hidden sm:inline">Overview</span>
-            </TabsTrigger>
-            <TabsTrigger value="contacts" className="flex items-center gap-1.5">
-              <Users className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.contactLabelPlural}</span>
-            </TabsTrigger>
-            <TabsTrigger value="tickets" className="flex items-center gap-1.5">
-              <TicketCheck className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.ticketLabelPlural}</span>
-            </TabsTrigger>
-            <TabsTrigger value="deals" className="flex items-center gap-1.5">
-              <TrendingUp className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.dealLabelPlural}</span>
-            </TabsTrigger>
-            <TabsTrigger value="activities" className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4" /><span className="hidden sm:inline">Activities</span>
-            </TabsTrigger>
-            <TabsTrigger value="ai-insights" className="flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI</span>
-            </TabsTrigger>
-          </TabsList>
+          <ScrollArea className="w-full">
+            <TabsList className="inline-flex w-auto min-w-full">
+              <TabsTrigger value="overview" className="flex items-center gap-1.5">
+                <LayoutDashboard className="h-4 w-4" /><span className="hidden sm:inline">Overview</span>
+              </TabsTrigger>
+              <TabsTrigger value="contacts" className="flex items-center gap-1.5">
+                <Users className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.contactLabelPlural}</span>
+              </TabsTrigger>
+              <TabsTrigger value="tickets" className="flex items-center gap-1.5">
+                <TicketCheck className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.ticketLabelPlural}</span>
+              </TabsTrigger>
+              <TabsTrigger value="deals" className="flex items-center gap-1.5">
+                <TrendingUp className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.dealLabelPlural}</span>
+              </TabsTrigger>
+              <TabsTrigger value="activities" className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4" /><span className="hidden sm:inline">Activities</span>
+              </TabsTrigger>
+              <TabsTrigger value="ai-insights" className="flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI</span>
+              </TabsTrigger>
+              {/* Industry-specific tool tabs */}
+              {toolTabs.map(tt => (
+                <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
+                  <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
 
           <TabsContent value="overview">
             <CrmQuickActions industry={industry} onNavigate={setTab} />
           </TabsContent>
           <TabsContent value="contacts"><CrmContactsTab industry={industry} /></TabsContent>
-          <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={isPremiumOrTrial} /></TabsContent>
+          <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={true} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>
-          <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={isPremiumOrTrial} /></TabsContent>
+          <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={true} /></TabsContent>
+          {/* Dynamic tool panels */}
+          {toolTabs.map(tt => (
+            <TabsContent key={tt.id} value={tt.id}>
+              <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </div>
