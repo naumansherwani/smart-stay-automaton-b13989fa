@@ -1197,6 +1197,39 @@ export type Database = {
         }
         Relationships: []
       }
+      translation_updates: {
+        Row: {
+          created_at: string
+          id: string
+          language_code: string
+          last_updated_at: string
+          status: string
+          translation_data: Json | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          language_code: string
+          last_updated_at?: string
+          status?: string
+          translation_data?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          language_code?: string
+          last_updated_at?: string
+          status?: string
+          translation_data?: Json | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       user_earnings: {
         Row: {
           amount: number
