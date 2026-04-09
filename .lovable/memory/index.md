@@ -1,12 +1,13 @@
 # Project Memory
 
 ## Core
-HostFlow AI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
-3-day free trial, then Basic $25/Standard $55/Premium $110 monthly.
-8 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, railways.
+CalendarAI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
+3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
+CRM is PREMIUM-ONLY (not Basic/Standard). Trial users get full CRM access for 3 days.
+Each industry gets different CRM tools (AI Calendar, AI Pricing, etc.) based on relevance.
 Auth: Email + Google + Apple. No anonymous signups. Email verification required.
-Domain: hostflowai.live. No SOC2/GDPR claims — only verified security features.
 
 ## Memories
-- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette, teal primary, blue-purple secondary
-- [Marketplace](mem://features/marketplace) — B2B marketplace feature details
+- [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Standard/Premium
+- [Industries](mem://features/industries) — All 15 supported industry types and their use cases
+- [CRM architecture](mem://features/crm-architecture) — CRM is premium hub with industry-specific tools
