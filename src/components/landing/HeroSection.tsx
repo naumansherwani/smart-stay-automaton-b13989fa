@@ -33,7 +33,7 @@ const HeroSection = () => {
             <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8" onClick={() => navigate("/signup")}>
               Start 3-Day Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 border-primary/50 text-primary bg-primary/10 hover:bg-primary/20" onClick={() => navigate("/pricing")}>
+            <Button size="lg" className="bg-gradient-primary hover:opacity-90 text-lg px-8" onClick={() => navigate("/pricing")}>
               View Pricing
             </Button>
           </div>
@@ -44,11 +44,11 @@ const HeroSection = () => {
               <span className="text-sm">No credit card required</span>
             </div>
             <div className="flex items-center gap-2 text-primary-foreground/60">
-              <Zap className="w-5 h-5 text-accent" />
+              <Zap className="w-5 h-5 text-primary" />
               <span className="text-sm">AI-powered automation</span>
             </div>
             <div className="flex items-center gap-2 text-primary-foreground/60">
-              <Calendar className="w-5 h-5 text-success" />
+              <Calendar className="w-5 h-5 text-primary" />
               <span className="text-sm">13 industries supported</span>
             </div>
           </div>
