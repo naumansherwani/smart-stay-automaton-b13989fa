@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,11 +26,13 @@ import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
 import FlightManager from "@/components/dashboard/FlightManager";
 import VehicleManager from "@/components/dashboard/VehicleManager";
 import TimetableManager from "@/components/dashboard/TimetableManager";
+import LogisticsManager from "@/components/dashboard/LogisticsManager";
 import { supabase } from "@/integrations/supabase/client";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
 const isEducation = (industry: IndustryType) => industry === "education";
+const isLogistics = (industry: IndustryType) => industry === "logistics";
 
 const Dashboard = () => {
   const navigate = useNavigate();
