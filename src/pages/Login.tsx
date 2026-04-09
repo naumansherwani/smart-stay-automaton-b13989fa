@@ -55,11 +55,19 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <div className="flex justify-center mb-4 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="xl" showName />
+        <div className="text-center space-y-3 cursor-pointer" onClick={() => navigate("/")}>
+          <p className="text-xs font-medium tracking-[0.35em] uppercase text-primary/70">Welcome to</p>
+          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
+            <span className="bg-gradient-to-r from-[hsl(174,62%,55%)] via-[hsl(200,80%,65%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent drop-shadow-[0_0_30px_hsl(174,62%,50%,0.3)]">
+              HostFlow AI
+            </span>
+          </h1>
+          <div className="flex items-center justify-center gap-3">
+            <span className="h-px w-12 bg-gradient-to-r from-transparent to-primary/40" />
+            <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
+            <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <p className="text-sm text-muted-foreground">Sign in to your account</p>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
