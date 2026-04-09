@@ -1,14 +1,13 @@
 # Project Memory
 
 ## Core
-CalendarAI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
-3-day free trial, then Basic $25/Pro $55/Premium $110 monthly. 1 industry per plan.
+CalendarAI - multi-industry AI scheduling platform. Primary teal #0F766E, accent purple #733AED.
+3-day free trial, then Basic $25/Pro $55/Premium $110 monthly.
 13 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government.
 Auth: Email + Google + Apple. No anonymous signups. Email verification required.
-Subscriptions table: no user INSERT/UPDATE - only service role can modify.
-Payment: Credit/Debit card (Stripe) + Payoneer (international).
+Logo: Dark teal rounded square, white H = calendar left + AI circuit right.
 
 ## Memories
-- [Pricing tiers](mem://features/pricing) — Basic $25/Pro $55/Premium $110, 1 industry each
+- [Brand colors](mem://design/brand-colors) — Full palette, gradients, pricing, logo spec
+- [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Pro/Premium
 - [Industries](mem://features/industries) — All 13 supported industry types and their use cases
-- [Industry configs](mem://features/industry-configs) — Dashboard widget configs per industry
