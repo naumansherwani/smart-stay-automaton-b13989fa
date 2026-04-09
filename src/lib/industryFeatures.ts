@@ -80,8 +80,6 @@ export function getIndustryFeatures(industry: IndustryType): IndustryFeatureSet 
       return { ...base, patientFlow: true };
     case "education":
       return { ...base, classSchedule: true };
-    case "legal_services":
-      return { ...base, courtDates: true };
     case "airlines":
       return { ...base, crewScheduling: true, demandForecast: true };
     case "logistics":
