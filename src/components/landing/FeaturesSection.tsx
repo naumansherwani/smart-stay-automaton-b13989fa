@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Brain, Shield, TrendingUp, Users, BarChart3,
   Plane, Car, Stethoscope, GraduationCap, Truck,
-  Theater, Globe, Sparkles, Zap, MessageSquare, Crown
+  Theater, Globe, Sparkles, Zap, MessageSquare, Crown, TrainFront
 } from "lucide-react";
 
 const FEATURES = [
@@ -22,6 +22,7 @@ const INDUSTRIES = [
   { icon: GraduationCap, name: "Education", desc: "Class scheduling, room allocation, tutoring", color: "#8b5cf6" },
   { icon: Truck, name: "Logistics", desc: "Delivery slots, warehouse scheduling, fleet", color: "#f97316" },
   { icon: Theater, name: "Events & Entertainment", desc: "Venue booking, performer scheduling", color: "#d946ef" },
+  { icon: TrainFront, name: "Railways", desc: "Train scheduling, platform allocation, crew rotation", color: "#0284c7" },
 ];
 
 const FeaturesSection = () => (
@@ -67,7 +68,7 @@ const FeaturesSection = () => (
             <Zap className="w-4 h-4" /> Multi-Industry
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
-            One Platform. <span className="text-gradient-primary">7 Industries.</span>
+            One Platform. <span className="text-gradient-primary">8 Industries.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Purpose-built AI for each industry — not a one-size-fits-all calendar.
