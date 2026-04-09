@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/components/Logo";
-import { Brain, Globe, Shield, TrendingUp, ArrowRight, Users, Sparkles } from "lucide-react";
+import { Brain, Globe, Shield, TrendingUp, ArrowRight, Users, Sparkles, Eye } from "lucide-react";
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
 
