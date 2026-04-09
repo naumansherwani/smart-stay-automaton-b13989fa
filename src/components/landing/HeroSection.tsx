@@ -35,7 +35,10 @@ const HeroSection = () => {
           
           {/* Sub-tagline */}
           <p className="text-xl md:text-2xl font-medium text-primary-foreground/80 max-w-3xl mx-auto leading-relaxed">
-            The world's first <span className="text-primary font-bold">AI Calendar</span> that schedules, prices, and protects your business — automatically. Zero double-bookings. Maximum revenue.
+            The Smart Calendar AI That Runs Your Business — Not Just Your Schedule.
+          </p>
+          <p className="text-lg md:text-xl font-semibold text-primary max-w-2xl mx-auto">
+            Zero Double-Bookings. Maximum Revenue.
           </p>
           
           {/* Killer line */}
