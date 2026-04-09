@@ -34,18 +34,6 @@ const TIERS = {
 
 const PLANS = [
   {
-    name: "Free",
-    price: 0,
-    plan: null,
-    features: [
-      "1 resource/property",
-      "10 bookings per month",
-      "Basic calendar view",
-      "1 industry",
-      "Community support",
-    ],
-  },
-  {
     name: "Basic",
     price: 25,
     plan: "basic" as const,

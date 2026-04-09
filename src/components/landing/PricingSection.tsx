@@ -6,14 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 const PLANS = [
   {
-    name: "Free",
-    price: 0,
-    desc: "Try it out — forever free",
-    features: ["1 resource", "10 bookings/month", "Basic calendar", "1 industry", "Community support"],
-    cta: "Get Started Free",
-    style: "border-border/50",
-  },
-  {
     name: "Basic",
     price: 25,
     desc: "For small businesses",
