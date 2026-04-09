@@ -18,12 +18,6 @@ const INDUSTRIES = [
   { value: "education", label: "🎓 Education & Training" },
   { value: "logistics", label: "📦 Logistics & Shipping" },
   { value: "events_entertainment", label: "🎭 Events & Entertainment" },
-  { value: "fitness_wellness", label: "💪 Fitness & Wellness" },
-  { value: "legal_services", label: "⚖️ Legal Services" },
-  { value: "real_estate", label: "🏠 Real Estate" },
-  { value: "coworking", label: "🏢 Co-working Spaces" },
-  { value: "marine_maritime", label: "🚢 Marine & Maritime" },
-  { value: "government", label: "🏛️ Government" },
 ];
 
 export default function Signup() {

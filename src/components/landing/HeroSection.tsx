@@ -43,7 +43,7 @@ const HeroSection = () => {
           
           {/* Killer line */}
           <p className="text-base md:text-lg text-primary-foreground/50 max-w-2xl mx-auto italic">
-            "One calendar to rule them all — from hotels to hospitals, airlines to law firms."
+            "One calendar to rule them all — from hotels to hospitals, airlines to logistics."
           </p>
 
           {/* CTA Buttons */}
@@ -80,7 +80,7 @@ const HeroSection = () => {
             </div>
             <div className="flex items-center gap-2 text-primary-foreground/60">
               <Globe className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">13 industries supported</span>
+              <span className="text-sm font-medium">7 industries supported</span>
             </div>
           </div>
 
@@ -90,8 +90,7 @@ const HeroSection = () => {
             <div className="flex flex-wrap justify-center gap-3">
               {[
                 "🌍 Hospitality", "✈️ Airlines", "🚗 Car Rental", "🏥 Healthcare",
-                "🎓 Education", "📦 Logistics", "🎫 Events", "💪 Fitness",
-                "⚖️ Legal", "🏠 Real Estate", "🏢 Coworking", "⚓ Maritime", "🏛️ Government"
+                "🎓 Education", "📦 Logistics", "🎫 Events"
               ].map(ind => (
                 <span key={ind} className="px-3 py-1.5 rounded-full bg-primary-foreground/5 border border-primary-foreground/10 text-xs text-primary-foreground/50 font-medium backdrop-blur-sm">
                   {ind}
