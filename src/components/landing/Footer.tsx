@@ -8,9 +8,9 @@ const Footer = () => (
           <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
             <Calendar className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="text-lg font-bold text-background">CalendarAI</span>
+          <span className="text-lg font-bold text-background">HostFlow AI</span>
         </div>
-        <p className="text-sm text-muted-foreground">© 2026 CalendarAI. All rights reserved.</p>
+        <p className="text-sm text-muted-foreground">© 2026 HostFlow AI. All rights reserved.</p>
       </div>
     </div>
   </footer>

@@ -59,7 +59,7 @@ export default function Login() {
             <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
               <Calendar className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-foreground">CalendarAI</span>
+            <span className="text-2xl font-bold text-foreground">HostFlow AI</span>
           </div>
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
