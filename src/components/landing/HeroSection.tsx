@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Brain, Shield, Zap, TrendingUp, Globe, Play, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const ROTATING_WORDS = ["Hotels", "Airlines", "Clinics", "Schools", "Fleets", "Events", "Warehouses"];
+const ROTATING_WORDS = ["Hotels", "Airlines", "Clinics", "Schools", "Fleets", "Events", "Warehouses", "Railways"];
 
 const HeroSection = () => {
   const navigate = useNavigate();
