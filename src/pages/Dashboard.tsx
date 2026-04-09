@@ -168,38 +168,78 @@ const Dashboard = () => {
 
         <IndustryKPIs config={config} />
 
-        <Tabs defaultValue="calendar" className="space-y-6">
+        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : "calendar"} className="space-y-6">
           <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
-            <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
-              <Calendar className="w-3.5 h-3.5" /> Calendar
-            </TabsTrigger>
-            <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
-              <ClipboardList className="w-3.5 h-3.5" /> {config.bookingLabelPlural}
-            </TabsTrigger>
-            <TabsTrigger value="resources" className="gap-1.5 text-xs md:text-sm">
-              <Users className="w-3.5 h-3.5" /> {config.resourceLabelPlural}
-            </TabsTrigger>
-            <TabsTrigger value="ai-schedule" className="gap-1.5 text-xs md:text-sm">
-              <Brain className="w-3.5 h-3.5" /> AI Schedule
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-              <Settings className="w-3.5 h-3.5" /> Settings
-            </TabsTrigger>
-            <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
-              <Sparkles className="w-3.5 h-3.5" /> AI Tools
-            </TabsTrigger>
-            <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
-              <DollarSign className="w-3.5 h-3.5" /> Pricing
-            </TabsTrigger>
-            <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
-              <Bell className="w-3.5 h-3.5" /> Alerts
-              {unreadAlerts > 0 && (
-                <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
-                  {unreadAlerts}
-                </Badge>
-              )}
-            </TabsTrigger>
+            {isAirlines(currentIndustry) ? (
+              <>
+                <TabsTrigger value="flights" className="gap-1.5 text-xs md:text-sm">
+                  <Plane className="w-3.5 h-3.5" /> Flights
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Schedule
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> Bookings
+                </TabsTrigger>
+                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                  <DollarSign className="w-3.5 h-3.5" /> Pricing
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <Settings className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
+            ) : (
+              <>
+                <TabsTrigger value="calendar" className="gap-1.5 text-xs md:text-sm">
+                  <Calendar className="w-3.5 h-3.5" /> Calendar
+                </TabsTrigger>
+                <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
+                  <ClipboardList className="w-3.5 h-3.5" /> {config.bookingLabelPlural}
+                </TabsTrigger>
+                <TabsTrigger value="resources" className="gap-1.5 text-xs md:text-sm">
+                  <Users className="w-3.5 h-3.5" /> {config.resourceLabelPlural}
+                </TabsTrigger>
+                <TabsTrigger value="ai-schedule" className="gap-1.5 text-xs md:text-sm">
+                  <Brain className="w-3.5 h-3.5" /> AI Schedule
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
+                  <Settings className="w-3.5 h-3.5" /> Settings
+                </TabsTrigger>
+                <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
+                  <Sparkles className="w-3.5 h-3.5" /> AI Tools
+                </TabsTrigger>
+                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                  <DollarSign className="w-3.5 h-3.5" /> Pricing
+                </TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
+                  <Bell className="w-3.5 h-3.5" /> Alerts
+                  {unreadAlerts > 0 && (
+                    <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[9px]">
+                      {unreadAlerts}
+                    </Badge>
+                  )}
+                </TabsTrigger>
+              </>
+            )}
           </TabsList>
+
+          {/* Airlines Flights Tab */}
+          {isAirlines(currentIndustry) && (
+            <TabsContent value="flights">
+              <FlightManager config={config} />
+            </TabsContent>
+          )}
 
           <TabsContent value="calendar" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -216,18 +256,37 @@ const Dashboard = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                      <p className="text-xs text-muted-foreground">Add {config.resourceLabelPlural.toLowerCase()} in the Resources tab</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
-                      <p className="text-xs text-muted-foreground">Configure schedule in Settings</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
-                      <p className="text-xs text-muted-foreground">Use AI Schedule to auto-generate your calendar</p>
-                    </div>
+                    {isAirlines(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add flights in the Flights tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Book passenger seats with AI pricing</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">Monitor load factors & revenue in Pricing</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add {config.resourceLabelPlural.toLowerCase()} in the Resources tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Configure schedule in Settings</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">Use AI Schedule to auto-generate your calendar</p>
+                        </div>
+                      </>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -238,13 +297,17 @@ const Dashboard = () => {
             <BookingManager config={config} />
           </TabsContent>
 
-          <TabsContent value="resources">
-            <ResourceManager config={config} industry={currentIndustry} />
-          </TabsContent>
+          {!isAirlines(currentIndustry) && (
+            <TabsContent value="resources">
+              <ResourceManager config={config} industry={currentIndustry} />
+            </TabsContent>
+          )}
 
-          <TabsContent value="ai-schedule">
-            <AIAutoSchedule config={config} />
-          </TabsContent>
+          {!isAirlines(currentIndustry) && (
+            <TabsContent value="ai-schedule">
+              <AIAutoSchedule config={config} />
+            </TabsContent>
+          )}
 
           <TabsContent value="settings">
             <ScheduleSettingsPanel config={config} />
