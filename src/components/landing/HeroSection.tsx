@@ -115,7 +115,7 @@ const HeroSection = () => {
 
           {/* Industry pills */}
           <div className="pt-8">
-            <p className="text-[11px] text-white/25 uppercase tracking-[0.2em] mb-5 font-semibold">Powering 7 industries worldwide</p>
+            <p className="text-[11px] text-white/25 uppercase tracking-[0.2em] mb-5 font-semibold">Powering 8 industries worldwide</p>
             <div className="flex flex-wrap justify-center gap-2.5">
               {[
                 { emoji: "🌍", name: "Hospitality", color: "hsl(174,62%,50%)" },
@@ -125,6 +125,7 @@ const HeroSection = () => {
                 { emoji: "🎓", name: "Education", color: "hsl(270,80%,65%)" },
                 { emoji: "📦", name: "Logistics", color: "hsl(25,95%,55%)" },
                 { emoji: "🎭", name: "Events", color: "hsl(300,80%,65%)" },
+                { emoji: "🚆", name: "Railways", color: "hsl(200,70%,50%)" },
               ].map(ind => (
                 <span
                   key={ind.name}
