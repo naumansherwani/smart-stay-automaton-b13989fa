@@ -609,6 +609,42 @@ export type Database = {
           },
         ]
       }
+      crm_work_sessions: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          notes: string | null
+          session_type: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          notes?: string | null
+          session_type?: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          notes?: string | null
+          session_type?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       listing_inquiries: {
         Row: {
           created_at: string
