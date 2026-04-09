@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, AlertTriangle, CreditCard, Globe, Loader2 } from "lucide-react";
 import Logo from "@/components/Logo";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -136,27 +138,9 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/80 backdrop-blur-lg">
-        <div className="container flex items-center justify-between h-16">
-          <div className="cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="lg" showName />
-          </div>
-          <div className="flex items-center gap-2">
-            {user && subscription?.status === "active" && (
-              <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                Manage Subscription
-              </Button>
-            )}
-            {user && (
-              <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
-                Back to Dashboard
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
-      <main className="container py-16 space-y-12">
+      <main className="container pt-24 pb-16 space-y-12">
         {isExpired && (
           <div className="max-w-2xl mx-auto bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
@@ -273,6 +257,7 @@ export default function Pricing() {
           </div>
         </DialogContent>
       </Dialog>
+      <Footer />
     </div>
   );
 }
