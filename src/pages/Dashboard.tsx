@@ -141,6 +141,9 @@ const Dashboard = () => {
             <Button variant="outline" size="sm" className="hidden md:flex gap-1.5 font-semibold" onClick={() => navigate("/analytics")}>
               <BarChart3 className="w-4 h-4" /> Analytics
             </Button>
+            <Button variant="outline" size="sm" className="hidden md:flex gap-1.5 font-semibold" onClick={() => navigate("/earnings")}>
+              <DollarSign className="w-4 h-4" /> Earnings
+            </Button>
             <Button size="sm" className="bg-gradient-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] font-semibold" onClick={() => navigate("/pricing")}>
               <Sparkles className="w-4 h-4 md:mr-1.5" />
               <span className="hidden md:inline">Upgrade</span>

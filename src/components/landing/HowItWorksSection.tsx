@@ -37,7 +37,7 @@ const HowItWorksSection = () => (
         <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
           Up & Running in <span className="text-gradient-primary">3 Minutes</span>
         </h2>
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto">No setup fees. No tech skills needed. Just results.</p>
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto">No tech skills needed. Start your free trial and see results in minutes.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
