@@ -257,6 +257,7 @@ export default function Pricing() {
           </div>
         </DialogContent>
       </Dialog>
+      <Footer />
     </div>
   );
 }
