@@ -509,6 +509,21 @@ const Dashboard = () => {
                           <p className="text-xs text-muted-foreground">Track bookings, revenue & capacity in real-time</p>
                         </div>
                       </>
+                    ) : isHealthcare(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Add doctors & set working hours in Healthcare tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">Book appointments — AI prevents double-booking</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">AI predicts no-shows & fills schedule gaps</p>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <div className="flex items-start gap-2">
@@ -535,13 +550,13 @@ const Dashboard = () => {
             <BookingManager config={config} />
           </TabsContent>
 
-          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && !isEvents(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && !isEvents(currentIndustry) && !isHealthcare(currentIndustry) && (
             <TabsContent value="resources">
               <ResourceManager config={config} industry={currentIndustry} />
             </TabsContent>
           )}
 
-          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && !isEvents(currentIndustry) && (
+          {!isAirlines(currentIndustry) && !isCarRental(currentIndustry) && !isEducation(currentIndustry) && !isLogistics(currentIndustry) && !isEvents(currentIndustry) && !isHealthcare(currentIndustry) && (
             <TabsContent value="ai-schedule">
               <AIAutoSchedule config={config} />
             </TabsContent>
