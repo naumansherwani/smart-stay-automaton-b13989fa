@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, AlertTriangle, CreditCard, Globe, Loader2 } from "lucide-react";
 import Logo from "@/components/Logo";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
