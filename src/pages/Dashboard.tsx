@@ -377,7 +377,13 @@ const Dashboard = () => {
             </TabsContent>
           )}
 
-          <TabsContent value="calendar" className="space-y-6">
+          {/* Events Tab */}
+          {isEvents(currentIndustry) && (
+            <TabsContent value="events">
+              <EventsManager config={config} />
+            </TabsContent>
+          )}
+
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <div className="lg:col-span-3">
                 <SmartCalendarView bookings={calendarBookings} config={config} industry={currentIndustry} />
