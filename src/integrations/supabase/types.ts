@@ -1217,7 +1217,42 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          company_name: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string | null
+          industry: Database["public"]["Enums"]["industry_type"] | null
+          user_id: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          industry?: Database["public"]["Enums"]["industry_type"] | null
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          industry?: Database["public"]["Enums"]["industry_type"] | null
+          user_id?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_lifetime_access: { Args: { _user_id: string }; Returns: boolean }
