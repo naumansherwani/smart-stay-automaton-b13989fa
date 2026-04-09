@@ -34,18 +34,6 @@ const TIERS = {
 
 const PLANS = [
   {
-    name: "Free",
-    price: 0,
-    plan: null,
-    features: [
-      "1 resource/property",
-      "10 bookings per month",
-      "Basic calendar view",
-      "1 industry",
-      "Community support",
-    ],
-  },
-  {
     name: "Basic",
     price: 25,
     plan: "basic" as const,
@@ -192,7 +180,7 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {PLANS.map((p) => {
             const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
             return (
@@ -226,38 +214,27 @@ export default function Pricing() {
                     ))}
                   </ul>
                   <div className="space-y-2">
-                    {p.plan ? (
-                      <>
-                        <Button
-                          className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
-                          variant={p.popular ? "default" : "outline"}
-                          disabled={!!isCurrent || loadingPlan === p.plan}
-                          onClick={() => handleCardPayment(p.plan!)}
-                        >
-                          {loadingPlan === p.plan ? (
-                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
-                          ) : isCurrent ? (
-                            "Current Plan"
-                          ) : (
-                            <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
-                          )}
-                        </Button>
-                        {!isCurrent && (
-                          <Button
-                            variant="ghost"
-                            className="w-full text-muted-foreground hover:text-foreground"
-                            onClick={() => handlePayoneer(p)}
-                          >
-                            <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
-                          </Button>
-                        )}
-                      </>
-                    ) : (
+                    <Button
+                      className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
+                      variant={p.popular ? "default" : "outline"}
+                      disabled={!!isCurrent || loadingPlan === p.plan}
+                      onClick={() => handleCardPayment(p.plan)}
+                    >
+                      {loadingPlan === p.plan ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
+                      ) : isCurrent ? (
+                        "Current Plan"
+                      ) : (
+                        <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
+                      )}
+                    </Button>
+                    {!isCurrent && (
                       <Button
-                        className="w-full bg-primary/10 text-primary hover:bg-primary/20"
-                        onClick={() => navigate("/signup")}
+                        variant="ghost"
+                        className="w-full text-muted-foreground hover:text-foreground"
+                        onClick={() => handlePayoneer(p)}
                       >
-                        Get Started Free
+                        <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
                       </Button>
                     )}
                   </div>

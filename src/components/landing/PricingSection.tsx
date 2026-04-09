@@ -6,14 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 const PLANS = [
   {
-    name: "Free",
-    price: 0,
-    desc: "Try it out — forever free",
-    features: ["1 resource", "10 bookings/month", "Basic calendar", "1 industry", "Community support"],
-    cta: "Get Started Free",
-    style: "border-border/50",
-  },
-  {
     name: "Basic",
     price: 25,
     desc: "For small businesses",
@@ -60,7 +52,7 @@ const PricingSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
               {p.popular && (
@@ -95,12 +87,10 @@ const PricingSection = () => {
                   className={`w-full font-semibold ${
                     p.popular
                       ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      : p.price === 0
-                      ? "bg-primary/10 text-primary hover:bg-primary/20"
                       : ""
                   }`}
-                  variant={p.popular || p.price === 0 ? "default" : "outline"}
-                  onClick={() => navigate(p.price === 0 ? "/signup" : "/pricing")}
+                  variant={p.popular ? "default" : "outline"}
+                  onClick={() => navigate("/pricing")}
                 >
                   {p.cta}
                 </Button>
