@@ -95,7 +95,7 @@ const Dashboard = () => {
   };
 
   // Build visible tabs based on industry
-  const tabCount = hasPricing ? 8 : 7;
+  const tabCount = 8;
 
   return (
     <div className="min-h-screen bg-background">
@@ -185,11 +185,9 @@ const Dashboard = () => {
             <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
               <Sparkles className="w-3.5 h-3.5" /> AI Tools
             </TabsTrigger>
-            {hasPricing && (
-              <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
-                <DollarSign className="w-3.5 h-3.5" /> Auto Pricing
-              </TabsTrigger>
-            )}
+            <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+              <DollarSign className="w-3.5 h-3.5" /> Pricing
+            </TabsTrigger>
             <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
               <Bell className="w-3.5 h-3.5" /> Alerts
               {unreadAlerts > 0 && (
@@ -259,11 +257,9 @@ const Dashboard = () => {
             <IndustryWidgets config={config} features={features} />
           </TabsContent>
 
-          {hasPricing && (
-            <TabsContent value="pricing">
-              <AutoPricingPanel config={config} />
-            </TabsContent>
-          )}
+          <TabsContent value="pricing">
+            <AutoPricingPanel config={config} industry={currentIndustry} />
+          </TabsContent>
 
           <TabsContent value="alerts">
             <AlertsPanel alerts={alerts.map(a => ({ ...a, timestamp: new Date(a.created_at) }))} onMarkRead={markAlertRead} />
