@@ -17,11 +17,12 @@ interface ValidationRequest {
 interface ValidationResult {
   allowed: boolean;
   reason?: string;
-  conflict_type?: "overlap" | "capacity" | "buffer" | "minimum_stay";
+  conflict_type?: "overlap" | "capacity" | "buffer" | "minimum_stay" | "maintenance";
   auto_reassigned?: boolean;
   reassigned_resource_id?: string;
   reassigned_resource_name?: string;
   conflicting_bookings?: { guest_name: string; check_in: string; check_out: string }[];
+  suggested_slot?: { start: string; end: string };
 }
 
 serve(async (req) => {
@@ -32,9 +33,7 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ allowed: false, reason: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return jsonResponse({ allowed: false, reason: "Unauthorized" }, 401);
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -45,9 +44,7 @@ serve(async (req) => {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      return new Response(JSON.stringify({ allowed: false, reason: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return jsonResponse({ allowed: false, reason: "Unauthorized" }, 401);
     }
 
     const body: ValidationRequest = await req.json();
@@ -66,8 +63,29 @@ serve(async (req) => {
     }
 
     const isTour = (business_type || resource.business_type) === "tour";
+    const isCarRental = resource.industry === "car_rental";
+    const reqStart = new Date(check_in).getTime();
+    const reqEnd = new Date(check_out).getTime();
 
-    // 2. Check for overlapping bookings on the requested resource
+    // 2. Check maintenance blocks (car rental)
+    if (isCarRental && resource.metadata) {
+      const meta = resource.metadata as Record<string, unknown>;
+      const maintenanceBlocks = (meta.maintenance_blocks as any[]) || [];
+      const maintenanceConflict = maintenanceBlocks.find((mb: any) => {
+        const mbStart = new Date(mb.start).getTime();
+        const mbEnd = new Date(mb.end).getTime();
+        return reqStart < mbEnd && reqEnd > mbStart;
+      });
+      if (maintenanceConflict) {
+        return jsonResponse({
+          allowed: false,
+          reason: `Vehicle is blocked for maintenance (${maintenanceConflict.reason || "Scheduled"}) during the requested period.`,
+          conflict_type: "maintenance",
+        });
+      }
+    }
+
+    // 3. Check for overlapping bookings on the requested resource
     const { data: overlaps } = await supabase
       .from("bookings")
       .select("id, guest_name, check_in, check_out, resource_id, metadata")
@@ -83,9 +101,9 @@ serve(async (req) => {
       check_out: b.check_out,
     }));
 
-    // 3. For non-tour (1:1 resource): any overlap = conflict
+    // 4. For non-tour (1:1 resource like hotel room or car): any overlap = conflict
     if (!isTour && overlaps && overlaps.length > 0) {
-      // 4. Try auto-reassignment: find another available resource of the same type
+      // Try auto-reassignment: find another available resource of same type
       const { data: altResources } = await supabase
         .from("resources")
         .select("*")
@@ -101,6 +119,18 @@ serve(async (req) => {
       const candidates = sameTypeResources.length > 0 ? sameTypeResources : (altResources || []);
 
       for (const alt of candidates) {
+        // Check maintenance blocks on alternative
+        if (isCarRental && alt.metadata) {
+          const altMeta = alt.metadata as Record<string, unknown>;
+          const altMaintBlocks = (altMeta.maintenance_blocks as any[]) || [];
+          const altMaintConflict = altMaintBlocks.some((mb: any) => {
+            const mbStart = new Date(mb.start).getTime();
+            const mbEnd = new Date(mb.end).getTime();
+            return reqStart < mbEnd && reqEnd > mbStart;
+          });
+          if (altMaintConflict) continue;
+        }
+
         const { data: altOverlaps } = await supabase
           .from("bookings")
           .select("id")
@@ -119,14 +149,12 @@ serve(async (req) => {
             .eq("resource_id", alt.id)
             .eq("user_id", user.id)
             .neq("status", "cancelled")
-            .gte("check_out", new Date(new Date(check_in).getTime() - bufferMs).toISOString())
-            .lte("check_in", new Date(new Date(check_out).getTime() + bufferMs).toISOString());
+            .gte("check_out", new Date(reqStart - bufferMs).toISOString())
+            .lte("check_in", new Date(reqEnd + bufferMs).toISOString());
 
           const hasBufferConflict = (nearbyBookings || []).some(nb => {
             const nbEnd = new Date(nb.check_out).getTime();
             const nbStart = new Date(nb.check_in).getTime();
-            const reqStart = new Date(check_in).getTime();
-            const reqEnd = new Date(check_out).getTime();
             const gapAfter = reqStart - nbEnd;
             const gapBefore = nbStart - reqEnd;
             return (gapAfter >= 0 && gapAfter < bufferMs) || (gapBefore >= 0 && gapBefore < bufferMs);
@@ -144,12 +172,15 @@ serve(async (req) => {
         }
       }
 
-      // No alternative found
+      // Find next available slot suggestion
+      const suggestedSlot = await findNextAvailableSlot(supabase, resource_id, user.id, reqStart, reqEnd - reqStart, resource.turnaround_minutes || 0);
+
       return jsonResponse({
         allowed: false,
         reason: "Selected time or resource is no longer available. No alternative resources could be found.",
         conflict_type: "overlap",
         conflicting_bookings: conflictingBookings,
+        suggested_slot: suggestedSlot,
       });
     }
 
@@ -180,14 +211,12 @@ serve(async (req) => {
         .eq("resource_id", resource_id)
         .eq("user_id", user.id)
         .neq("status", "cancelled")
-        .gte("check_out", new Date(new Date(check_in).getTime() - bufferMs).toISOString())
-        .lte("check_in", new Date(new Date(check_out).getTime() + bufferMs).toISOString());
+        .gte("check_out", new Date(reqStart - bufferMs).toISOString())
+        .lte("check_in", new Date(reqEnd + bufferMs).toISOString());
 
       const bufferConflict = (nearbyBookings || []).find(nb => {
         const nbEnd = new Date(nb.check_out).getTime();
         const nbStart = new Date(nb.check_in).getTime();
-        const reqStart = new Date(check_in).getTime();
-        const reqEnd = new Date(check_out).getTime();
         const gapAfter = reqStart - nbEnd;
         const gapBefore = nbStart - reqEnd;
         return (gapAfter >= 0 && gapAfter < bufferMs) || (gapBefore >= 0 && gapBefore < bufferMs);
@@ -213,8 +242,59 @@ serve(async (req) => {
   }
 });
 
-function jsonResponse(data: ValidationResult) {
+// Find the next available time slot for a resource
+async function findNextAvailableSlot(
+  supabase: any,
+  resourceId: string,
+  userId: string,
+  fromTime: number,
+  durationMs: number,
+  bufferMinutes: number,
+): Promise<{ start: string; end: string } | undefined> {
+  const bufferMs = bufferMinutes * 60 * 1000;
+  const maxSearch = 7 * 24 * 60 * 60 * 1000; // Search up to 7 days ahead
+
+  const { data: futureBookings } = await supabase
+    .from("bookings")
+    .select("check_in, check_out")
+    .eq("resource_id", resourceId)
+    .eq("user_id", userId)
+    .neq("status", "cancelled")
+    .gte("check_out", new Date(fromTime).toISOString())
+    .order("check_in", { ascending: true })
+    .limit(20);
+
+  if (!futureBookings || futureBookings.length === 0) {
+    return { start: new Date(fromTime).toISOString(), end: new Date(fromTime + durationMs).toISOString() };
+  }
+
+  // Try gaps between bookings
+  let searchStart = fromTime;
+  for (const booking of futureBookings) {
+    const bStart = new Date(booking.check_in).getTime();
+    const bEnd = new Date(booking.check_out).getTime();
+    const gapStart = searchStart + bufferMs;
+    const gapEnd = bStart - bufferMs;
+
+    if (gapEnd - gapStart >= durationMs) {
+      return { start: new Date(gapStart).toISOString(), end: new Date(gapStart + durationMs).toISOString() };
+    }
+    searchStart = Math.max(searchStart, bEnd);
+  }
+
+  // Try after last booking
+  const lastEnd = new Date(futureBookings[futureBookings.length - 1].check_out).getTime();
+  const afterLast = lastEnd + bufferMs;
+  if (afterLast - fromTime < maxSearch) {
+    return { start: new Date(afterLast).toISOString(), end: new Date(afterLast + durationMs).toISOString() };
+  }
+
+  return undefined;
+}
+
+function jsonResponse(data: ValidationResult, status = 200) {
   return new Response(JSON.stringify(data), {
+    status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }
