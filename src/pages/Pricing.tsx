@@ -266,11 +266,6 @@ export default function Pricing() {
             );
           })}
         </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
       </main>
 
       <Dialog open={showPayoneer} onOpenChange={setShowPayoneer}>
