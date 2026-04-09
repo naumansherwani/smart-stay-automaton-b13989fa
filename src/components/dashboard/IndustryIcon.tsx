@@ -1,6 +1,6 @@
 import {
   Globe, Plane, Car, Hospital, GraduationCap, Package,
-  Theater, Dumbbell, Scale, Building, Landmark, Ship, Building2
+  Theater
 } from "lucide-react";
 import type { IndustryType } from "@/lib/industryConfig";
 
@@ -12,12 +12,6 @@ const ICON_MAP: Record<IndustryType, React.ElementType> = {
   education: GraduationCap,
   logistics: Package,
   events_entertainment: Theater,
-  fitness_wellness: Dumbbell,
-  legal_services: Scale,
-  real_estate: Building,
-  coworking: Building2,
-  marine_maritime: Ship,
-  government: Landmark,
 };
 
 const COLOR_MAP: Record<IndustryType, string> = {
@@ -28,12 +22,6 @@ const COLOR_MAP: Record<IndustryType, string> = {
   education: "#8b5cf6",
   logistics: "#f97316",
   events_entertainment: "#d946ef",
-  fitness_wellness: "#22c55e",
-  legal_services: "#eab308",
-  real_estate: "#f97316",
-  coworking: "#06b6d4",
-  marine_maritime: "#3b82f6",
-  government: "#6366f1",
 };
 
 interface IndustryIconProps {

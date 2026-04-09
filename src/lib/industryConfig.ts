@@ -1,7 +1,6 @@
 export type IndustryType =
   | "hospitality" | "airlines" | "car_rental" | "healthcare" | "education"
-  | "logistics" | "events_entertainment" | "fitness_wellness" | "legal_services"
-  | "real_estate" | "coworking" | "marine_maritime" | "government";
+  | "logistics" | "events_entertainment";
 
 export interface IndustryConfig {
   id: IndustryType;
@@ -156,120 +155,6 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Events/Month", key: "eventsMonth", format: "number" },
     ],
     color: "hsl(310, 60%, 50%)",
-  },
-  fitness_wellness: {
-    id: "fitness_wellness", label: "Fitness & Wellness", icon: "💪",
-    resourceLabel: "Studio", resourceLabelPlural: "Studios",
-    bookingLabel: "Session", bookingLabelPlural: "Sessions",
-    clientLabel: "Member", clientLabelPlural: "Members",
-    platforms: [
-      { value: "direct", label: "Direct" }, { value: "mindbody", label: "Mindbody" },
-      { value: "classpass", label: "ClassPass" },
-    ],
-    statuses: ["scheduled", "checked-in", "in-progress", "completed", "no-show", "cancelled"],
-    widgets: ["class-schedule", "trainer-booking", "member-checkins", "equipment-rotation", "capacity-monitor", "retention-tracker"],
-    kpis: [
-      { label: "Class Fill Rate", key: "fillRate", format: "percent" },
-      { label: "Member Retention", key: "retention", format: "percent" },
-      { label: "Rev/Session", key: "revSession", format: "currency" },
-      { label: "Sessions/Day", key: "sessionsDay", format: "number" },
-    ],
-    color: "hsl(142, 60%, 45%)",
-  },
-  legal_services: {
-    id: "legal_services", label: "Legal Services", icon: "⚖️",
-    resourceLabel: "Office", resourceLabelPlural: "Offices",
-    bookingLabel: "Appointment", bookingLabelPlural: "Appointments",
-    clientLabel: "Client", clientLabelPlural: "Clients",
-    platforms: [
-      { value: "direct", label: "Direct" }, { value: "clio", label: "Clio" },
-      { value: "lawmatics", label: "Lawmatics" },
-    ],
-    statuses: ["scheduled", "in-progress", "completed", "rescheduled", "cancelled"],
-    widgets: ["court-dates", "client-meetings", "case-deadlines", "billing-hours", "conflict-checker", "document-tracker"],
-    kpis: [
-      { label: "Billable Hours", key: "billableHours", format: "number" },
-      { label: "Utilization Rate", key: "utilization", format: "percent" },
-      { label: "Avg Hourly Rate", key: "hourlyRate", format: "currency" },
-      { label: "Cases Active", key: "activeCases", format: "number" },
-    ],
-    color: "hsl(45, 70%, 45%)",
-  },
-  real_estate: {
-    id: "real_estate", label: "Real Estate", icon: "🏠",
-    resourceLabel: "Listing", resourceLabelPlural: "Listings",
-    bookingLabel: "Showing", bookingLabelPlural: "Showings",
-    clientLabel: "Lead", clientLabelPlural: "Leads",
-    platforms: [
-      { value: "direct", label: "Direct" }, { value: "zillow", label: "Zillow" },
-      { value: "realtor", label: "Realtor.com" }, { value: "mls", label: "MLS" },
-    ],
-    statuses: ["scheduled", "completed", "interested", "offer-made", "cancelled"],
-    widgets: ["showing-calendar", "open-house-scheduler", "agent-calendars", "lead-tracker", "market-analysis", "follow-up-reminders"],
-    kpis: [
-      { label: "Showings/Week", key: "showingsWeek", format: "number" },
-      { label: "Conversion Rate", key: "conversion", format: "percent" },
-      { label: "Avg Days on Market", key: "daysOnMarket", format: "number" },
-      { label: "Active Listings", key: "activeListings", format: "number" },
-    ],
-    color: "hsl(15, 65%, 50%)",
-  },
-  coworking: {
-    id: "coworking", label: "Co-working Spaces", icon: "🏢",
-    resourceLabel: "Space", resourceLabelPlural: "Spaces",
-    bookingLabel: "Booking", bookingLabelPlural: "Bookings",
-    clientLabel: "Member", clientLabelPlural: "Members",
-    platforms: [
-      { value: "direct", label: "Direct" }, { value: "deskhub", label: "DeskHub" },
-      { value: "liquidspace", label: "LiquidSpace" },
-    ],
-    statuses: ["reserved", "checked-in", "completed", "no-show", "cancelled"],
-    widgets: ["desk-map", "room-availability", "member-checkins", "meeting-rooms", "usage-analytics", "pricing-tiers"],
-    kpis: [
-      { label: "Desk Utilization", key: "utilization", format: "percent" },
-      { label: "Rev/Desk/Day", key: "revDesk", format: "currency" },
-      { label: "Member Retention", key: "retention", format: "percent" },
-      { label: "Avg Occupancy", key: "occupancy", format: "percent" },
-    ],
-    color: "hsl(190, 60%, 45%)",
-  },
-  marine_maritime: {
-    id: "marine_maritime", label: "Marine & Maritime", icon: "🚢",
-    resourceLabel: "Berth", resourceLabelPlural: "Berths",
-    bookingLabel: "Docking", bookingLabelPlural: "Dockings",
-    clientLabel: "Vessel", clientLabelPlural: "Vessels",
-    platforms: [
-      { value: "direct", label: "Direct" }, { value: "marinetraffic", label: "MarineTraffic" },
-      { value: "portcall", label: "PortCall" },
-    ],
-    statuses: ["scheduled", "approaching", "docked", "departed", "delayed", "cancelled"],
-    widgets: ["berth-schedule", "vessel-tracking", "port-slots", "crew-rotation", "cargo-planning", "tide-calendar"],
-    kpis: [
-      { label: "Berth Utilization", key: "utilization", format: "percent" },
-      { label: "Avg Turnaround", key: "turnaround", format: "duration" },
-      { label: "Vessels/Day", key: "vesselsDay", format: "number" },
-      { label: "Rev/Berth", key: "revBerth", format: "currency" },
-    ],
-    color: "hsl(210, 70%, 50%)",
-  },
-  government: {
-    id: "government", label: "Government", icon: "🏛️",
-    resourceLabel: "Facility", resourceLabelPlural: "Facilities",
-    bookingLabel: "Appointment", bookingLabelPlural: "Appointments",
-    clientLabel: "Citizen", clientLabelPlural: "Citizens",
-    platforms: [
-      { value: "direct", label: "Online Portal" }, { value: "phone", label: "Phone" },
-      { value: "walkin", label: "Walk-in" },
-    ],
-    statuses: ["scheduled", "checked-in", "in-progress", "completed", "no-show", "cancelled"],
-    widgets: ["citizen-appointments", "facility-booking", "permit-scheduling", "staff-rotation", "queue-management", "service-analytics"],
-    kpis: [
-      { label: "Facility Usage", key: "utilization", format: "percent" },
-      { label: "Avg Wait Time", key: "waitTime", format: "duration" },
-      { label: "Satisfaction", key: "satisfaction", format: "percent" },
-      { label: "Served/Day", key: "servedDay", format: "number" },
-    ],
-    color: "hsl(240, 50%, 50%)",
   },
 };
 
