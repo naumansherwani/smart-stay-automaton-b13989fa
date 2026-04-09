@@ -9,7 +9,7 @@ const PLANS = [
     name: "Basic",
     price: 25,
     desc: "Perfect for solo operators",
-    features: ["3 resources", "30 bookings/month", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
+    features: ["3 resources", "Limited bookings", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
     cta: "Start Free Trial",
     style: "border-border/50",
   },
