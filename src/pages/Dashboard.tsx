@@ -172,7 +172,7 @@ const Dashboard = () => {
 
         <IndustryKPIs config={config} />
 
-        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : "calendar"} className="space-y-6">
+        <Tabs defaultValue={isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : "calendar"} className="space-y-6">
           <TabsList className={`grid w-full grid-cols-3 md:grid-cols-${tabCount} lg:w-auto lg:inline-grid gap-1`}>
             {isAirlines(currentIndustry) ? (
               <>
