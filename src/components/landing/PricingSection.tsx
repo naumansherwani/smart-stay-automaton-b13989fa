@@ -50,7 +50,7 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full bg-gradient-primary hover:opacity-90 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)] text-primary-foreground" onClick={() => navigate("/signup")}>
+                <Button className="w-full bg-gradient-primary hover:shadow-[0_0_25px_hsl(var(--primary)/0.6),0_0_50px_hsl(var(--primary)/0.3)] hover:border-primary/80 transition-all duration-300 border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)] text-primary-foreground" onClick={() => navigate("/signup")}>
                   Start Free Trial
                 </Button>
               </CardContent>
