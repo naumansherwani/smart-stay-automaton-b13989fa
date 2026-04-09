@@ -87,12 +87,10 @@ const PricingSection = () => {
                   className={`w-full font-semibold ${
                     p.popular
                       ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      : p.price === 0
-                      ? "bg-primary/10 text-primary hover:bg-primary/20"
                       : ""
                   }`}
-                  variant={p.popular || p.price === 0 ? "default" : "outline"}
-                  onClick={() => navigate(p.price === 0 ? "/signup" : "/pricing")}
+                  variant={p.popular ? "default" : "outline"}
+                  onClick={() => navigate("/pricing")}
                 >
                   {p.cta}
                 </Button>
