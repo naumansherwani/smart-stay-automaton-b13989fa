@@ -204,6 +204,411 @@ export type Database = {
           },
         ]
       }
+      crm_activities: {
+        Row: {
+          ai_generated: boolean | null
+          completed_at: string | null
+          contact_id: string | null
+          created_at: string
+          deal_id: string | null
+          description: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          is_completed: boolean | null
+          metadata: Json | null
+          scheduled_at: string | null
+          subject: string | null
+          ticket_id: string | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          completed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          deal_id?: string | null
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_completed?: boolean | null
+          metadata?: Json | null
+          scheduled_at?: string | null
+          subject?: string | null
+          ticket_id?: string | null
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          completed_at?: string | null
+          contact_id?: string | null
+          created_at?: string
+          deal_id?: string | null
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_completed?: boolean | null
+          metadata?: Json | null
+          scheduled_at?: string | null
+          subject?: string | null
+          ticket_id?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_activities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_activities_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "crm_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_automations: {
+        Row: {
+          actions: Json | null
+          conditions: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          is_active: boolean | null
+          last_triggered_at: string | null
+          metadata: Json | null
+          name: string
+          trigger_count: number | null
+          trigger_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actions?: Json | null
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          metadata?: Json | null
+          name: string
+          trigger_count?: number | null
+          trigger_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actions?: Json | null
+          conditions?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          metadata?: Json | null
+          name?: string
+          trigger_count?: number | null
+          trigger_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_contacts: {
+        Row: {
+          address: string | null
+          ai_score: number | null
+          ai_score_reason: string | null
+          avatar_url: string | null
+          churn_risk: string | null
+          company: string | null
+          created_at: string
+          email: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          last_contacted_at: string | null
+          lifecycle_stage: string
+          metadata: Json | null
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string | null
+          tags: string[] | null
+          total_bookings: number | null
+          total_revenue: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          ai_score?: number | null
+          ai_score_reason?: string | null
+          avatar_url?: string | null
+          churn_risk?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          last_contacted_at?: string | null
+          lifecycle_stage?: string
+          metadata?: Json | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          tags?: string[] | null
+          total_bookings?: number | null
+          total_revenue?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          ai_score?: number | null
+          ai_score_reason?: string | null
+          avatar_url?: string | null
+          churn_risk?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          last_contacted_at?: string | null
+          lifecycle_stage?: string
+          metadata?: Json | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          tags?: string[] | null
+          total_bookings?: number | null
+          total_revenue?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_deals: {
+        Row: {
+          contact_id: string | null
+          created_at: string
+          currency: string | null
+          expected_close_date: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          lost_at: string | null
+          lost_reason: string | null
+          metadata: Json | null
+          notes: string | null
+          pipeline_id: string | null
+          probability: number | null
+          stage: string
+          title: string
+          updated_at: string
+          user_id: string
+          value: number | null
+          won_at: string | null
+        }
+        Insert: {
+          contact_id?: string | null
+          created_at?: string
+          currency?: string | null
+          expected_close_date?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          lost_at?: string | null
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          pipeline_id?: string | null
+          probability?: number | null
+          stage?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          value?: number | null
+          won_at?: string | null
+        }
+        Update: {
+          contact_id?: string | null
+          created_at?: string
+          currency?: string | null
+          expected_close_date?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          lost_at?: string | null
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          pipeline_id?: string | null
+          probability?: number | null
+          stage?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+          won_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_deals_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_deals_pipeline_id_fkey"
+            columns: ["pipeline_id"]
+            isOneToOne: false
+            referencedRelation: "crm_pipelines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_pipelines: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          is_default: boolean | null
+          metadata: Json | null
+          name: string
+          stages: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_default?: boolean | null
+          metadata?: Json | null
+          name: string
+          stages?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_default?: boolean | null
+          metadata?: Json | null
+          name?: string
+          stages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_tickets: {
+        Row: {
+          ai_category: string | null
+          ai_sentiment: string | null
+          ai_suggested_resolution: string | null
+          ai_summary: string | null
+          assigned_to: string | null
+          category: string | null
+          contact_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          metadata: Json | null
+          priority: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          sla_deadline: string | null
+          source: string | null
+          status: string
+          subject: string
+          ticket_number: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_category?: string | null
+          ai_sentiment?: string | null
+          ai_suggested_resolution?: string | null
+          ai_summary?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          metadata?: Json | null
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          sla_deadline?: string | null
+          source?: string | null
+          status?: string
+          subject: string
+          ticket_number?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_category?: string | null
+          ai_sentiment?: string | null
+          ai_suggested_resolution?: string | null
+          ai_summary?: string | null
+          assigned_to?: string | null
+          category?: string | null
+          contact_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          metadata?: Json | null
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          sla_deadline?: string | null
+          source?: string | null
+          status?: string
+          subject?: string
+          ticket_number?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tickets_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_inquiries: {
         Row: {
           created_at: string
