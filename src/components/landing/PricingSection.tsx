@@ -50,7 +50,7 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className={p.popular ? "w-full bg-gradient-primary" : "w-full"} variant={p.popular ? "default" : "outline"} onClick={() => navigate("/signup")}>
+                <Button className={p.popular ? "w-full bg-gradient-primary border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]" : "w-full border border-primary/40 shadow-[0_0_15px_hsl(var(--primary)/0.4)]"} variant={p.popular ? "default" : "outline"} onClick={() => navigate("/signup")}>
                   Start Free Trial
                 </Button>
               </CardContent>
