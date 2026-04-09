@@ -203,7 +203,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -232,7 +232,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -258,7 +258,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -284,7 +284,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -310,7 +310,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -336,7 +336,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
@@ -362,7 +362,7 @@ const Dashboard = () => {
                   <Brain className="w-3.5 h-3.5" /> AI Schedule
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="gap-1.5 text-xs md:text-sm">
-                  <Settings className="w-3.5 h-3.5" /> Settings
+                  <SettingsIcon className="w-3.5 h-3.5" /> Settings
                 </TabsTrigger>
                 <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
