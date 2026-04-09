@@ -1330,6 +1330,10 @@ export type Database = {
       }
     }
     Functions: {
+      can_join_conversation: {
+        Args: { _conversation_id: string }
+        Returns: boolean
+      }
       has_lifetime_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
