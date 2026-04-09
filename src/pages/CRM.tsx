@@ -14,13 +14,15 @@ import CrmWorkTimer from "@/components/crm/CrmWorkTimer";
 import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
 import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
-  const { subscription, isActive, loading: subLoading } = useSubscription();
+  const { subscription, isActive, isTrialing, trialDaysLeft, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState("overview");
   const navigate = useNavigate();
 
@@ -31,7 +33,10 @@ export default function CRM() {
   const industry = profile?.industry || "hospitality";
   const industryConfig = getIndustryConfig(industry);
   const crmConfig = getCrmConfig(industry);
-  const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || false;
+
+  // Trial users get FULL unlimited access (same as premium) for 3 days
+  // After trial, they must pick a plan
+  const isPremiumOrTrial = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
 
   if (!isActive) {
     return (
@@ -39,10 +44,15 @@ export default function CRM() {
         <Card className="max-w-md w-full">
           <CardContent className="text-center py-12">
             <Crown className="h-16 w-16 mx-auto text-yellow-500 mb-4" />
-            <h2 className="text-2xl font-bold mb-2">AI CRM — Premium Feature</h2>
-            <p className="text-muted-foreground mb-6">The world's most advanced AI CRM is available for Premium subscribers.</p>
+            <h2 className="text-2xl font-bold mb-2">AI CRM — Subscription Required</h2>
+            <p className="text-muted-foreground mb-4">
+              Your trial has expired. Choose a plan to continue using the world's most advanced AI CRM.
+            </p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Basic, Standard, or Premium — pick what suits you best!
+            </p>
             <div className="space-y-2">
-              <Button className="w-full" onClick={() => navigate("/pricing")}>Upgrade to Premium</Button>
+              <Button className="w-full" onClick={() => navigate("/pricing")}>View Plans & Upgrade</Button>
               <Button variant="ghost" className="w-full" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
             </div>
           </CardContent>
@@ -65,7 +75,12 @@ export default function CRM() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{industryConfig.icon}</span>
                   <h1 className="text-xl font-bold">AI CRM</h1>
-                  {isPremium && <Crown className="h-4 w-4 text-yellow-500" />}
+                  {isPremiumOrTrial && <Crown className="h-4 w-4 text-yellow-500" />}
+                  {isTrialing && (
+                    <Badge variant="secondary" className="text-xs bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                      Trial — {trialDaysLeft}d left
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-sm text-muted-foreground">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
               </div>
@@ -73,6 +88,28 @@ export default function CRM() {
           </div>
         </div>
       </div>
+
+      {/* Trial Banner */}
+      {isTrialing && (
+        <div className="bg-yellow-500/10 border-b border-yellow-500/20">
+          <div className="container mx-auto px-4 py-2.5">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm">
+                <AlertTriangle className="h-4 w-4 text-yellow-600 shrink-0" />
+                <span className="text-yellow-800 dark:text-yellow-200">
+                  <strong>Free Trial:</strong> {trialDaysLeft} days remaining — All features unlocked!
+                </span>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <Progress value={((3 - trialDaysLeft) / 3) * 100} className="w-24 h-2" />
+                <Button size="sm" variant="outline" className="text-xs border-yellow-500/30 hover:bg-yellow-500/10" onClick={() => navigate("/pricing")}>
+                  Choose Plan
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-4 space-y-4">
         {/* Work Timer - always visible */}
@@ -111,10 +148,10 @@ export default function CRM() {
             <CrmQuickActions industry={industry} onNavigate={setTab} />
           </TabsContent>
           <TabsContent value="contacts"><CrmContactsTab industry={industry} /></TabsContent>
-          <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={isPremium} /></TabsContent>
+          <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={isPremiumOrTrial} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>
-          <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={isPremium} /></TabsContent>
+          <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={isPremiumOrTrial} /></TabsContent>
         </Tabs>
       </div>
     </div>

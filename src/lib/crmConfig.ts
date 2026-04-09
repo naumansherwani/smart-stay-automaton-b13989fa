@@ -14,13 +14,6 @@ export interface CrmIndustryConfig {
   aiFeatures: string[];
 }
 
-const DEFAULT_STAGES = [
-  { value: "lead", label: "Lead", color: "bg-blue-500" },
-  { value: "prospect", label: "Prospect", color: "bg-yellow-500" },
-  { value: "customer", label: "Customer", color: "bg-green-500" },
-  { value: "churned", label: "Churned", color: "bg-red-500" },
-];
-
 const DEFAULT_PRIORITIES: Record<string, string> = {
   low: "Low", medium: "Medium", high: "High", critical: "Critical",
 };
@@ -145,6 +138,111 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["irctc", "trainline", "omio", "direct", "counter", "mobile-app"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Safety Critical" },
     aiFeatures: ["delay-compensation", "demand-forecasting", "route-optimization", "satisfaction-scoring", "capacity-management"],
+  },
+  fitness_wellness: {
+    contactLabel: "Member", contactLabelPlural: "Members",
+    ticketLabel: "Issue", ticketLabelPlural: "Issues",
+    dealLabel: "Membership Deal", dealLabelPlural: "Membership Deals",
+    ticketCategories: ["equipment-issue", "class-cancellation", "billing", "trainer-complaint", "facility-issue", "membership-change", "injury-report", "locker-issue", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Trial", color: "bg-blue-500" },
+      { value: "prospect", label: "New Member", color: "bg-yellow-500" },
+      { value: "customer", label: "Active Member", color: "bg-green-500" },
+      { value: "churned", label: "Cancelled", color: "bg-red-500" },
+    ],
+    sources: ["classpass", "mindbody", "direct", "referral", "corporate", "social-media", "walk-in"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Safety/Injury" },
+    aiFeatures: ["churn-prediction", "class-recommendation", "attendance-patterns", "upsell-personal-training", "peak-time-forecast"],
+  },
+  legal_services: {
+    contactLabel: "Client", contactLabelPlural: "Clients",
+    ticketLabel: "Case Issue", ticketLabelPlural: "Case Issues",
+    dealLabel: "Case", dealLabelPlural: "Cases",
+    ticketCategories: ["billing-dispute", "case-update-request", "document-request", "scheduling", "confidentiality-concern", "complaint", "retainer-issue", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Consultation", color: "bg-blue-500" },
+      { value: "prospect", label: "Retained", color: "bg-yellow-500" },
+      { value: "customer", label: "Active Client", color: "bg-green-500" },
+      { value: "churned", label: "Case Closed", color: "bg-red-500" },
+    ],
+    sources: ["avvo", "justia", "referral", "direct", "bar-association", "website", "court-appointed"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Court Deadline" },
+    aiFeatures: ["case-outcome-prediction", "document-analysis", "billing-optimization", "conflict-check", "deadline-monitoring"],
+  },
+  real_estate: {
+    contactLabel: "Client", contactLabelPlural: "Clients",
+    ticketLabel: "Issue", ticketLabelPlural: "Issues",
+    dealLabel: "Property Deal", dealLabelPlural: "Property Deals",
+    ticketCategories: ["maintenance-request", "tenant-complaint", "lease-issue", "showing-request", "inspection-issue", "closing-delay", "document-issue", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Prospect", color: "bg-blue-500" },
+      { value: "prospect", label: "Showing", color: "bg-yellow-500" },
+      { value: "customer", label: "Under Contract", color: "bg-green-500" },
+      { value: "churned", label: "Lost", color: "bg-red-500" },
+    ],
+    sources: ["zillow", "realtor.com", "redfin", "direct", "referral", "open-house", "cold-call", "mls"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Closing Emergency" },
+    aiFeatures: ["price-prediction", "lead-scoring", "market-analysis", "showing-optimization", "churn-prediction"],
+  },
+  coworking: {
+    contactLabel: "Member", contactLabelPlural: "Members",
+    ticketLabel: "Support Ticket", ticketLabelPlural: "Support Tickets",
+    dealLabel: "Space Deal", dealLabelPlural: "Space Deals",
+    ticketCategories: ["wifi-issue", "noise-complaint", "booking-conflict", "amenity-request", "billing", "access-issue", "maintenance", "event-request", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Tour Booked", color: "bg-blue-500" },
+      { value: "prospect", label: "Day Pass", color: "bg-yellow-500" },
+      { value: "customer", label: "Member", color: "bg-green-500" },
+      { value: "churned", label: "Ex-Member", color: "bg-red-500" },
+    ],
+    sources: ["wework", "deskpass", "direct", "referral", "corporate", "website", "walk-in"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Access Emergency" },
+    aiFeatures: ["occupancy-prediction", "churn-prediction", "upsell-private-office", "community-matching", "peak-analysis"],
+  },
+  marine_maritime: {
+    contactLabel: "Client", contactLabelPlural: "Clients",
+    ticketLabel: "Incident", ticketLabelPlural: "Incidents",
+    dealLabel: "Voyage Deal", dealLabelPlural: "Voyage Deals",
+    ticketCategories: ["port-delay", "cargo-damage", "documentation-issue", "customs-hold", "crew-issue", "safety-violation", "environmental-report", "equipment-failure", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Inquiry", color: "bg-blue-500" },
+      { value: "prospect", label: "First Voyage", color: "bg-yellow-500" },
+      { value: "customer", label: "Regular Shipper", color: "bg-green-500" },
+      { value: "churned", label: "Inactive", color: "bg-red-500" },
+    ],
+    sources: ["maritime-exchange", "broker", "direct", "port-authority", "forwarding-agent", "corporate"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Maritime Emergency" },
+    aiFeatures: ["route-optimization", "weather-risk", "port-congestion-prediction", "fuel-optimization", "compliance-check"],
+  },
+  government: {
+    contactLabel: "Citizen", contactLabelPlural: "Citizens",
+    ticketLabel: "Service Request", ticketLabelPlural: "Service Requests",
+    dealLabel: "Project", dealLabelPlural: "Projects",
+    ticketCategories: ["permit-issue", "license-renewal", "complaint", "infrastructure", "public-safety", "waste-management", "zoning", "tax-issue", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "New Request", color: "bg-blue-500" },
+      { value: "prospect", label: "Under Review", color: "bg-yellow-500" },
+      { value: "customer", label: "Resolved", color: "bg-green-500" },
+      { value: "churned", label: "Escalated", color: "bg-red-500" },
+    ],
+    sources: ["311-hotline", "website", "in-person", "email", "mobile-app", "social-media", "mail"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Public Safety" },
+    aiFeatures: ["response-time-prediction", "workload-balancing", "sentiment-analysis", "resource-allocation", "compliance-tracking"],
+  },
+  travel_tourism: {
+    contactLabel: "Traveler", contactLabelPlural: "Travelers",
+    ticketLabel: "Issue", ticketLabelPlural: "Issues",
+    dealLabel: "Package Deal", dealLabelPlural: "Package Deals",
+    ticketCategories: ["itinerary-change", "refund-request", "hotel-issue", "transport-issue", "visa-problem", "insurance-claim", "guide-complaint", "general"],
+    lifecycleStages: [
+      { value: "lead", label: "Inquiry", color: "bg-blue-500" },
+      { value: "prospect", label: "Quoted", color: "bg-yellow-500" },
+      { value: "customer", label: "Booked", color: "bg-green-500" },
+      { value: "churned", label: "Cancelled", color: "bg-red-500" },
+    ],
+    sources: ["tripadvisor", "viator", "getyourguide", "direct", "travel-agent", "referral", "google"],
+    priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Travel Emergency" },
+    aiFeatures: ["package-recommendation", "pricing-optimization", "sentiment-analysis", "demand-forecasting", "upsell-activities"],
   },
 };
 
