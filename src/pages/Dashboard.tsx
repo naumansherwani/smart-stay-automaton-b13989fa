@@ -23,7 +23,10 @@ import AIAutoSchedule from "@/components/dashboard/AIAutoSchedule";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
+import FlightManager from "@/components/dashboard/FlightManager";
 import { supabase } from "@/integrations/supabase/client";
+
+const isAirlines = (industry: IndustryType) => industry === "airlines";
 
 const Dashboard = () => {
   const navigate = useNavigate();
