@@ -1,0 +1,1 @@
+DROP POLICY "Users can insert own notifications" ON public.railway_notifications;
