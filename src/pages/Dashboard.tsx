@@ -459,6 +459,21 @@ const Dashboard = () => {
                           <p className="text-xs text-muted-foreground">AI optimizes routes & prevents conflicts</p>
                         </div>
                       </>
+                    ) : isEvents(currentIndustry) ? (
+                      <>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <p className="text-xs text-muted-foreground">Create events with venues & capacity in Events tab</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs text-muted-foreground">AI dynamically prices tickets based on demand</p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <p className="text-xs text-muted-foreground">Track bookings, revenue & capacity in real-time</p>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <div className="flex items-start gap-2">
