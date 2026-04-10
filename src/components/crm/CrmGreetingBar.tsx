@@ -46,7 +46,7 @@ export default function CrmGreetingBar({ displayName, showClock = true }: Props)
         <div className="flex items-center gap-2">
           <span className="text-xl">{greeting.emoji}</span>
           <h2 className="text-lg font-semibold text-foreground">
-            {greeting.text}, <span className="text-primary">{firstName}</span>!
+            {greeting.text}, <span className="text-white">{firstName}</span>
           </h2>
         </div>
 

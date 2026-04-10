@@ -175,7 +175,7 @@ export default function SmartGreetingBanner({ userName, compact = false }: Props
                 <span className="text-xl">{greeting.emoji}</span>
                 <div>
                   <h2 className="text-sm sm:text-base font-semibold text-foreground">
-                    {greeting.text}, <span className="text-primary">{firstName}</span>!
+                    {greeting.text}, <span className="text-white">{firstName}</span>
                   </h2>
                   <p className="text-[10px] text-muted-foreground">
                     {now.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
