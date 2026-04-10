@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, UserCircle, TrainFront } from "lucide-react";
+import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, TrainFront } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +34,8 @@ import LogisticsManager from "@/components/dashboard/LogisticsManager";
 import EventsManager from "@/components/dashboard/EventsManager";
 import HealthcareManager from "@/components/dashboard/HealthcareManager";
 import { supabase } from "@/integrations/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -106,18 +108,19 @@ const Dashboard = () => {
   }, [user]);
 
   const unreadAlerts = alerts.filter(a => !a.read).length;
+  const displayName = getUserDisplayName(user, profile?.display_name);
+  const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
+  const initials = getUserInitials(displayName, user?.email);
 
   const markAlertRead = async (id: string) => {
     await supabase.from("alerts").update({ read: true }).eq("id", id);
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
   };
 
-  // Build visible tabs based on industry
   const tabCount = 8;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Premium Glass Header */}
       <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50 shadow-sm">
         <div className="container flex items-center justify-between h-16 md:h-[72px]">
           <div className="flex items-center gap-3 md:gap-4">
@@ -153,8 +156,11 @@ const Dashboard = () => {
             <Button variant="ghost" size="icon" className="hover:bg-secondary/80" onClick={() => navigate("/settings")}>
               <SettingsIcon className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-secondary/80" onClick={() => navigate("/profile")}>
-              <UserCircle className="w-4 h-4" />
+            <Button variant="ghost" size="icon" className="hover:bg-secondary/80 rounded-full" onClick={() => navigate("/profile")} aria-label="Open profile">
+              <Avatar className="h-8 w-8 border border-border/60">
+                <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
+                <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">{initials}</AvatarFallback>
+              </Avatar>
             </Button>
             <Button variant="ghost" size="icon" className="hover:bg-destructive/10 hover:text-destructive" onClick={() => { signOut(); navigate("/"); }}>
               <LogOut className="w-4 h-4" />
@@ -168,7 +174,6 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
-        {/* Premium Welcome Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl p-5 md:p-8 border border-primary/15 shadow-lg">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
           <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle,hsl(var(--primary)/0.06),transparent_70%)] blur-2xl" />
@@ -180,7 +185,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary/70 mb-1">Welcome back</p>
                 <h1 className="text-xl md:text-3xl font-extrabold text-foreground tracking-tight">
-                  {user?.user_metadata?.full_name || profile?.display_name || "Commander"} ✨
+                  {displayName} ✨
                 </h1>
                 <p className="text-sm md:text-base text-muted-foreground mt-0.5">
                   Your <span className="text-primary font-semibold">{config.label}</span> AI dashboard is live &amp; optimizing
