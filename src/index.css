@@ -181,3 +181,37 @@
   50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
   100% { opacity: 1; transform: scale(1) rotate(360deg); }
 }
+
+/* Ghost Sidebar */
+.ghost-sidebar-bg {
+  background: linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(222 55% 8%) 100%);
+  color: hsl(210 20% 80%);
+}
+
+.ghost-edge-glow {
+  background: linear-gradient(180deg, hsl(174 62% 50% / 0.15) 0%, hsl(217 91% 60% / 0.25) 50%, hsl(174 62% 50% / 0.15) 100%);
+  box-shadow: 0 0 8px 1px hsl(217 91% 60% / 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.ghost-edge-glow:hover {
+  box-shadow: 0 0 14px 3px hsl(217 91% 60% / 0.4);
+}
+
+.ghost-sidebar-active {
+  background: hsl(217 91% 60% / 0.15);
+  color: hsl(174 62% 60%);
+  position: relative;
+}
+
+.ghost-sidebar-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: hsl(174 62% 50%);
+  box-shadow: 0 0 8px hsl(174 62% 50% / 0.5);
+}
