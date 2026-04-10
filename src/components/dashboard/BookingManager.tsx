@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import type { IndustryConfig } from "@/lib/industryConfig";
+import SmartEmptyState from "@/components/conversion/SmartEmptyState";
+import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
 
 interface BookingRow {
   id: string;
