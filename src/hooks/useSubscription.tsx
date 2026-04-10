@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
@@ -14,7 +14,6 @@ export function useSubscription() {
   const { user, loading: authLoading } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
-  const lastUserId = useRef<string | null>(null);
 
   const checkSubscription = useCallback(async () => {
     if (!user) return;
@@ -59,26 +58,17 @@ export function useSubscription() {
   }, [user]);
 
   useEffect(() => {
-    // Still waiting for auth — keep loading true
-    if (authLoading) {
-      setLoading(true);
-      return;
-    }
+    // If auth is still loading, keep sub loading true  
+    if (authLoading) return;
 
-    // No user — not loading, no subscription
     if (!user) {
       setSubscription(null);
       setLoading(false);
       return;
     }
 
-    // User changed — reset and fetch
-    if (lastUserId.current !== user.id) {
-      lastUserId.current = user.id;
-      setLoading(true);
-      setSubscription(null);
-    }
-
+    // User available — fetch subscription
+    setLoading(true);
     checkSubscription();
 
     const interval = setInterval(checkSubscription, 60000);
