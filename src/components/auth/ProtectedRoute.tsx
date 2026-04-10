@@ -20,8 +20,14 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
   if (!user) return <Navigate to="/login" replace />;
 
-  // Redirect to onboarding if no industry selected (skip if already on onboarding)
   const isOnboarding = window.location.pathname === "/onboarding";
+
+  // If user has industry, skip onboarding and go to dashboard
+  if (isOnboarding && profile?.industry) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // If no industry selected, redirect to onboarding
   if (!isOnboarding && profile && !profile.industry) {
     return <Navigate to="/onboarding" replace />;
   }

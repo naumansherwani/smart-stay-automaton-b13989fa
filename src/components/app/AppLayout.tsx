@@ -3,14 +3,13 @@ import { AppSidebar } from "./AppSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Sparkles } from "lucide-react";
-import NotificationsDropdown from "@/components/NotificationsDropdown";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { LogOut } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
+import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -25,6 +24,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
   const initials = getUserInitials(displayName, user?.email);
 
+  const industryLabel = profile?.industry
+    ? INDUSTRY_CONFIGS[profile.industry]?.label || profile.industry
+    : "";
+
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full">
@@ -32,22 +35,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         <div className="flex-1 flex flex-col min-w-0">
           <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <SidebarTrigger />
+              {industryLabel && (
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
+                  <span className="text-xs font-semibold text-primary">Workspace:</span>
+                  <span className="text-xs font-bold text-foreground">{industryLabel}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-1 md:gap-2">
-              <LanguageSwitcher />
               <ThemeToggle />
-              <NotificationsDropdown />
-              <Button
-                size="sm"
-                className="bg-gradient-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] font-semibold"
-                onClick={() => navigate("/pricing")}
-              >
-                <Sparkles className="w-4 h-4 md:mr-1.5" />
-                <span className="hidden md:inline">Upgrade</span>
-              </Button>
               <Button
                 variant="ghost"
                 size="icon"
