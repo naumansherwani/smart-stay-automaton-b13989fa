@@ -69,7 +69,7 @@ export function AppSidebar() {
 
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <Sidebar collapsible="icon" defaultOpen={false}>
+      <Sidebar collapsible="icon">
         <SidebarHeader className="p-3 border-b border-border/50">
           <button
             onClick={() => navigate("/dashboard")}
