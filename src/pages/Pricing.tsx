@@ -72,20 +72,24 @@ const PLANS = [
     plan: "premium" as const,
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
-      "Unlimited resources",
-      "⭐ Advanced AI CRM — Full Suite",
-      "⭐ AI Lead Scoring & Churn Prediction",
-      "⭐ Smart Tasks & Daily AI Planner",
-      "⭐ Deal Pipeline & Revenue Analytics",
-      "⭐ Google Workspace Sync",
+      "Up to 5 industries",
+      "Unlimited contacts (CRM)",
+      "Unlimited bookings",
+      "All Pro features included",
+      "",
+      "⭐ Advanced AI CRM (full suite)",
+      "⭐ AI lead scoring & churn prediction",
+      "⭐ AI automation & smart workflows",
       "⭐ AI Voice Assistant",
-      "AI demand forecasting",
-      "AI conflict auto-resolution",
-      "Revenue optimization",
+      "",
+      "Smart tasks & AI planner",
+      "Deal pipeline & revenue analytics",
+      "Google Workspace integration",
+      "",
       "White-label branding",
-      "Multi-team collaboration",
-      "Dedicated account manager",
+      "Multi-team management",
       "Custom AI training",
+      "Dedicated account manager",
     ],
   },
 ];
@@ -193,12 +197,16 @@ export default function Pricing() {
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                   <ul className="space-y-3 flex-1 mb-6">
-                    {p.features.map((f) => (
-                       <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
-                         <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                         <span className="text-foreground">{f}</span>
-                      </li>
-                    ))}
+                    {p.features.map((f, i) =>
+                      f === "" ? (
+                        <li key={`sep-${i}`} className="border-t border-border/30 my-1" />
+                      ) : (
+                        <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary" : ""}`}>
+                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
+                          <span className="text-foreground">{f}</span>
+                        </li>
+                      )
+                    )}
                   </ul>
                   <div className="space-y-2">
                     <Button

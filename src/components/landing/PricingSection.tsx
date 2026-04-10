@@ -60,9 +60,28 @@ const PLANS = [
   {
     name: "Premium",
     price: 110,
-    desc: "For enterprises & power users",
+    desc: "For scaling businesses and advanced operations",
     highlight: "🚀 Advanced AI CRM Hub",
-    features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "⭐ Advanced AI CRM — Full Suite", "⭐ AI Lead Scoring & Churn Prediction", "⭐ Smart Tasks & Daily AI Planner", "⭐ Deal Pipeline & Revenue Analytics", "⭐ Google Workspace Sync", "⭐ AI Voice Assistant", "AI demand forecasting", "White-label branding", "Multi-team management", "Dedicated account manager"],
+    features: [
+      "Up to 5 industries",
+      "Unlimited contacts (CRM)",
+      "Unlimited bookings",
+      "All Pro features included",
+      "",
+      "⭐ Advanced AI CRM (full suite)",
+      "⭐ AI lead scoring & churn prediction",
+      "⭐ AI automation & smart workflows",
+      "⭐ AI Voice Assistant",
+      "",
+      "Smart tasks & AI planner",
+      "Deal pipeline & revenue analytics",
+      "Google Workspace integration",
+      "",
+      "White-label branding",
+      "Multi-team management",
+      "Custom AI training",
+      "Dedicated account manager",
+    ],
     cta: "Get Started",
     style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
@@ -127,12 +146,16 @@ const PricingSection = () => {
               </CardHeader>
               <CardContent className="flex-1 flex flex-col pt-4">
                 <ul className="space-y-2.5 flex-1 mb-4">
-                  {p.features.map((f) => (
-                    <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                      <span className="text-foreground/80">{f}</span>
-                    </li>
-                  ))}
+                  {p.features.map((f, i) =>
+                    f === "" ? (
+                      <li key={`sep-${i}`} className="border-t border-border/30 my-1" />
+                    ) : (
+                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary" : ""}`}>
+                        <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
+                        <span className="text-foreground/80">{f}</span>
+                      </li>
+                    )
+                  )}
                 </ul>
                 {p.upgradeNote && (
                   <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
