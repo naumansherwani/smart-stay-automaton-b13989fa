@@ -279,7 +279,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["tripadvisor", "viator", "getyourguide", "direct", "travel-agent", "referral", "google"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Travel Emergency" },
     aiFeatures: ["package-recommendation", "pricing-optimization", "sentiment-analysis", "demand-forecasting", "upsell-activities"],
-    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_ROUTE_OPT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_GOOGLE_SYNC, TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_ROUTE_OPT],
   },
 };
 
