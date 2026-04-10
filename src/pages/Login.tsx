@@ -44,7 +44,7 @@ export default function Login() {
       return;
     }
 
-    navigate("/dashboard");
+    navigate("/dashboard"); // ProtectedRoute will redirect to /onboarding if needed
     setLoading(false);
   };
 
@@ -65,7 +65,7 @@ export default function Login() {
       });
       if (verifyError) throw verifyError;
 
-      navigate("/dashboard");
+      navigate("/dashboard"); // ProtectedRoute will redirect to /onboarding if needed
     } catch (err: any) {
       toast({ 
         title: "Verification failed", 
