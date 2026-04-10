@@ -21,8 +21,6 @@ import Onboarding from "./pages/Onboarding";
 import OwnerConsole from "./pages/OwnerConsole";
 import Settings from "./pages/Settings";
 import About from "./pages/About";
-import Marketplace from "./pages/Marketplace";
-import MyListings from "./pages/MyListings";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import RailwayDashboard from "./pages/RailwayDashboard";
@@ -56,8 +54,6 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
-            <Route path="/my-listings" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
             <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
             <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />

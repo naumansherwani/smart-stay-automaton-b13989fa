@@ -19,7 +19,7 @@ const PLANS = [
     price: 55,
     popular: true,
     desc: "Best for growing businesses",
-    features: ["All Basic features +", "15 resources", "100 bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI scheduling", "Guest/client scoring", "Advanced analytics", "Competitor radar", "Gap-filler engine", "Marketplace access", "Priority support"],
+    features: ["All Basic features +", "15 resources", "100 bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI scheduling", "Guest/client scoring", "Advanced analytics", "Competitor radar", "Gap-filler engine", "Priority support"],
     cta: "Start Free Trial",
     style: "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]",
   },

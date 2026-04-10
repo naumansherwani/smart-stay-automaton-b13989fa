@@ -178,7 +178,7 @@ const Messages = () => {
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/marketplace")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <Logo size="lg" showName />
@@ -203,9 +203,9 @@ const Messages = () => {
                 <div className="text-center py-12">
                   <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
                   <p className="text-muted-foreground">No conversations yet</p>
-                  <p className="text-xs text-muted-foreground mt-1">Send an inquiry from the Marketplace</p>
-                  <Button className="mt-3" variant="outline" size="sm" onClick={() => navigate("/marketplace")}>
-                    Browse Marketplace
+                  <p className="text-xs text-muted-foreground mt-1">Start a conversation from your dashboard</p>
+                  <Button className="mt-3" variant="outline" size="sm" onClick={() => navigate("/dashboard")}>
+                    Go to Dashboard
                   </Button>
                 </div>
               ) : (

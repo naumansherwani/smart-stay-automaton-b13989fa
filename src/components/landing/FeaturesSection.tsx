@@ -11,7 +11,7 @@ const FEATURES = [
   { icon: TrendingUp, title: "Dynamic Pricing Engine", desc: "Real-time price optimization based on demand, competition, seasonality & capacity.", color: "hsl(160,60%,45%)", glow: "rgba(16,185,129,0.1)" },
   { icon: Users, title: "Client Scoring & VIP Detection", desc: "AI scores every client — identify VIPs, repeat customers, and risk signals automatically.", color: "hsl(217,91%,60%)", glow: "rgba(59,130,246,0.1)" },
   { icon: BarChart3, title: "Revenue Optimizer", desc: "Gap-filling, turnover analysis, and profit-per-unit calculations — all in real time.", color: "hsl(38,92%,55%)", glow: "rgba(245,158,11,0.1)" },
-  { icon: MessageSquare, title: "Built-in Marketplace & Chat", desc: "List services, connect with businesses, and close deals — all within the platform.", color: "hsl(174,62%,50%)", glow: "rgba(45,212,191,0.1)" },
+  { icon: Sparkles, title: "AI-Powered Automation", desc: "Automate repetitive tasks — let AI handle scheduling, reminders & follow-ups for you.", color: "hsl(174,62%,50%)", glow: "rgba(45,212,191,0.1)" },
 ];
 
 const INDUSTRIES = [
