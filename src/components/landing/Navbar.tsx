@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Menu, X, Crown, Sparkles } from "lucide-react";
+import { Menu, X, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const PremiumBadge = () => (
@@ -16,12 +16,6 @@ const PremiumBadge = () => (
   </Badge>
 );
 
-const TrialBadge = () => (
-  <Badge className="ml-1 px-1.5 py-0 text-[9px] font-bold bg-gradient-to-r from-primary to-blue-500 text-white border-0 leading-4 uppercase tracking-wider">
-    <Sparkles className="w-2.5 h-2.5 mr-0.5" />
-    3-Day Trial
-  </Badge>
-);
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -85,7 +79,7 @@ const Navbar = () => {
               className="flex items-center text-[13px] font-medium tracking-[0.02em] text-[hsl(213,20%,60%)] hover:text-foreground relative py-1 transition-colors duration-300 group"
             >
               {link.label}
-              {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+              {link.badge === "premium" && <PremiumBadge />}
             </button>
           ))}
         </div>
@@ -103,7 +97,7 @@ const Navbar = () => {
           ) : (
             <>
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-medium text-[13px] transition-colors duration-300" onClick={() => navigate("/login")}>{t("nav.login")}</Button>
-              <Button size="sm" className="bg-gradient-primary text-primary-foreground border border-primary/20 shadow-[0_0_24px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_36px_hsl(var(--primary)/0.35)] hover:border-primary/40 transition-all duration-500 px-5 text-[13px] font-semibold" onClick={() => navigate("/signup")}>{t("nav.startTrial")}</Button>
+              <Button size="sm" className="bg-gradient-primary text-primary-foreground border border-primary/20 shadow-[0_0_24px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_36px_hsl(var(--primary)/0.35)] hover:border-primary/40 transition-all duration-500 px-5 text-[13px] font-semibold" onClick={() => navigate("/signup")}>Get Started</Button>
             </>
           )}
         </div>
@@ -154,7 +148,7 @@ const Navbar = () => {
                   className="flex items-center w-full text-sm font-medium text-[hsl(213,20%,60%)] hover:text-foreground py-2 transition-colors"
                 >
                   {link.label}
-                  {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+                  {link.badge === "premium" && <PremiumBadge />}
                 </button>
               ))}
             </div>
@@ -168,7 +162,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={() => { navigate("/login"); setMobileOpen(false); }}>{t("nav.login")}</Button>
-                  <Button size="sm" className="w-full bg-gradient-primary text-primary-foreground font-semibold" onClick={() => { navigate("/signup"); setMobileOpen(false); }}>{t("nav.startTrial")}</Button>
+                  <Button size="sm" className="w-full bg-gradient-primary text-primary-foreground font-semibold" onClick={() => { navigate("/signup"); setMobileOpen(false); }}>Get Started</Button>
                 </>
               )}
             </div>

@@ -94,7 +94,7 @@ const PAYONEER_EMAIL = "your-payoneer@email.com"; // Replace with actual Payonee
 export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { subscription, isExpired, trialDaysLeft, isTrialing } = useSubscription();
+  const { subscription } = useSubscription();
   const { toast } = useToast();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [showPayoneer, setShowPayoneer] = useState(false);
@@ -147,17 +147,6 @@ export default function Pricing() {
       <Navbar />
 
       <main className="container pt-24 pb-16 space-y-12">
-        {isExpired && (
-          <div className="max-w-2xl mx-auto bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
-            <p className="text-sm text-foreground">Your trial has expired. Choose a plan to continue using HostFlow AI.</p>
-          </div>
-        )}
-        {isTrialing && trialDaysLeft > 0 && (
-          <div className="max-w-2xl mx-auto bg-primary/10 border border-primary/30 rounded-lg p-4 text-center">
-            <p className="text-sm text-foreground">You have <strong>{trialDaysLeft} day{trialDaysLeft !== 1 ? "s" : ""}</strong> left in your free trial.</p>
-          </div>
-        )}
 
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">Choose Your Plan</h1>
