@@ -637,6 +637,69 @@ export type Database = {
           },
         ]
       }
+      crm_performance_reports: {
+        Row: {
+          ai_recommendations: Json | null
+          ai_summary: string | null
+          avg_session_minutes: number | null
+          created_at: string
+          days_active: number | null
+          id: string
+          industry: string
+          is_read: boolean | null
+          longest_session_minutes: number | null
+          metadata: Json | null
+          productivity_score: number | null
+          report_month: string
+          total_break_seconds: number
+          total_breaks: number
+          total_sessions: number
+          total_work_seconds: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          avg_session_minutes?: number | null
+          created_at?: string
+          days_active?: number | null
+          id?: string
+          industry?: string
+          is_read?: boolean | null
+          longest_session_minutes?: number | null
+          metadata?: Json | null
+          productivity_score?: number | null
+          report_month: string
+          total_break_seconds?: number
+          total_breaks?: number
+          total_sessions?: number
+          total_work_seconds?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          avg_session_minutes?: number | null
+          created_at?: string
+          days_active?: number | null
+          id?: string
+          industry?: string
+          is_read?: boolean | null
+          longest_session_minutes?: number | null
+          metadata?: Json | null
+          productivity_score?: number | null
+          report_month?: string
+          total_break_seconds?: number
+          total_breaks?: number
+          total_sessions?: number
+          total_work_seconds?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crm_pipelines: {
         Row: {
           color: string | null
