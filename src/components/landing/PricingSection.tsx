@@ -30,11 +30,6 @@ const PLANS = [
       "Email notifications",
       "Basic analytics",
     ],
-    limitations: [
-      "No AI automation (follow-ups)",
-      "No advanced analytics",
-      "No multi-team access",
-    ],
     upgradeNote: "Upgrade to Pro to automate your business and close more clients.",
     cta: "Get Started",
     style: "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]",
