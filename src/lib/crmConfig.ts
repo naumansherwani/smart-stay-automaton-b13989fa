@@ -36,6 +36,8 @@ const TOOL_RESOURCE_MGMT: CrmToolConfig = { id: "resource-mgmt", label: "Resourc
 const TOOL_FLEET_MGMT: CrmToolConfig = { id: "fleet-mgmt", label: "Fleet Manager", icon: "🚗", description: "Track & manage vehicle fleet" };
 const TOOL_ROUTE_OPT: CrmToolConfig = { id: "route-optimizer", label: "Route Optimizer", icon: "🗺️", description: "AI-optimized routes & logistics" };
 const TOOL_CAPACITY: CrmToolConfig = { id: "capacity-planner", label: "Capacity Planner", icon: "📊", description: "Predict & manage capacity in real-time" };
+const TOOL_SMART_TASKS: CrmToolConfig = { id: "smart-tasks", label: "Smart Tasks", icon: "✅", description: "AI auto-organized task management" };
+const TOOL_DAILY_PLANNER: CrmToolConfig = { id: "daily-planner", label: "AI Daily Planner", icon: "☀️", description: "AI-generated daily plan with priorities & recommendations" };
 
 export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
   hospitality: {
