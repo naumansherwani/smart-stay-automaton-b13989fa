@@ -81,9 +81,9 @@ const HeroSection = () => {
             <Button
               size="lg"
               className="text-lg px-8 py-7 bg-white/5 border border-white/15 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/25 backdrop-blur-sm rounded-xl transition-all duration-300 font-medium"
-              onClick={() => navigate("/marketplace")}
+              onClick={() => navigate("/pricing")}
             >
-              <Globe className="mr-2 w-5 h-5" /> Explore Marketplace
+              <Globe className="mr-2 w-5 h-5" /> View Pricing
             </Button>
           </div>
 

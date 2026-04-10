@@ -62,7 +62,7 @@ const PLANS = [
       "Guest scoring system",
       "Advanced analytics",
       "Competitor radar",
-      "Marketplace access",
+      "AI automation tools",
       "Priority support",
     ],
   },
