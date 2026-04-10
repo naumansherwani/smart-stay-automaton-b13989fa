@@ -2025,29 +2025,53 @@ export type Database = {
       }
       workspaces: {
         Row: {
+          base_price: number
           created_at: string
+          discount_amount: number
+          discount_percentage: number
+          final_price: number
           id: string
           industry: Database["public"]["Enums"]["industry_type"]
+          industry_number: number
           is_active: boolean
           name: string
+          payment_status: string
+          plan: string
+          stripe_subscription_id: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          base_price?: number
           created_at?: string
+          discount_amount?: number
+          discount_percentage?: number
+          final_price?: number
           id?: string
           industry?: Database["public"]["Enums"]["industry_type"]
+          industry_number?: number
           is_active?: boolean
           name: string
+          payment_status?: string
+          plan?: string
+          stripe_subscription_id?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          base_price?: number
           created_at?: string
+          discount_amount?: number
+          discount_percentage?: number
+          final_price?: number
           id?: string
           industry?: Database["public"]["Enums"]["industry_type"]
+          industry_number?: number
           is_active?: boolean
           name?: string
+          payment_status?: string
+          plan?: string
+          stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
         }
