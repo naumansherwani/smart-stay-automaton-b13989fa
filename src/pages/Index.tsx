@@ -28,7 +28,7 @@ const Index = () => (
     <TrustBadgesSection />
     <PricingSection />
     <FAQSection />
-    <CTASection />
+    <Footer />
     <Footer />
     <CookieConsent />
   </div>
