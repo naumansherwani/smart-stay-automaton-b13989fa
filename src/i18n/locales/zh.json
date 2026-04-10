@@ -25,7 +25,7 @@
     "noCreditCard": "无需绑定信用卡",
     "doubleBooking": "AI防重复预约守护",
     "dynamicPricing": "AI智能动态定价",
-    "industriesSupported": "支持13+个行业",
+    "industriesSupported": "支持8个行业",
     "trustedAcross": "全球各行业信赖之选"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "AI驱动的风险评估和VIP客户识别，覆盖每一笔预约。",
     "revenueOpt": "收入优化器",
     "revenueOptDesc": "实时空位填补、周转分析和单位利润计算。",
-    "industriesTitle": "专为13+个行业打造",
+    "industriesTitle": "专为8个行业打造",
     "industriesSubtitle": "一个AI引擎。覆盖每个行业。无任何限制。"
   },
   "pricing": {
@@ -72,7 +72,7 @@
     "a7": "您完全可以审查、覆盖或调整AI的任何决策。系统会从您的修正中学习，不断改进优化。"
   },
   "footer": {
-    "description": "面向13+个行业的AI驱动排程与预约平台。更智能的日历，零冲突，收入最大化。",
+    "description": "面向8个行业的AI驱动排程与预约平台。更智能的日历，零冲突，收入最大化。",
     "links": "快速链接",
     "legal": "法律条款",
     "getInTouch": "联系我们",
@@ -89,7 +89,7 @@
     "visionTitle": "我们的愿景",
     "vision": "打造一个世界——没有任何企业因排程冲突、错失预约或手动定价猜测而损失一分钱。一个智能日历无缝驱动每个行业、每个市场、每个时区。",
     "storyTitle": "我们的故事",
-    "story": "HostFlow AI创立于2024年，源于一个简单的困惑：为什么企业仍在因重复预约、定价错误和排程冲突而持续亏损？我们打造了一个AI系统来解决所有这些问题——覆盖13+个行业，汇聚于一个平台。",
+    "story": "HostFlow AI创立于2024年，源于一个简单的困惑：为什么企业仍在因重复预约、定价错误和排程冲突而持续亏损？我们打造了一个AI系统来解决所有这些问题——覆盖8个行业，汇聚于一个平台。",
     "whyTitle": "为什么选择 HostFlow AI？",
     "why1Title": "AI优先理念",
     "why1Desc": "每个功能都由AI驱动——从需求预测到动态定价再到冲突解决。",
