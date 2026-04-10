@@ -1925,9 +1925,40 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawal_admin_notes: {
+        Row: {
+          admin_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          withdrawal_id: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          withdrawal_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          withdrawal_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawal_admin_notes_withdrawal_id_fkey"
+            columns: ["withdrawal_id"]
+            isOneToOne: false
+            referencedRelation: "withdrawal_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       withdrawal_requests: {
         Row: {
-          admin_notes: string | null
           amount: number
           created_at: string
           id: string
@@ -1939,7 +1970,6 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          admin_notes?: string | null
           amount: number
           created_at?: string
           id?: string
@@ -1951,7 +1981,6 @@ export type Database = {
           user_id: string
         }
         Update: {
-          admin_notes?: string | null
           amount?: number
           created_at?: string
           id?: string
