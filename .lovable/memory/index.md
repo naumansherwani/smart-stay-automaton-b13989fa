@@ -1,14 +1,11 @@
 # Project Memory
 
 ## Core
-CalendarAI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
-3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
-13 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government.
-Auth: Email + Google + Apple. No anonymous signups. Email verification required.
-Marketplace REMOVED — confusing, doesn't fit vision. Do not re-add.
+Teal primary, blue-purple secondary. SaaS booking/CRM platform.
+CRM is premium-only. 7-day trial for new users with feature limits.
+Lovable Cloud backend. Stripe for payments.
 
 ## Memories
-- [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Standard/Premium
-- [Industries](mem://features/industries) — All 13 supported industry types and their use cases
-- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette, teal primary, blue-purple secondary
-- [CRM architecture](mem://features/crm-architecture) — AI CRM with contacts, deals, tickets, activities
+- [Brand colors](mem://design/brand-colors) — Full teal/blue-purple palette, pricing tier colors
+- [CRM Architecture](mem://features/crm-architecture) — Premium-only CRM with industry-specific tools
+- [7-Day Trial](mem://features/trial-system) — Trial limits, banner, feature gating

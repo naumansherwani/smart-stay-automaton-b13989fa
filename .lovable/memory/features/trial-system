@@ -1,0 +1,12 @@
+---
+name: 7-Day Trial System
+description: New users get 7-day free trial with limited features, dynamic countdown banner, upgrade push
+type: feature
+---
+- Trial duration: 7 days from signup
+- Status: trialing → expired (after 7 days) or active (after upgrade)
+- Allowed: 150 CRM contacts, unlimited bookings, AI Calendar, 20 AI Pricing uses, 10 AI follow-ups
+- Restricted: Advanced AI CRM, Voice assistant, White-label, Multi-team
+- TrialBanner component shows dynamic messages based on days remaining
+- useTrialLimits hook provides feature gating limits
+- After expiry: restricted access with upgrade message
