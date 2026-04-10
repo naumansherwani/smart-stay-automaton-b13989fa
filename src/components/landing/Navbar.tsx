@@ -20,6 +20,7 @@ const Navbar = () => {
     { href: "#pricing", label: t("nav.pricing") },
     { href: "/about", label: t("nav.about") },
     { href: "/marketplace", label: "Marketplace" },
+    { href: "/reviews", label: "Reviews" },
   ];
 
   return (
