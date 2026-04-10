@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, TrainFront } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { toast as sonnerToast } from "sonner";
 
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
+import { getIndustryConfig, INDUSTRY_CONFIGS, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
 import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
@@ -48,15 +50,40 @@ const isRailways = (industry: IndustryType) => industry === "railways";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, signOut } = useAuth();
+  const { createWorkspace, switchWorkspace } = useWorkspaces();
   
   const { profile, updateIndustry } = useProfile();
+  const newIndustryHandled = useRef(false);
   
   const [currentIndustry, setCurrentIndustry] = useState<IndustryType>(
     (profile?.industry as IndustryType) || "hospitality"
   );
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
+
+  // Handle post-checkout redirect: create workspace for new industry
+  useEffect(() => {
+    const newIndustry = searchParams.get("new_industry") as IndustryType | null;
+    const plan = searchParams.get("plan");
+    if (!newIndustry || !plan || !user || newIndustryHandled.current) return;
+    newIndustryHandled.current = true;
+
+    const setupWorkspace = async () => {
+      const label = INDUSTRY_CONFIGS[newIndustry]?.label || newIndustry;
+      const ws = await createWorkspace(label, newIndustry);
+      if (ws) {
+        sonnerToast.success(`${label} workspace created! 🎉`);
+        setCurrentIndustry(newIndustry);
+      }
+      // Clean URL params
+      searchParams.delete("new_industry");
+      searchParams.delete("plan");
+      setSearchParams(searchParams, { replace: true });
+    };
+    setupWorkspace();
+  }, [searchParams, user]);
 
   const config = getIndustryConfig(currentIndustry);
   const features = getIndustryFeatures(currentIndustry);
