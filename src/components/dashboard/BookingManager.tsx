@@ -406,11 +406,14 @@ const BookingManager = ({ config }: BookingManagerProps) => {
 
       {/* Bookings List */}
       {filteredBookings.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            No {config.bookingLabelPlural.toLowerCase()} found
-          </CardContent>
-        </Card>
+        <SmartEmptyState
+          icon={CalendarCheck}
+          title={`No ${config.bookingLabelPlural.toLowerCase()} found`}
+          description={`Create your first ${config.bookingLabel.toLowerCase()} and let AI handle the rest`}
+          actionLabel={`New ${config.bookingLabel}`}
+          onAction={() => setDialogOpen(true)}
+          emotionalMessage="Automation saves time and increases revenue"
+        />
       ) : (
         <div className="space-y-2">
           {filteredBookings.map(b => {
