@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,11 @@ import type { IndustryType } from "@/lib/industryConfig";
 import type { CrmContact } from "@/hooks/useCrm";
 import CrmContactDetailPanel from "./CrmContactDetailPanel";
 import { toast } from "sonner";
+import { useTrialLimits } from "@/hooks/useTrialLimits";
+import LimitReachedPopup from "@/components/conversion/LimitReachedPopup";
+import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
+import SmartEmptyState from "@/components/conversion/SmartEmptyState";
+import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 
 interface Props { industry: IndustryType; }
 
