@@ -30,14 +30,16 @@ const industries: { value: IndustryType; label: string }[] = [
 const Profile = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, loading: profileLoading, updateProfile } = useProfile();
   const { subscription } = useSubscription();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [displayName, setDisplayName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [phone, setPhone] = useState("");
   const [industry, setIndustry] = useState<IndustryType>("hospitality");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (profile) {
