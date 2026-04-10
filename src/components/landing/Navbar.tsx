@@ -30,9 +30,7 @@ const Navbar = () => {
     { href: "/reviews", label: "Reviews" },
   ];
 
-  const premiumLinks = [
-    { href: "/crm", label: "CRM", badge: "premium" as const },
-  ];
+  const premiumLinks: { href: string; label: string; badge: "premium" }[] = [];
 
   const handleNavClick = (href: string) => {
     setMobileOpen(false);

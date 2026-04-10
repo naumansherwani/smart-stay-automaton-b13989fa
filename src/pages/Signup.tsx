@@ -9,15 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const INDUSTRIES = [
-  { value: "hospitality", label: "🏨 Travel, Tourism & Hospitality" },
-  { value: "airlines", label: "✈️ Airlines & Aviation" },
-  { value: "car_rental", label: "🚗 Car Rental" },
-  { value: "healthcare", label: "🏥 Healthcare & Clinics" },
-  { value: "education", label: "🎓 Education & Training" },
-  { value: "logistics", label: "📦 Logistics & Shipping" },
-  { value: "events_entertainment", label: "🎭 Events & Entertainment" },
-];
 
 export default function Signup() {
   const [email, setEmail] = useState("");
