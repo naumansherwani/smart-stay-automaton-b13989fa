@@ -1,17 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown } from "lucide-react";
+import { Check, Sparkles, Crown, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
+  {
+    name: "Free Trial",
+    price: 0,
+    trial: true,
+    desc: "Experience the full platform free",
+    features: ["7 days full access", "150 CRM contacts", "Unlimited bookings", "AI Calendar full access", "AI Pricing (20 uses)", "AI follow-ups (10 uses)", "All industry dashboards", "No credit card required"],
+    cta: "Start 7-Day Free Trial",
+    style: "border-[hsl(38,92%,55%)]/50 hover:ring-2 hover:ring-[hsl(38,92%,55%)]/40 hover:shadow-[0_0_20px_hsl(38,92%,55%,0.3)]",
+  },
   {
     name: "Basic",
     price: 25,
     starter: true,
     desc: "Perfect for solo operators",
-    features: ["3 resources", "Limited bookings", "Limited AI Calendar", "Limited AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
-    cta: "Start Free Trial",
+    features: ["3 resources", "Unlimited bookings", "AI Calendar", "AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
+    cta: "Get Started",
     style: "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]",
   },
   {
@@ -19,8 +28,8 @@ const PLANS = [
     price: 55,
     popular: true,
     desc: "Best for growing businesses",
-    features: ["All Basic features +", "15 resources", "100 bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI scheduling", "Guest/client scoring", "Advanced analytics", "Competitor radar", "Gap-filler engine", "Priority support"],
-    cta: "Start Free Trial",
+    features: ["All Basic features +", "15 resources", "100 bookings", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI scheduling", "Guest/client scoring", "Advanced analytics", "Competitor radar", "Gap-filler engine", "Priority support"],
+    cta: "Get Started",
     style: "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]",
   },
   {
@@ -28,8 +37,8 @@ const PLANS = [
     price: 110,
     desc: "For enterprises & power users",
     highlight: "🚀 Advanced AI CRM Hub",
-    features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "⭐ Advanced AI CRM — Full Suite", "⭐ AI Lead Scoring & Churn Prediction", "⭐ Smart Tasks & Daily AI Planner", "⭐ Deal Pipeline & Revenue Analytics", "⭐ Google Workspace Sync", "⭐ AI Voice Assistant", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "Dynamic route optimization", "White-label branding", "Multi-team management", "Custom AI training", "Dedicated account manager"],
-    cta: "Start Free Trial",
+    features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "⭐ Advanced AI CRM — Full Suite", "⭐ AI Lead Scoring & Churn Prediction", "⭐ Smart Tasks & Daily AI Planner", "⭐ Deal Pipeline & Revenue Analytics", "⭐ Google Workspace Sync", "⭐ AI Voice Assistant", "AI demand forecasting", "White-label branding", "Multi-team management", "Dedicated account manager"],
+    cta: "Get Started",
     style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
 ];
@@ -50,13 +59,18 @@ const PricingSection = () => {
             One Price. <span className="text-gradient-primary">Unlimited Power.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            3-day free trial on all paid plans. No credit card required. Cancel anytime.
+            7-day free trial. No credit card required. Cancel anytime.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+              {p.trial && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(38,92%,55%)] to-[hsl(25,95%,55%)] text-white border-0 shadow-lg px-4 py-1 whitespace-nowrap">
+                  <Flame className="w-3 h-3 mr-1" /> 7 Days Free
+                </Badge>
+              )}
               {p.starter && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                   🚀 Great Start
@@ -97,12 +111,14 @@ const PricingSection = () => {
                 </ul>
                 <Button
                   className={`w-full font-semibold ${
-                    p.popular || p.highlight
-                      ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      : ""
+                    p.trial
+                      ? "bg-gradient-to-r from-[hsl(38,92%,55%)] to-[hsl(25,95%,55%)] text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)]"
+                      : p.popular || p.highlight
+                        ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                        : ""
                   }`}
-                  variant={p.popular || p.highlight ? "default" : "outline"}
-                  onClick={() => navigate("/pricing")}
+                  variant={p.trial || p.popular || p.highlight ? "default" : "outline"}
+                  onClick={() => navigate("/signup")}
                 >
                   {p.cta}
                 </Button>
