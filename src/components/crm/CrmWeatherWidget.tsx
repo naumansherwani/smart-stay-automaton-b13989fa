@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, MapPin, Droplets, Wind, Eye, Thermometer, Sun, CloudRain, Cloud, CloudSnow, CloudLightning, CloudDrizzle, Sunrise, Sunset } from "lucide-react";
+import { RefreshCw, MapPin, Droplets, Wind, Eye, Thermometer, Sun, CloudRain, Cloud, CloudSnow, CloudLightning, CloudDrizzle, Sunrise, Sunset, ChevronDown, ChevronUp } from "lucide-react";
 
 interface WeatherData {
   temperature: number;
@@ -63,6 +63,7 @@ export default function CrmWeatherWidget() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   const fetchWeather = useCallback(async () => {
     setLoading(true);
@@ -181,7 +182,7 @@ export default function CrmWeatherWidget() {
   return (
     <Card className="overflow-hidden border-primary/10">
       <CardContent className="p-0">
-        {/* Main weather display */}
+        {/* Main weather display - always visible */}
         <div className="p-4 bg-gradient-to-br from-primary/5 via-background to-accent/5">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -206,101 +207,114 @@ export default function CrmWeatherWidget() {
               </Button>
             </div>
           </div>
-
-          {/* Stats row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
-              <Thermometer className="h-3.5 w-3.5 text-orange-400" />
-              <div>
-                <p className="text-[10px] text-muted-foreground">Feels Like</p>
-                <p className="text-xs font-semibold">{Math.round(weather.feelsLike)}°C</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
-              <Droplets className="h-3.5 w-3.5 text-blue-400" />
-              <div>
-                <p className="text-[10px] text-muted-foreground">Humidity</p>
-                <p className="text-xs font-semibold">{weather.humidity}%</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
-              <Wind className="h-3.5 w-3.5 text-teal-400" />
-              <div>
-                <p className="text-[10px] text-muted-foreground">Wind</p>
-                <p className="text-xs font-semibold">{Math.round(weather.windSpeed)} km/h {windDir(weather.windDirection)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
-              <Sun className="h-3.5 w-3.5 text-amber-400" />
-              <div>
-                <p className="text-[10px] text-muted-foreground">UV Index</p>
-                <p className="text-xs font-semibold">{weather.uvIndex} {weather.uvIndex <= 2 ? "Low" : weather.uvIndex <= 5 ? "Moderate" : "High"}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Sunrise/Sunset */}
-          {todaySunrise && todaySunset && (
-            <div className="flex items-center justify-center gap-6 mt-3 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Sunrise className="h-3.5 w-3.5 text-amber-400" />
-                <span>{new Date(todaySunrise).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Sunset className="h-3.5 w-3.5 text-orange-400" />
-                <span>{new Date(todaySunset).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Hourly forecast */}
-        <div className="px-4 py-3 border-t border-border/50">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Next 8 Hours</p>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {next8Hours.map((h, i) => {
-              const hInfo = getWeatherInfo(h.code);
-              const hr = new Date(h.time).getHours();
-              return (
-                <div key={i} className="flex flex-col items-center gap-0.5 min-w-[3rem] p-1.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                  <span className="text-[10px] text-muted-foreground">{hr}:00</span>
-                  {getSmallIcon(h.code)}
-                  <span className="text-xs font-semibold">{Math.round(h.temp)}°</span>
-                  {h.precip > 0 && (
-                    <span className="text-[9px] text-blue-400">{h.precip}%</span>
-                  )}
+        {/* Show/Hide Weather Details toggle */}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="w-full flex items-center justify-center gap-1 py-1.5 text-[10px] text-muted-foreground hover:text-foreground border-t border-border/30 transition-colors"
+        >
+          {expanded ? "Hide" : "Show"} Weather Details
+          {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </button>
+
+        {/* Expandable details */}
+        {expanded && (
+          <div className="border-t border-border/30">
+            {/* Stats row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-4">
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
+                <Thermometer className="h-3.5 w-3.5 text-orange-400" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Feels Like</p>
+                  <p className="text-xs font-semibold">{Math.round(weather.feelsLike)}°C</p>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 7-day forecast */}
-        <div className="px-4 py-3 border-t border-border/50">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">7-Day Forecast</p>
-          <div className="space-y-1">
-            {weather.daily.map((d, i) => {
-              const dInfo = getWeatherInfo(d.code);
-              const dayName = i === 0 ? "Today" : new Date(d.date).toLocaleDateString([], { weekday: "short" });
-              return (
-                <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/30 transition-colors">
-                  <span className="text-xs w-10 text-muted-foreground">{dayName}</span>
-                  {getSmallIcon(d.code)}
-                  <span className="text-[10px] text-muted-foreground flex-1 hidden sm:block">{dInfo.label}</span>
-                  {d.precipProb > 0 && (
-                    <Badge variant="outline" className="text-[9px] px-1 py-0 text-blue-400 border-blue-400/20">
-                      <Droplets className="h-2.5 w-2.5 mr-0.5" />{d.precipProb}%
-                    </Badge>
-                  )}
-                  <div className="flex items-center gap-1 text-xs">
-                    <span className="font-semibold">{Math.round(d.maxTemp)}°</span>
-                    <span className="text-muted-foreground">{Math.round(d.minTemp)}°</span>
-                  </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
+                <Droplets className="h-3.5 w-3.5 text-blue-400" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Humidity</p>
+                  <p className="text-xs font-semibold">{weather.humidity}%</p>
                 </div>
-              );
-            })}
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
+                <Wind className="h-3.5 w-3.5 text-teal-400" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Wind</p>
+                  <p className="text-xs font-semibold">{Math.round(weather.windSpeed)} km/h {windDir(weather.windDirection)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background/60 backdrop-blur-sm">
+                <Sun className="h-3.5 w-3.5 text-amber-400" />
+                <div>
+                  <p className="text-[10px] text-muted-foreground">UV Index</p>
+                  <p className="text-xs font-semibold">{weather.uvIndex} {weather.uvIndex <= 2 ? "Low" : weather.uvIndex <= 5 ? "Moderate" : "High"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Sunrise/Sunset */}
+            {todaySunrise && todaySunset && (
+              <div className="flex items-center justify-center gap-6 px-4 pb-3 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Sunrise className="h-3.5 w-3.5 text-amber-400" />
+                  <span>{new Date(todaySunrise).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Sunset className="h-3.5 w-3.5 text-orange-400" />
+                  <span>{new Date(todaySunset).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Hourly forecast */}
+            <div className="px-4 py-3 border-t border-border/50">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Next 8 Hours</p>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {next8Hours.map((h, i) => {
+                  const hr = new Date(h.time).getHours();
+                  return (
+                    <div key={i} className="flex flex-col items-center gap-0.5 min-w-[3rem] p-1.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                      <span className="text-[10px] text-muted-foreground">{hr}:00</span>
+                      {getSmallIcon(h.code)}
+                      <span className="text-xs font-semibold">{Math.round(h.temp)}°</span>
+                      {h.precip > 0 && (
+                        <span className="text-[9px] text-blue-400">{h.precip}%</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 7-day forecast */}
+            <div className="px-4 py-3 border-t border-border/50">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">7-Day Forecast</p>
+              <div className="space-y-1">
+                {weather.daily.map((d, i) => {
+                  const dInfo = getWeatherInfo(d.code);
+                  const dayName = i === 0 ? "Today" : new Date(d.date).toLocaleDateString([], { weekday: "short" });
+                  return (
+                    <div key={i} className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/30 transition-colors">
+                      <span className="text-xs w-10 text-muted-foreground">{dayName}</span>
+                      {getSmallIcon(d.code)}
+                      <span className="text-[10px] text-muted-foreground flex-1 hidden sm:block">{dInfo.label}</span>
+                      {d.precipProb > 0 && (
+                        <Badge variant="outline" className="text-[9px] px-1 py-0 text-blue-400 border-blue-400/20">
+                          <Droplets className="h-2.5 w-2.5 mr-0.5" />{d.precipProb}%
+                        </Badge>
+                      )}
+                      <div className="flex items-center gap-1 text-xs">
+                        <span className="font-semibold">{Math.round(d.maxTemp)}°</span>
+                        <span className="text-muted-foreground">{Math.round(d.minTemp)}°</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
