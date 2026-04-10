@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Save, User, Building2, Phone, Globe, Crown, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, User, Building2, Phone, Globe, Crown, Loader2, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { type IndustryType } from "@/lib/industryConfig";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
