@@ -11,61 +11,69 @@ export interface Subscription {
 }
 
 export function useSubscription() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   const checkSubscription = useCallback(async () => {
     if (!user) return;
 
-    // First check local DB
-    const { data } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
-    if (data) {
-      // Check lifetime access first
-      if ((data as any).is_lifetime) {
-        setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
-        setLoading(false);
-        return;
-      }
-
-      const trialEnd = new Date(data.trial_ends_at);
-      if (data.status === "trialing" && trialEnd < new Date()) {
-        setSubscription({ ...data, status: "expired" } as Subscription);
-      } else {
-        setSubscription(data as Subscription);
-      }
-    }
-
-    // Then check Stripe for latest status
     try {
-      const { data: stripeData } = await supabase.functions.invoke("check-subscription");
-      if (stripeData?.subscribed && stripeData?.plan) {
-        setSubscription(prev => prev ? {
-          ...prev,
-          plan: stripeData.plan,
-          status: "active",
-        } : prev);
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (data) {
+        if ((data as any).is_lifetime) {
+          setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
+          setLoading(false);
+          return;
+        }
+
+        const trialEnd = new Date(data.trial_ends_at);
+        if (data.status === "trialing" && trialEnd < new Date()) {
+          setSubscription({ ...data, status: "expired" } as Subscription);
+        } else {
+          setSubscription(data as Subscription);
+        }
+
+        if (data.plan !== "trial") {
+          try {
+            const { data: stripeData } = await supabase.functions.invoke("check-subscription");
+            if (stripeData?.subscribed && stripeData?.plan) {
+              setSubscription(prev => prev ? { ...prev, plan: stripeData.plan, status: "active" } : prev);
+            }
+          } catch {
+            // Stripe check failed
+          }
+        }
       }
     } catch {
-      // Stripe check failed, use local data
+      // DB fetch failed
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
+    // If auth is still loading, keep sub loading true  
+    if (authLoading) return;
+
+    if (!user) {
+      setSubscription(null);
+      setLoading(false);
+      return;
+    }
+
+    // User available — fetch subscription
+    setLoading(true);
     checkSubscription();
 
-    // Auto-refresh every 60 seconds
     const interval = setInterval(checkSubscription, 60000);
     return () => clearInterval(interval);
-  }, [user, checkSubscription]);
+  }, [user, authLoading, checkSubscription]);
 
   const isActive = subscription?.is_lifetime || subscription?.status === "active" || subscription?.status === "trialing";
   const isTrialing = subscription?.status === "trialing" && !subscription?.is_lifetime;
