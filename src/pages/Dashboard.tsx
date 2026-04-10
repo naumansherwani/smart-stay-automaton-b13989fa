@@ -38,6 +38,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import TrialBanner from "@/components/TrialBanner";
+import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
@@ -177,6 +178,8 @@ const Dashboard = () => {
 
         
         <SmartGreetingBanner userName={displayName} />
+
+        <UpgradeNudge variant="card" feature="AI Automation" message="Automation saves time and increases revenue — unlock all features with Pro" />
 
         <IndustryKPIs config={config} />
 

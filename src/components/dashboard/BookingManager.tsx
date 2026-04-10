@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import type { IndustryConfig } from "@/lib/industryConfig";
+import SmartEmptyState from "@/components/conversion/SmartEmptyState";
+import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
 
 interface BookingRow {
   id: string;
@@ -70,6 +72,9 @@ const BookingManager = ({ config }: BookingManagerProps) => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filter, setFilter] = useState<string>("all");
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [lastBookingName, setLastBookingName] = useState("");
+  const hadBookingsBefore = useRef(false);
   const [form, setForm] = useState({
     guest_name: "",
     guest_email: "",
@@ -90,7 +95,10 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       supabase.from("bookings").select("*").eq("user_id", user.id).order("check_in", { ascending: false }),
       supabase.from("resources").select("id, name, business_type, minimum_stay, max_capacity, base_price").eq("user_id", user.id).eq("is_active", true),
     ]);
-    if (bRes.data) setBookings(bRes.data as unknown as BookingRow[]);
+    if (bRes.data) {
+      setBookings(bRes.data as unknown as BookingRow[]);
+      if (bRes.data.length > 0) hadBookingsBefore.current = true;
+    }
     if (rRes.data) setResources(rRes.data as unknown as Resource[]);
     setLoading(false);
   };
@@ -218,6 +226,12 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         toast.error("Failed to create booking");
       } else {
         toast.success(`${config.bookingLabel} created successfully!`);
+        // Show first success celebration
+        if (!hadBookingsBefore.current) {
+          setLastBookingName(form.guest_name);
+          setSuccessPopup(true);
+          hadBookingsBefore.current = true;
+        }
         setDialogOpen(false);
         setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "", group_size: "1" });
       }
@@ -392,11 +406,14 @@ const BookingManager = ({ config }: BookingManagerProps) => {
 
       {/* Bookings List */}
       {filteredBookings.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            No {config.bookingLabelPlural.toLowerCase()} found
-          </CardContent>
-        </Card>
+        <SmartEmptyState
+          icon={CalendarCheck}
+          title={`No ${config.bookingLabelPlural.toLowerCase()} found`}
+          description={`Create your first ${config.bookingLabel.toLowerCase()} and let AI handle the rest`}
+          actionLabel={`New ${config.bookingLabel}`}
+          onAction={() => setDialogOpen(true)}
+          emotionalMessage="Automation saves time and increases revenue"
+        />
       ) : (
         <div className="space-y-2">
           {filteredBookings.map(b => {
@@ -475,6 +492,14 @@ const BookingManager = ({ config }: BookingManagerProps) => {
           })}
         </div>
       )}
+
+      {/* First booking celebration */}
+      <FirstSuccessMessage
+        open={successPopup}
+        onClose={() => setSuccessPopup(false)}
+        type="booking"
+        itemName={lastBookingName}
+      />
     </div>
   );
 };

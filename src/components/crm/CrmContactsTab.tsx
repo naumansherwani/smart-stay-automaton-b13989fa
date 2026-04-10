@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,12 +16,18 @@ import type { IndustryType } from "@/lib/industryConfig";
 import type { CrmContact } from "@/hooks/useCrm";
 import CrmContactDetailPanel from "./CrmContactDetailPanel";
 import { toast } from "sonner";
+import { useTrialLimits } from "@/hooks/useTrialLimits";
+import LimitReachedPopup from "@/components/conversion/LimitReachedPopup";
+import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
+import SmartEmptyState from "@/components/conversion/SmartEmptyState";
+import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 
 interface Props { industry: IndustryType; }
 
 export default function CrmContactsTab({ industry }: Props) {
   const config = getCrmConfig(industry);
   const { contacts, loading, addContact, updateContact, deleteContact } = useCrmContacts();
+  const { limits, isTrial } = useTrialLimits();
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
@@ -30,6 +36,10 @@ export default function CrmContactsTab({ industry }: Props) {
   const [selectedContact, setSelectedContact] = useState<CrmContact | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" });
+  const [limitPopup, setLimitPopup] = useState(false);
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [lastAddedName, setLastAddedName] = useState("");
+  const hadContactsBefore = useRef(contacts.length > 0);
 
   const filtered = contacts.filter(c => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase()) || c.company?.toLowerCase().includes(search.toLowerCase());
@@ -41,11 +51,24 @@ export default function CrmContactsTab({ industry }: Props) {
 
   const handleAdd = async () => {
     if (!form.name.trim()) { toast.error("Name is required"); return; }
-    const payload: any = { ...form, tags: form.tags.split(",").map(t => t.trim()).filter(Boolean) };
-    delete payload.tags;
+    // Check trial limit
+    if (isTrial && limits.crmContacts > 0 && contacts.length >= limits.crmContacts) {
+      setLimitPopup(true);
+      return;
+    }
     const res = await addContact({ ...form });
     if (res?.error) toast.error("Failed to add contact");
-    else { toast.success(`${config.contactLabel} added`); setOpen(false); setForm({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" }); }
+    else {
+      toast.success(`${config.contactLabel} added`);
+      // Show first success message
+      if (!hadContactsBefore.current && contacts.length === 0) {
+        setLastAddedName(form.name);
+        setSuccessPopup(true);
+        hadContactsBefore.current = true;
+      }
+      setOpen(false);
+      setForm({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" });
+    }
   };
 
   const handleBulkDelete = async () => {
@@ -193,6 +216,15 @@ export default function CrmContactsTab({ industry }: Props) {
         </div>
       </div>
 
+      {/* Trial limit indicator */}
+      {isTrial && limits.crmContacts > 0 && (
+        <UpgradeNudge
+          variant="inline"
+          message={`${contacts.length} of ${limits.crmContacts} contacts used — upgrade for unlimited`}
+          feature="Unlimited Contacts"
+        />
+      )}
+
       {/* Summary */}
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         <span>{filtered.length} of {contacts.length} {config.contactLabelPlural.toLowerCase()}</span>
@@ -204,10 +236,15 @@ export default function CrmContactsTab({ industry }: Props) {
       {loading ? (
         <div className="text-center py-12 text-muted-foreground">Loading...</div>
       ) : filtered.length === 0 ? (
-        <Card><CardContent className="text-center py-12">
-          <User className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">No {config.contactLabelPlural.toLowerCase()} yet. Add your first one!</p>
-        </CardContent></Card>
+        <SmartEmptyState
+          icon={User}
+          title={`No ${config.contactLabelPlural.toLowerCase()} yet`}
+          description={`Add your first ${config.contactLabel.toLowerCase()} to start building your pipeline`}
+          actionLabel={`Add ${config.contactLabel}`}
+          onAction={() => setOpen(true)}
+          showUpgradeCta={isTrial}
+          emotionalMessage="Every lead you miss is revenue left on the table"
+        />
       ) : (
         <div className="grid gap-2">
           {/* Select all header */}
@@ -278,6 +315,21 @@ export default function CrmContactsTab({ industry }: Props) {
           ))}
         </div>
       )}
+
+      {/* Conversion Popups */}
+      <LimitReachedPopup
+        open={limitPopup}
+        onClose={() => setLimitPopup(false)}
+        feature="CRM contacts"
+        currentCount={contacts.length}
+        limit={limits.crmContacts}
+      />
+      <FirstSuccessMessage
+        open={successPopup}
+        onClose={() => setSuccessPopup(false)}
+        type="contact"
+        itemName={lastAddedName}
+      />
     </div>
   );
 }
