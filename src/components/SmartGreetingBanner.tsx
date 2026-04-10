@@ -65,11 +65,11 @@ function formatClock(tz: string) {
 }
 
 function getGreeting(hour: number) {
-  if (hour < 5) return { text: "Good Night", emoji: "🌙", gradient: "from-indigo-500/20 to-purple-500/20" };
-  if (hour < 12) return { text: "Good Morning", emoji: "☀️", gradient: "from-amber-500/20 to-orange-500/20" };
-  if (hour < 17) return { text: "Good Afternoon", emoji: "🌤️", gradient: "from-sky-500/20 to-blue-500/20" };
-  if (hour < 21) return { text: "Good Evening", emoji: "🌅", gradient: "from-orange-500/20 to-rose-500/20" };
-  return { text: "Good Night", emoji: "🌙", gradient: "from-indigo-500/20 to-purple-500/20" };
+  if (hour < 5) return { text: "Good Night", emoji: "🌙", gradient: "from-sky-400/10 to-blue-400/10" };
+  if (hour < 12) return { text: "Good Morning", emoji: "☀️", gradient: "from-sky-400/10 to-blue-400/10" };
+  if (hour < 17) return { text: "Good Afternoon", emoji: "🌤️", gradient: "from-sky-400/10 to-blue-400/10" };
+  if (hour < 21) return { text: "Good Evening", emoji: "🌅", gradient: "from-sky-400/10 to-blue-400/10" };
+  return { text: "Good Night", emoji: "🌙", gradient: "from-sky-400/10 to-blue-400/10" };
 }
 
 function windDir(deg: number) {
@@ -167,63 +167,60 @@ export default function SmartGreetingBanner({ userName, compact = false }: Props
       {/* ─── Main Greeting + Weather Card ─── */}
       <Card className="overflow-hidden border-0 rounded-none shadow-none border-t border-white/[0.06]">
         <CardContent className="p-0">
-          {/* Top greeting bar */}
-          <div className={`relative px-4 sm:px-6 py-4 bg-gradient-to-r ${greeting.gradient}`}>
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_60%)]" />
-            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Top greeting bar - compact */}
+          <div className={`relative px-4 sm:px-6 py-2.5 bg-gradient-to-r ${greeting.gradient}`}>
+            <div className="relative flex items-center justify-between gap-3">
               {/* Greeting */}
-              <div className="flex items-center gap-3">
-                <span className="text-3xl sm:text-4xl">{greeting.emoji}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{greeting.emoji}</span>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                  <h2 className="text-sm sm:text-base font-semibold text-foreground">
                     {greeting.text}, <span className="text-primary">{firstName}</span>!
                   </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    {now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+                  <p className="text-[10px] text-muted-foreground">
+                    {now.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
                   </p>
                 </div>
               </div>
 
               {/* Mini weather */}
               {weather && wmo && (
-                <div className="flex items-center gap-3 bg-background/60 backdrop-blur-sm rounded-xl px-3 py-2 border border-border/30">
-                  <span className="text-2xl">{wmo.emoji}</span>
-                  <div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-xl font-bold text-foreground">{Math.round(weather.temperature)}°C</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                      <MapPin className="h-2.5 w-2.5" />
-                      <span>{weather.city}{weather.country ? `, ${weather.country}` : ""}</span>
+                <div className="flex items-center gap-2 bg-background/40 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border border-border/20">
+                  <span className="text-lg">{wmo.emoji}</span>
+                  <div className="leading-tight">
+                    <span className="text-sm font-semibold text-foreground">{Math.round(weather.temperature)}°C</span>
+                    <div className="flex items-center gap-0.5 text-[9px] text-muted-foreground">
+                      <MapPin className="h-2 w-2" />
+                      <span>{weather.city}</span>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={fetchWeather}>
-                    <RefreshCw className="h-3 w-3" />
+                  <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={fetchWeather}>
+                    <RefreshCw className="h-2.5 w-2.5" />
                   </Button>
                 </div>
               )}
               {loading && !weather && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  Detecting location…
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                  <div className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  Detecting…
                 </div>
               )}
             </div>
           </div>
 
-          {/* World clock row */}
-          <div className="px-4 sm:px-6 py-3 border-t border-border/30 bg-background/40 backdrop-blur-sm">
-            <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
-              <Globe className="h-4 w-4 text-primary shrink-0" />
+          {/* World clock row - compact */}
+          <div className="px-4 sm:px-6 py-2 border-t border-border/20 bg-background/30">
+            <div className="flex items-center gap-1.5 overflow-x-auto">
+              <Globe className="h-3.5 w-3.5 text-primary shrink-0" />
               {CLOCKS.map((c) => (
                 <div
                   key={c.tz}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors min-w-fit"
+                  className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/30 hover:bg-muted/50 transition-colors min-w-fit"
                 >
-                  <span className="text-sm">{c.flag}</span>
+                  <span className="text-xs">{c.flag}</span>
                   <div className="leading-tight">
-                    <p className="text-[10px] text-muted-foreground">{c.city}</p>
-                    <p className="text-xs font-semibold text-foreground">{formatClock(c.tz)}</p>
+                    <p className="text-[9px] text-muted-foreground">{c.city}</p>
+                    <p className="text-[11px] font-semibold text-foreground">{formatClock(c.tz)}</p>
                   </div>
                 </div>
               ))}
