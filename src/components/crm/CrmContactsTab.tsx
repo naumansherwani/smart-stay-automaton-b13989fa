@@ -216,6 +216,15 @@ export default function CrmContactsTab({ industry }: Props) {
         </div>
       </div>
 
+      {/* Trial limit indicator */}
+      {isTrial && limits.crmContacts > 0 && (
+        <UpgradeNudge
+          variant="inline"
+          message={`${contacts.length} of ${limits.crmContacts} contacts used — upgrade for unlimited`}
+          feature="Unlimited Contacts"
+        />
+      )}
+
       {/* Summary */}
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         <span>{filtered.length} of {contacts.length} {config.contactLabelPlural.toLowerCase()}</span>
