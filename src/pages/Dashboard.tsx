@@ -16,6 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
+import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
+import HowItWorksGuide from "@/components/dashboard/HowItWorksGuide";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import IndustryKPIs from "@/components/dashboard/IndustryKPIs";
 import IndustryWidgets from "@/components/dashboard/IndustryWidgets";
@@ -137,6 +139,9 @@ const Dashboard = () => {
             <div className="hidden sm:block">
               <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
             </div>
+            <div className="hidden sm:block">
+              <WorkspaceSwitcher />
+            </div>
           </div>
           <div className="flex items-center gap-1 md:gap-2">
             
@@ -180,6 +185,8 @@ const Dashboard = () => {
         <SmartGreetingBanner userName={displayName} />
 
         <UpgradeNudge variant="card" feature="AI Automation" message="Automation saves time and increases revenue — unlock all features with Pro" />
+
+        <HowItWorksGuide />
 
         <IndustryKPIs config={config} />
 
