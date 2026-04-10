@@ -52,7 +52,7 @@ const IndustriesSection = () => {
           {INDUSTRIES.map((ind) => (
             <Card
               key={ind.name}
-              onClick={handleClick}
+              onClick={() => handleClick(ind.id)}
               className="group border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:scale-[1.03] cursor-pointer overflow-hidden relative"
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = `${ind.color}40`;
