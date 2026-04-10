@@ -4,6 +4,13 @@ import { useAuth } from "./useAuth";
 import { useProfile } from "./useProfile";
 import type { IndustryType } from "@/lib/industryConfig";
 
+const logCrmAction = (userId: string, industry: string, action_type: string, entity_type: string, entity_id?: string, description?: string) => {
+  supabase.from("crm_activity_logs" as any).insert({
+    user_id: userId, industry, action_type, entity_type,
+    entity_id: entity_id || null, description: description || null,
+  } as any).then(() => {});
+};
+
 export interface CrmTask {
   id: string;
   user_id: string;
@@ -72,19 +79,30 @@ export function useCrmTasks() {
       .insert({ ...task, user_id: user.id, industry } as any)
       .select()
       .single();
-    if (!error && data) setTasks(prev => [data as unknown as CrmTask, ...prev]);
+    if (!error && data) {
+      setTasks(prev => [data as unknown as CrmTask, ...prev]);
+      logCrmAction(user.id, industry, "create", "task", (data as any).id, `Created task: ${task.title}`);
+    }
     return { data, error };
   };
 
   const updateTask = async (id: string, updates: Record<string, unknown>) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_tasks").update(updates as any).eq("id", id);
-    if (!error) setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } as CrmTask : t));
+    if (!error) {
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } as CrmTask : t));
+      logCrmAction(user.id, industry, "update", "task", id);
+    }
     return { error };
   };
 
   const deleteTask = async (id: string) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_tasks").delete().eq("id", id);
-    if (!error) setTasks(prev => prev.filter(t => t.id !== id));
+    if (!error) {
+      setTasks(prev => prev.filter(t => t.id !== id));
+      logCrmAction(user.id, industry, "delete", "task", id);
+    }
     return { error };
   };
 
