@@ -113,33 +113,6 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Industry pills */}
-          <div className="pt-8">
-            <p className="text-[11px] text-white/25 uppercase tracking-[0.2em] mb-5 font-semibold">Powering 8 industries worldwide</p>
-            <div className="flex flex-wrap justify-center gap-2.5">
-              {[
-                { emoji: "🌍", name: "Hospitality", color: "hsl(174,62%,50%)" },
-                { emoji: "✈️", name: "Airlines", color: "hsl(217,91%,60%)" },
-                { emoji: "🚗", name: "Car Rental", color: "hsl(190,80%,55%)" },
-                { emoji: "🏥", name: "Healthcare", color: "hsl(0,72%,55%)" },
-                { emoji: "🎓", name: "Education", color: "hsl(270,80%,65%)" },
-                { emoji: "📦", name: "Logistics", color: "hsl(25,95%,55%)" },
-                { emoji: "🎭", name: "Events", color: "hsl(300,80%,65%)" },
-                { emoji: "🚆", name: "Railways", color: "hsl(200,70%,50%)" },
-              ].map(ind => (
-                <span
-                  key={ind.name}
-                  className="group px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-sm text-white/60 font-medium backdrop-blur-sm hover:bg-white/[0.08] hover:border-white/15 hover:text-white/90 transition-all duration-300 cursor-default"
-                  style={{ 
-                    // @ts-ignore
-                    '--hover-glow': ind.color 
-                  }}
-                >
-                  <span className="mr-1.5">{ind.emoji}</span>{ind.name}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
