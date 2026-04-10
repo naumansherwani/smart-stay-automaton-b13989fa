@@ -37,6 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
+import TrialCountdownBanner from "@/components/TrialCountdownBanner";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
