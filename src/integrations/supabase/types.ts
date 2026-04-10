@@ -532,6 +532,119 @@ export type Database = {
           },
         ]
       }
+      crm_google_connections: {
+        Row: {
+          access_token_encrypted: string | null
+          calendar_sync_enabled: boolean | null
+          chat_sync_enabled: boolean | null
+          created_at: string
+          gmail_sync_enabled: boolean | null
+          google_email: string | null
+          id: string
+          last_sync_at: string | null
+          metadata: Json | null
+          refresh_token_encrypted: string | null
+          scopes: string[] | null
+          sync_status: string | null
+          token_expires_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token_encrypted?: string | null
+          calendar_sync_enabled?: boolean | null
+          chat_sync_enabled?: boolean | null
+          created_at?: string
+          gmail_sync_enabled?: boolean | null
+          google_email?: string | null
+          id?: string
+          last_sync_at?: string | null
+          metadata?: Json | null
+          refresh_token_encrypted?: string | null
+          scopes?: string[] | null
+          sync_status?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token_encrypted?: string | null
+          calendar_sync_enabled?: boolean | null
+          chat_sync_enabled?: boolean | null
+          created_at?: string
+          gmail_sync_enabled?: boolean | null
+          google_email?: string | null
+          id?: string
+          last_sync_at?: string | null
+          metadata?: Json | null
+          refresh_token_encrypted?: string | null
+          scopes?: string[] | null
+          sync_status?: string | null
+          token_expires_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_google_synced_items: {
+        Row: {
+          body_preview: string | null
+          created_at: string
+          external_id: string | null
+          from_address: string | null
+          id: string
+          is_read: boolean | null
+          item_date: string | null
+          item_type: string
+          labels: string[] | null
+          linked_contact_id: string | null
+          metadata: Json | null
+          title: string | null
+          to_addresses: string[] | null
+          user_id: string
+        }
+        Insert: {
+          body_preview?: string | null
+          created_at?: string
+          external_id?: string | null
+          from_address?: string | null
+          id?: string
+          is_read?: boolean | null
+          item_date?: string | null
+          item_type: string
+          labels?: string[] | null
+          linked_contact_id?: string | null
+          metadata?: Json | null
+          title?: string | null
+          to_addresses?: string[] | null
+          user_id: string
+        }
+        Update: {
+          body_preview?: string | null
+          created_at?: string
+          external_id?: string | null
+          from_address?: string | null
+          id?: string
+          is_read?: boolean | null
+          item_date?: string | null
+          item_type?: string
+          labels?: string[] | null
+          linked_contact_id?: string | null
+          metadata?: Json | null
+          title?: string | null
+          to_addresses?: string[] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_google_synced_items_linked_contact_id_fkey"
+            columns: ["linked_contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_pipelines: {
         Row: {
           color: string | null
