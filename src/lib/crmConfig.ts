@@ -36,6 +36,8 @@ const TOOL_RESOURCE_MGMT: CrmToolConfig = { id: "resource-mgmt", label: "Resourc
 const TOOL_FLEET_MGMT: CrmToolConfig = { id: "fleet-mgmt", label: "Fleet Manager", icon: "🚗", description: "Track & manage vehicle fleet" };
 const TOOL_ROUTE_OPT: CrmToolConfig = { id: "route-optimizer", label: "Route Optimizer", icon: "🗺️", description: "AI-optimized routes & logistics" };
 const TOOL_CAPACITY: CrmToolConfig = { id: "capacity-planner", label: "Capacity Planner", icon: "📊", description: "Predict & manage capacity in real-time" };
+const TOOL_SMART_TASKS: CrmToolConfig = { id: "smart-tasks", label: "Smart Tasks", icon: "✅", description: "AI auto-organized task management" };
+const TOOL_DAILY_PLANNER: CrmToolConfig = { id: "daily-planner", label: "AI Daily Planner", icon: "☀️", description: "AI-generated daily plan with priorities & recommendations" };
 
 export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
   hospitality: {
@@ -52,7 +54,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["airbnb", "booking.com", "vrbo", "expedia", "direct", "referral", "google", "tripadvisor"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Urgent Guest Issue" },
     aiFeatures: ["guest-scoring", "review-sentiment", "upsell-suggestions", "churn-prediction", "auto-response"],
-    crmTools: [TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
   },
   airlines: {
     contactLabel: "Passenger", contactLabelPlural: "Passengers",
@@ -68,7 +70,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["amadeus", "sabre", "direct", "travel-agent", "corporate", "loyalty-program"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Flight Safety" },
     aiFeatures: ["delay-compensation", "rebooking-ai", "loyalty-scoring", "route-demand", "crew-optimization"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_AI_PRICING, TOOL_CAPACITY, TOOL_ROUTE_OPT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_AI_PRICING, TOOL_CAPACITY, TOOL_ROUTE_OPT],
   },
   car_rental: {
     contactLabel: "Renter", contactLabelPlural: "Renters",
@@ -84,7 +86,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["turo", "getaround", "direct", "corporate", "airport-counter", "online"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Vehicle Emergency" },
     aiFeatures: ["damage-assessment", "fleet-pricing", "utilization-forecast", "churn-prediction", "upsell-insurance"],
-    crmTools: [TOOL_AI_PRICING, TOOL_FLEET_MGMT, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_PRICING, TOOL_FLEET_MGMT, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
   },
   healthcare: {
     contactLabel: "Patient", contactLabelPlural: "Patients",
@@ -100,7 +102,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["zocdoc", "healthgrades", "direct", "referral", "insurance-network", "walk-in"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Medical Urgent" },
     aiFeatures: ["no-show-prediction", "appointment-optimization", "patient-satisfaction", "follow-up-reminders", "wait-time-reduction"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
   },
   education: {
     contactLabel: "Student", contactLabelPlural: "Students",
@@ -116,7 +118,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["website", "campus-visit", "referral", "social-media", "education-fair", "direct"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Student Safety" },
     aiFeatures: ["dropout-prediction", "engagement-scoring", "course-recommendation", "attendance-alerts", "performance-tracking"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY, TOOL_RESOURCE_MGMT],
   },
   logistics: {
     contactLabel: "Client", contactLabelPlural: "Clients",
@@ -132,7 +134,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["flexport", "freightos", "direct", "broker", "referral", "rfp"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Shipment Emergency" },
     aiFeatures: ["eta-prediction", "route-optimization", "capacity-forecast", "claim-automation", "sla-monitoring"],
-    crmTools: [TOOL_ROUTE_OPT, TOOL_CAPACITY, TOOL_FLEET_MGMT, TOOL_AI_SCHEDULING],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_ROUTE_OPT, TOOL_CAPACITY, TOOL_FLEET_MGMT, TOOL_AI_SCHEDULING],
   },
   events_entertainment: {
     contactLabel: "Organizer", contactLabelPlural: "Organizers",
@@ -148,7 +150,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["eventbrite", "ticketmaster", "direct", "agency", "referral", "social-media"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Event Day Emergency" },
     aiFeatures: ["attendee-prediction", "vendor-matching", "pricing-optimization", "sentiment-analysis", "capacity-alerts"],
-    crmTools: [TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
   },
   railways: {
     contactLabel: "Passenger", contactLabelPlural: "Passengers",
@@ -164,7 +166,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["irctc", "trainline", "omio", "direct", "counter", "mobile-app"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Safety Critical" },
     aiFeatures: ["delay-compensation", "demand-forecasting", "route-optimization", "satisfaction-scoring", "capacity-management"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_AI_PRICING, TOOL_ROUTE_OPT, TOOL_CAPACITY],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_AI_PRICING, TOOL_ROUTE_OPT, TOOL_CAPACITY],
   },
   fitness_wellness: {
     contactLabel: "Member", contactLabelPlural: "Members",
@@ -180,7 +182,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["classpass", "mindbody", "direct", "referral", "corporate", "social-media", "walk-in"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Safety/Injury" },
     aiFeatures: ["churn-prediction", "class-recommendation", "attendance-patterns", "upsell-personal-training", "peak-time-forecast"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_CAPACITY],
   },
   legal_services: {
     contactLabel: "Client", contactLabelPlural: "Clients",
@@ -196,7 +198,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["avvo", "justia", "referral", "direct", "bar-association", "website", "court-appointed"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Court Deadline" },
     aiFeatures: ["case-outcome-prediction", "document-analysis", "billing-optimization", "conflict-check", "deadline-monitoring"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
   },
   real_estate: {
     contactLabel: "Client", contactLabelPlural: "Clients",
@@ -212,7 +214,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["zillow", "realtor.com", "redfin", "direct", "referral", "open-house", "cold-call", "mls"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Closing Emergency" },
     aiFeatures: ["price-prediction", "lead-scoring", "market-analysis", "showing-optimization", "churn-prediction"],
-    crmTools: [TOOL_AI_PRICING, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_PRICING, TOOL_AI_SCHEDULING, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
   },
   coworking: {
     contactLabel: "Member", contactLabelPlural: "Members",
@@ -228,7 +230,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["wework", "deskpass", "direct", "referral", "corporate", "website", "walk-in"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Access Emergency" },
     aiFeatures: ["occupancy-prediction", "churn-prediction", "upsell-private-office", "community-matching", "peak-analysis"],
-    crmTools: [TOOL_AI_PRICING, TOOL_AI_CALENDAR, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_PRICING, TOOL_AI_CALENDAR, TOOL_MANUAL_BOOKING, TOOL_RESOURCE_MGMT],
   },
   marine_maritime: {
     contactLabel: "Client", contactLabelPlural: "Clients",
@@ -244,7 +246,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["maritime-exchange", "broker", "direct", "port-authority", "forwarding-agent", "corporate"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Maritime Emergency" },
     aiFeatures: ["route-optimization", "weather-risk", "port-congestion-prediction", "fuel-optimization", "compliance-check"],
-    crmTools: [TOOL_ROUTE_OPT, TOOL_AI_SCHEDULING, TOOL_CAPACITY, TOOL_FLEET_MGMT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_ROUTE_OPT, TOOL_AI_SCHEDULING, TOOL_CAPACITY, TOOL_FLEET_MGMT],
   },
   government: {
     contactLabel: "Citizen", contactLabelPlural: "Citizens",
@@ -260,7 +262,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["311-hotline", "website", "in-person", "email", "mobile-app", "social-media", "mail"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Public Safety" },
     aiFeatures: ["response-time-prediction", "workload-balancing", "sentiment-analysis", "resource-allocation", "compliance-tracking"],
-    crmTools: [TOOL_AI_SCHEDULING, TOOL_RESOURCE_MGMT, TOOL_CAPACITY],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_SCHEDULING, TOOL_RESOURCE_MGMT, TOOL_CAPACITY],
   },
   travel_tourism: {
     contactLabel: "Traveler", contactLabelPlural: "Travelers",
@@ -276,7 +278,7 @@ export const CRM_INDUSTRY_CONFIGS: Record<IndustryType, CrmIndustryConfig> = {
     sources: ["tripadvisor", "viator", "getyourguide", "direct", "travel-agent", "referral", "google"],
     priorityLabels: { ...DEFAULT_PRIORITIES, critical: "Travel Emergency" },
     aiFeatures: ["package-recommendation", "pricing-optimization", "sentiment-analysis", "demand-forecasting", "upsell-activities"],
-    crmTools: [TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_ROUTE_OPT],
+    crmTools: [TOOL_SMART_TASKS, TOOL_DAILY_PLANNER, TOOL_AI_CALENDAR, TOOL_AI_PRICING, TOOL_MANUAL_BOOKING, TOOL_ROUTE_OPT],
   },
 };
 

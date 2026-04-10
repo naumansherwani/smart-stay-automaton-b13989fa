@@ -409,6 +409,51 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_daily_plans: {
+        Row: {
+          ai_recommendations: Json | null
+          created_at: string
+          focus_areas: string[] | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          mood: string | null
+          notes: string | null
+          plan_date: string
+          productivity_score: number | null
+          tasks_summary: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          created_at?: string
+          focus_areas?: string[] | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          mood?: string | null
+          notes?: string | null
+          plan_date: string
+          productivity_score?: number | null
+          tasks_summary?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          created_at?: string
+          focus_areas?: string[] | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          mood?: string | null
+          notes?: string | null
+          plan_date?: string
+          productivity_score?: number | null
+          tasks_summary?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crm_deals: {
         Row: {
           contact_id: string | null
@@ -525,6 +570,109 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      crm_tasks: {
+        Row: {
+          ai_category: string | null
+          ai_priority_score: number | null
+          ai_suggestions: Json | null
+          category: string | null
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          estimated_minutes: number | null
+          id: string
+          industry: Database["public"]["Enums"]["industry_type"]
+          is_recurring: boolean | null
+          linked_contact_id: string | null
+          linked_deal_id: string | null
+          linked_ticket_id: string | null
+          metadata: Json | null
+          priority: string | null
+          recurrence_rule: string | null
+          scheduled_time: string | null
+          sort_order: number | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_category?: string | null
+          ai_priority_score?: number | null
+          ai_suggestions?: Json | null
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_recurring?: boolean | null
+          linked_contact_id?: string | null
+          linked_deal_id?: string | null
+          linked_ticket_id?: string | null
+          metadata?: Json | null
+          priority?: string | null
+          recurrence_rule?: string | null
+          scheduled_time?: string | null
+          sort_order?: number | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_category?: string | null
+          ai_priority_score?: number | null
+          ai_suggestions?: Json | null
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          industry?: Database["public"]["Enums"]["industry_type"]
+          is_recurring?: boolean | null
+          linked_contact_id?: string | null
+          linked_deal_id?: string | null
+          linked_ticket_id?: string | null
+          metadata?: Json | null
+          priority?: string | null
+          recurrence_rule?: string | null
+          scheduled_time?: string | null
+          sort_order?: number | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_tasks_linked_contact_id_fkey"
+            columns: ["linked_contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_linked_deal_id_fkey"
+            columns: ["linked_deal_id"]
+            isOneToOne: false
+            referencedRelation: "crm_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crm_tasks_linked_ticket_id_fkey"
+            columns: ["linked_ticket_id"]
+            isOneToOne: false
+            referencedRelation: "crm_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_tickets: {
         Row: {
