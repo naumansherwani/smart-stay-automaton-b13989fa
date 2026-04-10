@@ -27,6 +27,7 @@ interface Props { industry: IndustryType; }
 export default function CrmContactsTab({ industry }: Props) {
   const config = getCrmConfig(industry);
   const { contacts, loading, addContact, updateContact, deleteContact } = useCrmContacts();
+  const { limits, isTrial } = useTrialLimits();
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
@@ -35,6 +36,10 @@ export default function CrmContactsTab({ industry }: Props) {
   const [selectedContact, setSelectedContact] = useState<CrmContact | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" });
+  const [limitPopup, setLimitPopup] = useState(false);
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [lastAddedName, setLastAddedName] = useState("");
+  const hadContactsBefore = useRef(contacts.length > 0);
 
   const filtered = contacts.filter(c => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase()) || c.company?.toLowerCase().includes(search.toLowerCase());
@@ -46,11 +51,24 @@ export default function CrmContactsTab({ industry }: Props) {
 
   const handleAdd = async () => {
     if (!form.name.trim()) { toast.error("Name is required"); return; }
-    const payload: any = { ...form, tags: form.tags.split(",").map(t => t.trim()).filter(Boolean) };
-    delete payload.tags;
+    // Check trial limit
+    if (isTrial && limits.crmContacts > 0 && contacts.length >= limits.crmContacts) {
+      setLimitPopup(true);
+      return;
+    }
     const res = await addContact({ ...form });
     if (res?.error) toast.error("Failed to add contact");
-    else { toast.success(`${config.contactLabel} added`); setOpen(false); setForm({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" }); }
+    else {
+      toast.success(`${config.contactLabel} added`);
+      // Show first success message
+      if (!hadContactsBefore.current && contacts.length === 0) {
+        setLastAddedName(form.name);
+        setSuccessPopup(true);
+        hadContactsBefore.current = true;
+      }
+      setOpen(false);
+      setForm({ name: "", email: "", phone: "", company: "", lifecycle_stage: "lead", source: "direct", notes: "", tags: "" });
+    }
   };
 
   const handleBulkDelete = async () => {
