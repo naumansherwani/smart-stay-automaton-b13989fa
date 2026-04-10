@@ -90,6 +90,18 @@ Deno.serve(async (req) => {
       case "deal_forecast":
         result = await dealForecast(data);
         break;
+      case "compose_email":
+        result = await composeEmail(data);
+        break;
+      case "revenue_forecast":
+        result = await revenueForecast(data);
+        break;
+      case "competitor_analysis":
+        result = await competitorAnalysis(data);
+        break;
+      case "suggest_meeting":
+        result = await suggestMeeting(data);
+        break;
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
