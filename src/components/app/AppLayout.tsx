@@ -3,7 +3,7 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Globe } from "lucide-react";
+import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
