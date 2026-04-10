@@ -143,13 +143,13 @@
   .crm-feature-star::before {
     top: -4px;
     right: -14px;
-    color: hsl(340, 80%, 60%);
+    color: hsl(174, 62%, 50%);
   }
 
   .crm-feature-star::after {
     bottom: -2px;
     left: -12px;
-    color: hsl(350, 70%, 55%);
+    color: hsl(217, 91%, 60%);
     font-size: 8px;
   }
 
