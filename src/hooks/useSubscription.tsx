@@ -16,53 +16,62 @@ export function useSubscription() {
   const [loading, setLoading] = useState(true);
 
   const checkSubscription = useCallback(async () => {
-    if (!user) return;
-
-    // First check local DB
-    const { data } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
-
-    if (data) {
-      // Check lifetime access first
-      if ((data as any).is_lifetime) {
-        setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
-        setLoading(false);
-        return;
-      }
-
-      const trialEnd = new Date(data.trial_ends_at);
-      if (data.status === "trialing" && trialEnd < new Date()) {
-        setSubscription({ ...data, status: "expired" } as Subscription);
-      } else {
-        setSubscription(data as Subscription);
-      }
+    if (!user) {
+      setLoading(false);
+      return;
     }
 
-    // Then check Stripe for latest status
     try {
-      const { data: stripeData } = await supabase.functions.invoke("check-subscription");
-      if (stripeData?.subscribed && stripeData?.plan) {
-        setSubscription(prev => prev ? {
-          ...prev,
-          plan: stripeData.plan,
-          status: "active",
-        } : prev);
+      // Check local DB
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (data) {
+        // Lifetime access — no need for Stripe check
+        if ((data as any).is_lifetime) {
+          setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
+          setLoading(false);
+          return;
+        }
+
+        const trialEnd = new Date(data.trial_ends_at);
+        if (data.status === "trialing" && trialEnd < new Date()) {
+          setSubscription({ ...data, status: "expired" } as Subscription);
+        } else {
+          setSubscription(data as Subscription);
+        }
+
+        // Only check Stripe for non-lifetime, paid plans
+        if (data.plan !== "trial") {
+          try {
+            const { data: stripeData } = await supabase.functions.invoke("check-subscription");
+            if (stripeData?.subscribed && stripeData?.plan) {
+              setSubscription(prev => prev ? {
+                ...prev,
+                plan: stripeData.plan,
+                status: "active",
+              } : prev);
+            }
+          } catch {
+            // Stripe check failed, use local data
+          }
+        }
       }
     } catch {
-      // Stripe check failed, use local data
+      // DB fetch failed
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
     if (!user) { setLoading(false); return; }
+    setLoading(true);
     checkSubscription();
 
-    // Auto-refresh every 60 seconds
     const interval = setInterval(checkSubscription, 60000);
     return () => clearInterval(interval);
   }, [user, checkSubscription]);
