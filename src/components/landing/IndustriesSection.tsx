@@ -1,37 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { INDUSTRY_CONFIGS, type IndustryType } from "@/lib/industryConfig";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Globe, Plane, Car, Hospital, GraduationCap, Package, Theater, TrainFront,
+  Globe, Plane, Car, Stethoscope, GraduationCap, Truck,
+  Theater, TrainFront, Zap,
 } from "lucide-react";
+import type { IndustryType } from "@/lib/industryConfig";
 
-const ICON_MAP: Record<IndustryType, React.ElementType> = {
-  hospitality: Globe,
-  airlines: Plane,
-  car_rental: Car,
-  healthcare: Hospital,
-  education: GraduationCap,
-  logistics: Package,
-  events_entertainment: Theater,
-  railways: TrainFront,
-};
-
-const DESCRIPTIONS: Record<IndustryType, string> = {
-  hospitality: "Manage bookings, guest scoring & channel sync for hotels and tours.",
-  airlines: "Crew scheduling, gate assignment & load factor optimization.",
-  car_rental: "Fleet tracking, utilization analytics & pricing optimization.",
-  healthcare: "Appointment slots, patient flow & no-show prediction.",
-  education: "Class scheduling, room booking & attendance tracking.",
-  logistics: "Route optimization, warehouse slots & delivery tracking.",
-  events_entertainment: "Venue calendars, ticket capacity & vendor coordination.",
-  railways: "Platform allocation, route scheduling & delay tracking.",
-};
+const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; id: IndustryType }[] = [
+  { icon: Globe, name: "Travel, Tourism & Hospitality", desc: "Hotels, vacation rentals, B&Bs, tour operators", color: "#0d9488", id: "hospitality" },
+  { icon: Plane, name: "Airlines", desc: "Crew scheduling, gate management, fleet rotation", color: "#3b82f6", id: "airlines" },
+  { icon: Car, name: "Car Rental", desc: "Fleet availability, maintenance scheduling", color: "#0ea5e9", id: "car_rental" },
+  { icon: Stethoscope, name: "Healthcare", desc: "Appointments, OR rooms, equipment booking", color: "#ef4444", id: "healthcare" },
+  { icon: GraduationCap, name: "Education", desc: "Class scheduling, room allocation, tutoring", color: "#8b5cf6", id: "education" },
+  { icon: Truck, name: "Logistics", desc: "Delivery slots, warehouse scheduling, fleet", color: "#f97316", id: "logistics" },
+  { icon: Theater, name: "Events & Entertainment", desc: "Venue booking, performer scheduling", color: "#d946ef", id: "events_entertainment" },
+  { icon: TrainFront, name: "Railways", desc: "Train scheduling, platform allocation, crew rotation", color: "#0284c7", id: "railways" },
+];
 
 const IndustriesSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const handleClick = (industry: IndustryType) => {
+  const handleClick = () => {
     if (!user) {
       navigate("/signup");
     } else {
@@ -40,50 +31,51 @@ const IndustriesSection = () => {
   };
 
   return (
-    <section className="py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[hsl(222,47%,8%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(174,62%,50%,0.04),transparent_60%)]" />
+    <section id="industries" className="py-24 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(217,91%,60%,0.03),transparent_60%)]" />
 
-      <div className="container relative z-10">
-        <div className="text-center mb-14 space-y-3">
-          <p className="text-[11px] text-[hsl(174,62%,50%)] uppercase tracking-[0.2em] font-semibold">Choose Your Industry</p>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-            Built for <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)]">Every Industry</span>
+      <div className="container relative z-10 space-y-12">
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-semibold">
+            <Zap className="w-4 h-4" /> Multi-Industry
+          </div>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
+            One Platform. <span className="text-gradient-primary">8 Industries.</span>
           </h2>
-          <p className="text-white/40 max-w-lg mx-auto text-sm">
-            Select your industry to get a workspace tailored to your business needs.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            One AI. Every industry. No limits.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
-          {Object.values(INDUSTRY_CONFIGS).map((cfg) => {
-            const Icon = ICON_MAP[cfg.id];
-            return (
-              <button
-                key={cfg.id}
-                onClick={() => handleClick(cfg.id)}
-                className="group relative text-left p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:bg-white/[0.06] hover:border-white/15 hover:shadow-[0_0_30px_rgba(45,212,191,0.12)] cursor-pointer"
-              >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          {INDUSTRIES.map((ind) => (
+            <Card
+              key={ind.name}
+              onClick={handleClick}
+              className="group border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:scale-[1.03] cursor-pointer overflow-hidden relative"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = `${ind.color}40`;
+                e.currentTarget.style.boxShadow = `0 20px 60px -15px ${ind.color}20`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "";
+                e.currentTarget.style.boxShadow = "";
+              }}
+            >
+              <CardContent className="p-5 flex items-start gap-3">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
-                  style={{ background: `${cfg.color}15`, border: `1px solid ${cfg.color}30` }}
+                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  style={{ backgroundColor: `${ind.color}12` }}
                 >
-                  <Icon className="w-6 h-6" style={{ color: cfg.color }} />
+                  <ind.icon className="w-5 h-5" style={{ color: ind.color }} />
                 </div>
-                <h3 className="text-white font-semibold text-sm mb-1.5 group-hover:text-white/95 transition-colors">
-                  {cfg.label}
-                </h3>
-                <p className="text-white/35 text-xs leading-relaxed group-hover:text-white/50 transition-colors">
-                  {DESCRIPTIONS[cfg.id]}
-                </p>
-                {/* Glow border on hover */}
-                <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                  style={{ boxShadow: `inset 0 0 0 1px ${cfg.color}40, 0 0 20px ${cfg.color}10` }}
-                />
-              </button>
-            );
-          })}
+                <div>
+                  <h4 className="font-bold text-foreground text-sm leading-tight">{ind.name}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">{ind.desc}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
