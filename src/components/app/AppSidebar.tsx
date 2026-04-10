@@ -2,8 +2,6 @@ import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, DollarSign,
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
-import { useProfile } from "@/hooks/useProfile";
-import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +16,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useCallback } from "react";
 
 const mainNav = [
@@ -39,12 +38,7 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
-  const { profile } = useProfile();
   const [pinned, setPinned] = useState(false);
-
-  const industryLabel = profile?.industry
-    ? INDUSTRY_CONFIGS[profile.industry]?.label || profile.industry
-    : "Loading...";
 
   const isActive = (url: string) => {
     if (url.includes("?")) return false;
@@ -67,6 +61,35 @@ export function AppSidebar() {
     });
   };
 
+  const renderNavItem = (item: typeof mainNav[0]) => {
+    const button = (
+      <SidebarMenuButton asChild isActive={isActive(item.url)}>
+        <NavLink
+          to={item.url}
+          end
+          className="hover:bg-muted/50"
+          activeClassName="bg-muted text-primary font-medium"
+        >
+          <item.icon className="mr-2 h-4 w-4" />
+          {!collapsed && <span>{item.title}</span>}
+        </NavLink>
+      </SidebarMenuButton>
+    );
+
+    if (collapsed) {
+      return (
+        <SidebarMenuItem key={item.title}>
+          <Tooltip>
+            <TooltipTrigger asChild>{button}</TooltipTrigger>
+            <TooltipContent side="right">{item.title}</TooltipContent>
+          </Tooltip>
+        </SidebarMenuItem>
+      );
+    }
+
+    return <SidebarMenuItem key={item.title}>{button}</SidebarMenuItem>;
+  };
+
   return (
     <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Sidebar collapsible="icon">
@@ -82,14 +105,6 @@ export function AppSidebar() {
               </span>
             )}
           </button>
-
-          {/* Workspace label */}
-          {!collapsed && (
-            <div className="mt-3 px-1">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold">Workspace</p>
-              <p className="text-xs font-medium text-foreground/80 truncate mt-0.5">{industryLabel}</p>
-            </div>
-          )}
         </SidebarHeader>
 
         <SidebarContent>
@@ -97,24 +112,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {mainNav.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.url)}
-                    >
-                      <NavLink
-                        to={item.url}
-                        end
-                        className="hover:bg-muted/50"
-                        activeClassName="bg-muted text-primary font-medium"
-                      >
-                        <item.icon className="mr-2 h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {mainNav.map(renderNavItem)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -123,24 +121,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>More</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {secondaryNav.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.url)}
-                    >
-                      <NavLink
-                        to={item.url}
-                        end
-                        className="hover:bg-muted/50"
-                        activeClassName="bg-muted text-primary font-medium"
-                      >
-                        <item.icon className="mr-2 h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {secondaryNav.map(renderNavItem)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
