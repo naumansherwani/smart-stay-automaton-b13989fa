@@ -28,6 +28,7 @@ import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import { ConversationProvider } from "@elevenlabs/react";
+import TrialBanner from "@/components/TrialBanner";
 
 export default function CRM() {
   const { user } = useAuth();
