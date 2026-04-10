@@ -22,6 +22,7 @@ const Index = () => (
     </div>
     <HeroSection />
     <IndustriesSection />
+    <PricingSection />
     <StatsSection />
     <HowItWorksSection />
     <FeaturesSection />
