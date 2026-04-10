@@ -176,6 +176,9 @@ export default function CRM() {
               <TabsTrigger value="security" className="flex items-center gap-1.5">
                 <Shield className="h-4 w-4" /><span className="hidden sm:inline">Security</span>
               </TabsTrigger>
+              <TabsTrigger value="industry-connect" className="flex items-center gap-1.5">
+                <Building2 className="h-4 w-4" /><span className="hidden sm:inline">Connect</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -201,6 +204,7 @@ export default function CRM() {
           <TabsContent value="meeting-scheduler"><CrmSmartMeetingScheduler industry={industry} /></TabsContent>
           <TabsContent value="performance"><CrmPerformanceTab industry={industry} /></TabsContent>
           <TabsContent value="security"><CrmSecurityPanel /></TabsContent>
+          <TabsContent value="industry-connect"><CrmIndustryConnect /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
