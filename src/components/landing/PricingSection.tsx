@@ -12,7 +12,7 @@ const PLANS = [
     desc: "Perfect for solo operators",
     features: ["3 resources", "Limited bookings", "Limited AI Calendar", "Limited AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
     cta: "Start Free Trial",
-    style: "border-cyan-400 ring-2 ring-cyan-400/20 animate-[glow-cyan_3s_ease-in-out_infinite]",
+    style: "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]",
   },
   {
     name: "Pro",
@@ -21,7 +21,7 @@ const PLANS = [
     desc: "Best for growing businesses",
     features: ["All Basic features +", "15 resources", "100 bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI scheduling", "Guest/client scoring", "Advanced analytics", "Competitor radar", "Gap-filler engine", "Marketplace access", "Priority support"],
     cta: "Start Free Trial",
-    style: "border-primary ring-2 ring-primary/20",
+    style: "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]",
   },
   {
     name: "Premium",
@@ -30,7 +30,7 @@ const PLANS = [
     highlight: "🚀 Advanced AI CRM Hub",
     features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "⭐ Advanced AI CRM — Full Suite", "⭐ AI Lead Scoring & Churn Prediction", "⭐ Smart Tasks & Daily AI Planner", "⭐ Deal Pipeline & Revenue Analytics", "⭐ Google Workspace Sync", "⭐ AI Voice Assistant", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "Dynamic route optimization", "White-label branding", "Multi-team management", "Custom AI training", "Dedicated account manager"],
     cta: "Start Free Trial",
-    style: "border-yellow-500 ring-2 ring-yellow-500/30",
+    style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
 ];
 
