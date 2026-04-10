@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Sparkles, Loader2, Hotel, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, Dumbbell } from "lucide-react";
+import { CheckCircle, Sparkles, Loader2, Hotel, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
 import { toast } from "sonner";
 import { type IndustryType } from "@/lib/industryConfig";
 
@@ -15,7 +15,7 @@ const industryOptions: { value: IndustryType; label: string; icon: React.ReactNo
   { value: "education", label: "Education & Training", icon: <GraduationCap className="w-7 h-7" />, desc: "Timetables, classes, rooms", color: "hsl(270,80%,65%)" },
   { value: "logistics", label: "Logistics & Shipping", icon: <Truck className="w-7 h-7" />, desc: "Deliveries, routes, warehouses", color: "hsl(25,95%,55%)" },
   { value: "events_entertainment", label: "Events & Entertainment", icon: <Theater className="w-7 h-7" />, desc: "Venues, tickets, performers", color: "hsl(300,80%,65%)" },
-  { value: "fitness_wellness", label: "Fitness & Wellness", icon: <Dumbbell className="w-7 h-7" />, desc: "Studios, classes, memberships", color: "hsl(145,65%,42%)" },
+  { value: "railways", label: "Railways & Trains", icon: <TrainFront className="w-7 h-7" />, desc: "Train scheduling, platforms, crews", color: "hsl(200,70%,50%)" },
 ];
 
 const Onboarding = () => {
