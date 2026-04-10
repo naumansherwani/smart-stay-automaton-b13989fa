@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Menu, X, Crown, Sparkles } from "lucide-react";
+import { Menu, X, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const PremiumBadge = () => (

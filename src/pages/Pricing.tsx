@@ -94,7 +94,7 @@ const PAYONEER_EMAIL = "your-payoneer@email.com"; // Replace with actual Payonee
 export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { subscription, isExpired, trialDaysLeft, isTrialing } = useSubscription();
+  const { subscription } = useSubscription();
   const { toast } = useToast();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [showPayoneer, setShowPayoneer] = useState(false);
