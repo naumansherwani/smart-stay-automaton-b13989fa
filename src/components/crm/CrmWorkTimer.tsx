@@ -18,7 +18,11 @@ interface WorkSession {
   duration_seconds: number;
 }
 
-export default function CrmWorkTimer() {
+interface CrmWorkTimerProps {
+  onBreakChange?: (isOnBreak: boolean) => void;
+}
+
+export default function CrmWorkTimer({ onBreakChange }: CrmWorkTimerProps) {
   const { user } = useAuth();
   const { profile } = useProfile();
   const [activeSession, setActiveSession] = useState<WorkSession | null>(null);
@@ -85,8 +89,10 @@ export default function CrmWorkTimer() {
       .single();
 
     if (!error && data) {
-      setActiveSession(data as unknown as WorkSession);
+      const session = data as unknown as WorkSession;
+      setActiveSession(session);
       setElapsed(0);
+      onBreakChange?.(type === "break");
       toast.success(type === "work" ? "🟢 Work mode started!" : "☕ Break started!");
     }
   };
@@ -105,6 +111,7 @@ export default function CrmWorkTimer() {
 
     setActiveSession(null);
     setElapsed(0);
+    onBreakChange?.(false);
     toast.success("Session ended");
   };
 

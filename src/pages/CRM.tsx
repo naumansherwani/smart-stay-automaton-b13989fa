@@ -16,6 +16,8 @@ import CrmWorkTimer from "@/components/crm/CrmWorkTimer";
 import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
 import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
+import CrmBreakGames from "@/components/crm/CrmBreakGames";
+import CrmIndustryConnect from "@/components/crm/CrmIndustryConnect";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
 import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
 import CrmAiEmailComposer from "@/components/crm/CrmAiEmailComposer";
@@ -25,7 +27,7 @@ import CrmSentimentDashboard from "@/components/crm/CrmSentimentDashboard";
 import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler";
 import CrmPerformanceTab from "@/components/crm/CrmPerformanceTab";
 import CrmSecurityPanel from "@/components/crm/CrmSecurityPanel";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +43,7 @@ export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
   const { subscription, isActive, isTrialing, trialDaysLeft, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState("overview");
+  const [breakActive, setBreakActive] = useState(false);
   const navigate = useNavigate();
 
   if (profileLoading || subLoading) {
@@ -123,7 +126,8 @@ export default function CRM() {
         )}
 
         <CrmWidgetsPanel displayName={displayName} />
-        <CrmWorkTimer />
+        <CrmWorkTimer onBreakChange={setBreakActive} />
+        <CrmBreakGames isOnBreak={breakActive} />
         <CrmLiveKPIs industry={industry} />
         <CrmAdminPanel />
 
@@ -172,6 +176,9 @@ export default function CRM() {
               <TabsTrigger value="security" className="flex items-center gap-1.5">
                 <Shield className="h-4 w-4" /><span className="hidden sm:inline">Security</span>
               </TabsTrigger>
+              <TabsTrigger value="industry-connect" className="flex items-center gap-1.5">
+                <Building2 className="h-4 w-4" /><span className="hidden sm:inline">Connect</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -197,6 +204,7 @@ export default function CRM() {
           <TabsContent value="meeting-scheduler"><CrmSmartMeetingScheduler industry={industry} /></TabsContent>
           <TabsContent value="performance"><CrmPerformanceTab industry={industry} /></TabsContent>
           <TabsContent value="security"><CrmSecurityPanel /></TabsContent>
+          <TabsContent value="industry-connect"><CrmIndustryConnect /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
