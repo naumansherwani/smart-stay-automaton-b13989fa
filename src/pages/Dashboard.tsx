@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { INDUSTRY_CONFIGS, type IndustryType as IndustryTypeImport } from "@/lib/industryConfig";
 import { toast as sonnerToast } from "sonner";
 
 import { useProfile } from "@/hooks/useProfile";
