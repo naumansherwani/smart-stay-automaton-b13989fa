@@ -29,7 +29,6 @@ const Index = () => (
     <TestimonialsSection />
     <ReviewsSection />
     <TrustBadgesSection />
-    <PricingSection />
     <FAQSection />
     <Footer />
     <CookieConsent />
