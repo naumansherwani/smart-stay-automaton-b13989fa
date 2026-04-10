@@ -6,7 +6,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Crown, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
+const PremiumBadge = () => (
+  <Badge className="ml-1 px-1.5 py-0 text-[9px] font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 leading-4 uppercase tracking-wider">
+    <Crown className="w-2.5 h-2.5 mr-0.5" />
+    Premium
+  </Badge>
+);
+
+const TrialBadge = () => (
+  <Badge className="ml-1 px-1.5 py-0 text-[9px] font-bold bg-gradient-to-r from-primary to-blue-500 text-white border-0 leading-4 uppercase tracking-wider">
+    <Sparkles className="w-2.5 h-2.5 mr-0.5" />
+    3-Day Trial
+  </Badge>
+);
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,36 +31,68 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "#features", label: t("nav.features") },
-    { href: "#industries", label: t("nav.industries") },
     { href: "#pricing", label: t("nav.pricing") },
     { href: "/about", label: t("nav.about") },
-    { href: "/marketplace", label: "Marketplace" },
     { href: "/reviews", label: "Reviews" },
   ];
+
+  const premiumLinks = [
+    { href: "/crm", label: "CRM", badge: "premium" as const },
+    { href: "/marketplace", label: "Marketplace", badge: "trial" as const },
+  ];
+
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    if (href.startsWith("#")) {
+      return; // anchor links handled by default
+    }
+    navigate(href);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[hsl(222,47%,11%)]/80 backdrop-blur-2xl border-b border-white/[0.06]">
       <div className="container flex items-center justify-between h-[68px] px-6 lg:px-10">
         {/* Logo */}
-        <div className="cursor-pointer shrink-0 mr-8" onClick={() => navigate("/")}>
+        <div className="cursor-pointer shrink-0 mr-6" onClick={() => navigate("/")}>
           <Logo size="sm" showName />
         </div>
 
         {/* Desktop nav links */}
-        <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+        <div className="hidden lg:flex items-center gap-5 flex-1 justify-center">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
+              onClick={(e) => {
+                if (!link.href.startsWith("#")) {
+                  e.preventDefault();
+                  navigate(link.href);
+                }
+              }}
               className="text-[13px] font-medium tracking-[0.02em] text-[hsl(213,20%,60%)] hover:text-foreground relative py-1 transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-primary/50 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center"
             >
               {link.label}
             </a>
           ))}
+
+          {/* Separator */}
+          <div className="w-px h-4 bg-white/10" />
+
+          {/* Premium links */}
+          {premiumLinks.map((link) => (
+            <button
+              key={link.href}
+              onClick={() => navigate(link.href)}
+              className="flex items-center text-[13px] font-medium tracking-[0.02em] text-[hsl(213,20%,60%)] hover:text-foreground relative py-1 transition-colors duration-300 group"
+            >
+              {link.label}
+              {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+            </button>
+          ))}
         </div>
 
         {/* Desktop actions */}
-        <div className="hidden md:flex items-center gap-2 shrink-0">
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
           <LanguageSwitcher />
           <ThemeToggle />
           <div className="w-px h-5 bg-white/10 mx-1" />
@@ -63,7 +110,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile: minimal actions + hamburger */}
-        <div className="flex md:hidden items-center gap-2 shrink-0">
+        <div className="flex lg:hidden items-center gap-2 shrink-0">
           <LanguageSwitcher />
           <ThemeToggle />
           <button
@@ -78,18 +125,41 @@ const Navbar = () => {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden bg-[hsl(222,47%,11%)]/95 backdrop-blur-2xl border-t border-white/[0.06] animate-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden bg-[hsl(222,47%,11%)]/95 backdrop-blur-2xl border-t border-white/[0.06] animate-in slide-in-from-top-2 duration-200">
           <div className="container px-6 py-4 space-y-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => {
+                  if (!link.href.startsWith("#")) {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  } else {
+                    setMobileOpen(false);
+                  }
+                }}
                 className="block text-sm font-medium text-[hsl(213,20%,60%)] hover:text-foreground py-2 transition-colors"
               >
                 {link.label}
               </a>
             ))}
+
+            {/* Premium links in mobile */}
+            <div className="border-t border-white/[0.06] pt-3 space-y-2">
+              <p className="text-[10px] uppercase tracking-widest text-amber-500/70 font-bold px-1">Premium Features</p>
+              {premiumLinks.map((link) => (
+                <button
+                  key={link.href}
+                  onClick={() => handleNavClick(link.href)}
+                  className="flex items-center w-full text-sm font-medium text-[hsl(213,20%,60%)] hover:text-foreground py-2 transition-colors"
+                >
+                  {link.label}
+                  {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+                </button>
+              ))}
+            </div>
+
             <div className="border-t border-white/[0.06] pt-3 space-y-2">
               {user ? (
                 <>
