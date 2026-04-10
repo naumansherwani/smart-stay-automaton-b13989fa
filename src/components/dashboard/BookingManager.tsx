@@ -72,6 +72,9 @@ const BookingManager = ({ config }: BookingManagerProps) => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [filter, setFilter] = useState<string>("all");
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [lastBookingName, setLastBookingName] = useState("");
+  const hadBookingsBefore = useRef(false);
   const [form, setForm] = useState({
     guest_name: "",
     guest_email: "",
