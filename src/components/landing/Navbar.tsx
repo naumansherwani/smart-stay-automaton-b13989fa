@@ -79,7 +79,7 @@ const Navbar = () => {
               className="flex items-center text-[13px] font-medium tracking-[0.02em] text-[hsl(213,20%,60%)] hover:text-foreground relative py-1 transition-colors duration-300 group"
             >
               {link.label}
-              {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+              {link.badge === "premium" && <PremiumBadge />}
             </button>
           ))}
         </div>
@@ -148,7 +148,7 @@ const Navbar = () => {
                   className="flex items-center w-full text-sm font-medium text-[hsl(213,20%,60%)] hover:text-foreground py-2 transition-colors"
                 >
                   {link.label}
-                  {link.badge === "premium" ? <PremiumBadge /> : <TrialBadge />}
+                  {link.badge === "premium" && <PremiumBadge />}
                 </button>
               ))}
             </div>
