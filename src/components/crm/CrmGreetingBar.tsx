@@ -26,9 +26,10 @@ function formatTime(tz: string) {
 
 interface Props {
   displayName: string;
+  showClock?: boolean;
 }
 
-export default function CrmGreetingBar({ displayName }: Props) {
+export default function CrmGreetingBar({ displayName, showClock = true }: Props) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
