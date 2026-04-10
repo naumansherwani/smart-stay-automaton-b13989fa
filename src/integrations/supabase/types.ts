@@ -2098,7 +2098,7 @@ export type Database = {
         | "government"
         | "travel_tourism"
         | "railways"
-      subscription_plan: "trial" | "basic" | "standard" | "premium"
+      subscription_plan: "trial" | "basic" | "pro" | "standard" | "premium"
       subscription_status:
         | "active"
         | "trialing"
@@ -2250,7 +2250,7 @@ export const Constants = {
         "travel_tourism",
         "railways",
       ],
-      subscription_plan: ["trial", "basic", "standard", "premium"],
+      subscription_plan: ["trial", "basic", "pro", "standard", "premium"],
       subscription_status: [
         "active",
         "trialing",
