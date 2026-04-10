@@ -104,9 +104,11 @@ export default function CrmGoogleSyncPanel({ industry }: Props) {
   const toggleSyncMutation = useMutation({
     mutationFn: async ({ field, value }: { field: string; value: boolean }) => {
       if (!user) throw new Error("Not authenticated");
+      const updateData: Record<string, boolean> = {};
+      updateData[field] = value;
       const { error } = await supabase
         .from("crm_google_connections")
-        .update({ [field]: value })
+        .update(updateData as any)
         .eq("user_id", user.id);
       if (error) throw error;
     },
