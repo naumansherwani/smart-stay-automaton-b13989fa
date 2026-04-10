@@ -97,7 +97,7 @@ const Navbar = () => {
           ) : (
             <>
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground font-medium text-[13px] transition-colors duration-300" onClick={() => navigate("/login")}>{t("nav.login")}</Button>
-              <Button size="sm" className="bg-gradient-primary text-primary-foreground border border-primary/20 shadow-[0_0_24px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_36px_hsl(var(--primary)/0.35)] hover:border-primary/40 transition-all duration-500 px-5 text-[13px] font-semibold" onClick={() => navigate("/signup")}>{t("nav.startTrial")}</Button>
+              <Button size="sm" className="bg-gradient-primary text-primary-foreground border border-primary/20 shadow-[0_0_24px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_36px_hsl(var(--primary)/0.35)] hover:border-primary/40 transition-all duration-500 px-5 text-[13px] font-semibold" onClick={() => navigate("/signup")}>Get Started</Button>
             </>
           )}
         </div>
