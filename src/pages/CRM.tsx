@@ -165,6 +165,9 @@ export default function CRM() {
               <TabsTrigger value="meeting-scheduler" className="flex items-center gap-1.5">
                 <CalendarClock className="h-4 w-4" /><span className="hidden sm:inline">Meetings</span>
               </TabsTrigger>
+              <TabsTrigger value="performance" className="flex items-center gap-1.5">
+                <Gauge className="h-4 w-4" /><span className="hidden sm:inline">Performance</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
