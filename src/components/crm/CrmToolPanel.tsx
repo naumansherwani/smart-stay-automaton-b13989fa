@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, DollarSign, PenLine, Wrench, TrendingUp, ArrowRight, MapPin, BarChart3, Sparkles, Clock, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import CrmTasksPanel from "./CrmTasksPanel";
+import CrmDailyPlanPanel from "./CrmDailyPlanPanel";
 
 interface Props {
   toolId: string;
@@ -18,6 +20,8 @@ export default function CrmToolPanel({ toolId, industry, tool }: Props) {
   const navigate = useNavigate();
 
   const toolContent: Record<string, React.ReactNode> = {
+    "smart-tasks": <CrmTasksPanel industry={industry} />,
+    "daily-planner": <CrmDailyPlanPanel industry={industry} />,
     "ai-calendar": (
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
