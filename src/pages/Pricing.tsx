@@ -201,8 +201,8 @@ export default function Pricing() {
                 <CardContent className="flex-1 flex flex-col">
                   <ul className="space-y-3 flex-1 mb-6">
                     {p.features.map((f) => (
-                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}>
-                        <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-emerald-500" : "text-success"}`} />
+                       <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-rose-600 dark:text-rose-400 crm-feature-star" : ""}`}>
+                         <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-rose-500" : "text-success"}`} />
                         <span className={f.startsWith("⭐") ? "" : "text-foreground"}>{f}</span>
                       </li>
                     ))}

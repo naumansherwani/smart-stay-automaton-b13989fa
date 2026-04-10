@@ -124,6 +124,46 @@
   .animate-slide-up {
     animation: slideUp 0.6s ease-out forwards;
   }
+
+  .crm-feature-star {
+    position: relative;
+    overflow: visible;
+  }
+
+  .crm-feature-star::before,
+  .crm-feature-star::after {
+    content: '✦';
+    position: absolute;
+    font-size: 10px;
+    opacity: 0;
+    transition: all 0.4s ease;
+    pointer-events: none;
+  }
+
+  .crm-feature-star::before {
+    top: -4px;
+    right: -14px;
+    color: hsl(340, 80%, 60%);
+  }
+
+  .crm-feature-star::after {
+    bottom: -2px;
+    left: -12px;
+    color: hsl(350, 70%, 55%);
+    font-size: 8px;
+  }
+
+  .crm-feature-star:hover::before {
+    opacity: 1;
+    transform: scale(1.3) rotate(20deg);
+    animation: sparkle-spin 0.8s ease-in-out;
+  }
+
+  .crm-feature-star:hover::after {
+    opacity: 1;
+    transform: scale(1.2) rotate(-15deg);
+    animation: sparkle-spin 0.6s ease-in-out 0.1s;
+  }
 }
 
 @keyframes fadeIn {
@@ -134,4 +174,10 @@
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sparkle-spin {
+  0% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
+  100% { opacity: 1; transform: scale(1) rotate(360deg); }
 }
