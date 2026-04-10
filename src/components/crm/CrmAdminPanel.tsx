@@ -87,15 +87,50 @@ export default function CrmAdminPanel() {
   if (!isAdmin) return null;
 
   return (
-    <Card className="border-primary/20">
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Shield className="h-5 w-5 text-primary" />
-          Admin CRM Overview
+          Admin Control Panel
+          <Badge className="bg-primary/10 text-primary border-primary/20 ml-2">Admin</Badge>
           <Badge variant="secondary" className="ml-auto">{users.length} users</Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {/* Admin Stats Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="rounded-lg bg-muted/50 p-3 text-center">
+            <p className="text-2xl font-bold">{users.length}</p>
+            <p className="text-xs text-muted-foreground">Total Users</p>
+          </div>
+          <div className="rounded-lg bg-muted/50 p-3 text-center">
+            <p className="text-2xl font-bold">{users.reduce((s, u) => s + u.contacts_count, 0)}</p>
+            <p className="text-xs text-muted-foreground">Total Contacts</p>
+          </div>
+          <div className="rounded-lg bg-muted/50 p-3 text-center">
+            <p className="text-2xl font-bold">${users.reduce((s, u) => s + u.pipeline_value, 0).toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">Total Pipeline</p>
+          </div>
+          <div className="rounded-lg bg-muted/50 p-3 text-center">
+            <p className="text-2xl font-bold">{users.reduce((s, u) => s + u.open_tickets, 0)}</p>
+            <p className="text-xs text-muted-foreground">Open Tickets</p>
+          </div>
+        </div>
+
+        {/* Active Alerts for Admin */}
+        <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-yellow-700 dark:text-yellow-300">
+            <Activity className="h-4 w-4" />
+            Admin Insights
+          </div>
+          <div className="mt-1 text-xs text-muted-foreground space-y-1">
+            <p>• {users.filter(u => u.work_hours_today > 0).length} users active today</p>
+            <p>• {users.filter(u => u.open_tickets > 3).length} users with high ticket load</p>
+            <p>• All user data, CRM features, and security apply to your account too</p>
+          </div>
+        </div>
+
+        {/* User Table */}
         {users.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">No users found</p>
         ) : (
