@@ -48,10 +48,31 @@ const About = () => {
 
           {/* Vision */}
           <Card className="border-[hsl(270,80%,70%)]/20 bg-[hsl(270,80%,70%)]/5">
-            <CardContent className="p-8 text-center space-y-3">
+            <CardContent className="p-8 space-y-4">
               <Eye className="w-8 h-8 text-[hsl(270,80%,70%)] mx-auto" />
-              <h2 className="text-2xl font-bold text-foreground">{t("about.visionTitle")}</h2>
-              <p className="text-muted-foreground text-lg">{t("about.vision")}</p>
+              <h2 className="text-2xl font-bold text-foreground text-center">{t("about.visionTitle")}</h2>
+              <p className="text-muted-foreground text-lg text-center">{t("about.vision")}</p>
+              <p className="text-muted-foreground text-base">{t("about.visionDesc")}</p>
+              
+              <p className="text-muted-foreground text-base font-semibold">{t("about.visionBelieve")}</p>
+              <ul className="space-y-2 text-muted-foreground text-base max-w-md mx-auto">
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionBullet1")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionBullet2")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionBullet3")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionBullet4")}</li>
+              </ul>
+
+              <p className="text-muted-foreground text-base italic text-center">{t("about.visionSeparation")}</p>
+
+              <p className="text-muted-foreground text-base font-semibold">{t("about.visionGoal")}</p>
+              <ul className="space-y-2 text-muted-foreground text-base max-w-md mx-auto">
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionGoalBullet1")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionGoalBullet2")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionGoalBullet3")}</li>
+                <li className="flex items-center gap-2"><span className="text-[hsl(270,80%,70%)]">✦</span> {t("about.visionGoalBullet4")}</li>
+              </ul>
+
+              <p className="text-muted-foreground text-base font-semibold text-center">{t("about.visionFooter")}</p>
             </CardContent>
           </Card>
 
