@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, Flame } from "lucide-react";
+import { Check, Sparkles, Crown, Flame, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
@@ -18,8 +18,24 @@ const PLANS = [
     name: "Basic",
     price: 25,
     starter: true,
-    desc: "Perfect for solo operators",
-    features: ["3 resources", "Unlimited bookings", "AI Calendar", "AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
+    desc: "Best for individuals getting started",
+    features: [
+      "Up to 2 industries",
+      "Up to 100 CRM contacts",
+      "Up to 50 bookings/month",
+      "AI Calendar (limited)",
+      "AI Pricing (limited)",
+      "Calendar sync",
+      "Double-booking protection",
+      "Email notifications",
+      "Basic analytics",
+    ],
+    limitations: [
+      "No AI automation (follow-ups)",
+      "No advanced analytics",
+      "No multi-team access",
+    ],
+    upgradeNote: "Upgrade to Pro to automate your business and close more clients.",
     cta: "Get Started",
     style: "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]",
   },
@@ -101,7 +117,7 @@ const PricingSection = () => {
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col pt-4">
-                <ul className="space-y-2.5 flex-1 mb-6">
+                <ul className="space-y-2.5 flex-1 mb-4">
                   {p.features.map((f) => (
                     <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
                       <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
@@ -109,6 +125,19 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
+                {p.limitations && (
+                  <ul className="space-y-2 mb-4">
+                    {p.limitations.map((l: string) => (
+                      <li key={l} className="flex items-start gap-2 text-sm">
+                        <X className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground/60" />
+                        <span className="text-muted-foreground/60">{l}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {p.upgradeNote && (
+                  <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
+                )}
                 <Button
                   className={`w-full font-semibold ${
                     p.trial
