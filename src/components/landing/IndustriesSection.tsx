@@ -22,7 +22,8 @@ const IndustriesSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const handleClick = () => {
+  const handleClick = (industry: IndustryType) => {
+    sessionStorage.setItem("preselected_industry", industry);
     if (!user) {
       navigate("/signup");
     } else {

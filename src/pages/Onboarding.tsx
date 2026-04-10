@@ -24,12 +24,23 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { createWorkspace } = useWorkspaces();
-  const [selectedIndustry, setSelectedIndustry] = useState<IndustryType | null>(null);
+  const preselected = sessionStorage.getItem("preselected_industry") as IndustryType | null;
+  const [selectedIndustry, setSelectedIndustry] = useState<IndustryType | null>(preselected);
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [setupProgress, setSetupProgress] = useState(0);
+  const [autoTriggered, setAutoTriggered] = useState(false);
 
-  const handleContinue = async () => {
-    if (!user || !selectedIndustry) return;
+  // Auto-continue if industry was pre-selected from landing page
+  useEffect(() => {
+    if (preselected && user && !autoTriggered && !isSettingUp) {
+      setAutoTriggered(true);
+      handleContinue(preselected);
+    }
+  }, [preselected, user, autoTriggered, isSettingUp]);
+
+  const handleContinue = async (industryOverride?: IndustryType) => {
+    const industry = industryOverride || selectedIndustry;
+    if (!user || !industry) return;
     setIsSettingUp(true);
 
     // Animate progress
@@ -40,14 +51,16 @@ const Onboarding = () => {
       });
     }, 200);
 
-    // Save industry & create workspace
     await supabase
       .from("profiles")
-      .update({ industry: selectedIndustry })
+      .update({ industry })
       .eq("user_id", user.id);
 
-    const industryLabel = INDUSTRY_CONFIGS[selectedIndustry]?.label || selectedIndustry;
-    await createWorkspace(industryLabel, selectedIndustry);
+    const industryLabel = INDUSTRY_CONFIGS[industry]?.label || industry;
+    await createWorkspace(industryLabel, industry);
+
+    // Clear preselected industry
+    sessionStorage.removeItem("preselected_industry");
 
     // Ensure minimum delay for UX
     await new Promise(resolve => setTimeout(resolve, 1800));
