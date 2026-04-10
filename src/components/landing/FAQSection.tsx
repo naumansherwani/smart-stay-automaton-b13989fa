@@ -15,8 +15,8 @@ const FAQS = [
     a: "We offer 3 plans: Basic ($25/mo) for solo operators, Pro ($55/mo) for growing businesses, and Premium ($110/mo) for enterprises. All plans include a 3-day free trial."
   },
   {
-    q: "What is the Marketplace?",
-    a: "The Marketplace lets you list your services, connect with other businesses, and close deals — all within HostFlow. It's available for Pro and Premium subscribers."
+    q: "What is the AI CRM?",
+    a: "The AI CRM is a Premium feature that helps you manage contacts, deals, tickets, and activities with AI-powered insights — all integrated with your scheduling workflow."
   },
   {
     q: "Can I use HostFlow for multiple industries?",

@@ -40,7 +40,7 @@ const Footer = () => (
         <div className="space-y-4">
           <Logo size="md" showName />
           <p className="text-sm text-white/40 leading-relaxed">
-            AI-powered scheduling, marketplace & booking platform built for 8 industries. Smarter calendars, zero conflicts, maximum revenue.
+            AI-powered scheduling & booking platform built for 13+ industries. Smarter calendars, zero conflicts, maximum revenue.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ const Footer = () => (
             {[
               { href: "#features", label: "Features" },
               { href: "#pricing", label: "Pricing" },
-              { href: "/marketplace", label: "Marketplace" },
+              { href: "/crm", label: "AI CRM" },
               { href: "/reviews", label: "Reviews" },
               { href: "#industries", label: "Industries" },
             ].map(link => (
