@@ -12,7 +12,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
+import { getIndustryConfig, INDUSTRY_CONFIGS, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
 import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
 import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
