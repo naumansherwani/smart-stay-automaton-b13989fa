@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Sparkles, Loader2, Hotel, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
 import { toast } from "sonner";
 import { type IndustryType } from "@/lib/industryConfig";
+import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 
 const industryOptions: { value: IndustryType; label: string; icon: React.ReactNode; desc: string; color: string }[] = [
   { value: "hospitality", label: "Travel & Hospitality", icon: <Hotel className="w-7 h-7" />, desc: "Hotels, vacation rentals, B&Bs, tours", color: "hsl(174,62%,50%)" },
@@ -21,6 +23,7 @@ const industryOptions: { value: IndustryType; label: string; icon: React.ReactNo
 const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { createWorkspace } = useWorkspaces();
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryType | null>(null);
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [setupProgress, setSetupProgress] = useState(0);
@@ -37,11 +40,14 @@ const Onboarding = () => {
       });
     }, 200);
 
-    // Save industry
+    // Save industry & create workspace
     await supabase
       .from("profiles")
       .update({ industry: selectedIndustry })
       .eq("user_id", user.id);
+
+    const industryLabel = INDUSTRY_CONFIGS[selectedIndustry]?.label || selectedIndustry;
+    await createWorkspace(industryLabel, selectedIndustry);
 
     // Ensure minimum delay for UX
     await new Promise(resolve => setTimeout(resolve, 1800));
