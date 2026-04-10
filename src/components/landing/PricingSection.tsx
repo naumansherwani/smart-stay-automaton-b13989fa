@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, Flame, X } from "lucide-react";
+import { Check, Sparkles, Crown, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
@@ -120,16 +120,6 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
-                {p.limitations && (
-                  <ul className="space-y-2 mb-4">
-                    {p.limitations.map((l: string) => (
-                      <li key={l} className="flex items-start gap-2 text-sm">
-                        <X className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground/60" />
-                        <span className="text-muted-foreground/60">{l}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
                 {p.upgradeNote && (
                   <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
                 )}
