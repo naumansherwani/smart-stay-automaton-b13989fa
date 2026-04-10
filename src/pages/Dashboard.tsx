@@ -71,7 +71,7 @@ const Dashboard = () => {
       const ws = await createWorkspace(label, newIndustry);
       if (ws) {
         sonnerToast.success(`${label} workspace created! 🎉`);
-        setCurrentIndustry(newIndustry);
+        // Industry will update via profile refetch
       }
       // Clean URL params
       searchParams.delete("new_industry");
