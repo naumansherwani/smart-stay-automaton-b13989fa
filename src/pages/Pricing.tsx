@@ -174,7 +174,7 @@ export default function Pricing() {
           {PLANS.map((p) => {
             const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
             return (
-              <Card key={p.name} className={`relative flex flex-col ${p.starter ? "border-cyan-400 ring-2 ring-cyan-400/20 animate-[glow-cyan_3s_ease-in-out_infinite]" : p.popular ? "border-primary ring-2 ring-primary/20" : p.highlight ? "border-yellow-500 ring-2 ring-yellow-500/30" : ""}`}>
+              <Card key={p.name} className={`relative flex flex-col transition-all duration-300 ${p.starter ? "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]" : p.popular ? "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]" : p.highlight ? "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]" : ""}`}>
                 {p.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">🚀 Great Start</Badge>
                 )}
