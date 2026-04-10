@@ -50,7 +50,7 @@ const isRailways = (industry: IndustryType) => industry === "railways";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { trialDaysLeft, isTrialing } = useSubscription();
+  const { } = useSubscription();
   const { profile, updateIndustry } = useProfile();
   
   const [currentIndustry, setCurrentIndustry] = useState<IndustryType>(
