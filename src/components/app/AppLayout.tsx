@@ -3,7 +3,7 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
+import { LogOut, Settings, Globe, ChevronDown, LogIn } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
@@ -82,28 +82,43 @@ export default function AppLayout({ children }: AppLayoutProps) {
           >
             <Settings className="w-4 h-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
-            onClick={() => navigate("/profile")}
-            aria-label="Open profile"
-          >
-            <Avatar className="h-8 w-8 border border-border/60">
-              <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
-              <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hover:bg-destructive/10 hover:text-destructive"
-            onClick={() => { signOut(); navigate("/"); }}
-          >
-            <LogOut className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center gap-1 border-l border-border/40 pl-2 ml-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={() => navigate("/profile")}
+              aria-label="Open profile"
+            >
+              <Avatar className="h-8 w-8 border border-border/60">
+                <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
+                <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-xs hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => { signOut(); navigate("/"); }}
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Logout</span>
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-xs"
+                onClick={() => navigate("/login")}
+              >
+                <LogIn className="w-4 h-4" />
+                <span className="hidden md:inline">Login</span>
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
