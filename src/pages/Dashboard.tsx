@@ -141,6 +141,7 @@ const Dashboard = () => {
             </div>
             <div className="hidden sm:block">
               <WorkspaceSwitcher />
+            </div>
           </div>
           <div className="flex items-center gap-1 md:gap-2">
             
