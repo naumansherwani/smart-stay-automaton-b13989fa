@@ -167,7 +167,7 @@ const Onboarding = () => {
           {/* Continue button */}
           <div className="flex justify-center pt-2">
             <Button
-              onClick={handleContinue}
+              onClick={() => handleContinue()}
               disabled={!selectedIndustry}
               size="lg"
               className="px-12 py-6 text-lg font-bold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_30px_rgba(45,212,191,0.3)] hover:shadow-[0_0_50px_rgba(45,212,191,0.5)] transition-all duration-500 disabled:opacity-40 disabled:shadow-none rounded-xl"
