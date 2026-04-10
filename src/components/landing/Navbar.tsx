@@ -38,7 +38,6 @@ const Navbar = () => {
 
   const premiumLinks = [
     { href: "/crm", label: "CRM", badge: "premium" as const },
-    { href: "/marketplace", label: "Marketplace", badge: "trial" as const },
   ];
 
   const handleNavClick = (href: string) => {
