@@ -37,6 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
+import TrialBanner from "@/components/TrialBanner";
 
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
@@ -166,6 +167,8 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
+
+      <TrialBanner />
 
       <main className="container py-6 md:py-8 space-y-6 md:space-y-8">
         <div className="sm:hidden">
