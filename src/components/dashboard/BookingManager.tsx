@@ -226,6 +226,12 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         toast.error("Failed to create booking");
       } else {
         toast.success(`${config.bookingLabel} created successfully!`);
+        // Show first success celebration
+        if (!hadBookingsBefore.current) {
+          setLastBookingName(form.guest_name);
+          setSuccessPopup(true);
+          hadBookingsBefore.current = true;
+        }
         setDialogOpen(false);
         setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "", group_size: "1" });
       }
