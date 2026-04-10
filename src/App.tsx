@@ -46,7 +46,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
-            <Route path="/reviews" element={<Reviews />} />
+            
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -54,7 +54,7 @@ const App = () => (
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
             <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
-            <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />
+            
             <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
             <Route path="/owner-hq-7x" element={<OwnerConsole />} />
             <Route path="*" element={<NotFound />} />
