@@ -36,6 +36,7 @@ import HealthcareManager from "@/components/dashboard/HealthcareManager";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
+import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -174,34 +175,7 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
-        <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 rounded-2xl p-5 md:p-8 border border-primary/15 shadow-lg">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[radial-gradient(circle,hsl(var(--primary)/0.06),transparent_70%)] blur-2xl" />
-          <div className="relative flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-inner">
-                <IndustryIcon industry={currentIndustry} size={28} />
-              </div>
-              <div>
-                <p className="text-xs font-medium tracking-[0.25em] uppercase text-primary/70 mb-1">Welcome back</p>
-                <h1 className="text-xl md:text-3xl font-extrabold text-foreground tracking-tight">
-                  {displayName} ✨
-                </h1>
-                <p className="text-sm md:text-base text-muted-foreground mt-0.5">
-                  Your <span className="text-primary font-semibold">{config.label}</span> AI dashboard is live &amp; optimizing
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="bg-success/10 text-success border-success/20 px-3 py-1.5 text-xs font-semibold shadow-sm">
-                <Shield className="w-4 h-4 mr-1.5" /> AI Protected
-              </Badge>
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 py-1.5 text-xs font-semibold shadow-sm">
-                <TrendingUp className="w-4 h-4 mr-1.5" /> Live
-              </Badge>
-            </div>
-          </div>
-        </div>
+        <SmartGreetingBanner userName={displayName} />
 
         <IndustryKPIs config={config} />
 
