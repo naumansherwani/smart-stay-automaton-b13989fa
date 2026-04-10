@@ -173,14 +173,19 @@ export default function Pricing() {
           {PLANS.map((p) => {
             const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
             return (
-              <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20" : ""}`}>
+              <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20" : p.highlight ? "border-yellow-500 ring-2 ring-yellow-500/30" : ""}`}>
                 {p.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">Most Popular</Badge>
+                )}
+                {p.highlight && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+                    {p.highlight}
+                  </div>
                 )}
                 {isCurrent && (
                   <Badge className="absolute -top-3 right-4 bg-success text-success-foreground">Current Plan</Badge>
                 )}
-                <CardHeader className="text-center pb-2">
+                <CardHeader className="text-center pb-2 pt-8">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <div className="mt-4">
                     {p.price === 0 ? (
@@ -196,16 +201,16 @@ export default function Pricing() {
                 <CardContent className="flex-1 flex flex-col">
                   <ul className="space-y-3 flex-1 mb-6">
                     {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
-                        <span className="text-foreground">{f}</span>
+                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-yellow-600 dark:text-yellow-400" : ""}`}>
+                        <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-yellow-500" : "text-success"}`} />
+                        <span className={f.startsWith("⭐") ? "" : "text-foreground"}>{f}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="space-y-2">
                     <Button
-                      className={p.popular ? "w-full bg-gradient-primary" : "w-full"}
-                      variant={p.popular ? "default" : "outline"}
+                      className={`w-full ${p.popular ? "bg-gradient-primary" : p.highlight ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]" : ""}`}
+                      variant={p.popular || p.highlight ? "default" : "outline"}
                       disabled={!!isCurrent || loadingPlan === p.plan}
                       onClick={() => handleCardPayment(p.plan)}
                     >
