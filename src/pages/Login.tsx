@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,16 +16,65 @@ export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // MFA State
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaVerifying, setMfaVerifying] = useState(false);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
     if (error) {
       toast({ title: "Login failed", description: error.message, variant: "destructive" });
-    } else {
-      navigate("/dashboard");
+      setLoading(false);
+      return;
     }
+
+    // Check if MFA is required
+    const { data: factorsData } = await supabase.auth.mfa.listFactors();
+    const verifiedFactors = factorsData?.totp?.filter(f => f.status === "verified") || [];
+    
+    if (verifiedFactors.length > 0) {
+      setMfaRequired(true);
+      setMfaFactorId(verifiedFactors[0].id);
+      setLoading(false);
+      return;
+    }
+
+    navigate("/dashboard");
     setLoading(false);
+  };
+
+  const handleMFAVerify = async () => {
+    if (!mfaFactorId || mfaCode.length !== 6) return;
+    setMfaVerifying(true);
+    
+    try {
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: mfaFactorId,
+      });
+      if (challengeError) throw challengeError;
+
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: challengeData.id,
+        code: mfaCode,
+      });
+      if (verifyError) throw verifyError;
+
+      navigate("/dashboard");
+    } catch (err: any) {
+      toast({ 
+        title: "Verification failed", 
+        description: err.message || "Invalid code. Please try again.", 
+        variant: "destructive" 
+      });
+      setMfaCode("");
+    }
+    setMfaVerifying(false);
   };
 
   const handleGoogle = async () => {
@@ -51,6 +100,66 @@ export default function Login() {
       navigate("/dashboard");
     }
   };
+
+  // MFA Verification Screen
+  if (mfaRequired) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center space-y-3">
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <ShieldCheck className="w-8 h-8 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Two-Factor Authentication</h1>
+            <p className="text-sm text-muted-foreground">
+              Enter the 6-digit code from your authenticator app
+            </p>
+          </div>
+
+          <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
+            <div className="space-y-2">
+              <Label htmlFor="mfaCode">Verification Code</Label>
+              <Input
+                id="mfaCode"
+                value={mfaCode}
+                onChange={e => setMfaCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="000000"
+                className="text-center text-3xl tracking-[0.5em] font-mono h-14"
+                maxLength={6}
+                autoFocus
+              />
+            </div>
+
+            <Button
+              onClick={handleMFAVerify}
+              disabled={mfaCode.length !== 6 || mfaVerifying}
+              className="w-full bg-gradient-primary h-12"
+            >
+              {mfaVerifying ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <ShieldCheck className="w-4 h-4 mr-2" />
+              )}
+              Verify & Sign In
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full text-sm"
+              onClick={() => {
+                setMfaRequired(false);
+                setMfaCode("");
+                setMfaFactorId(null);
+                supabase.auth.signOut();
+              }}
+            >
+              ← Back to login
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
