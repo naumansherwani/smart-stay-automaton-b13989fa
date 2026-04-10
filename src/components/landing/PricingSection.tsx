@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, Flame } from "lucide-react";
+import { Check, Sparkles, Crown, Flame, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
@@ -117,7 +117,7 @@ const PricingSection = () => {
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col pt-4">
-                <ul className="space-y-2.5 flex-1 mb-6">
+                <ul className="space-y-2.5 flex-1 mb-4">
                   {p.features.map((f) => (
                     <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
                       <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
@@ -125,6 +125,19 @@ const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
+                {p.limitations && (
+                  <ul className="space-y-2 mb-4">
+                    {p.limitations.map((l: string) => (
+                      <li key={l} className="flex items-start gap-2 text-sm">
+                        <X className="w-4 h-4 mt-0.5 shrink-0 text-muted-foreground/60" />
+                        <span className="text-muted-foreground/60">{l}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {p.upgradeNote && (
+                  <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
+                )}
                 <Button
                   className={`w-full font-semibold ${
                     p.trial
