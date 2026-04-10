@@ -18,17 +18,16 @@ import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
 import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle, BarChart3 } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
+import { getUserDisplayName } from "@/lib/utils";
 import { ConversationProvider } from "@elevenlabs/react";
-import TrialBanner from "@/components/TrialBanner";
+import AppLayout from "@/components/app/AppLayout";
 
 export default function CRM() {
   const { user } = useAuth();
@@ -46,8 +45,6 @@ export default function CRM() {
   const crmConfig = getCrmConfig(industry);
   const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
   const displayName = getUserDisplayName(user, profile?.display_name);
-  const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
-  const initials = getUserInitials(displayName, user?.email);
 
   if (!isActive || !isPremium) {
     return (
@@ -83,49 +80,24 @@ export default function CRM() {
   }));
 
   return (
-    <div className="min-h-screen bg-background">
-      <TrialBanner />
-      <div className="border-b bg-card sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xl">{industryConfig.icon}</span>
-                  <h1 className="text-xl font-bold">AI CRM</h1>
-                  <Crown className="h-4 w-4 text-yellow-500" />
-                  {isTrialing && (
-                    <Badge variant="secondary" className="text-xs bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                      Trial — {trialDaysLeft}d left
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground truncate">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
-              </div>
-            </div>
-
-            <Button variant="ghost" className="h-auto px-2 py-1.5" onClick={() => navigate("/profile")}>
-              <div className="flex items-center gap-2">
-                <Avatar className="h-9 w-9 border border-border">
-                  <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="hidden sm:block text-left">
-                  <p className="text-sm font-medium leading-none">{displayName}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Profile</p>
-                </div>
-              </div>
-            </Button>
+    <AppLayout>
+      <div className="container mx-auto px-4 py-4 space-y-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">{industryConfig.icon}</span>
+            <h1 className="text-xl font-bold">AI CRM</h1>
+            <Crown className="h-4 w-4 text-yellow-500" />
           </div>
+          {isTrialing && (
+            <Badge variant="secondary" className="text-xs bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+              Trial — {trialDaysLeft}d left
+            </Badge>
+          )}
+          <p className="text-sm text-muted-foreground">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
         </div>
-      </div>
 
-      {isTrialing && (
-        <div className="bg-yellow-500/10 border-b border-yellow-500/20">
-          <div className="container mx-auto px-4 py-2.5">
+        {isTrialing && (
+          <div className="bg-yellow-500/10 rounded-lg border border-yellow-500/20 px-4 py-2.5">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-sm">
                 <AlertTriangle className="h-4 w-4 text-yellow-600 shrink-0" />
@@ -141,10 +113,8 @@ export default function CRM() {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="container mx-auto px-4 py-4 space-y-4">
         <CrmWidgetsPanel displayName={displayName} />
         <CrmWorkTimer />
         <CrmLiveKPIs industry={industry} />
@@ -203,6 +173,6 @@ export default function CRM() {
       <ConversationProvider>
         <CrmVoiceAssistant industry={industry} />
       </ConversationProvider>
-    </div>
+    </AppLayout>
   );
 }
