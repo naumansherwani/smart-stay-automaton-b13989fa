@@ -194,15 +194,7 @@ export type Database = {
           listing_id?: string | null
           type?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "conversations_listing_id_fkey"
-            columns: ["listing_id"]
-            isOneToOne: false
-            referencedRelation: "service_listings"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       crm_activities: {
         Row: {
@@ -905,41 +897,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
-      listing_inquiries: {
-        Row: {
-          created_at: string
-          id: string
-          listing_id: string
-          message: string
-          sender_id: string
-          status: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          listing_id: string
-          message: string
-          sender_id: string
-          status?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          listing_id?: string
-          message?: string
-          sender_id?: string
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "listing_inquiries_listing_id_fkey"
-            columns: ["listing_id"]
-            isOneToOne: false
-            referencedRelation: "service_listings"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       messages: {
         Row: {
@@ -1832,57 +1789,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      service_listings: {
-        Row: {
-          category: string | null
-          created_at: string
-          description: string | null
-          featured_until: string | null
-          id: string
-          industry: string | null
-          is_featured: boolean | null
-          location: string | null
-          price_max: number | null
-          price_min: number | null
-          status: string
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          featured_until?: string | null
-          id?: string
-          industry?: string | null
-          is_featured?: boolean | null
-          location?: string | null
-          price_max?: number | null
-          price_min?: number | null
-          status?: string
-          title: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          featured_until?: string | null
-          id?: string
-          industry?: string | null
-          is_featured?: boolean | null
-          location?: string | null
-          price_max?: number | null
-          price_min?: number | null
-          status?: string
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
       }
       subscriptions: {
         Row: {
