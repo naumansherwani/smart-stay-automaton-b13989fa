@@ -30,8 +30,8 @@ const Terms = () => (
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-white">4. Free Trial & Subscriptions</h2>
-          <p>New accounts receive a 3-day free trial. After the trial period, you must subscribe to a paid plan (Basic $15/mo, Standard $39/mo, or Premium $99/mo) to continue using the Platform. Subscriptions are billed monthly and can be cancelled at any time.</p>
+          <h2 className="text-xl font-semibold text-white">4. Subscriptions</h2>
+          <p>To use the Platform, you must subscribe to a paid plan (Basic $15/mo, Standard $39/mo, or Premium $99/mo). Subscriptions are billed monthly and can be cancelled at any time.</p>
         </section>
 
         <section className="space-y-3">
