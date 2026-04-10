@@ -95,7 +95,10 @@ const BookingManager = ({ config }: BookingManagerProps) => {
       supabase.from("bookings").select("*").eq("user_id", user.id).order("check_in", { ascending: false }),
       supabase.from("resources").select("id, name, business_type, minimum_stay, max_capacity, base_price").eq("user_id", user.id).eq("is_active", true),
     ]);
-    if (bRes.data) setBookings(bRes.data as unknown as BookingRow[]);
+    if (bRes.data) {
+      setBookings(bRes.data as unknown as BookingRow[]);
+      if (bRes.data.length > 0) hadBookingsBefore.current = true;
+    }
     if (rRes.data) setResources(rRes.data as unknown as Resource[]);
     setLoading(false);
   };
