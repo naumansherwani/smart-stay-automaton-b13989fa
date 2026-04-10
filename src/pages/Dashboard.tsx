@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useSubscription } from "@/hooks/useSubscription";
+
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
