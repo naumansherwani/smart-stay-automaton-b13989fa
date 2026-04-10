@@ -25,11 +25,11 @@ export default function CrmVoiceAssistant({ industry, onCommand }: Props) {
     onDisconnect: () => {
       toast.info("Voice assistant disconnected");
     },
-    onMessage: (message) => {
-      if (message.type === "user_transcript" && message.user_transcription_event) {
+    onMessage: (message: any) => {
+      if (message?.type === "user_transcript" && message?.user_transcription_event) {
         setTranscript(prev => [...prev.slice(-9), `You: ${message.user_transcription_event.user_transcript}`]);
       }
-      if (message.type === "agent_response" && message.agent_response_event) {
+      if (message?.type === "agent_response" && message?.agent_response_event) {
         setTranscript(prev => [...prev.slice(-9), `AI: ${message.agent_response_event.agent_response}`]);
       }
     },
