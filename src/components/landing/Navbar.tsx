@@ -16,12 +16,6 @@ const PremiumBadge = () => (
   </Badge>
 );
 
-const TrialBadge = () => (
-  <Badge className="ml-1 px-1.5 py-0 text-[9px] font-bold bg-gradient-to-r from-primary to-blue-500 text-white border-0 leading-4 uppercase tracking-wider">
-    <Sparkles className="w-2.5 h-2.5 mr-0.5" />
-    3-Day Trial
-  </Badge>
-);
 
 const Navbar = () => {
   const navigate = useNavigate();

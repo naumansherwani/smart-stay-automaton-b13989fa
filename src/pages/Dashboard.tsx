@@ -37,7 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
-import TrialCountdownBanner from "@/components/TrialCountdownBanner";
+
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -50,7 +50,7 @@ const isRailways = (industry: IndustryType) => industry === "railways";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  useSubscription(); // used by TrialCountdownBanner
+  
   const { profile, updateIndustry } = useProfile();
   
   const [currentIndustry, setCurrentIndustry] = useState<IndustryType>(
@@ -172,7 +172,7 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
-        <TrialCountdownBanner />
+        
         <SmartGreetingBanner userName={displayName} />
 
         <IndustryKPIs config={config} />

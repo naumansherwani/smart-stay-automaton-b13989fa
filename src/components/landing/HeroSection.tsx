@@ -75,7 +75,7 @@ const HeroSection = () => {
               className="relative group bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] hover:from-[hsl(174,62%,55%)] hover:to-[hsl(217,91%,65%)] text-white text-lg px-10 py-7 font-bold rounded-xl shadow-[0_0_40px_rgba(45,212,191,0.3)] hover:shadow-[0_0_60px_rgba(45,212,191,0.5)] transition-all duration-500 hover:scale-[1.03] border-0"
               onClick={() => navigate("/signup")}
             >
-              Start Free — 3 Days Full Access
+              Get Started Free
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
