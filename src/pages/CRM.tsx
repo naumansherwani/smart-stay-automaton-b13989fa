@@ -143,7 +143,7 @@ export default function CRM() {
       )}
 
       <div className="container mx-auto px-4 py-4 space-y-4">
-        <CrmGreetingBar displayName={displayName} />
+        <CrmWidgetsPanel displayName={displayName} />
         <CrmWorkTimer />
         <CrmLiveKPIs industry={industry} />
         <CrmAdminPanel />
