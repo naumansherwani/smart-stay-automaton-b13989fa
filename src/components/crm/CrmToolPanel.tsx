@@ -8,6 +8,7 @@ import { Calendar, DollarSign, PenLine, Wrench, TrendingUp, ArrowRight, MapPin, 
 import { useNavigate } from "react-router-dom";
 import CrmTasksPanel from "./CrmTasksPanel";
 import CrmDailyPlanPanel from "./CrmDailyPlanPanel";
+import CrmGoogleSyncPanel from "./CrmGoogleSyncPanel";
 
 interface Props {
   toolId: string;
@@ -22,6 +23,7 @@ export default function CrmToolPanel({ toolId, industry, tool }: Props) {
   const toolContent: Record<string, React.ReactNode> = {
     "smart-tasks": <CrmTasksPanel industry={industry} />,
     "daily-planner": <CrmDailyPlanPanel industry={industry} />,
+    "google-sync": <CrmGoogleSyncPanel industry={industry} />,
     "ai-calendar": (
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
