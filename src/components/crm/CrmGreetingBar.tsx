@@ -26,9 +26,10 @@ function formatTime(tz: string) {
 
 interface Props {
   displayName: string;
+  showClock?: boolean;
 }
 
-export default function CrmGreetingBar({ displayName }: Props) {
+export default function CrmGreetingBar({ displayName, showClock = true }: Props) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -49,15 +50,17 @@ export default function CrmGreetingBar({ displayName }: Props) {
           </h2>
         </div>
 
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <Globe className="h-3.5 w-3.5 shrink-0" />
-          {WORLD_CLOCKS.map((c) => (
-            <div key={c.label} className="flex flex-col items-center leading-tight">
-              <span className="font-medium text-foreground">{formatTime(c.tz)}</span>
-              <span>{c.label}</span>
-            </div>
-          ))}
-        </div>
+        {showClock && (
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <Globe className="h-3.5 w-3.5 shrink-0" />
+            {WORLD_CLOCKS.map((c) => (
+              <div key={c.label} className="flex flex-col items-center leading-tight">
+                <span className="font-medium text-foreground">{formatTime(c.tz)}</span>
+                <span>{c.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
