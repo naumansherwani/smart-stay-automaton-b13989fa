@@ -275,6 +275,45 @@ export type Database = {
           },
         ]
       }
+      crm_activity_logs: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          industry: string
+          ip_hint: string | null
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          industry?: string
+          ip_hint?: string | null
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          industry?: string
+          ip_hint?: string | null
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       crm_automations: {
         Row: {
           actions: Json | null
@@ -735,6 +774,45 @@ export type Database = {
           name?: string
           stages?: Json
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_security_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_resolved: boolean | null
+          message: string
+          metadata: Json | null
+          resolved_at: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          message: string
+          metadata?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          message?: string
+          metadata?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          title?: string
           user_id?: string
         }
         Relationships: []
