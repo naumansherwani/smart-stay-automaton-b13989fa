@@ -53,26 +53,30 @@ const IndustriesSection = () => {
             <Card
               key={ind.name}
               onClick={() => handleClick(ind.id)}
-              className="group border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:scale-[1.03] cursor-pointer overflow-hidden relative"
+              className="group border-white/[0.06] bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = `${ind.color}40`;
-                e.currentTarget.style.boxShadow = `0 20px 60px -15px ${ind.color}20`;
+                e.currentTarget.style.borderColor = `${ind.color}50`;
+                e.currentTarget.style.boxShadow = `0 8px 40px -8px ${ind.color}30, 0 0 0 1px ${ind.color}20, inset 0 1px 0 0 ${ind.color}15`;
+                e.currentTarget.style.background = `linear-gradient(135deg, ${ind.color}08, transparent)`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "";
                 e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.background = "";
               }}
             >
+              {/* Top glow line on hover */}
+              <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `linear-gradient(90deg, transparent, ${ind.color}60, transparent)` }} />
               <CardContent className="p-5 flex items-start gap-3">
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
                   style={{ backgroundColor: `${ind.color}12` }}
                 >
                   <ind.icon className="w-5 h-5" style={{ color: ind.color }} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-foreground text-sm leading-tight">{ind.name}</h4>
-                  <p className="text-xs text-muted-foreground mt-1">{ind.desc}</p>
+                  <h4 className="font-bold text-foreground text-sm leading-tight group-hover:text-white transition-colors duration-300">{ind.name}</h4>
+                  <p className="text-xs text-muted-foreground mt-1 group-hover:text-white/50 transition-colors duration-300">{ind.desc}</p>
                 </div>
               </CardContent>
             </Card>
