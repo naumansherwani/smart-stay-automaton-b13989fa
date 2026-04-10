@@ -90,6 +90,18 @@ Deno.serve(async (req) => {
       case "deal_forecast":
         result = await dealForecast(data);
         break;
+      case "compose_email":
+        result = await composeEmail(data);
+        break;
+      case "revenue_forecast":
+        result = await revenueForecast(data);
+        break;
+      case "competitor_analysis":
+        result = await competitorAnalysis(data);
+        break;
+      case "suggest_meeting":
+        result = await suggestMeeting(data);
+        break;
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -292,6 +304,62 @@ Return JSON: { "total_forecast_value": 0, "weighted_pipeline": 0, "expected_clos
 
   const result = await callAI(
     "You are a sales forecasting AI. Analyze deal pipelines and predict outcomes with high accuracy. Always return valid JSON.",
+    prompt
+  );
+  return JSON.parse(result);
+}
+
+async function composeEmail(data: { industry: string; emailType: string; tone: string; customPrompt?: string; contact?: any }) {
+  const contactInfo = data.contact ? `\nContact: ${data.contact.name}, Stage: ${data.contact.lifecycle_stage}, Revenue: $${data.contact.total_revenue || 0}, Bookings: ${data.contact.total_bookings || 0}` : "";
+  const prompt = `Compose a ${data.tone} ${data.emailType} email for a ${data.industry} business.${contactInfo}${data.customPrompt ? `\nAdditional instructions: ${data.customPrompt}` : ""}
+
+Return JSON: { "subject": "email subject line", "body": "full email body with greeting and sign-off" }`;
+
+  const result = await callAI(
+    `You are an expert email copywriter for ${data.industry} businesses. Write compelling, personalized emails that drive engagement and conversions. Always return valid JSON.`,
+    prompt
+  );
+  return JSON.parse(result);
+}
+
+async function revenueForecast(data: { industry: string; deals: any[]; historical: any[] }) {
+  const prompt = `Based on this ${data.industry} business data, forecast revenue for the next 3 months:
+
+Historical Revenue: ${JSON.stringify(data.historical || [])}
+Current Pipeline: ${JSON.stringify((data.deals || []).slice(0, 30))}
+
+Return JSON: { "monthly_forecast": [{ "month": "Month Year", "predicted": 0, "confidence_low": 0, "confidence_high": 0 }], "quarterly_total": 0, "growth_rate": 0, "key_factors": ["factor1", "factor2"], "recommendations": ["rec1", "rec2"] }`;
+
+  const result = await callAI(
+    "You are a revenue forecasting AI. Use historical data and pipeline analysis to make accurate predictions. Always return valid JSON.",
+    prompt
+  );
+  return JSON.parse(result);
+}
+
+async function competitorAnalysis(data: { industry: string; competitors: string[] }) {
+  const prompt = `Analyze these competitors in the ${data.industry} industry: ${data.competitors.join(", ")}
+
+Return JSON: { "competitors": [{ "name": "", "strengths": ["s1","s2"], "weaknesses": ["w1","w2"], "threat_level": "high|medium|low", "market_position": "description" }], "market_trends": ["trend1","trend2","trend3"], "opportunities": ["opp1","opp2"], "your_advantages": ["adv1","adv2"], "radar_data": [{ "metric": "Pricing", "you": 75, "avg_competitor": 60 }, { "metric": "Service", "you": 80, "avg_competitor": 70 }, { "metric": "Technology", "you": 85, "avg_competitor": 65 }, { "metric": "Brand", "you": 60, "avg_competitor": 75 }, { "metric": "Support", "you": 90, "avg_competitor": 70 }] }`;
+
+  const result = await callAI(
+    `You are a competitive intelligence AI analyst for the ${data.industry} industry. Provide deep, actionable competitor insights. Always return valid JSON.`,
+    prompt
+  );
+  return JSON.parse(result);
+}
+
+async function suggestMeeting(data: { industry: string; meetingType: string; timezone: string; notes?: string; contact?: any }) {
+  const contactInfo = data.contact ? `\nContact: ${data.contact.name}, Stage: ${data.contact.lifecycle_stage}, Last Contact: ${data.contact.last_contacted_at || "Never"}` : "";
+  const prompt = `Suggest 3-5 optimal meeting slots for a ${data.meetingType} meeting in ${data.industry}.${contactInfo}
+Timezone: ${data.timezone}${data.notes ? `\nNotes: ${data.notes}` : ""}
+
+Consider business hours, industry patterns, and optimal engagement times.
+
+Return JSON: { "slots": [{ "date": "Day, Month Date", "time": "HH:MM AM/PM", "duration": "30 min", "reason": "why this time is optimal", "score": 90 }], "agenda": "suggested meeting agenda with bullet points" }`;
+
+  const result = await callAI(
+    `You are a smart scheduling AI. Suggest optimal meeting times based on industry patterns, contact behavior, and timezone. Always return valid JSON.`,
     prompt
   );
   return JSON.parse(result);

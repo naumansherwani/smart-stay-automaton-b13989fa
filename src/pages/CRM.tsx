@@ -18,7 +18,12 @@ import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
 import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3 } from "lucide-react";
+import CrmAiEmailComposer from "@/components/crm/CrmAiEmailComposer";
+import CrmPredictiveRevenue from "@/components/crm/CrmPredictiveRevenue";
+import CrmCompetitorIntelligence from "@/components/crm/CrmCompetitorIntelligence";
+import CrmSentimentDashboard from "@/components/crm/CrmSentimentDashboard";
+import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,6 +149,21 @@ export default function CRM() {
               <TabsTrigger value="ai-insights" className="flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI</span>
               </TabsTrigger>
+              <TabsTrigger value="email-composer" className="flex items-center gap-1.5">
+                <Mail className="h-4 w-4" /><span className="hidden sm:inline">Email AI</span>
+              </TabsTrigger>
+              <TabsTrigger value="revenue-forecast" className="flex items-center gap-1.5">
+                <TrendingUp className="h-4 w-4" /><span className="hidden sm:inline">Forecast</span>
+              </TabsTrigger>
+              <TabsTrigger value="competitor-intel" className="flex items-center gap-1.5">
+                <Globe className="h-4 w-4" /><span className="hidden sm:inline">Competitors</span>
+              </TabsTrigger>
+              <TabsTrigger value="sentiment" className="flex items-center gap-1.5">
+                <Heart className="h-4 w-4" /><span className="hidden sm:inline">Sentiment</span>
+              </TabsTrigger>
+              <TabsTrigger value="meeting-scheduler" className="flex items-center gap-1.5">
+                <CalendarClock className="h-4 w-4" /><span className="hidden sm:inline">Meetings</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -162,6 +182,11 @@ export default function CRM() {
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>
           <TabsContent value="analytics"><CrmRevenueChart industry={industry} /></TabsContent>
           <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={true} /></TabsContent>
+          <TabsContent value="email-composer"><CrmAiEmailComposer industry={industry} /></TabsContent>
+          <TabsContent value="revenue-forecast"><CrmPredictiveRevenue industry={industry} /></TabsContent>
+          <TabsContent value="competitor-intel"><CrmCompetitorIntelligence industry={industry} /></TabsContent>
+          <TabsContent value="sentiment"><CrmSentimentDashboard industry={industry} /></TabsContent>
+          <TabsContent value="meeting-scheduler"><CrmSmartMeetingScheduler industry={industry} /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
