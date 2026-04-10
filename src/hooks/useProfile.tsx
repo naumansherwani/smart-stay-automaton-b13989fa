@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import type { IndustryType } from "@/lib/industryConfig";
+import { getUserAvatarUrl, getUserDisplayName } from "@/lib/utils";
 
 export interface Profile {
   id: string;
@@ -19,24 +20,95 @@ export function useProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    
+    let cancelled = false;
+
     const fetchProfile = async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .single();
-      
-      if (data) {
-        setProfile({
-          ...data,
-          industry: (data.industry as IndustryType) || "hospitality",
-        });
+      if (!user) {
+        setProfile(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      setLoading(true);
+
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        const industry = (data?.industry as IndustryType) || "hospitality";
+        const displayName = getUserDisplayName(user, data?.display_name);
+        const avatarUrl = getUserAvatarUrl(user, data?.avatar_url);
+
+        const resolvedProfile: Profile = {
+          id: data?.id ?? user.id,
+          user_id: user.id,
+          display_name: displayName,
+          avatar_url: avatarUrl,
+          company_name: data?.company_name ?? null,
+          phone: data?.phone ?? null,
+          industry,
+        };
+
+        if (!cancelled) {
+          setProfile(resolvedProfile);
+        }
+
+        if (!data) {
+          await supabase.from("profiles").insert({
+            user_id: user.id,
+            display_name: displayName,
+            avatar_url: avatarUrl,
+            industry,
+          });
+        } else {
+          const updates: { display_name?: string; avatar_url?: string } = {};
+
+          if (displayName && displayName !== data.display_name) {
+            updates.display_name = displayName;
+          }
+
+          if (avatarUrl && avatarUrl !== data.avatar_url) {
+            updates.avatar_url = avatarUrl;
+          }
+
+          if (Object.keys(updates).length > 0) {
+            await supabase
+              .from("profiles")
+              .update(updates)
+              .eq("user_id", user.id);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load profile", error);
+
+        if (!cancelled) {
+          setProfile({
+            id: user.id,
+            user_id: user.id,
+            display_name: getUserDisplayName(user),
+            avatar_url: getUserAvatarUrl(user),
+            company_name: null,
+            phone: null,
+            industry: "hospitality",
+          });
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
     };
+
     fetchProfile();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   const updateIndustry = async (industry: IndustryType) => {
@@ -48,7 +120,7 @@ export function useProfile() {
     setProfile(prev => prev ? { ...prev, industry } : null);
   };
 
-  const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string }) => {
+  const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string; avatar_url?: string }) => {
     if (!user) return;
     await supabase
       .from("profiles")

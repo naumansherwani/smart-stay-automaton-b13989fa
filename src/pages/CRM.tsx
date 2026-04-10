@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "@/hooks/useProfile";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
 import { getCrmConfig } from "@/lib/crmConfig";
 import { getIndustryConfig } from "@/lib/industryConfig";
 import CrmContactsTab from "@/components/crm/CrmContactsTab";
@@ -23,8 +24,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
+import { ConversationProvider } from "@elevenlabs/react";
 
 export default function CRM() {
+  const { user } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
   const { subscription, isActive, isTrialing, trialDaysLeft, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState("overview");
@@ -37,8 +42,10 @@ export default function CRM() {
   const industry = profile?.industry || "hospitality";
   const industryConfig = getIndustryConfig(industry);
   const crmConfig = getCrmConfig(industry);
-
   const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
+  const displayName = getUserDisplayName(user, profile?.display_name);
+  const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
+  const initials = getUserInitials(displayName, user?.email);
 
   if (!isActive || !isPremium) {
     return (
@@ -75,16 +82,15 @@ export default function CRM() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="border-b bg-card sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
-                <div className="flex items-center gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xl">{industryConfig.icon}</span>
                   <h1 className="text-xl font-bold">AI CRM</h1>
                   <Crown className="h-4 w-4 text-yellow-500" />
@@ -94,14 +100,26 @@ export default function CRM() {
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
+                <p className="text-sm text-muted-foreground truncate">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
               </div>
             </div>
+
+            <Button variant="ghost" className="h-auto px-2 py-1.5" onClick={() => navigate("/profile")}>
+              <div className="flex items-center gap-2">
+                <Avatar className="h-9 w-9 border border-border">
+                  <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="hidden sm:block text-left">
+                  <p className="text-sm font-medium leading-none">{displayName}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Profile</p>
+                </div>
+              </div>
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Trial Banner */}
       {isTrialing && (
         <div className="bg-yellow-500/10 border-b border-yellow-500/20">
           <div className="container mx-auto px-4 py-2.5">
@@ -124,16 +142,10 @@ export default function CRM() {
       )}
 
       <div className="container mx-auto px-4 py-4 space-y-4">
-        {/* Work Timer */}
         <CrmWorkTimer />
-
-        {/* Live KPIs */}
         <CrmLiveKPIs industry={industry} />
-
-        {/* Admin Panel */}
         <CrmAdminPanel />
 
-        {/* Main Tabs */}
         <Tabs value={tab} onValueChange={setTab}>
           <ScrollArea className="w-full">
             <TabsList className="inline-flex w-auto min-w-full">
@@ -184,8 +196,9 @@ export default function CRM() {
         </Tabs>
       </div>
 
-      {/* Voice Assistant */}
-      <CrmVoiceAssistant industry={industry} />
+      <ConversationProvider>
+        <CrmVoiceAssistant industry={industry} />
+      </ConversationProvider>
     </div>
   );
 }

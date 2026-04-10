@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Save, User, Building2, Phone, Globe, Crown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { type IndustryType, getIndustryConfig } from "@/lib/industryConfig";
+import { type IndustryType } from "@/lib/industryConfig";
+import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 
 const industries: { value: IndustryType; label: string }[] = [
   { value: "hospitality", label: "Hospitality" },
@@ -76,7 +77,9 @@ const Profile = () => {
     );
   }
 
-  const initials = (displayName || user?.email || "U").slice(0, 2).toUpperCase();
+  const resolvedDisplayName = displayName || getUserDisplayName(user, profile?.display_name);
+  const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
+  const initials = getUserInitials(resolvedDisplayName, user?.email);
   const planLabel = subscription?.plan ? subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1) : "Trial";
   const statusLabel = subscription?.status === "active" ? "Active" : subscription?.status === "trialing" ? "Trial" : subscription?.status || "Unknown";
 
@@ -97,15 +100,15 @@ const Profile = () => {
       </header>
 
       <main className="container py-8 max-w-2xl space-y-6">
-        {/* Avatar & Email */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16 border-2 border-primary/30">
+                <AvatarImage src={avatarUrl ?? undefined} alt={`${resolvedDisplayName} profile photo`} />
                 <AvatarFallback className="text-lg font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="text-lg font-bold text-foreground">{displayName || "User"}</h2>
+                <h2 className="text-lg font-bold text-foreground">{resolvedDisplayName}</h2>
                 <p className="text-sm text-muted-foreground">{user?.email}</p>
                 <div className="flex gap-2 mt-1">
                   <Badge variant="secondary" className="text-xs">
@@ -118,7 +121,6 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Profile Form */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -137,7 +139,6 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Company */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
