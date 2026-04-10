@@ -25,7 +25,7 @@
     "noCreditCard": "No se requiere tarjeta de crédito",
     "doubleBooking": "Guardia IA anti reservas dobles",
     "dynamicPricing": "Precios dinámicos con IA",
-    "industriesSupported": "13+ industrias soportadas",
+    "industriesSupported": "8 industrias soportadas",
     "trustedAcross": "Confianza en industrias de todo el mundo"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "Evaluación de riesgo impulsada por IA y detección de VIP para cada reserva.",
     "revenueOpt": "Optimización de Ingresos",
     "revenueOptDesc": "Llenado de brechas, análisis de rotación y cálculos de ganancia por unidad en tiempo real.",
-    "industriesTitle": "Diseñado para 13+ Industrias",
+    "industriesTitle": "Diseñado para 8 Industrias",
     "industriesSubtitle": "Una IA. Cada industria. Sin límites."
   },
   "pricing": {
