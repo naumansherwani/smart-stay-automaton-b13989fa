@@ -12,3 +12,14 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /crm
+Disallow: /analytics
+Disallow: /railway
+Disallow: /earnings
+Disallow: /messages
+Disallow: /my-listings
+Disallow: /owner-hq-7x
+
+Sitemap: https://hostflowai.live/sitemap.xml
