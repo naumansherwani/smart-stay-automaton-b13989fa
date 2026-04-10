@@ -201,15 +201,15 @@ export default function Pricing() {
                 <CardContent className="flex-1 flex flex-col">
                   <ul className="space-y-3 flex-1 mb-6">
                     {p.features.map((f) => (
-                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-yellow-600 dark:text-yellow-400" : ""}`}>
-                        <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-yellow-500" : "text-success"}`} />
+                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                        <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-emerald-500" : "text-success"}`} />
                         <span className={f.startsWith("⭐") ? "" : "text-foreground"}>{f}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="space-y-2">
                     <Button
-                      className={`w-full ${p.popular ? "bg-gradient-primary" : p.highlight ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]" : ""}`}
+                      className={`w-full ${p.popular || p.highlight ? "bg-gradient-primary" : ""}`}
                       variant={p.popular || p.highlight ? "default" : "outline"}
                       disabled={!!isCurrent || loadingPlan === p.plan}
                       onClick={() => handleCardPayment(p.plan)}

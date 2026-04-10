@@ -83,18 +83,16 @@ const PricingSection = () => {
               <CardContent className="flex-1 flex flex-col pt-4">
                 <ul className="space-y-2.5 flex-1 mb-6">
                   {p.features.map((f) => (
-                    <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-yellow-600 dark:text-yellow-400" : ""}`}>
-                      <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-yellow-500" : "text-primary"}`} />
+                    <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                      <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-emerald-500" : "text-primary"}`} />
                       <span className={f.startsWith("⭐") ? "" : "text-foreground/80"}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Button
                   className={`w-full font-semibold ${
-                    p.popular
+                    p.popular || p.highlight
                       ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      : p.highlight
-                      ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]"
                       : ""
                   }`}
                   variant={p.popular || p.highlight ? "default" : "outline"}
