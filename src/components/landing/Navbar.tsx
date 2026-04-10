@@ -162,7 +162,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground" onClick={() => { navigate("/login"); setMobileOpen(false); }}>{t("nav.login")}</Button>
-                  <Button size="sm" className="w-full bg-gradient-primary text-primary-foreground font-semibold" onClick={() => { navigate("/signup"); setMobileOpen(false); }}>{t("nav.startTrial")}</Button>
+                  <Button size="sm" className="w-full bg-gradient-primary text-primary-foreground font-semibold" onClick={() => { navigate("/signup"); setMobileOpen(false); }}>Get Started</Button>
                 </>
               )}
             </div>
