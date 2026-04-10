@@ -14,8 +14,6 @@ import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, INDUSTRY_CONFIGS, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
-import IndustrySwitcher from "@/components/dashboard/IndustrySwitcher";
-import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 import HowItWorksGuide from "@/components/dashboard/HowItWorksGuide";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import IndustryKPIs from "@/components/dashboard/IndustryKPIs";
@@ -52,14 +50,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, signOut } = useAuth();
-  const { createWorkspace, switchWorkspace } = useWorkspaces();
+  const { createWorkspace } = useWorkspaces();
   
-  const { profile, updateIndustry } = useProfile();
+  const { profile } = useProfile();
   const newIndustryHandled = useRef(false);
   
-  const [currentIndustry, setCurrentIndustry] = useState<IndustryType>(
-    (profile?.industry as IndustryType) || "hospitality"
-  );
+  const currentIndustry: IndustryType = (profile?.industry as IndustryType) || "hospitality";
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
 
@@ -75,7 +71,7 @@ const Dashboard = () => {
       const ws = await createWorkspace(label, newIndustry);
       if (ws) {
         sonnerToast.success(`${label} workspace created! 🎉`);
-        setCurrentIndustry(newIndustry);
+        // Industry will update via profile refetch
       }
       // Clean URL params
       searchParams.delete("new_industry");
@@ -89,10 +85,6 @@ const Dashboard = () => {
   const features = getIndustryFeatures(currentIndustry);
   const hasPricing = supportsAutoPricing(currentIndustry);
 
-  const handleIndustryChange = (industry: IndustryType) => {
-    setCurrentIndustry(industry);
-    updateIndustry(industry);
-  };
 
   useEffect(() => {
     if (!user) return;
@@ -146,11 +138,6 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="container py-6 md:py-8 space-y-6 md:space-y-8">
-        <div className="flex items-center gap-3 flex-wrap">
-          <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
-          <WorkspaceSwitcher />
-        </div>
-
         <SmartGreetingBanner userName={displayName} />
 
         <UpgradeNudge variant="card" feature="AI Automation" message="Automation saves time and increases revenue — unlock all features with Pro" />
