@@ -5,26 +5,15 @@ import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const INDUSTRIES = [
-  { value: "hospitality", label: "🏨 Travel, Tourism & Hospitality" },
-  { value: "airlines", label: "✈️ Airlines & Aviation" },
-  { value: "car_rental", label: "🚗 Car Rental" },
-  { value: "healthcare", label: "🏥 Healthcare & Clinics" },
-  { value: "education", label: "🎓 Education & Training" },
-  { value: "logistics", label: "📦 Logistics & Shipping" },
-  { value: "events_entertainment", label: "🎭 Events & Entertainment" },
-];
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
-  const [industry, setIndustry] = useState("hospitality");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -38,7 +27,7 @@ export default function Signup() {
       password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { full_name: fullName, company_name: company, industry },
+        data: { full_name: fullName, company_name: company },
       },
     });
     if (error) {
@@ -118,15 +107,6 @@ export default function Signup() {
             <div className="space-y-2">
               <Label>Company Name</Label>
               <Input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" />
-            </div>
-            <div className="space-y-2">
-              <Label>Industry</Label>
-              <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {INDUSTRIES.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
             </div>
             <div className="space-y-2">
               <Label>Email</Label>

@@ -26,7 +26,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const initials = getUserInitials(displayName, user?.email);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
 
