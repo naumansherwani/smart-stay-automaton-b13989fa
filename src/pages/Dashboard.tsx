@@ -37,6 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
+import TrialCountdownBanner from "@/components/TrialCountdownBanner";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -49,7 +50,7 @@ const isRailways = (industry: IndustryType) => industry === "railways";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { trialDaysLeft, isTrialing } = useSubscription();
+  useSubscription(); // used by TrialCountdownBanner
   const { profile, updateIndustry } = useProfile();
   
   const [currentIndustry, setCurrentIndustry] = useState<IndustryType>(
@@ -136,11 +137,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-1 md:gap-2">
-            {isTrialing && trialDaysLeft > 0 && (
-              <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5 animate-pulse hidden sm:flex font-semibold">
-                <Zap className="w-3 h-3 mr-1" /> {trialDaysLeft}d trial
-              </Badge>
-            )}
+            
             <LanguageSwitcher />
             <ThemeToggle />
             <NotificationsDropdown />
@@ -175,6 +172,7 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
+        <TrialCountdownBanner />
         <SmartGreetingBanner userName={displayName} />
 
         <IndustryKPIs config={config} />
