@@ -1,14 +1,16 @@
+import { useState, useEffect, useCallback } from "react";
 import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Globe } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
+import PublicView from "./PublicView";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,6 +20,24 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
+  const [publicMode, setPublicMode] = useState(false);
+
+  const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "P") {
+        e.preventDefault();
+        togglePublicMode();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [togglePublicMode]);
+
+  if (publicMode) {
+    return <PublicView onReturn={() => setPublicMode(false)} />;
+  }
 
   const displayName = getUserDisplayName(user, profile?.display_name);
   const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
@@ -42,6 +62,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <div className="flex items-center gap-1 md:gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 text-xs"
+            onClick={togglePublicMode}
+            title="Public View (Ctrl+Shift+P)"
+          >
+            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Public View</span>
+          </Button>
           <ThemeToggle />
           <Button
             variant="ghost"
