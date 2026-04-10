@@ -16,12 +16,13 @@ import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
 import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle, Wrench } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
 
 export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
@@ -37,7 +38,6 @@ export default function CRM() {
   const industryConfig = getIndustryConfig(industry);
   const crmConfig = getCrmConfig(industry);
 
-  // Only premium + trial users get CRM access
   const isPremium = subscription?.plan === "premium" || subscription?.is_lifetime || isTrialing;
 
   if (!isActive || !isPremium) {
@@ -48,7 +48,7 @@ export default function CRM() {
             <Crown className="h-16 w-16 mx-auto text-yellow-500 mb-4" />
             <h2 className="text-2xl font-bold mb-2">AI CRM — Premium Only</h2>
             <p className="text-muted-foreground mb-4">
-              {!isActive 
+              {!isActive
                 ? "Your trial has expired. Upgrade to Premium to access the full AI CRM."
                 : "AI CRM is exclusively available for Premium subscribers. Upgrade to unlock the most advanced AI-powered CRM."
               }
@@ -66,7 +66,6 @@ export default function CRM() {
     );
   }
 
-  // Build dynamic tabs based on industry tools
   const toolTabs = crmConfig.crmTools.map(tool => ({
     id: `tool-${tool.id}`,
     label: tool.label,
@@ -134,7 +133,7 @@ export default function CRM() {
         {/* Admin Panel */}
         <CrmAdminPanel />
 
-        {/* Main Tabs - dynamic based on industry */}
+        {/* Main Tabs */}
         <Tabs value={tab} onValueChange={setTab}>
           <ScrollArea className="w-full">
             <TabsList className="inline-flex w-auto min-w-full">
@@ -153,10 +152,12 @@ export default function CRM() {
               <TabsTrigger value="activities" className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" /><span className="hidden sm:inline">Activities</span>
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-1.5">
+                <BarChart3 className="h-4 w-4" /><span className="hidden sm:inline">Analytics</span>
+              </TabsTrigger>
               <TabsTrigger value="ai-insights" className="flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">AI</span>
               </TabsTrigger>
-              {/* Industry-specific tool tabs */}
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -173,8 +174,8 @@ export default function CRM() {
           <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={true} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>
+          <TabsContent value="analytics"><CrmRevenueChart industry={industry} /></TabsContent>
           <TabsContent value="ai-insights"><CrmAiInsightsTab industry={industry} isPremium={true} /></TabsContent>
-          {/* Dynamic tool panels */}
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
@@ -183,7 +184,7 @@ export default function CRM() {
         </Tabs>
       </div>
 
-      {/* Voice Assistant - Phase 2 */}
+      {/* Voice Assistant */}
       <CrmVoiceAssistant industry={industry} />
     </div>
   );
