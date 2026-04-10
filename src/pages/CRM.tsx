@@ -126,7 +126,8 @@ export default function CRM() {
         )}
 
         <CrmWidgetsPanel displayName={displayName} />
-        <CrmWorkTimer />
+        <CrmWorkTimer onBreakChange={setBreakActive} />
+        <CrmBreakGames isOnBreak={breakActive} />
         <CrmLiveKPIs industry={industry} />
         <CrmAdminPanel />
 
