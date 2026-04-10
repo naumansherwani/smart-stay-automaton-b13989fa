@@ -11,7 +11,7 @@ import CrmTicketsTab from "@/components/crm/CrmTicketsTab";
 import CrmDealsTab from "@/components/crm/CrmDealsTab";
 import CrmActivitiesTab from "@/components/crm/CrmActivitiesTab";
 import CrmAiInsightsTab from "@/components/crm/CrmAiInsightsTab";
-import CrmGreetingBar from "@/components/crm/CrmGreetingBar";
+import CrmWidgetsPanel from "@/components/crm/CrmWidgetsPanel";
 import CrmWorkTimer from "@/components/crm/CrmWorkTimer";
 import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
 import CrmQuickActions from "@/components/crm/CrmQuickActions";
