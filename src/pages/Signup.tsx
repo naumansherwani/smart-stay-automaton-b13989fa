@@ -79,7 +79,7 @@ export default function Signup() {
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
           <p className="text-base font-medium text-muted-foreground italic">"Built for visionaries like you — your empire starts here."</p>
-          <p className="text-sm text-muted-foreground">Start your 7-day free trial</p>
+          <p className="text-sm text-primary font-semibold">Enjoy full access for 7 days — no credit card required</p>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">

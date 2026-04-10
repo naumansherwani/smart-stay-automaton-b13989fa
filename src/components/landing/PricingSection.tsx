@@ -1,19 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, Flame } from "lucide-react";
+import { Check, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PLANS = [
-  {
-    name: "Free Trial",
-    price: 0,
-    trial: true,
-    desc: "Experience the full platform free",
-    features: ["7 days full access", "150 CRM contacts", "Unlimited bookings", "AI Calendar full access", "AI Pricing (20 uses)", "AI follow-ups (10 uses)", "All industry dashboards", "No credit card required"],
-    cta: "Start 7-Day Free Trial",
-    style: "border-[hsl(38,92%,55%)]/50 hover:ring-2 hover:ring-[hsl(38,92%,55%)]/40 hover:shadow-[0_0_20px_hsl(38,92%,55%,0.3)]",
-  },
   {
     name: "Basic",
     price: 25,
@@ -112,18 +103,13 @@ const PricingSection = () => {
             One Price. <span className="text-gradient-primary">Unlimited Power.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            7-day free trial. No credit card required. Cancel anytime.
+            Choose your plan. Every plan includes a 7-day free trial — no credit card required.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
-              {p.trial && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(38,92%,55%)] to-[hsl(25,95%,55%)] text-white border-0 shadow-lg px-4 py-1 whitespace-nowrap">
-                  <Flame className="w-3 h-3 mr-1" /> 7 Days Free
-                </Badge>
-              )}
               {p.starter && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                   🚀 Great Start
@@ -143,14 +129,8 @@ const PricingSection = () => {
                 <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
                 <p className="text-xs text-muted-foreground">{p.desc}</p>
                 <div className="mt-4">
-                  {p.price === 0 ? (
-                    <span className="text-4xl font-extrabold text-foreground">Free</span>
-                  ) : (
-                    <>
-                      <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
-                      <span className="text-muted-foreground">/mo</span>
-                    </>
-                  )}
+                  <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
+                  <span className="text-muted-foreground">/mo</span>
                 </div>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col pt-4">
@@ -171,17 +151,18 @@ const PricingSection = () => {
                 )}
                 <Button
                   className={`w-full font-semibold ${
-                    p.trial
-                      ? "bg-gradient-to-r from-[hsl(38,92%,55%)] to-[hsl(25,95%,55%)] text-white shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)]"
-                      : p.popular || p.highlight
-                        ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                        : ""
+                    p.popular || p.highlight
+                      ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                      : ""
                   }`}
-                  variant={p.trial || p.popular || p.highlight ? "default" : "outline"}
+                  variant={p.popular || p.highlight ? "default" : "outline"}
                   onClick={() => navigate("/signup")}
                 >
                   {p.cta}
                 </Button>
+                <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                  7-day free trial included — no credit card required
+                </p>
               </CardContent>
             </Card>
           ))}
