@@ -141,10 +141,30 @@ const Profile = () => {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
-              <Avatar className="w-16 h-16 border-2 border-primary/30">
-                <AvatarImage src={avatarUrl ?? undefined} alt={`${resolvedDisplayName} profile photo`} />
-                <AvatarFallback className="text-lg font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
-              </Avatar>
+              <div className="relative group">
+                <Avatar className="w-16 h-16 border-2 border-primary/30">
+                  <AvatarImage src={avatarUrl ?? undefined} alt={`${resolvedDisplayName} profile photo`} />
+                  <AvatarFallback className="text-lg font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
+                </Avatar>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  {uploading ? (
+                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-5 w-5 text-white" />
+                  )}
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                />
+              </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground">{resolvedDisplayName}</h2>
                 <p className="text-sm text-muted-foreground">{user?.email}</p>
