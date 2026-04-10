@@ -9,9 +9,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import NotificationsDropdown from "@/components/NotificationsDropdown";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import ThemeToggle from "@/components/ThemeToggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 import { getIndustryFeatures, supportsAutoPricing } from "@/lib/industryFeatures";
@@ -36,12 +33,10 @@ import LogisticsManager from "@/components/dashboard/LogisticsManager";
 import EventsManager from "@/components/dashboard/EventsManager";
 import HealthcareManager from "@/components/dashboard/HealthcareManager";
 import { supabase } from "@/integrations/supabase/client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
-import TrialBanner from "@/components/TrialBanner";
 import UpgradeNudge from "@/components/conversion/UpgradeNudge";
-
+import AppLayout from "@/components/app/AppLayout";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -115,73 +110,20 @@ const Dashboard = () => {
 
   const unreadAlerts = alerts.filter(a => !a.read).length;
   const displayName = getUserDisplayName(user, profile?.display_name);
-  const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
-  const initials = getUserInitials(displayName, user?.email);
 
   const markAlertRead = async (id: string) => {
     await supabase.from("alerts").update({ read: true }).eq("id", id);
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
   };
 
-  const tabCount = 8;
-
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50 shadow-sm">
-        <div className="container flex items-center justify-between h-16 md:h-[72px]">
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="cursor-pointer flex items-center gap-2.5" onClick={() => navigate("/")}>
-              <span className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-[hsl(174,62%,55%)] via-[hsl(200,80%,65%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent">
-                HostFlow AI
-              </span>
-            </div>
-            <div className="hidden md:block h-8 w-px bg-border/50" />
-            <div className="hidden sm:block">
-              <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
-            </div>
-            <div className="hidden sm:block">
-              <WorkspaceSwitcher />
-            </div>
-          </div>
-          <div className="flex items-center gap-1 md:gap-2">
-            
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <NotificationsDropdown />
-            <Button variant="outline" size="sm" className="hidden md:flex gap-1.5 font-semibold" onClick={() => navigate("/analytics")}>
-              <BarChart3 className="w-4 h-4" /> Analytics
-            </Button>
-            <Button variant="outline" size="sm" className="hidden md:flex gap-1.5 font-semibold" onClick={() => navigate("/earnings")}>
-              <DollarSign className="w-4 h-4" /> Earnings
-            </Button>
-            <Button size="sm" className="bg-gradient-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] font-semibold" onClick={() => navigate("/pricing")}>
-              <Sparkles className="w-4 h-4 md:mr-1.5" />
-              <span className="hidden md:inline">Upgrade</span>
-            </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-secondary/80" onClick={() => navigate("/settings")}>
-              <SettingsIcon className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-secondary/80 rounded-full" onClick={() => navigate("/profile")} aria-label="Open profile">
-              <Avatar className="h-8 w-8 border border-border/60">
-                <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
-                <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">{initials}</AvatarFallback>
-              </Avatar>
-            </Button>
-            <Button variant="ghost" size="icon" className="hover:bg-destructive/10 hover:text-destructive" onClick={() => { signOut(); navigate("/"); }}>
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <TrialBanner />
-
-      <main className="container py-6 md:py-8 space-y-6 md:space-y-8">
-        <div className="sm:hidden">
+    <AppLayout>
+      <div className="container py-6 md:py-8 space-y-6 md:space-y-8">
+        <div className="flex items-center gap-3 flex-wrap">
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
+          <WorkspaceSwitcher />
         </div>
 
-        
         <SmartGreetingBanner userName={displayName} />
 
         <UpgradeNudge variant="card" feature="AI Automation" message="Automation saves time and increases revenue — unlock all features with Pro" />
@@ -418,49 +360,42 @@ const Dashboard = () => {
             )}
           </TabsList>
 
-          {/* Airlines Flights Tab */}
           {isAirlines(currentIndustry) && (
             <TabsContent value="flights">
               <FlightManager config={config} />
             </TabsContent>
           )}
 
-          {/* Car Rental Fleet Tab */}
           {isCarRental(currentIndustry) && (
             <TabsContent value="fleet">
               <VehicleManager config={config} />
             </TabsContent>
           )}
 
-          {/* Education Timetable Tab */}
           {isEducation(currentIndustry) && (
             <TabsContent value="timetable">
               <TimetableManager config={config} />
             </TabsContent>
           )}
 
-          {/* Logistics Tab */}
           {isLogistics(currentIndustry) && (
             <TabsContent value="logistics">
               <LogisticsManager config={config} />
             </TabsContent>
           )}
 
-          {/* Events Tab */}
           {isEvents(currentIndustry) && (
             <TabsContent value="events">
               <EventsManager config={config} />
             </TabsContent>
           )}
 
-          {/* Healthcare Tab */}
           {isHealthcare(currentIndustry) && (
             <TabsContent value="healthcare">
               <HealthcareManager config={config} />
             </TabsContent>
           )}
 
-          {/* Railways Tab */}
           {isRailways(currentIndustry) && (
             <TabsContent value="railway" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -649,8 +584,8 @@ const Dashboard = () => {
             <AlertsPanel alerts={alerts.map(a => ({ ...a, timestamp: new Date(a.created_at) }))} onMarkRead={markAlertRead} />
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
