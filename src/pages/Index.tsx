@@ -29,7 +29,6 @@ const Index = () => (
     <PricingSection />
     <FAQSection />
     <Footer />
-    <Footer />
     <CookieConsent />
   </div>
 );

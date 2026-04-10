@@ -67,7 +67,7 @@ export default function Signup() {
         <div className="max-w-md text-center space-y-4 bg-card p-8 rounded-xl border border-border">
           <CheckCircle className="w-16 h-16 text-success mx-auto" />
           <h2 className="text-2xl font-bold text-foreground">Check your email</h2>
-          <p className="text-muted-foreground">We sent a confirmation link to <strong>{email}</strong>. Click it to activate your 3-day free trial.</p>
+          <p className="text-muted-foreground">We sent a confirmation link to <strong>{email}</strong>. Click it to activate your 7-day free trial.</p>
           <Button variant="outline" onClick={() => navigate("/login")}>Back to Login</Button>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function Signup() {
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
           <p className="text-base font-medium text-muted-foreground italic">"Built for visionaries like you — your empire starts here."</p>
-          <p className="text-sm text-muted-foreground">Start your 3-day free trial</p>
+          <p className="text-sm text-muted-foreground">Start your 7-day free trial</p>
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
