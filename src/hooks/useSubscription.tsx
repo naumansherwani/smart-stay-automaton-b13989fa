@@ -39,14 +39,22 @@ export function useSubscription() {
           setSubscription(data as Subscription);
         }
 
+        // Set loading false BEFORE stripe check so UI isn't blocked
+        setLoading(false);
+
         if (data.plan !== "trial") {
           try {
-            const { data: stripeData } = await supabase.functions.invoke("check-subscription");
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8000);
+            const { data: stripeData } = await supabase.functions.invoke("check-subscription", {
+              body: {},
+            });
+            clearTimeout(timeout);
             if (stripeData?.subscribed && stripeData?.plan) {
               setSubscription(prev => prev ? { ...prev, plan: stripeData.plan, status: "active" } : prev);
             }
           } catch {
-            // Stripe check failed
+            // Stripe check failed — use DB data
           }
         }
       }
@@ -58,7 +66,6 @@ export function useSubscription() {
   }, [user]);
 
   useEffect(() => {
-    // If auth is still loading, keep sub loading true  
     if (authLoading) return;
 
     if (!user) {
@@ -67,7 +74,6 @@ export function useSubscription() {
       return;
     }
 
-    // User available — fetch subscription
     setLoading(true);
     checkSubscription();
 
