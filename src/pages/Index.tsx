@@ -16,7 +16,7 @@ import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 const Index = () => (
   <div className="min-h-screen">
     <Navbar />
-    <div className="container mx-auto px-4 pt-4">
+    <div className="container mx-auto px-4 pt-20">
       <SmartGreetingBanner compact />
     </div>
     <HeroSection />
