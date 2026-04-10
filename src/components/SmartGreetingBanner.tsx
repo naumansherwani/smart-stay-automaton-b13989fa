@@ -165,7 +165,7 @@ export default function SmartGreetingBanner({ userName, compact = false }: Props
   return (
     <div className="space-y-0">
       {/* ─── Main Greeting + Weather Card ─── */}
-      <Card className="overflow-hidden border-primary/10 shadow-lg">
+      <Card className="overflow-hidden border-0 rounded-none shadow-none border-t border-white/[0.06]">
         <CardContent className="p-0">
           {/* Top greeting bar */}
           <div className={`relative px-4 sm:px-6 py-4 bg-gradient-to-r ${greeting.gradient}`}>
