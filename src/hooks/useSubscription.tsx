@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
@@ -11,18 +11,15 @@ export interface Subscription {
 }
 
 export function useSubscription() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
+  const lastUserId = useRef<string | null>(null);
 
   const checkSubscription = useCallback(async () => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    if (!user) return;
 
     try {
-      // Check local DB
       const { data } = await supabase
         .from("subscriptions")
         .select("*")
@@ -30,7 +27,6 @@ export function useSubscription() {
         .single();
 
       if (data) {
-        // Lifetime access — no need for Stripe check
         if ((data as any).is_lifetime) {
           setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
           setLoading(false);
@@ -44,19 +40,14 @@ export function useSubscription() {
           setSubscription(data as Subscription);
         }
 
-        // Only check Stripe for non-lifetime, paid plans
         if (data.plan !== "trial") {
           try {
             const { data: stripeData } = await supabase.functions.invoke("check-subscription");
             if (stripeData?.subscribed && stripeData?.plan) {
-              setSubscription(prev => prev ? {
-                ...prev,
-                plan: stripeData.plan,
-                status: "active",
-              } : prev);
+              setSubscription(prev => prev ? { ...prev, plan: stripeData.plan, status: "active" } : prev);
             }
           } catch {
-            // Stripe check failed, use local data
+            // Stripe check failed
           }
         }
       }
@@ -68,13 +59,31 @@ export function useSubscription() {
   }, [user]);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    setLoading(true);
+    // Still waiting for auth — keep loading true
+    if (authLoading) {
+      setLoading(true);
+      return;
+    }
+
+    // No user — not loading, no subscription
+    if (!user) {
+      setSubscription(null);
+      setLoading(false);
+      return;
+    }
+
+    // User changed — reset and fetch
+    if (lastUserId.current !== user.id) {
+      lastUserId.current = user.id;
+      setLoading(true);
+      setSubscription(null);
+    }
+
     checkSubscription();
 
     const interval = setInterval(checkSubscription, 60000);
     return () => clearInterval(interval);
-  }, [user, checkSubscription]);
+  }, [user, authLoading, checkSubscription]);
 
   const isActive = subscription?.is_lifetime || subscription?.status === "active" || subscription?.status === "trialing";
   const isTrialing = subscription?.status === "trialing" && !subscription?.is_lifetime;
