@@ -5,6 +5,14 @@ import { useProfile } from "./useProfile";
 import type { IndustryType } from "@/lib/industryConfig";
 import type { Json } from "@/integrations/supabase/types";
 
+// Helper to log CRM activity (fire-and-forget)
+const logCrmAction = (userId: string, industry: string, action_type: string, entity_type: string, entity_id?: string, description?: string) => {
+  supabase.from("crm_activity_logs" as any).insert({
+    user_id: userId, industry, action_type, entity_type,
+    entity_id: entity_id || null, description: description || null,
+  } as any).then(() => {});
+};
+
 export interface CrmContact {
   id: string;
   user_id: string;
@@ -141,19 +149,28 @@ export function useCrmContacts() {
       .single();
     if (!error && data) {
       setContacts(prev => [data as unknown as CrmContact, ...prev]);
+      logCrmAction(user.id, industry, "create", "contact", (data as any).id, `Created contact: ${contact.name}`);
     }
     return { data, error };
   };
 
   const updateContact = async (id: string, updates: Record<string, unknown>) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_contacts").update(updates as any).eq("id", id);
-    if (!error) setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } as CrmContact : c));
+    if (!error) {
+      setContacts(prev => prev.map(c => c.id === id ? { ...c, ...updates } as CrmContact : c));
+      logCrmAction(user.id, industry, "update", "contact", id);
+    }
     return { error };
   };
 
   const deleteContact = async (id: string) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_contacts").delete().eq("id", id);
-    if (!error) setContacts(prev => prev.filter(c => c.id !== id));
+    if (!error) {
+      setContacts(prev => prev.filter(c => c.id !== id));
+      logCrmAction(user.id, industry, "delete", "contact", id);
+    }
     return { error };
   };
 
@@ -189,19 +206,30 @@ export function useCrmTickets() {
       .insert({ ...ticket, user_id: user.id, industry })
       .select()
       .single();
-    if (!error && data) setTickets(prev => [data as unknown as CrmTicket, ...prev]);
+    if (!error && data) {
+      setTickets(prev => [data as unknown as CrmTicket, ...prev]);
+      logCrmAction(user.id, industry, "create", "ticket", (data as any).id, `Created ticket: ${ticket.subject}`);
+    }
     return { data, error };
   };
 
   const updateTicket = async (id: string, updates: Record<string, unknown>) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_tickets").update(updates as any).eq("id", id);
-    if (!error) setTickets(prev => prev.map(t => t.id === id ? { ...t, ...updates } as CrmTicket : t));
+    if (!error) {
+      setTickets(prev => prev.map(t => t.id === id ? { ...t, ...updates } as CrmTicket : t));
+      logCrmAction(user.id, industry, "update", "ticket", id);
+    }
     return { error };
   };
 
   const deleteTicket = async (id: string) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_tickets").delete().eq("id", id);
-    if (!error) setTickets(prev => prev.filter(t => t.id !== id));
+    if (!error) {
+      setTickets(prev => prev.filter(t => t.id !== id));
+      logCrmAction(user.id, industry, "delete", "ticket", id);
+    }
     return { error };
   };
 
@@ -237,13 +265,20 @@ export function useCrmDeals() {
       .insert({ ...deal, user_id: user.id, industry })
       .select()
       .single();
-    if (!error && data) setDeals(prev => [data as unknown as CrmDeal, ...prev]);
+    if (!error && data) {
+      setDeals(prev => [data as unknown as CrmDeal, ...prev]);
+      logCrmAction(user.id, industry, "create", "deal", (data as any).id, `Created deal: ${deal.title}`);
+    }
     return { data, error };
   };
 
   const updateDeal = async (id: string, updates: Record<string, unknown>) => {
+    if (!user) return { error: null };
     const { error } = await supabase.from("crm_deals").update(updates as any).eq("id", id);
-    if (!error) setDeals(prev => prev.map(d => d.id === id ? { ...d, ...updates } as CrmDeal : d));
+    if (!error) {
+      setDeals(prev => prev.map(d => d.id === id ? { ...d, ...updates } as CrmDeal : d));
+      logCrmAction(user.id, industry, "update", "deal", id);
+    }
     return { error };
   };
 

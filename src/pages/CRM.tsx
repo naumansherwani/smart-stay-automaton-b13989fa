@@ -24,7 +24,8 @@ import CrmCompetitorIntelligence from "@/components/crm/CrmCompetitorIntelligenc
 import CrmSentimentDashboard from "@/components/crm/CrmSentimentDashboard";
 import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler";
 import CrmPerformanceTab from "@/components/crm/CrmPerformanceTab";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge } from "lucide-react";
+import CrmSecurityPanel from "@/components/crm/CrmSecurityPanel";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -168,6 +169,9 @@ export default function CRM() {
               <TabsTrigger value="performance" className="flex items-center gap-1.5">
                 <Gauge className="h-4 w-4" /><span className="hidden sm:inline">Performance</span>
               </TabsTrigger>
+              <TabsTrigger value="security" className="flex items-center gap-1.5">
+                <Shield className="h-4 w-4" /><span className="hidden sm:inline">Security</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -192,6 +196,7 @@ export default function CRM() {
           <TabsContent value="sentiment"><CrmSentimentDashboard industry={industry} /></TabsContent>
           <TabsContent value="meeting-scheduler"><CrmSmartMeetingScheduler industry={industry} /></TabsContent>
           <TabsContent value="performance"><CrmPerformanceTab industry={industry} /></TabsContent>
+          <TabsContent value="security"><CrmSecurityPanel /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
