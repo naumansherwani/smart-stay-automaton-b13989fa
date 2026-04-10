@@ -236,10 +236,15 @@ export default function CrmContactsTab({ industry }: Props) {
       {loading ? (
         <div className="text-center py-12 text-muted-foreground">Loading...</div>
       ) : filtered.length === 0 ? (
-        <Card><CardContent className="text-center py-12">
-          <User className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">No {config.contactLabelPlural.toLowerCase()} yet. Add your first one!</p>
-        </CardContent></Card>
+        <SmartEmptyState
+          icon={User}
+          title={`No ${config.contactLabelPlural.toLowerCase()} yet`}
+          description={`Add your first ${config.contactLabel.toLowerCase()} to start building your pipeline`}
+          actionLabel={`Add ${config.contactLabel}`}
+          onAction={() => setOpen(true)}
+          showUpgradeCta={isTrial}
+          emotionalMessage="Every lead you miss is revenue left on the table"
+        />
       ) : (
         <div className="grid gap-2">
           {/* Select all header */}
@@ -310,6 +315,21 @@ export default function CrmContactsTab({ industry }: Props) {
           ))}
         </div>
       )}
+
+      {/* Conversion Popups */}
+      <LimitReachedPopup
+        open={limitPopup}
+        onClose={() => setLimitPopup(false)}
+        feature="CRM contacts"
+        currentCount={contacts.length}
+        limit={limits.crmContacts}
+      />
+      <FirstSuccessMessage
+        open={successPopup}
+        onClose={() => setSuccessPopup(false)}
+        type="contact"
+        itemName={lastAddedName}
+      />
     </div>
   );
 }
