@@ -3,7 +3,7 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Globe } from "lucide-react";
+import { LogOut, Settings, Globe, ChevronDown } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
@@ -52,11 +52,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <GhostSidebar />
 
       <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4 md:pl-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ml-8 md:ml-14">
           {industryLabel && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 ml-4">
-              <span className="text-xs font-semibold text-primary">Workspace:</span>
-              <span className="text-xs font-bold text-foreground">{industryLabel}</span>
+            <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border border-primary/25 shadow-[0_0_12px_-3px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_18px_-3px_hsl(var(--primary)/0.35)] hover:border-primary/40 hover:brightness-105 transition-all duration-300 cursor-pointer group">
+              <span className="text-sm text-muted-foreground font-medium">Workspace:</span>
+              <span className="text-sm font-bold text-foreground">{industryLabel}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
           )}
         </div>
