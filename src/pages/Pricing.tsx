@@ -176,7 +176,7 @@ export default function Pricing() {
             return (
               <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20" : p.highlight ? "border-yellow-500 ring-2 ring-yellow-500/30" : ""}`}>
                 {p.starter && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary/90 text-primary-foreground">🚀 Great Start</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">🚀 Great Start</Badge>
                 )}
                 {p.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">Most Popular</Badge>
@@ -207,7 +207,7 @@ export default function Pricing() {
                     {p.features.map((f) => (
                        <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                        <span className={f.startsWith("⭐") ? "" : "text-foreground"}>{f}</span>
+                         <span className="text-foreground">{f}</span>
                       </li>
                     ))}
                   </ul>

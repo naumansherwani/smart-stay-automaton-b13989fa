@@ -58,7 +58,7 @@ const PricingSection = () => {
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
               {p.starter && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary/90 text-primary-foreground border-0 shadow-lg px-4 py-1">
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                   🚀 Great Start
                 </Badge>
               )}
@@ -91,7 +91,7 @@ const PricingSection = () => {
                   {p.features.map((f) => (
                     <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary crm-feature-star" : ""}`}>
                       <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                      <span className={f.startsWith("⭐") ? "" : "text-foreground/80"}>{f}</span>
+                      <span className="text-foreground/80">{f}</span>
                     </li>
                   ))}
                 </ul>
