@@ -164,8 +164,12 @@ export function GhostSidebar() {
         {/* Header */}
         <div className="flex items-center justify-between mb-5 px-1 min-w-[200px]">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => {
+              // Dispatch custom event to toggle public view
+              window.dispatchEvent(new CustomEvent("toggle-public-view"));
+            }}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            title="Switch to Public View"
           >
             <Logo size="sm" />
             <span className="text-sm font-bold text-white/90 whitespace-nowrap">HostFlow AI</span>
