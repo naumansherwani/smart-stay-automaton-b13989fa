@@ -24,9 +24,7 @@ import About from "./pages/About";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import RailwayDashboard from "./pages/RailwayDashboard";
-import Earnings from "./pages/Earnings";
 import CRM from "./pages/CRM";
-import Reviews from "./pages/Reviews";
 
 const queryClient = new QueryClient();
 
