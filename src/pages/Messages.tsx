@@ -91,12 +91,7 @@ const Messages = () => {
     for (const c of convos) {
       let listing_title = "";
       if (c.listing_id) {
-        const { data: listing } = await supabase
-          .from("service_listings")
-          .select("title")
-          .eq("id", c.listing_id)
-          .single();
-        listing_title = listing?.title || "Deleted listing";
+        listing_title = "Conversation";
       }
 
       // Get other participant name
