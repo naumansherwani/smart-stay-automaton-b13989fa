@@ -492,6 +492,14 @@ const BookingManager = ({ config }: BookingManagerProps) => {
           })}
         </div>
       )}
+
+      {/* First booking celebration */}
+      <FirstSuccessMessage
+        open={successPopup}
+        onClose={() => setSuccessPopup(false)}
+        type="booking"
+        itemName={lastBookingName}
+      />
     </div>
   );
 };
