@@ -43,6 +43,7 @@ export default function CRM() {
   const { profile, loading: profileLoading } = useProfile();
   const { subscription, isActive, isTrialing, trialDaysLeft, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState("overview");
+  const [breakActive, setBreakActive] = useState(false);
   const navigate = useNavigate();
 
   if (profileLoading || subLoading) {
