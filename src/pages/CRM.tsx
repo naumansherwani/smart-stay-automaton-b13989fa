@@ -15,6 +15,7 @@ import CrmLiveKPIs from "@/components/crm/CrmLiveKPIs";
 import CrmQuickActions from "@/components/crm/CrmQuickActions";
 import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
+import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
 import { Users, TicketCheck, TrendingUp, Clock, Sparkles, ArrowLeft, Crown, LayoutDashboard, AlertTriangle, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -181,6 +182,9 @@ export default function CRM() {
           ))}
         </Tabs>
       </div>
+
+      {/* Voice Assistant - Phase 2 */}
+      <CrmVoiceAssistant industry={industry} />
     </div>
   );
 }
