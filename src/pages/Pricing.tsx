@@ -39,6 +39,7 @@ const PLANS = [
     name: "Basic",
     price: 25,
     plan: "basic" as const,
+    starter: true,
     features: [
       "Up to 3 resources/properties",
       "Unlimited bookings",
@@ -174,6 +175,9 @@ export default function Pricing() {
             const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
             return (
               <Card key={p.name} className={`relative flex flex-col ${p.popular ? "border-primary ring-2 ring-primary/20" : p.highlight ? "border-yellow-500 ring-2 ring-yellow-500/30" : ""}`}>
+                {p.starter && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary/90 text-primary-foreground">🚀 Great Start</Badge>
+                )}
                 {p.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">Most Popular</Badge>
                 )}

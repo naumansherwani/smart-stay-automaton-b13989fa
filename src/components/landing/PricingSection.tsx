@@ -8,6 +8,7 @@ const PLANS = [
   {
     name: "Basic",
     price: 25,
+    starter: true,
     desc: "Perfect for solo operators",
     features: ["3 resources", "Limited bookings", "Limited AI Calendar", "Limited AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
     cta: "Start Free Trial",
@@ -56,6 +57,11 @@ const PricingSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
           {PLANS.map((p) => (
             <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+              {p.starter && (
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary/90 text-primary-foreground border-0 shadow-lg px-4 py-1">
+                  🚀 Great Start
+                </Badge>
+              )}
               {p.popular && (
                 <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                   <Crown className="w-3 h-3 mr-1" /> Most Popular
