@@ -191,6 +191,7 @@ export default function CRM() {
           <TabsContent value="competitor-intel"><CrmCompetitorIntelligence industry={industry} /></TabsContent>
           <TabsContent value="sentiment"><CrmSentimentDashboard industry={industry} /></TabsContent>
           <TabsContent value="meeting-scheduler"><CrmSmartMeetingScheduler industry={industry} /></TabsContent>
+          <TabsContent value="performance"><CrmPerformanceTab industry={industry} /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
