@@ -137,11 +137,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-1 md:gap-2">
-            {isTrialing && trialDaysLeft > 0 && (
-              <Badge variant="outline" className="border-primary/50 text-primary bg-primary/5 animate-pulse hidden sm:flex font-semibold">
-                <Zap className="w-3 h-3 mr-1" /> {trialDaysLeft}d trial
-              </Badge>
-            )}
+            
             <LanguageSwitcher />
             <ThemeToggle />
             <NotificationsDropdown />
@@ -176,6 +172,7 @@ const Dashboard = () => {
           <IndustrySwitcher current={currentIndustry} onChange={handleIndustryChange} />
         </div>
 
+        <TrialCountdownBanner />
         <SmartGreetingBanner userName={displayName} />
 
         <IndustryKPIs config={config} />
