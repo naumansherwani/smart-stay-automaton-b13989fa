@@ -31,8 +31,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
         togglePublicMode();
       }
     };
+    const logoHandler = () => togglePublicMode();
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("toggle-public-view", logoHandler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      window.removeEventListener("toggle-public-view", logoHandler);
+    };
   }, [togglePublicMode]);
 
   if (publicMode) {
