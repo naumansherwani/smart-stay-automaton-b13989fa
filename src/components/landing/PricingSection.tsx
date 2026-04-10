@@ -26,9 +26,10 @@ const PLANS = [
     name: "Premium",
     price: 110,
     desc: "For enterprises & power users",
-    features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "Dynamic route optimization", "White-label branding", "Multi-team management", "Custom AI training", "Dedicated account manager", "API access"],
+    highlight: "🚀 Advanced AI CRM Hub",
+    features: ["All Pro features +", "Unlimited resources", "Unlimited bookings", "Double-booking guard", "Unlimited AI Calendar", "Unlimited AI Pricing", "⭐ Advanced AI CRM — Full Suite", "⭐ AI Lead Scoring & Churn Prediction", "⭐ Smart Tasks & Daily AI Planner", "⭐ Deal Pipeline & Revenue Analytics", "⭐ Google Workspace Sync", "⭐ AI Voice Assistant", "AI demand forecasting", "AI conflict resolution", "Revenue optimizer", "Dynamic route optimization", "White-label branding", "Multi-team management", "Custom AI training", "Dedicated account manager"],
     cta: "Start Free Trial",
-    style: "border-border/50",
+    style: "border-yellow-500 ring-2 ring-yellow-500/30",
   },
 ];
 
@@ -60,6 +61,11 @@ const PricingSection = () => {
                   <Crown className="w-3 h-3 mr-1" /> Most Popular
                 </Badge>
               )}
+              {p.highlight && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+                  {p.highlight}
+                </div>
+              )}
               <CardHeader className="text-center pb-2 pt-8">
                 <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
                 <p className="text-xs text-muted-foreground">{p.desc}</p>
@@ -77,9 +83,9 @@ const PricingSection = () => {
               <CardContent className="flex-1 flex flex-col pt-4">
                 <ul className="space-y-2.5 flex-1 mb-6">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                      <span className="text-foreground/80">{f}</span>
+                    <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-yellow-600 dark:text-yellow-400" : ""}`}>
+                      <Check className={`w-4 h-4 mt-0.5 shrink-0 ${f.startsWith("⭐") ? "text-yellow-500" : "text-primary"}`} />
+                      <span className={f.startsWith("⭐") ? "" : "text-foreground/80"}>{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -87,9 +93,11 @@ const PricingSection = () => {
                   className={`w-full font-semibold ${
                     p.popular
                       ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                      : p.highlight
+                      ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]"
                       : ""
                   }`}
-                  variant={p.popular ? "default" : "outline"}
+                  variant={p.popular || p.highlight ? "default" : "outline"}
                   onClick={() => navigate("/pricing")}
                 >
                   {p.cta}
