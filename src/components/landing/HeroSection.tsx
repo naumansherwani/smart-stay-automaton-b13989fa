@@ -86,6 +86,7 @@ const HeroSection = () => {
               <Globe className="mr-2 w-5 h-5" /> View Pricing
             </Button>
           </div>
+          <p className="text-sm text-white/40 font-medium pt-1">Start free — 7-day trial, no credit card required</p>
 
           {/* Social proof bar */}
           <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 pt-4">
