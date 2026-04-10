@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, TrainFront } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { INDUSTRY_CONFIGS, type IndustryType as IndustryTypeImport } from "@/lib/industryConfig";
+import { toast as sonnerToast } from "sonner";
 
 import { useProfile } from "@/hooks/useProfile";
 import { Badge } from "@/components/ui/badge";
