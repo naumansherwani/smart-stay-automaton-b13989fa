@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, DollarSign, Star, Pin, PinOff } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff, CalendarDays, ListTodo } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -18,18 +18,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useCallback } from "react";
+import { useProfile } from "@/hooks/useProfile";
 
-const mainNav = [
+const primaryNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "CRM", url: "/crm", icon: Users },
   { title: "Bookings", url: "/dashboard?tab=bookings", icon: ClipboardList },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
-const secondaryNav = [
-  { title: "Earnings", url: "/earnings", icon: DollarSign },
-  { title: "Reviews", url: "/reviews", icon: Star },
-  { title: "Settings", url: "/settings", icon: Settings },
+const conditionalNav = [
+  { title: "Calendar", url: "/dashboard?tab=calendar", icon: CalendarDays, industries: ["hospitality", "healthcare", "education", "events"] },
+  { title: "Operations", url: "/dashboard?tab=operations", icon: ListTodo, industries: ["logistics", "railway", "car_rental", "airline"] },
 ];
 
 export function AppSidebar() {
@@ -39,6 +40,13 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const [pinned, setPinned] = useState(false);
+  const { profile } = useProfile();
+
+  const userIndustry = profile?.industry || "";
+
+  const visibleConditional = conditionalNav.filter(
+    (item) => item.industries.includes(userIndustry)
+  );
 
   const isActive = (url: string) => {
     if (url.includes("?")) return false;
@@ -61,7 +69,7 @@ export function AppSidebar() {
     });
   };
 
-  const renderNavItem = (item: typeof mainNav[0]) => {
+  const renderNavItem = (item: typeof primaryNav[0]) => {
     const button = (
       <SidebarMenuButton asChild isActive={isActive(item.url)}>
         <NavLink
@@ -112,19 +120,21 @@ export function AppSidebar() {
             <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {mainNav.map(renderNavItem)}
+                {primaryNav.map(renderNavItem)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarGroup>
-            <SidebarGroupLabel>More</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {secondaryNav.map(renderNavItem)}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          {visibleConditional.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Industry</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {visibleConditional.map(renderNavItem)}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
         </SidebarContent>
 
         {!collapsed && (

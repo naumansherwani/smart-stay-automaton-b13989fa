@@ -3,7 +3,7 @@ import { AppSidebar } from "./AppSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
@@ -47,6 +47,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
             <div className="flex items-center gap-1 md:gap-2">
               <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={() => navigate("/settings")}
+                aria-label="Settings"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
               <Button
                 variant="ghost"
                 size="icon"
