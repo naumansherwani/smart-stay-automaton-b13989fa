@@ -120,10 +120,17 @@ export function GhostSidebar() {
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
-          <div className="flex items-center gap-2 mb-6 mt-1 px-1">
+          <button
+            onClick={() => {
+              setMobileOpen(false);
+              window.dispatchEvent(new CustomEvent("toggle-public-view"));
+            }}
+            className="flex items-center gap-2 mb-6 mt-1 px-1 hover:opacity-80 transition-opacity"
+            title="Switch to Public View"
+          >
             <Logo size="sm" />
             <span className="text-base font-bold text-white/90">HostFlow AI</span>
-          </div>
+          </button>
           <nav className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</nav>
           {visibleConditional.length > 0 && (
             <>
