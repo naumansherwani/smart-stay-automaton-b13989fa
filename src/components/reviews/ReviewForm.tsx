@@ -40,6 +40,7 @@ const ReviewForm = ({ existingReview, onSuccess }: ReviewFormProps) => {
     setLoading(true);
     try {
       if (existingReview) {
+        // Updates go through direct DB (resets to pending)
         const { error } = await supabase.from("reviews").update({
           reviewer_name: name.trim(),
           rating,
@@ -47,19 +48,29 @@ const ReviewForm = ({ existingReview, onSuccess }: ReviewFormProps) => {
           status: "pending",
         }).eq("id", existingReview.id);
         if (error) throw error;
-        toast.success("Review updated! It will appear after admin approval.");
+        toast.success("Review updated! It will appear after approval.");
       } else {
-        const { error } = await supabase.from("reviews").insert({
-          user_id: user.id,
-          reviewer_name: name.trim(),
-          rating,
-          review_text: text.trim(),
+        // New reviews go through AI filter edge function
+        const { data, error } = await supabase.functions.invoke("review-ai-filter", {
+          body: {
+            reviewer_name: name.trim(),
+            rating,
+            review_text: text.trim(),
+          },
         });
-        if (error) {
-          if (error.code === "23505") { toast.error("You have already submitted a review"); return; }
-          throw error;
+
+        if (error) throw error;
+
+        if (data?.error) {
+          toast.error(data.error);
+          return;
         }
-        toast.success("Review submitted! It will appear after admin approval.");
+
+        if (data?.status === "approved") {
+          toast.success("🎉 Your review has been published!");
+        } else {
+          toast.success("Review submitted! It will appear after approval.");
+        }
       }
       onSuccess?.();
     } catch (err: any) {
