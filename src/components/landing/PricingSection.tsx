@@ -12,7 +12,7 @@ const PLANS = [
     desc: "Perfect for solo operators",
     features: ["3 resources", "Limited bookings", "Limited AI Calendar", "Limited AI Pricing", "Calendar sync", "Double-booking guard", "Email notifications", "Basic analytics", "1 industry"],
     cta: "Start Free Trial",
-    style: "border-border/50",
+    style: "border-cyan-400 ring-2 ring-cyan-400/20 animate-[glow-cyan_3s_ease-in-out_infinite]",
   },
   {
     name: "Pro",
