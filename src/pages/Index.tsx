@@ -34,7 +34,5 @@ const Index = () => (
     <CookieConsent />
   </div>
 );
-<meta property="og:title" content="HostFlow AI - Smart AI CRM Platform" />
-<meta property="og:description" content="AI-powered CRM with automation, insights, and smart scheduling to grow your business faster." />
-<meta property="og:url" content="https://hostflowai.live/" />
+
 export default Index;
