@@ -524,19 +524,21 @@ export default function AirlineOperationsDashboard() {
                       <p className="text-[10px] text-muted-foreground">{f.connections} connections</p>
                     </div>
                     <div className="col-span-3 flex justify-end">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-xs gap-1 border-primary/30 hover:bg-primary/5 text-primary"
-                        onClick={() => handleAIResolve(f.flight)}
-                        disabled={isResolving}
-                      >
-                        {isResolving ? (
-                          <><RefreshCw className="w-3 h-3 animate-spin" /> Resolving...</>
-                        ) : (
-                          <><Zap className="w-3 h-3" /> AI Resolve</>
-                        )}
-                      </Button>
+                      {isResolved ? (
+                        <Badge variant="outline" className="text-[10px] text-success border-success/30 bg-success/10 gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Resolved
+                        </Badge>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs gap-1 border-primary/30 hover:bg-primary/5 text-primary"
+                          onClick={() => handleAIResolve(f.flight)}
+                          disabled={isResolving}
+                        >
+                          <Zap className="w-3 h-3" /> AI Resolve
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
