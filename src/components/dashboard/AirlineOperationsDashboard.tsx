@@ -490,7 +490,7 @@ export default function AirlineOperationsDashboard() {
               </div>
               {disruptedFlights.map((f) => {
                 const isResolving = resolvingFlights.has(f.flight);
-                const severityColor = f.severity === "critical"
+                const isResolved = resolvedFlights.has(f.flight);
                   ? "border-destructive/30 bg-destructive/5"
                   : f.severity === "high"
                   ? "border-warning/30 bg-warning/5"
