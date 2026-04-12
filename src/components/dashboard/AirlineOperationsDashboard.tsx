@@ -110,6 +110,7 @@ export default function AirlineOperationsDashboard() {
       ]);
       if (fRes.data) setFlights(fRes.data);
       if (bRes.data) setBookings(bRes.data);
+      setLastSynced(new Date());
       setLoading(false);
     };
     fetchData();
