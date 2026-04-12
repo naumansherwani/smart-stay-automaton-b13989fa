@@ -212,10 +212,10 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   };
 
   useEffect(() => {
-    if (isAirline && !aiSummary && !aiSummaryLoading) {
+    if ((isAirline || isHealthcare) && !aiSummary && !aiSummaryLoading) {
       generateAiSummary();
     }
-  }, [isAirline]);
+  }, [isAirline, isHealthcare]);
 
   const totalDealValue = linkedDeals.reduce((s, d) => s + (d.value || 0), 0);
   const wonDeals = linkedDeals.filter(d => d.stage === "Won").length;
