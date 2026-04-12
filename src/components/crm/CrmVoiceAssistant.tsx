@@ -159,7 +159,7 @@ function getGreetingResponse(industry: IndustryType): string {
   } else if (hour >= 17 && hour < 21) {
     greeting = "Good evening! 🌇 Wrapping up the day? I'm here to help.";
   } else {
-    greeting = "Hey there, night owl! 🌙 Working late? I've got you covered.";
+    greeting = "Good night! 🌙 I'm here whenever you need me.";
   }
 
   return `${greeting} I'm Aria, your AI assistant for ${config.label}. How may I help you? Just say a command or ask me anything — say "help" to see what I can do.`;
