@@ -143,8 +143,11 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [aiScribeActive, setAiScribeActive] = useState(false);
+  const [scribeFields, setScribeFields] = useState({ symptoms: "", diagnosis: "", prescription: "" });
 
   const isAirline = industry === "airlines";
+  const isHealthcare = industry === "healthcare";
   const loyalty = getLoyaltyTier(contact);
   const clv = getCLV(contact);
   const prefs = isAirline ? getPassengerPreferences(contact) : null;
