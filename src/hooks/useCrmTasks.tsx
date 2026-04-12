@@ -4,11 +4,11 @@ import { useAuth } from "./useAuth";
 import { useProfile } from "./useProfile";
 import type { IndustryType } from "@/lib/industryConfig";
 
-const logCrmAction = (userId: string, industry: string, action_type: string, entity_type: string, entity_id?: string, description?: string) => {
-  supabase.from("crm_activity_logs" as any).insert({
-    user_id: userId, industry, action_type, entity_type,
-    entity_id: entity_id || null, description: description || null,
-  } as any).then(() => {});
+const logCrmAction = (_userId: string, industry: string, action_type: string, entity_type: string, entity_id?: string, description?: string) => {
+  supabase.rpc("insert_activity_log" as any, {
+    _industry: industry, _action_type: action_type, _entity_type: entity_type,
+    _entity_id: entity_id || null, _description: description || null,
+  }).then(() => {});
 };
 
 export interface CrmTask {
