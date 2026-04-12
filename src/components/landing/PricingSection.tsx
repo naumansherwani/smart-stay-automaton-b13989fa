@@ -150,12 +150,8 @@ const PricingSection = () => {
                   <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
                 )}
                 <Button
-                  className={`w-full font-semibold ${
-                    p.popular || p.highlight
-                      ? "bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      : ""
-                  }`}
-                  variant={p.popular || p.highlight ? "default" : "outline"}
+                  className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                  variant="default"
                   onClick={() => navigate("/signup")}
                 >
                   {p.cta}
