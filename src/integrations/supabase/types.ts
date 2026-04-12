@@ -2274,6 +2274,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      insert_activity_log: {
+        Args: {
+          _action_type: string
+          _description?: string
+          _entity_id?: string
+          _entity_type: string
+          _industry: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
+      update_workspace_safe: {
+        Args: { _is_active?: boolean; _name?: string; _workspace_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
