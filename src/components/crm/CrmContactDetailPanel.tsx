@@ -151,6 +151,8 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   const loyalty = getLoyaltyTier(contact);
   const clv = getCLV(contact);
   const prefs = isAirline ? getPassengerPreferences(contact) : null;
+  const patientMeta = isHealthcare ? getPatientMeta(contact) : null;
+  const patientVitals = isHealthcare ? getPatientVitals() : null;
 
   const fetchRelated = useCallback(async () => {
     if (!user) return;
