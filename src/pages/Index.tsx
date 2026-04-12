@@ -13,9 +13,11 @@ import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
+import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 <meta property="og:image" content="https://via.placeholder.com/1200x630.jpg" />;
 const Index = () => (
   <div className="min-h-screen">
+    <AnimatedTopBorder />
     <Navbar />
     <div className="pt-[68px] border-b border-white/[0.06]">
       <SmartGreetingBanner compact />
