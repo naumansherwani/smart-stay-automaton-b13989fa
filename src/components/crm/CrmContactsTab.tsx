@@ -310,6 +310,9 @@ export default function CrmContactsTab({ industry }: Props) {
                   </div>
                   <div className="w-24 text-center" onClick={e => e.stopPropagation()}>
                     <div className="flex items-center gap-1 justify-center">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Contact via Email" onClick={() => setEmailContact(contact)}>
+                        <Mail className="h-3 w-3 text-[hsl(217,91%,60%)]" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-7 w-7" title="Voice Note" onClick={() => {
                         navigator.mediaDevices?.getUserMedia({ audio: true })
                           .then(() => toast.info(`🎤 Listening for voice note on ${contact.name}...`))
