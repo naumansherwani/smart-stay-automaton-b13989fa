@@ -363,9 +363,11 @@ const Dashboard = () => {
                 <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>
-                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
-                  <DollarSign className="w-3.5 h-3.5" /> Pricing
-                </TabsTrigger>
+                {hasPricing && (
+                  <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                    <DollarSign className="w-3.5 h-3.5" /> Pricing
+                  </TabsTrigger>
+                )}
                 <TabsTrigger value="alerts" className="gap-1.5 text-xs md:text-sm">
                   <Bell className="w-3.5 h-3.5" /> Alerts
                   {unreadAlerts > 0 && (
@@ -595,9 +597,11 @@ const Dashboard = () => {
             <IndustryWidgets config={config} features={features} />
           </TabsContent>
 
-          <TabsContent value="pricing">
-            <AutoPricingPanel config={config} industry={currentIndustry} />
-          </TabsContent>
+          {hasPricing && (
+            <TabsContent value="pricing">
+              <AutoPricingPanel config={config} industry={currentIndustry} />
+            </TabsContent>
+          )}
 
           <TabsContent value="alerts">
             <AlertsPanel alerts={alerts.map(a => ({ ...a, timestamp: new Date(a.created_at) }))} onMarkRead={markAlertRead} />
