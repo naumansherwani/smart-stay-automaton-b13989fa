@@ -251,10 +251,11 @@ export default function CrmContactsTab({ industry }: Props) {
           <div className="flex items-center gap-3 px-4 py-2 bg-muted/30 rounded text-xs text-muted-foreground">
             <Checkbox checked={selectedIds.size === filtered.length && filtered.length > 0} onCheckedChange={selectAll} />
             <span className="flex-1">Name</span>
+            <span className="w-10 text-center hidden lg:block">Mood</span>
             <span className="w-24 text-center hidden md:block">AI Score</span>
             <span className="w-24 text-center hidden md:block">Revenue</span>
             <span className="w-24 text-center">Stage</span>
-            <span className="w-20 text-center">Actions</span>
+            <span className="w-24 text-center">Actions</span>
           </div>
           {filtered.map(contact => (
             <Card key={contact.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelectedContact(contact)}>
