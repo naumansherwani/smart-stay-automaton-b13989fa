@@ -15,6 +15,7 @@ import { getCrmConfig } from "@/lib/crmConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 import type { CrmContact } from "@/hooks/useCrm";
 import CrmContactDetailPanel from "./CrmContactDetailPanel";
+import CrmAiEmailComposer from "./CrmAiEmailComposer";
 import { toast } from "sonner";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import LimitReachedPopup from "@/components/conversion/LimitReachedPopup";
@@ -39,6 +40,7 @@ export default function CrmContactsTab({ industry }: Props) {
   const [limitPopup, setLimitPopup] = useState(false);
   const [successPopup, setSuccessPopup] = useState(false);
   const [lastAddedName, setLastAddedName] = useState("");
+  const [emailContact, setEmailContact] = useState<CrmContact | null>(null);
   const hadContactsBefore = useRef(contacts.length > 0);
 
   const filtered = contacts.filter(c => {
