@@ -14,7 +14,7 @@ import {
   User, Mail, Phone, Building2, MapPin, ArrowLeft, Edit2, Save, X,
   Calendar, FileText, CheckSquare, Sparkles, TrendingUp, DollarSign,
   TicketCheck, Clock, Activity, Tag, AlertTriangle, Star, MessageSquare,
-  Crown, Plane, Armchair, UtensilsCrossed, MapPinned, Mic, Loader2,
+  Crown, Plane, Armchair, UtensilsCrossed, MapPinned, Mic, Loader2, RefreshCw,
 } from "lucide-react";
 import type { CrmContact, CrmTicket, CrmDeal, CrmActivity } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
