@@ -16,15 +16,14 @@ export function useCrmActivityLogger() {
     metadata?: Record<string, unknown>
   ) => {
     if (!user) return;
-    await supabase.from("crm_activity_logs" as any).insert({
-      user_id: user.id,
-      industry,
-      action_type,
-      entity_type,
-      entity_id: entity_id || null,
-      description: description || null,
-      metadata: metadata || {},
-    } as any);
+    await supabase.rpc("insert_activity_log" as any, {
+      _industry: industry,
+      _action_type: action_type,
+      _entity_type: entity_type,
+      _entity_id: entity_id || null,
+      _description: description || null,
+      _metadata: metadata || {},
+    });
   }, [user, industry]);
 
   return { logActivity };
