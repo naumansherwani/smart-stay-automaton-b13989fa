@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +51,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col w-full">
+      <AnimatedTopBorder />
       <GhostSidebar />
 
       <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4 md:pl-6">
