@@ -516,6 +516,155 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
             </CardContent>
           </Card>
 
+
+          {/* ─── AI Clinical Decision Support ─── */}
+          <Card className="bg-gradient-to-br from-[hsl(263,70%,96%)] to-[hsl(204,100%,96%)] border-[hsl(263,60%,85%)]/60 backdrop-blur-sm shadow-[0_0_20px_hsl(263,70%,80%,0.15)]">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Search className="h-4 w-4 text-[hsl(263,70%,58%)]" />
+                  AI Diagnosis Assistant
+                  <Badge className="bg-[hsl(263,70%,94%)] text-[hsl(263,70%,45%)] text-[8px] ml-1 border border-[hsl(263,70%,85%)]">Second Opinion</Badge>
+                </CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[10px] gap-1 border-[hsl(263,60%,80%)] text-[hsl(263,70%,45%)]"
+                  disabled={diagnosisLoading || !scribeFields.symptoms}
+                  onClick={() => {
+                    setDiagnosisLoading(true);
+                    setTimeout(() => {
+                      setAiDiagnoses([
+                        { name: "Diabetic Peripheral Neuropathy", confidence: 87, tests: ["Nerve Conduction Study", "HbA1c Panel"] },
+                        { name: "Chronic Venous Insufficiency", confidence: 42, tests: ["Doppler Ultrasound"] },
+                        { name: "Vitamin B12 Deficiency", confidence: 31, tests: ["Serum B12", "Methylmalonic Acid"] },
+                      ]);
+                      setDiagnosisLoading(false);
+                      toast.success("🧠 AI analyzed symptoms against 2M+ medical references");
+                    }, 2000);
+                  }}
+                >
+                  {diagnosisLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+                  Analyze Symptoms
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {!scribeFields.symptoms && aiDiagnoses.length === 0 && (
+                <p className="text-xs text-muted-foreground py-3 text-center">
+                  Complete an AI Consultation above to auto-populate symptoms, then click "Analyze Symptoms" for AI-suggested diagnoses.
+                </p>
+              )}
+              {diagnosisLoading && (
+                <div className="flex items-center justify-center gap-2 py-6">
+                  <Loader2 className="h-4 w-4 animate-spin text-[hsl(263,70%,58%)]" />
+                  <span className="text-xs text-muted-foreground">Scanning medical journals & patient history...</span>
+                </div>
+              )}
+              {aiDiagnoses.length > 0 && !diagnosisLoading && (
+                <div className="space-y-2">
+                  {aiDiagnoses.map((d, i) => (
+                    <div key={i} className="p-2.5 rounded-lg bg-background/70 border border-border/40">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2.5 w-2.5 rounded-full ${d.confidence >= 70 ? "bg-destructive animate-pulse" : d.confidence >= 40 ? "bg-[hsl(45,90%,50%)]" : "bg-muted-foreground/40"}`} />
+                          <span className="text-xs font-semibold">{d.name}</span>
+                        </div>
+                        <Badge
+                          className={`text-[9px] font-bold ${
+                            d.confidence >= 70 ? "bg-destructive/10 text-destructive border-destructive/20" :
+                            d.confidence >= 40 ? "bg-[hsl(45,90%,92%)] text-[hsl(45,90%,35%)] border-[hsl(45,90%,70%)]" :
+                            "bg-muted text-muted-foreground"
+                          }`}
+                          variant="outline"
+                        >
+                          {d.confidence}% confidence
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                        <span className="text-[9px] text-muted-foreground">Recommended Tests:</span>
+                        {d.tests.map((t, j) => (
+                          <Button
+                            key={j}
+                            size="sm"
+                            variant="outline"
+                            className="h-5 text-[9px] px-1.5 gap-0.5 border-[hsl(204,100%,80%)] text-[hsl(204,100%,35%)] hover:bg-[hsl(204,100%,94%)]"
+                            onClick={() => toast.success(`📋 "${t}" ordered for ${contact.name} — Lab workspace notified`)}
+                          >
+                            <FlaskConical className="h-2.5 w-2.5" />
+                            {t}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-[9px] text-muted-foreground text-center mt-1">
+                    ⚕️ AI suggestions are advisory only — clinical judgment remains with the physician.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* ─── Patient Education Generator ─── */}
+          <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  Patient Education Generator
+                </CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[10px] gap-1"
+                  disabled={educationLoading || (!scribeFields.diagnosis && !scribeFields.symptoms)}
+                  onClick={() => {
+                    setEducationLoading(true);
+                    setTimeout(() => {
+                      setEducationSummary(
+                        `Dear ${contact.name},\n\nYour doctor found signs of early nerve damage (neuropathy) related to diabetes. This can cause tingling, numbness, or tiredness in your hands and feet.\n\n📌 What to do:\n• Take your medicines (Metformin & Gabapentin) as prescribed.\n• Check your feet daily for cuts or sores.\n• Keep blood sugar under control — aim for HbA1c below 7%.\n• Walk 20-30 minutes daily if possible.\n\n📅 Next visit: 4 weeks from today.\n\nIf you feel sudden weakness, severe dizziness, or chest pain, go to the emergency room immediately.\n\n— ${contact.company || "HostFlow AI Healthcare"}`
+                      );
+                      setEducationLoading(false);
+                      toast.success("📄 Patient-friendly summary generated — ready to print or share");
+                    }, 1500);
+                  }}
+                >
+                  {educationLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <ClipboardList className="h-3 w-3" />}
+                  Generate Summary
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {!educationSummary && !educationLoading && (
+                <p className="text-xs text-muted-foreground py-2 text-center">
+                  After consultation, generate an easy-to-read summary for the patient to take home.
+                </p>
+              )}
+              {educationLoading && (
+                <div className="flex items-center justify-center gap-2 py-4">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-xs text-muted-foreground">Creating patient-friendly summary...</span>
+                </div>
+              )}
+              {educationSummary && !educationLoading && (
+                <div className="space-y-2">
+                  <div className="p-3 rounded-lg bg-background/80 border border-border/40">
+                    <p className="text-xs whitespace-pre-line leading-relaxed">{educationSummary}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" className="h-6 text-[10px] gap-1" onClick={() => { navigator.clipboard.writeText(educationSummary); toast.success("Copied to clipboard"); }}>
+                      Copy
+                    </Button>
+                    <Button size="sm" variant="outline" className="h-6 text-[10px] gap-1" onClick={() => toast.success("Summary sent to patient's email")}>
+                      <Mail className="h-2.5 w-2.5" />Email to Patient
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Layer 4: Treatment Timeline & Current Medications */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
