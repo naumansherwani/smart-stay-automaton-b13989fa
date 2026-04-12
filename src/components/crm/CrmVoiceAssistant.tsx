@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Mic, MicOff, Volume2, X, Sparkles, Bot, User, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 import type { IndustryType } from "@/lib/industryConfig";
 import { getIndustryConfig } from "@/lib/industryConfig";
 import { getCrmConfig } from "@/lib/crmConfig";
@@ -23,7 +25,6 @@ interface ChatMessage {
   action?: string;
 }
 
-// ─── Industry-specific command definitions ──────────────────────────────────
 interface VoiceCommand {
   keywords: string[];
   action: string;
@@ -31,153 +32,178 @@ interface VoiceCommand {
   response: string;
 }
 
+// ─── Language mapping for Speech APIs ───────────────────────────────────────
+const LANG_TO_SPEECH: Record<string, string> = {
+  en: "en-US", hi: "hi-IN", ur: "ur-PK", ar: "ar-SA", es: "es-ES",
+  fr: "fr-FR", de: "de-DE", "de-CH": "de-CH", pt: "pt-BR",
+  zh: "zh-CN", ja: "ja-JP", ko: "ko-KR", tr: "tr-TR",
+};
+
+function getSpeechLang(): string {
+  const current = i18n.language || "en";
+  return LANG_TO_SPEECH[current] || LANG_TO_SPEECH[current.split("-")[0]] || "en-US";
+}
+
+// ─── Multilingual greeting responses ────────────────────────────────────────
+const GREETINGS: Record<string, { morning: string; afternoon: string; evening: string; night: string; intro: string }> = {
+  en: { morning: "Good morning! ☀️", afternoon: "Good afternoon! 🌤️", evening: "Good evening! 🌇", night: "Good night! 🌙", intro: "I'm Aria, your AI assistant for {industry}. How may I help you?" },
+  hi: { morning: "सुप्रभात! ☀️", afternoon: "नमस्ते! 🌤️", evening: "शुभ संध्या! 🌇", night: "शुभ रात्रि! 🌙", intro: "मैं Aria हूँ, {industry} के लिए आपकी AI सहायक। मैं आपकी कैसे मदद कर सकती हूँ?" },
+  ur: { morning: "صبح بخیر! ☀️", afternoon: "السلام علیکم! 🌤️", evening: "شام بخیر! 🌇", night: "شب بخیر! 🌙", intro: "میں Aria ہوں، {industry} کے لیے آپکی AI اسسٹنٹ۔ میں آپکی کیسے مدد کر سکتی ہوں؟" },
+  ar: { morning: "صباح الخير! ☀️", afternoon: "مساء الخير! 🌤️", evening: "مساء الخير! 🌇", night: "تصبح على خير! 🌙", intro: "أنا Aria، مساعدتك الذكية لـ {industry}. كيف يمكنني مساعدتك؟" },
+  es: { morning: "¡Buenos días! ☀️", afternoon: "¡Buenas tardes! 🌤️", evening: "¡Buenas tardes! 🌇", night: "¡Buenas noches! 🌙", intro: "Soy Aria, tu asistente de IA para {industry}. ¿En qué puedo ayudarte?" },
+  fr: { morning: "Bonjour! ☀️", afternoon: "Bon après-midi! 🌤️", evening: "Bonsoir! 🌇", night: "Bonne nuit! 🌙", intro: "Je suis Aria, votre assistante IA pour {industry}. Comment puis-je vous aider?" },
+  de: { morning: "Guten Morgen! ☀️", afternoon: "Guten Tag! 🌤️", evening: "Guten Abend! 🌇", night: "Gute Nacht! 🌙", intro: "Ich bin Aria, Ihre KI-Assistentin für {industry}. Wie kann ich Ihnen helfen?" },
+  pt: { morning: "Bom dia! ☀️", afternoon: "Boa tarde! 🌤️", evening: "Boa noite! 🌇", night: "Boa noite! 🌙", intro: "Sou a Aria, sua assistente de IA para {industry}. Como posso ajudá-lo?" },
+  zh: { morning: "早上好！☀️", afternoon: "下午好！🌤️", evening: "晚上好！🌇", night: "晚安！🌙", intro: "我是 Aria，{industry} 的 AI 助手。我能帮您什么？" },
+  ja: { morning: "おはようございます！☀️", afternoon: "こんにちは！🌤️", evening: "こんばんは！🌇", night: "おやすみなさい！🌙", intro: "私はAriaです。{industry}のAIアシスタントです。何かお手伝いできますか？" },
+  ko: { morning: "좋은 아침입니다! ☀️", afternoon: "안녕하세요! 🌤️", evening: "좋은 저녁입니다! 🌇", night: "안녕히 주무세요! 🌙", intro: "저는 Aria입니다. {industry}의 AI 어시스턴트입니다. 어떻게 도와드릴까요?" },
+  tr: { morning: "Günaydın! ☀️", afternoon: "İyi günler! 🌤️", evening: "İyi akşamlar! 🌇", night: "İyi geceler! 🌙", intro: "Ben Aria, {industry} için AI asistanınız. Size nasıl yardımcı olabilirim?" },
+};
+
+// ─── Industry-specific command definitions ──────────────────────────────────
 function getIndustryCommands(industry: IndustryType): VoiceCommand[] {
-  const config = getIndustryConfig(industry);
   const crmConfig = getCrmConfig(industry);
   const hasPricing = supportsAutoPricing(industry);
 
-  // Universal commands for all industries
   const universal: VoiceCommand[] = [
-    { keywords: ["contacts", "passengers", "guests", "patients", "students", "clients", "renters", "organizers", crmConfig.contactLabelPlural.toLowerCase()], action: "navigate", tab: "contacts", response: `Opening ${crmConfig.contactLabelPlural} management for you. Here you can view, search, and manage all your ${crmConfig.contactLabelPlural.toLowerCase()}.` },
-    { keywords: ["tickets", "complaints", "requests", "cases", "claims", "issues", crmConfig.ticketLabelPlural.toLowerCase()], action: "navigate", tab: "tickets", response: `Opening ${crmConfig.ticketLabelPlural}. You can track and resolve all ${crmConfig.ticketLabelPlural.toLowerCase()} here.` },
-    { keywords: ["deals", "bookings", "contracts", "enrollments", "sponsorships", crmConfig.dealLabelPlural.toLowerCase()], action: "navigate", tab: "deals", response: `Opening ${crmConfig.dealLabelPlural}. Here's your pipeline and ${crmConfig.dealLabelPlural.toLowerCase()} overview.` },
-    { keywords: ["activities", "activity", "log", "history"], action: "navigate", tab: "activities", response: "Opening Activities log. You can see all recent actions and history here." },
-    { keywords: ["analytics", "reports", "revenue", "chart"], action: "navigate", tab: "analytics", response: "Opening Analytics dashboard. Here's your revenue data and performance charts." },
-    { keywords: ["ai", "insights", "artificial intelligence", "predictions"], action: "navigate", tab: "ai-insights", response: "Opening AI Insights. I'll show you AI-powered predictions and recommendations." },
-    { keywords: ["email", "compose", "write email", "send email"], action: "navigate", tab: "email-composer", response: "Opening AI Email Composer. Choose a tone and I'll help you craft the perfect email." },
-    { keywords: ["forecast", "predict revenue", "revenue forecast"], action: "navigate", tab: "revenue-forecast", response: "Opening Predictive Revenue Forecast. Here's what AI predicts for your upcoming revenue." },
-    { keywords: ["competitor", "competition", "market"], action: "navigate", tab: "competitor-intel", response: "Opening Competitor Intelligence. Let me show you how you compare to your competitors." },
-    { keywords: ["sentiment", "feedback", "mood", "satisfaction"], action: "navigate", tab: "sentiment", response: "Opening Sentiment Dashboard. Here's how your customers are feeling." },
-    { keywords: ["meeting", "schedule meeting", "calendar", "appointment"], action: "navigate", tab: "meeting-scheduler", response: "Opening Smart Meeting Scheduler. Let me help you find the perfect time." },
-    { keywords: ["performance", "productivity", "stats"], action: "navigate", tab: "performance", response: "Opening Performance Dashboard. Here's your productivity and performance data." },
-    { keywords: ["security", "alerts", "threats"], action: "navigate", tab: "security", response: "Opening Security Panel. All security alerts and access logs are here." },
-    { keywords: ["connect", "industry", "network"], action: "navigate", tab: "industry-connect", response: "Opening Industry Connect. Connect with others in your industry." },
-    { keywords: ["overview", "dashboard", "home", "main"], action: "navigate", tab: "overview", response: "Taking you to the Overview. Here's your complete CRM dashboard at a glance." },
-    { keywords: ["help", "what can you do", "commands", "features"], action: "help", response: "" },
-    { keywords: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"], action: "greet", response: "" },
-    { keywords: ["thank you", "thanks", "thank", "appreciate"], action: "thanks", response: "You're welcome! I'm always here to help. Just say any command or ask me anything about your CRM." },
-    { keywords: ["bye", "goodbye", "see you", "close"], action: "close", response: "Goodbye! Tap the microphone anytime you need me. Have a productive day!" },
+    { keywords: ["contacts", "passengers", "guests", "patients", "students", "clients", "renters", "organizers", crmConfig.contactLabelPlural.toLowerCase()], action: "navigate", tab: "contacts", response: `Opening ${crmConfig.contactLabelPlural} management.` },
+    { keywords: ["tickets", "complaints", "requests", "cases", "claims", "issues", crmConfig.ticketLabelPlural.toLowerCase()], action: "navigate", tab: "tickets", response: `Opening ${crmConfig.ticketLabelPlural}.` },
+    { keywords: ["deals", "bookings", "contracts", "enrollments", "sponsorships", crmConfig.dealLabelPlural.toLowerCase()], action: "navigate", tab: "deals", response: `Opening ${crmConfig.dealLabelPlural}.` },
+    { keywords: ["activities", "activity", "log", "history"], action: "navigate", tab: "activities", response: "Opening Activities log." },
+    { keywords: ["analytics", "reports", "revenue", "chart"], action: "navigate", tab: "analytics", response: "Opening Analytics dashboard." },
+    { keywords: ["ai", "insights", "artificial intelligence", "predictions"], action: "navigate", tab: "ai-insights", response: "Opening AI Insights." },
+    { keywords: ["email", "compose", "write email", "send email"], action: "navigate", tab: "email-composer", response: "Opening AI Email Composer." },
+    { keywords: ["forecast", "predict revenue", "revenue forecast"], action: "navigate", tab: "revenue-forecast", response: "Opening Revenue Forecast." },
+    { keywords: ["competitor", "competition", "market"], action: "navigate", tab: "competitor-intel", response: "Opening Competitor Intelligence." },
+    { keywords: ["sentiment", "feedback", "mood", "satisfaction"], action: "navigate", tab: "sentiment", response: "Opening Sentiment Dashboard." },
+    { keywords: ["meeting", "schedule meeting", "appointment"], action: "navigate", tab: "meeting-scheduler", response: "Opening Meeting Scheduler." },
+    { keywords: ["performance", "productivity", "stats"], action: "navigate", tab: "performance", response: "Opening Performance Dashboard." },
+    { keywords: ["security", "alerts", "threats"], action: "navigate", tab: "security", response: "Opening Security Panel." },
+    { keywords: ["connect", "industry", "network"], action: "navigate", tab: "industry-connect", response: "Opening Industry Connect." },
+    { keywords: ["overview", "dashboard", "home", "main"], action: "navigate", tab: "overview", response: "Opening Overview." },
+    { keywords: ["help", "what can you do", "commands", "features", "مدد", "مساعدة", "ayuda", "aide", "hilfe", "ajuda", "帮助", "ヘルプ", "도움", "yardım"], action: "help", response: "" },
+    { keywords: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "سلام", "نمستے", "مرحبا", "hola", "bonjour", "hallo", "olá", "你好", "こんにちは", "안녕", "merhaba", "السلام علیکم"], action: "greet", response: "" },
+    { keywords: ["thank you", "thanks", "شکریہ", "شكرا", "gracias", "merci", "danke", "obrigado", "谢谢", "ありがとう", "감사", "teşekkür"], action: "thanks", response: "You're welcome! I'm always here to help." },
+    { keywords: ["bye", "goodbye", "see you", "close", "خدا حافظ", "مع السلامة", "adiós", "au revoir", "tschüss", "tchau", "再见", "さようなら", "안녕히", "hoşça kal"], action: "close", response: "Goodbye! Tap the microphone anytime you need me." },
+    // Calendar / scheduling commands
+    { keywords: ["calendar", "schedule", "تقویم", "جدول", "calendario", "calendrier", "kalender", "calendário", "日历", "カレンダー", "일정", "takvim"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar." },
+    { keywords: ["adjust booking", "move booking", "reschedule", "change date", "postpone", "بکنگ تبدیل", "reprogramar", "reporter", "verschieben", "remarcar", "改期", "予約変更", "예약 변경", "erteleme"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar for booking adjustments." },
+    { keywords: ["new booking", "add booking", "create booking", "book now", "نئی بکنگ", "nueva reserva", "nouvelle réservation", "neue buchung", "nova reserva", "新预订", "新規予約", "새 예약", "yeni rezervasyon"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking." },
   ];
 
   // Industry-specific commands
   const industrySpecific: Record<string, VoiceCommand[]> = {
     airlines: [
-      { keywords: ["flight ops", "flight operations", "flights", "flight schedule"], action: "navigate", tab: "flight-ops", response: "Opening Flight Operations Calendar. Here's your flight schedule with seat availability and AI pricing." },
-      { keywords: ["pricing", "price", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing. I'll show you dynamic ticket prices based on demand and competition." },
-      { keywords: ["delay", "disruption", "cancelled", "delayed flight"], action: "navigate", tab: "tickets", response: "Opening Complaints for disruption management. I can help you resolve passenger issues." },
-      { keywords: ["crew", "pilot", "staff scheduling"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for crew management. AI will optimize your crew rotations." },
-      { keywords: ["route", "routes", "destinations"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer. AI analyzes the best routes based on demand and profitability." },
-      { keywords: ["capacity", "load factor", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner. Here's your seat utilization and demand forecast." },
+      { keywords: ["flight ops", "flight operations", "flights", "flight schedule"], action: "navigate", tab: "flight-ops", response: "Opening Flight Operations." },
+      { keywords: ["pricing", "price", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing." },
+      { keywords: ["delay", "disruption", "cancelled", "delayed flight"], action: "navigate", tab: "tickets", response: "Opening Complaints for disruptions." },
+      { keywords: ["crew", "pilot", "staff scheduling"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for crew." },
+      { keywords: ["route", "routes", "destinations"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
+      { keywords: ["capacity", "load factor", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
     ],
     hospitality: [
-      { keywords: ["pricing", "price", "room rate", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing. I'll show you dynamic room rates based on demand and seasonality." },
-      { keywords: ["booking", "reservation", "check in", "check out"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking. Create a new reservation with full control." },
-      { keywords: ["rooms", "resources", "property"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager. Manage your rooms, amenities, and availability." },
-      { keywords: ["schedule", "calendar"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar. Your smart schedule with auto-optimization is ready." },
+      { keywords: ["pricing", "price", "room rate", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Room Pricing." },
+      { keywords: ["rooms", "resources", "property"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager." },
+      { keywords: ["check in", "check out", "reservation"], action: "navigate", tab: "tool-manual-booking", response: "Opening Reservations." },
     ],
     car_rental: [
-      { keywords: ["fleet", "vehicles", "cars"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager. Track and manage all your vehicles here." },
-      { keywords: ["pricing", "rental price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing. Dynamic rental rates based on demand and availability." },
-      { keywords: ["booking", "rental", "reservation"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking for new rental creation." },
-      { keywords: ["capacity", "availability"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner. See vehicle availability and demand forecast." },
+      { keywords: ["fleet", "vehicles", "cars"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager." },
+      { keywords: ["pricing", "rental price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing." },
     ],
     healthcare: [
-      { keywords: ["schedule", "appointment", "slots"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling. Intelligent appointment scheduling for your practice." },
-      { keywords: ["booking", "appointment booking"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking to schedule a new patient appointment." },
-      { keywords: ["rooms", "equipment", "resources"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager for rooms and equipment management." },
+      { keywords: ["schedule", "appointment", "slots"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling." },
+      { keywords: ["rooms", "equipment", "resources"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager." },
     ],
     education: [
-      { keywords: ["schedule", "timetable", "classes"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling. Smart timetable management for your institution." },
-      { keywords: ["booking", "class booking", "enrollment"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking for class enrollment." },
-      { keywords: ["capacity", "room capacity", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner. See classroom utilization and availability." },
-      { keywords: ["rooms", "labs", "resources"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager for rooms and lab management." },
+      { keywords: ["timetable", "classes", "schedule"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling." },
+      { keywords: ["enrollment", "class booking"], action: "navigate", tab: "tool-manual-booking", response: "Opening Enrollment Booking." },
+      { keywords: ["rooms", "labs", "resources"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager." },
     ],
     logistics: [
-      { keywords: ["route", "routes", "delivery"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer. AI-optimized delivery routes are ready." },
-      { keywords: ["fleet", "vehicles", "trucks"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager. Track all your vehicles and drivers." },
-      { keywords: ["capacity", "load", "shipment"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner for shipment and load management." },
-      { keywords: ["schedule", "dispatch"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for dispatch optimization." },
+      { keywords: ["route", "routes", "delivery"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
+      { keywords: ["fleet", "vehicles", "trucks"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager." },
+      { keywords: ["dispatch", "shipment"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening Dispatch Scheduling." },
     ],
     events_entertainment: [
-      { keywords: ["pricing", "ticket price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing. Dynamic ticket pricing based on demand and event data." },
-      { keywords: ["capacity", "venue", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner. Venue capacity and availability overview." },
-      { keywords: ["schedule", "calendar", "events"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar for event scheduling and management." },
-      { keywords: ["booking", "ticket booking"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking for new ticket/event booking." },
+      { keywords: ["pricing", "ticket price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Event Pricing." },
+      { keywords: ["venue", "capacity", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
     ],
     railways: [
-      { keywords: ["pricing", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing. Dynamic rail ticket pricing based on demand." },
-      { keywords: ["route", "routes", "trains"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer for train route management." },
-      { keywords: ["capacity", "coaches", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner for coach and seat availability." },
-      { keywords: ["schedule", "timetable"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for train timetable management." },
+      { keywords: ["pricing", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Rail Pricing." },
+      { keywords: ["route", "routes", "trains"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Manager." },
+      { keywords: ["coaches", "seats", "capacity"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
     ],
   };
 
   return [...universal, ...(industrySpecific[industry] || [])];
 }
 
-// ─── Generate help response based on industry ───────────────────────────────
-function getHelpResponse(industry: IndustryType): string {
+// ─── Generate greeting based on time + language ─────────────────────────────
+function getGreetingResponse(industry: IndustryType): string {
   const config = getIndustryConfig(industry);
+  const lang = (i18n.language || "en").split("-")[0];
+  const g = GREETINGS[lang] || GREETINGS.en;
+  const hour = new Date().getHours();
+
+  let timeGreeting: string;
+  if (hour >= 5 && hour < 12) timeGreeting = g.morning;
+  else if (hour >= 12 && hour < 17) timeGreeting = g.afternoon;
+  else if (hour >= 17 && hour < 21) timeGreeting = g.evening;
+  else timeGreeting = g.night;
+
+  return `${timeGreeting} ${g.intro.replace("{industry}", config.label)}`;
+}
+
+// ─── Help response ──────────────────────────────────────────────────────────
+function getHelpResponse(industry: IndustryType): string {
   const crmConfig = getCrmConfig(industry);
   const hasPricing = supportsAutoPricing(industry);
 
-  let help = `Hi! I'm Aria, your AI CRM assistant for ${config.label}. Here's what I can do:\n\n`;
-  help += `📋 "${crmConfig.contactLabelPlural}" — Open ${crmConfig.contactLabelPlural.toLowerCase()} management\n`;
-  help += `🎫 "${crmConfig.ticketLabelPlural}" — Open ${crmConfig.ticketLabelPlural.toLowerCase()}\n`;
-  help += `💼 "${crmConfig.dealLabelPlural}" — Open ${crmConfig.dealLabelPlural.toLowerCase()}\n`;
-  help += `📊 "Analytics" — View revenue and reports\n`;
-  help += `🤖 "AI Insights" — Get AI predictions\n`;
-  help += `✉️ "Email" — Open AI Email Composer\n`;
+  let help = `📋 "${crmConfig.contactLabelPlural}" — Open contacts\n`;
+  help += `🎫 "${crmConfig.ticketLabelPlural}" — Open tickets\n`;
+  help += `💼 "${crmConfig.dealLabelPlural}" — Open deals\n`;
+  help += `📊 "Analytics" — Revenue reports\n`;
+  help += `🤖 "AI Insights" — Predictions\n`;
+  help += `✉️ "Email" — AI Email Composer\n`;
+  help += `📅 "Calendar" — AI Calendar\n`;
+  help += `📝 "New Booking" — Create booking\n`;
 
-  if (hasPricing) {
-    help += `💰 "Pricing" — AI dynamic pricing\n`;
-  }
+  if (hasPricing) help += `💰 "Pricing" — AI dynamic pricing\n`;
 
   if (industry === "airlines") {
-    help += `✈️ "Flight Ops" — Flight operations calendar\n`;
+    help += `✈️ "Flight Ops" — Operations\n`;
     help += `🗺️ "Routes" — Route optimizer\n`;
   } else if (industry === "logistics") {
-    help += `🗺️ "Routes" — Route optimizer\n`;
+    help += `🗺️ "Routes" — Delivery routes\n`;
     help += `🚚 "Fleet" — Fleet management\n`;
   } else if (industry === "car_rental") {
     help += `🚗 "Fleet" — Vehicle management\n`;
   }
 
-  help += `\n💡 You can also just chat with me! Ask me anything.`;
   return help;
 }
 
-function getGreetingResponse(industry: IndustryType): string {
-  const config = getIndustryConfig(industry);
-  const hour = new Date().getHours();
-
-  let greeting: string;
-  if (hour >= 5 && hour < 12) {
-    greeting = "Good morning! ☀️ Hope you're having a fresh start today.";
-  } else if (hour >= 12 && hour < 17) {
-    greeting = "Good afternoon! 🌤️ Let's keep the momentum going.";
-  } else if (hour >= 17 && hour < 21) {
-    greeting = "Good evening! 🌇 Wrapping up the day? I'm here to help.";
-  } else {
-    greeting = "Good night! 🌙 I'm here whenever you need me.";
-  }
-
-  return `${greeting} I'm Aria, your AI assistant for ${config.label}. How may I help you? Just say a command or ask me anything — say "help" to see what I can do.`;
-}
-
-// ─── Text-to-Speech with female voice ───────────────────────────────────────
-function speakText(text: string) {
+// ─── Text-to-Speech with female voice + language ────────────────────────────
+function speakText(text: string, lang?: string) {
   if (!("speechSynthesis" in window)) return;
 
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text.replace(/[📋🎫💼📊🤖✉️💰✈️🗺️🚚🚗💡\n]/g, " ").replace(/\s+/g, " ").trim());
+  const clean = text.replace(/[📋🎫💼📊🤖✉️💰✈️🗺️🚚🚗💡📅📝\n]/g, " ").replace(/\s+/g, " ").trim();
+  const utterance = new SpeechSynthesisUtterance(clean);
 
-  // Find a female voice
+  const speechLang = lang || getSpeechLang();
+  utterance.lang = speechLang;
+
+  // Find a female voice matching the language
   const voices = window.speechSynthesis.getVoices();
+  const langPrefix = speechLang.split("-")[0];
+
   const femaleVoice = voices.find(v =>
-    /female|samantha|victoria|karen|moira|fiona|tessa|google.*female|microsoft.*zira|microsoft.*hazel/i.test(v.name)
+    v.lang.startsWith(langPrefix) && /female|samantha|victoria|karen|moira|fiona|tessa|zira|hazel/i.test(v.name)
   ) || voices.find(v =>
-    /en.*us|en.*gb|english/i.test(v.lang) && !/male/i.test(v.name)
+    v.lang.startsWith(langPrefix) && !/male/i.test(v.name)
+  ) || voices.find(v =>
+    v.lang.startsWith(langPrefix)
   ) || voices[0];
 
   if (femaleVoice) utterance.voice = femaleVoice;
@@ -188,7 +214,7 @@ function speakText(text: string) {
   window.speechSynthesis.speak(utterance);
 }
 
-// ─── Speech Recognition ─────────────────────────────────────────────────────
+// ─── Speech Recognition with language support ───────────────────────────────
 function useSpeechRecognition(onResult: (text: string) => void) {
   const recognitionRef = useRef<any>(null);
   const [isListening, setIsListening] = useState(false);
@@ -203,7 +229,7 @@ function useSpeechRecognition(onResult: (text: string) => void) {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = "en-US";
+    recognition.lang = getSpeechLang(); // Use current i18n language
 
     recognition.onresult = (event: any) => {
       const text = event.results[0][0].transcript;
@@ -249,7 +275,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
     return () => window.speechSynthesis?.removeEventListener?.("voiceschanged", handleVoicesChanged);
   }, []);
 
-  // Auto-scroll to bottom
+  // Auto-scroll
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
@@ -265,7 +291,6 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   const processCommand = useCallback((userText: string) => {
     const lower = userText.toLowerCase().trim();
 
-    // Add user message
     setMessages(prev => [...prev, { role: "user", text: userText, timestamp: new Date() }]);
 
     // Find matching command
@@ -299,16 +324,11 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
         aiResponse = matched.response;
       }
     } else {
-      // Conversational fallback
       const config = getIndustryConfig(industry);
-      if (lower.includes("how are you") || lower.includes("how do you do")) {
-        aiResponse = `I'm doing great, thank you! I'm here to help you manage your ${config.label} CRM. What would you like to do?`;
-      } else if (lower.includes("what is") || lower.includes("tell me about")) {
-        aiResponse = `That's a great question! I specialize in ${config.label} CRM management. I can help you navigate to any feature, manage ${getCrmConfig(industry).contactLabelPlural.toLowerCase()}, check analytics, and more. Try saying "help" to see all my capabilities.`;
-      } else if (lower.includes("best") || lower.includes("recommend") || lower.includes("suggest")) {
-        aiResponse = `Based on your ${config.label} industry, I'd recommend checking your Analytics for the latest trends, and reviewing AI Insights for smart predictions. Would you like me to open either of those?`;
+      if (lower.includes("how are you") || lower.includes("how do you do") || lower.includes("کیسی ہو") || lower.includes("कैसी हो")) {
+        aiResponse = `I'm great! How can I help you with ${config.label}?`;
       } else {
-        aiResponse = `I heard "${userText}". I'm Aria, your ${config.label} CRM assistant. I can navigate you to any CRM feature — try saying things like "${getCrmConfig(industry).contactLabelPlural}", "Analytics", "AI Insights", or "help" to see everything I can do.`;
+        aiResponse = `I heard "${userText}". Try saying "help" to see my commands.`;
       }
     }
 
@@ -319,6 +339,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
       action: matched?.tab ? `→ ${matched.tab}` : undefined,
     }]);
 
+    // Only speak when responding to a command (not auto)
     speakText(aiResponse);
   }, [commands, industry, onNavigate, onCommand]);
 
@@ -337,17 +358,18 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
     }
   }, [isListening, startListening, stopListening]);
 
+  // Open panel — show greeting text only, NO auto-speak
   const handleOpen = useCallback(() => {
     setShowPanel(true);
     if (!hasGreeted.current) {
       hasGreeted.current = true;
       const greeting = getGreetingResponse(industry);
       setMessages([{ role: "ai", text: greeting, timestamp: new Date() }]);
-      setTimeout(() => speakText(greeting), 500);
+      // NO speakText here — only speak when user gives a command
     }
   }, [industry]);
 
-  // Floating mic button when panel is hidden
+  // Floating mic button
   if (!showPanel) {
     return (
       <Button
@@ -366,7 +388,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   return (
     <div className="fixed bottom-6 right-6 z-50 w-[360px]">
       <Card className="shadow-2xl border-purple-500/30 bg-card/95 backdrop-blur-xl overflow-hidden">
-        {/* Header with gradient */}
+        {/* Header */}
         <div className="bg-gradient-to-r from-purple-600/90 to-violet-700/90 px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
@@ -452,7 +474,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
           <div className="border-t border-border/50 p-3 bg-muted/30">
             <div className="flex items-center justify-between gap-3">
               <p className="text-[11px] text-muted-foreground flex-1">
-                {isListening ? "🎙️ Speak now..." : isSpeaking ? "🔊 Aria is speaking..." : "Tap mic to speak or give a command"}
+                {isListening ? "🎙️ Speak now..." : isSpeaking ? "🔊 Aria is speaking..." : "Tap mic to speak"}
               </p>
               <Button
                 onClick={handleMicToggle}
@@ -469,7 +491,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
 
             {/* Quick command hints */}
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {["Help", getCrmConfig(industry).contactLabelPlural, "Analytics", "AI Insights"].map(hint => (
+              {["Help", getCrmConfig(industry).contactLabelPlural, "Analytics", "Calendar"].map(hint => (
                 <button
                   key={hint}
                   onClick={() => processCommand(hint)}
