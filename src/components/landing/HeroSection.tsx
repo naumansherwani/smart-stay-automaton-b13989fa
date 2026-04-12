@@ -63,11 +63,11 @@ const HeroSection = () => {
 
           {/* Sub-headline */}
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-lg md:text-xl font-semibold leading-relaxed tracking-wide">
+            <p className="text-xl md:text-2xl font-semibold leading-relaxed tracking-wide">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)] drop-shadow-[0_0_20px_rgba(45,212,191,0.35)]">The World's First Industry-Sovereign AI OS.</span>
               <br className="hidden md:block" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(190,80%,55%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.3)]">Don't Just Manage Data</span>
-              <span className="text-white/50">—</span>
+              <span className="text-white/30 text-lg md:text-xl">Don't Just Manage Data</span>
+              <span className="text-white/30">—</span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">Command Your Business</span>
             </p>
             <p className="text-base max-w-2xl mx-auto leading-relaxed font-medium">
