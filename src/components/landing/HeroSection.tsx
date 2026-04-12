@@ -78,19 +78,19 @@ const HeroSection = () => {
           </div>
 
           {/* Glassmorphism Feature Badges */}
-          <div className="flex flex-wrap items-stretch justify-center gap-4 pt-2 max-w-3xl mx-auto">
+          <div className="flex flex-wrap items-stretch justify-center gap-5 pt-2 max-w-4xl mx-auto">
             {[
               { emoji: "✨", title: "Agentic AI", desc: "Autonomous workflows that work for you" },
-              { emoji: "🎙️", title: "Voice Powered", desc: "ElevenLabs integration for hands-free CRM" },
+              { emoji: "🎙️", title: "Advanced AI CRM", desc: "Voice-powered ElevenLabs integration for hands-free CRM" },
               { emoji: "📊", title: "Predictive", desc: "99% accuracy in revenue & churn forecasting" },
             ].map((b) => (
               <div
                 key={b.title}
-                className="flex-1 min-w-[160px] max-w-[220px] px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl hover:bg-white/[0.07] hover:border-white/[0.14] transition-all duration-500 group"
+                className="flex-1 min-w-[180px] max-w-[260px] px-6 py-5 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl hover:bg-white/[0.07] hover:border-white/[0.14] transition-all duration-500 group"
               >
-                <div className="text-2xl mb-2">{b.emoji}</div>
-                <p className="text-sm font-bold text-white/90 mb-1 group-hover:text-white transition-colors">{b.title}</p>
-                <p className="text-xs text-white/40 leading-relaxed">{b.desc}</p>
+                <div className="text-3xl mb-2.5">{b.emoji}</div>
+                <p className="text-base font-bold text-white/90 mb-1.5 group-hover:text-white transition-colors">{b.title}</p>
+                <p className="text-sm text-white/40 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
