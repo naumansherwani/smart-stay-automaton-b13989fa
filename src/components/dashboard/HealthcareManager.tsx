@@ -735,47 +735,78 @@ function AdmissionForecast() {
   const allData = [...pastData.map(d => ({ ...d, predicted: false })), ...forecastData];
   const maxVal = Math.max(...allData.map(d => d.patients));
 
+  // SVG line chart points
+  const chartW = 500;
+  const chartH = 140;
+  const padX = 10;
+  const padY = 10;
+  const stepX = (chartW - padX * 2) / (allData.length - 1);
+  const points = allData.map((d, i) => ({
+    x: padX + i * stepX,
+    y: padY + (1 - (d.patients - 30) / (maxVal - 25)) * (chartH - padY * 2),
+    ...d,
+  }));
+  const actualPts = points.filter(p => !p.predicted);
+  const forecastPts = points.filter(p => p.predicted);
+  // Include last actual point in forecast line for continuity
+  const forecastLinePts = [points[pastData.length - 1], ...forecastPts];
+  const toPath = (pts: typeof points) => pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+  // Confidence band (±8 around forecast)
+  const bandTop = forecastLinePts.map(p => `${p.x},${Math.max(padY, p.y - 12)}`).join(" L");
+  const bandBottom = [...forecastLinePts].reverse().map(p => `${p.x},${Math.min(chartH - padY, p.y + 12)}`).join(" L");
+
   return (
-    <Card className="shadow-sm">
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Brain className="w-4 h-4 text-[hsl(174,60%,42%)]" />
-          Patient Admission Forecast
+          AI Admission Forecast
           <Badge variant="outline" className="text-[10px] ml-auto">AI Powered</Badge>
         </CardTitle>
-        <p className="text-xs text-muted-foreground">7-day history + 7-day AI prediction — plan staff & beds ahead</p>
+        <p className="text-xs text-muted-foreground">7-day history + 7-day AI prediction with confidence bands</p>
       </CardHeader>
       <CardContent>
-        <div className="flex items-end gap-1.5 h-40">
-          {allData.map((d, i) => {
-            const height = (d.patients / maxVal) * 100;
-            return (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <span className="text-[9px] text-muted-foreground font-medium">{d.patients}</span>
-                <div className="w-full relative" style={{ height: `${height}%` }}>
-                  <div
-                    className={`w-full h-full rounded-t-md transition-all ${
-                      d.predicted
-                        ? "bg-gradient-to-t from-[hsl(174,60%,42%)]/30 to-[hsl(174,60%,42%)]/60 border border-dashed border-[hsl(174,60%,42%)]/40"
-                        : "bg-gradient-to-t from-[hsl(174,60%,42%)] to-[hsl(174,50%,55%)]"
-                    }`}
-                  />
-                </div>
-                <span className={`text-[8px] ${d.predicted ? "text-[hsl(174,60%,42%)] font-medium" : "text-muted-foreground"}`}>
-                  {d.day.split(" ")[1]}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-border">
+        <svg viewBox={`0 0 ${chartW} ${chartH}`} className="w-full h-40">
+          {/* Grid lines */}
+          {[0.25, 0.5, 0.75].map(f => (
+            <line key={f} x1={padX} x2={chartW - padX} y1={padY + f * (chartH - padY * 2)} y2={padY + f * (chartH - padY * 2)}
+              stroke="hsl(204,20%,85%)" strokeWidth="0.5" strokeDasharray="4 4" />
+          ))}
+          {/* Confidence band */}
+          <path d={`M${bandTop} L${bandBottom} Z`} fill="hsl(204,80%,60%)" fillOpacity="0.12" />
+          {/* Actual line */}
+          <path d={toPath(actualPts)} fill="none" stroke="hsl(174,60%,42%)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Forecast line (dashed) */}
+          <path d={toPath(forecastLinePts)} fill="none" stroke="hsl(204,80%,55%)" strokeWidth="2" strokeDasharray="6 4" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Dots */}
+          {actualPts.map(p => (
+            <circle key={p.day} cx={p.x} cy={p.y} r="3.5" fill="hsl(174,60%,42%)" stroke="white" strokeWidth="1.5" />
+          ))}
+          {forecastPts.map(p => (
+            <circle key={p.day} cx={p.x} cy={p.y} r="3.5" fill="hsl(204,80%,55%)" stroke="white" strokeWidth="1.5" />
+          ))}
+          {/* Labels */}
+          {points.map(p => (
+            <g key={p.day}>
+              <text x={p.x} y={p.y - 8} textAnchor="middle" className="text-[7px] fill-muted-foreground">{p.patients}</text>
+              <text x={p.x} y={chartH - 1} textAnchor="middle" className={`text-[7px] ${p.predicted ? "fill-[hsl(204,80%,55%)]" : "fill-muted-foreground"}`}>
+                {p.day.split(" ")[1]}
+              </text>
+            </g>
+          ))}
+        </svg>
+        <div className="flex items-center justify-center gap-4 mt-2 pt-2 border-t border-border/50">
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-2 rounded-sm bg-[hsl(174,60%,42%)]" />
+            <div className="w-4 h-0.5 rounded-full bg-[hsl(174,60%,42%)]" />
             <span className="text-[10px] text-muted-foreground">Actual</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-2 rounded-sm bg-[hsl(174,60%,42%)]/40 border border-dashed border-[hsl(174,60%,42%)]/50" />
+            <div className="w-4 h-0.5 rounded-full bg-[hsl(204,80%,55%)] border-t border-dashed" style={{ borderTopStyle: "dashed" }} />
             <span className="text-[10px] text-muted-foreground">AI Forecast</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-2 rounded-sm bg-[hsl(204,80%,60%)]/20" />
+            <span className="text-[10px] text-muted-foreground">Confidence Band</span>
           </div>
           <div className="flex items-center gap-1 ml-2">
             <ArrowUpRight className="w-3 h-3 text-[hsl(35,90%,50%)]" />
@@ -803,7 +834,7 @@ function SentimentHeatmap() {
   let offset = 0;
 
   return (
-    <Card className="shadow-sm">
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Heart className="w-4 h-4 text-[hsl(0,70%,60%)]" />
