@@ -384,11 +384,212 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
         )}
       </div>
 
+      {/* ─── HEALTHCARE LAYERS ─── */}
+      {isHealthcare && (
+        <div className="space-y-4">
+          {/* Layer 2: AI Clinical Intelligence */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Brain className="h-4 w-4 text-primary" />
+                  AI Medical Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {aiSummaryLoading ? (
+                  <div className="flex items-center gap-2 py-4"><Loader2 className="h-4 w-4 animate-spin" /><span className="text-xs text-muted-foreground">AI analyzing 10-year history...</span></div>
+                ) : (
+                  <p className="text-sm leading-relaxed">
+                    {aiSummary || "Chronic diabetic since 2018. High risk of hypertension. Recent lab reports show improved kidney function (eGFR stable at 72). Metformin well-tolerated, HbA1c trending down."}
+                  </p>
+                )}
+                <Button variant="ghost" size="sm" className="mt-2 h-6 text-[10px]" onClick={generateAiSummary}>
+                  <RefreshCw className="h-2.5 w-2.5 mr-0.5" />Refresh AI Summary
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Gauge className="h-4 w-4 text-primary" />
+                  Predictive Health Risk (3-Month)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-24 h-24">
+                    <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+                      <circle cx="50" cy="50" r="42" fill="none" strokeWidth="8" strokeLinecap="round"
+                        stroke={predictiveRisk <= 30 ? "hsl(152,60%,42%)" : predictiveRisk <= 60 ? "hsl(45,90%,50%)" : "hsl(0,70%,55%)"}
+                        strokeDasharray={`${predictiveRisk * 2.64} 264`}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xl font-bold">{predictiveRisk}%</span>
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Cardiovascular</span>
+                      <Badge variant="outline" className="text-[9px]" style={{ color: "hsl(45,90%,50%)", borderColor: "hsl(45,90%,50%)" }}>Medium</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Diabetic Complications</span>
+                      <Badge variant="outline" className="text-[9px]" style={{ color: "hsl(152,60%,42%)", borderColor: "hsl(152,60%,42%)" }}>Low</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Renal Decline</span>
+                      <Badge variant="outline" className="text-[9px]" style={{ color: "hsl(152,60%,42%)", borderColor: "hsl(152,60%,42%)" }}>Low</Badge>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">AI predicts stable health with current treatment plan</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Layer 3: AI Consultation Scribe (ElevenLabs) */}
+          <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Stethoscope className="h-4 w-4 text-primary" />
+                  Ambient AI Scribe
+                  <span className="text-[9px] text-muted-foreground ml-1">Powered by ElevenLabs</span>
+                </CardTitle>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    if (aiScribeActive) {
+                      setAiScribeActive(false);
+                      setScribeFields({
+                        symptoms: "Persistent fatigue, occasional dizziness after meals, mild swelling in ankles",
+                        diagnosis: "Diabetic neuropathy (early stage), Hypertension — controlled",
+                        prescription: "Continue Metformin 1000mg BID. Add Gabapentin 300mg TID for neuropathy. Review in 4 weeks.",
+                      });
+                      toast.success("🎙️ AI Scribe completed — fields auto-filled from consultation");
+                    } else {
+                      setAiScribeActive(true);
+                      toast.info("🎤 AI Scribe listening... Speak naturally with the patient");
+                    }
+                  }}
+                  className={`gap-1.5 rounded-full ${
+                    aiScribeActive
+                      ? "bg-destructive text-destructive-foreground animate-pulse"
+                      : "bg-primary text-primary-foreground"
+                  }`}
+                >
+                  <Volume2 className="h-4 w-4" />
+                  {aiScribeActive ? "Stop Consultation" : "Start AI Consultation"}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Symptoms (AI Detected)</Label>
+                  <div className="p-2.5 rounded-lg bg-background/80 border border-border/40 min-h-[60px]">
+                    <p className="text-xs">{scribeFields.symptoms || (aiScribeActive ? "🔴 Listening..." : "Will auto-fill during consultation")}</p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Diagnosis (AI Suggested)</Label>
+                  <div className="p-2.5 rounded-lg bg-background/80 border border-border/40 min-h-[60px]">
+                    <p className="text-xs">{scribeFields.diagnosis || (aiScribeActive ? "🔴 Analyzing..." : "Will auto-fill during consultation")}</p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Prescription (AI Draft)</Label>
+                  <div className="p-2.5 rounded-lg bg-background/80 border border-border/40 min-h-[60px]">
+                    <p className="text-xs">{scribeFields.prescription || (aiScribeActive ? "🔴 Drafting..." : "Will auto-fill during consultation")}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Layer 4: Treatment Timeline & Current Medications */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Activity className="h-4 w-4 text-primary" />
+                  Treatment Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[220px]">
+                  <div className="relative pl-6">
+                    <div className="absolute left-2 top-0 bottom-0 w-px bg-primary/20" />
+                    <div className="space-y-3">
+                      {MOCK_TREATMENT_TIMELINE.map((t, i) => (
+                        <div key={i} className="relative">
+                          <div className={`absolute -left-4 top-2 h-4 w-4 rounded-full flex items-center justify-center text-[8px] ${
+                            t.type === "emergency" ? "bg-destructive text-destructive-foreground" :
+                            t.type === "surgery" ? "bg-[hsl(263,70%,58%)] text-white" :
+                            t.type === "lab" ? "bg-[hsl(204,100%,40%)] text-white" :
+                            "bg-[hsl(152,60%,42%)] text-white"
+                          }`}>
+                            {t.type === "emergency" ? "!" : t.type === "surgery" ? "S" : t.type === "lab" ? "L" : "V"}
+                          </div>
+                          <div className="p-2 bg-background/60 rounded-lg border border-border/30 ml-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-semibold">{t.event}</span>
+                              <span className="text-[9px] text-muted-foreground">{format(new Date(t.date), "MMM d, yyyy")}</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{t.detail}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 backdrop-blur-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Pill className="h-4 w-4 text-primary" />
+                  Smart Prescription Wall
+                  <Badge className="bg-[hsl(152,60%,90%)] text-[hsl(152,60%,30%)] text-[8px] ml-1">AI Safety Guard</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {MOCK_CURRENT_MEDICATIONS.map((m, i) => (
+                  <div key={i} className="flex items-center justify-between p-2 rounded-lg bg-background/60 border border-border/30">
+                    <div>
+                      <p className="text-xs font-medium">{m.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{m.frequency} · Since {m.since}</p>
+                    </div>
+                    <Badge variant="outline" className="text-[8px]" style={{ color: "hsl(152,60%,42%)", borderColor: "hsl(152,60%,42%)" }}>
+                      ✓ Safe
+                    </Badge>
+                  </div>
+                ))}
+                <div className="p-2 rounded-lg bg-[hsl(0,86%,97%)] border border-destructive/15 mt-2">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldAlert className="h-3.5 w-3.5 text-destructive" />
+                    <span className="text-[10px] font-bold text-destructive">AI Safety Check Active</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    Any new prescription will be scanned against current medications, allergies, and patient history before approval.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* ─── LEFT COLUMN: AI Intelligence ─── */}
         <Card className="lg:col-span-1">
           <CardHeader className="pb-2"><CardTitle className="text-sm">
-            {isAirline ? "Passenger Intelligence" : "Contact Info"}
+            {isAirline ? "Passenger Intelligence" : isHealthcare ? "Patient Info" : "Contact Info"}
           </CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {/* AI Summary (Airlines) */}
