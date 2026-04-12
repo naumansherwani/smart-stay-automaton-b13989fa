@@ -71,7 +71,7 @@ const HeroSection = () => {
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">Command Your Business</span>
             </p>
             <p className="text-base max-w-2xl mx-auto leading-relaxed font-medium">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,65%)] via-[hsl(174,62%,50%)] to-[hsl(270,80%,65%)] drop-shadow-[0_0_12px_rgba(45,212,191,0.2)]">Predict revenue, automate operations, and lead with voice-activated intelligence.</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,65%)] via-[hsl(174,62%,50%)] to-[hsl(270,80%,65%)] drop-shadow-[0_0_12px_rgba(45,212,191,0.2)]">Predict Revenue, Automate Operations, and lead with voice-activated intelligence.</span>
               <br className="hidden md:block" />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(217,91%,65%)] via-[hsl(0,72%,60%)] via-[hsl(270,80%,65%)] to-[hsl(174,62%,55%)] drop-shadow-[0_0_12px_rgba(96,165,250,0.2)]">Dedicated AI workspaces for Airlines, Healthcare, Logistics, and beyond.</span>
             </p>
