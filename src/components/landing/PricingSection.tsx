@@ -23,7 +23,7 @@ const PLANS = [
     ],
     upgradeNote: "Upgrade to Pro to automate your business and close more clients.",
     cta: "Start Free Trial",
-    style: "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]",
+    style: "border-cyan-400/50 ring-1 ring-cyan-400/20 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_30px_hsl(186,80%,50%,0.25)] hover:border-cyan-400/70",
   },
   {
     name: "Pro",
