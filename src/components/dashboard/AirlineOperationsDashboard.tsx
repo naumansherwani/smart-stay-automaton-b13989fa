@@ -491,13 +491,14 @@ export default function AirlineOperationsDashboard() {
               {disruptedFlights.map((f) => {
                 const isResolving = resolvingFlights.has(f.flight);
                 const isResolved = resolvedFlights.has(f.flight);
+                const severityColor = f.severity === "critical"
                   ? "border-destructive/30 bg-destructive/5"
                   : f.severity === "high"
                   ? "border-warning/30 bg-warning/5"
                   : "border-border bg-muted/20";
 
                 return (
-                  <div key={f.flight} className={`grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border ${severityColor} transition-colors`}>
+                  <div key={f.flight} className={`grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border ${isResolved ? "border-success/30 bg-success/5" : severityColor} transition-colors`}>
                     <div className="col-span-2">
                       <p className="text-sm font-bold text-foreground">{f.flight}</p>
                       <Badge
