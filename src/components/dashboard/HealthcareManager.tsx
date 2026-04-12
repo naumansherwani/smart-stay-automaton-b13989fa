@@ -834,7 +834,7 @@ function SentimentHeatmap() {
   let offset = 0;
 
   return (
-    <Card className="shadow-sm">
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Heart className="w-4 h-4 text-[hsl(0,70%,60%)]" />
