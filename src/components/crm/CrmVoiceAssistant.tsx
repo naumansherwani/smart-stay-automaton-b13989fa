@@ -85,30 +85,43 @@ function getIndustryCommands(industry: IndustryType): VoiceCommand[] {
     { keywords: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "سلام", "نمستے", "مرحبا", "hola", "bonjour", "hallo", "olá", "你好", "こんにちは", "안녕", "merhaba", "السلام علیکم"], action: "greet", response: "" },
     { keywords: ["thank you", "thanks", "شکریہ", "شكرا", "gracias", "merci", "danke", "obrigado", "谢谢", "ありがとう", "감사", "teşekkür"], action: "thanks", response: "You're welcome! I'm always here to help." },
     { keywords: ["bye", "goodbye", "see you", "close", "خدا حافظ", "مع السلامة", "adiós", "au revoir", "tschüss", "tchau", "再见", "さようなら", "안녕히", "hoşça kal"], action: "close", response: "Goodbye! Tap the microphone anytime you need me." },
-    // Calendar / scheduling commands
+    // ── AI Calendar commands ──
     { keywords: ["calendar", "schedule", "تقویم", "جدول", "calendario", "calendrier", "kalender", "calendário", "日历", "カレンダー", "일정", "takvim"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar." },
     { keywords: ["adjust booking", "move booking", "reschedule", "change date", "postpone", "بکنگ تبدیل", "reprogramar", "reporter", "verschieben", "remarcar", "改期", "予約変更", "예약 변경", "erteleme"], action: "navigate", tab: "tool-ai-calendar", response: "Opening AI Calendar for booking adjustments." },
     { keywords: ["new booking", "add booking", "create booking", "book now", "نئی بکنگ", "nueva reserva", "nouvelle réservation", "neue buchung", "nova reserva", "新预订", "新規予約", "새 예약", "yeni rezervasyon"], action: "navigate", tab: "tool-manual-booking", response: "Opening Manual Booking." },
+    { keywords: ["optimize schedule", "auto schedule", "smart schedule"], action: "navigate", tab: "tool-ai-calendar", response: "Running AI schedule optimization — filling gaps and resolving conflicts." },
+    { keywords: ["today's schedule", "show today", "today schedule", "آج کا شیڈول"], action: "navigate", tab: "tool-ai-calendar", response: "Opening today's schedule view." },
+    { keywords: ["find available", "available slots", "open slots", "خالی سلاٹ"], action: "navigate", tab: "tool-ai-calendar", response: "Searching for available time slots." },
+    { keywords: ["check conflicts", "double booking", "conflict check", "ڈبل بکنگ"], action: "navigate", tab: "tool-ai-calendar", response: "Running double-booking guard — checking for conflicts." },
+    // ── AI Pricing commands (universal for pricing industries) ──
+    { keywords: ["optimize prices", "optimize pricing", "price optimization", "قیمت بہتر"], action: "navigate", tab: "tool-ai-pricing", response: "Running AI Price Optimization engine." },
+    { keywords: ["demand forecast", "show demand", "demand prediction", "مانگ کی پیشگوئی"], action: "navigate", tab: "tool-ai-pricing", response: "Opening demand forecast view." },
+    { keywords: ["compare competitors", "competitor pricing", "مسابقتی قیمتیں"], action: "navigate", tab: "competitor-intel", response: "Opening competitor pricing comparison." },
+    { keywords: ["surge pricing", "peak pricing", "high demand pricing"], action: "navigate", tab: "tool-ai-pricing", response: "Activating surge pricing for peak demand periods." },
+    { keywords: ["discount suggestion", "suggest discount", "low demand discount", "رعایت تجویز"], action: "navigate", tab: "tool-ai-pricing", response: "AI is analyzing low-demand periods for discount suggestions." },
+    { keywords: ["revenue maximizer", "maximize revenue", "max revenue", "زیادہ سے زیادہ آمدنی"], action: "navigate", tab: "tool-ai-pricing", response: "Running full AI Revenue Maximizer — optimizing all pricing." },
   ];
 
   // Industry-specific commands
   const industrySpecific: Record<string, VoiceCommand[]> = {
     airlines: [
       { keywords: ["flight ops", "flight operations", "flights", "flight schedule"], action: "navigate", tab: "flight-ops", response: "Opening Flight Operations." },
-      { keywords: ["pricing", "price", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing." },
+      { keywords: ["pricing", "price", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Ticket Pricing." },
       { keywords: ["delay", "disruption", "cancelled", "delayed flight"], action: "navigate", tab: "tickets", response: "Opening Complaints for disruptions." },
-      { keywords: ["crew", "pilot", "staff scheduling"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for crew." },
+      { keywords: ["crew", "pilot", "staff scheduling", "crew schedule"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling for crew rotation." },
       { keywords: ["route", "routes", "destinations"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
       { keywords: ["capacity", "load factor", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
+      { keywords: ["fill gaps", "gap filler", "empty seats"], action: "navigate", tab: "tool-ai-calendar", response: "AI is finding gap-fill opportunities for flights." },
     ],
     hospitality: [
       { keywords: ["pricing", "price", "room rate", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Room Pricing." },
       { keywords: ["rooms", "resources", "property"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager." },
       { keywords: ["check in", "check out", "reservation"], action: "navigate", tab: "tool-manual-booking", response: "Opening Reservations." },
+      { keywords: ["fill gaps", "gap night", "empty nights"], action: "navigate", tab: "tool-ai-calendar", response: "AI is finding gap-night filler opportunities." },
     ],
     car_rental: [
       { keywords: ["fleet", "vehicles", "cars"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager." },
-      { keywords: ["pricing", "rental price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Pricing." },
+      { keywords: ["pricing", "rental price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Rental Pricing." },
     ],
     healthcare: [
       { keywords: ["schedule", "appointment", "slots"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling." },
@@ -118,18 +131,21 @@ function getIndustryCommands(industry: IndustryType): VoiceCommand[] {
       { keywords: ["timetable", "classes", "schedule"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening AI Scheduling." },
       { keywords: ["enrollment", "class booking"], action: "navigate", tab: "tool-manual-booking", response: "Opening Enrollment Booking." },
       { keywords: ["rooms", "labs", "resources"], action: "navigate", tab: "tool-resource-mgmt", response: "Opening Resource Manager." },
+      { keywords: ["optimize timetable", "smart timetable"], action: "navigate", tab: "tool-ai-calendar", response: "AI is optimizing your class timetable." },
     ],
     logistics: [
       { keywords: ["route", "routes", "delivery"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
       { keywords: ["fleet", "vehicles", "trucks"], action: "navigate", tab: "tool-fleet-mgmt", response: "Opening Fleet Manager." },
       { keywords: ["dispatch", "shipment"], action: "navigate", tab: "tool-ai-scheduling", response: "Opening Dispatch Scheduling." },
+      { keywords: ["dispatch optimization", "optimize dispatch"], action: "navigate", tab: "tool-ai-scheduling", response: "AI is optimizing delivery dispatch times." },
     ],
     events_entertainment: [
-      { keywords: ["pricing", "ticket price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Event Pricing." },
+      { keywords: ["pricing", "ticket price", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Event Ticket Pricing." },
       { keywords: ["venue", "capacity", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
+      { keywords: ["surge pricing", "peak event pricing"], action: "navigate", tab: "tool-ai-pricing", response: "Activating surge pricing for high-demand events." },
     ],
     railways: [
-      { keywords: ["pricing", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Rail Pricing." },
+      { keywords: ["pricing", "ticket price", "fare"], action: "navigate", tab: "tool-ai-pricing", response: "Opening Rail Ticket Pricing." },
       { keywords: ["route", "routes", "trains"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Manager." },
       { keywords: ["coaches", "seats", "capacity"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
     ],
