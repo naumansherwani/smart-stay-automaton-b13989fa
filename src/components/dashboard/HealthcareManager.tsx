@@ -134,33 +134,126 @@ const MOCK_PATIENTS: Patient[] = [
   { id: "PT-008", name: "Nadia Abbas", age: 42, gender: "Female", phone: "+1 555-1008", email: "nadia@email.com", lastVisit: "Jan 20", totalVisits: 2, upcomingAppt: "Today", condition: "Hearing loss", doctor: "Dr. Ali Hassan", status: "active", noShowCount: 4 },
 ];
 
-// ─── KPIs ───
+// ─── Healthcare Top Metric Cards ───
 function HealthcareKPIs() {
-  const kpis = [
-    { label: "Today's Appointments", value: "42", change: "+6", up: true, icon: Calendar },
-    { label: "Patients Seen", value: "28", change: "+4", up: true, icon: UserCheck },
-    { label: "Avg Wait Time", value: "12 min", change: "-3 min", up: true, icon: Timer },
-    { label: "No-Show Rate", value: "4.2%", change: "-1.8%", up: true, icon: UserX },
-    { label: "Room Utilization", value: "86%", change: "+5%", up: true, icon: Gauge },
-    { label: "Revenue Today", value: "$6,840", change: "+22%", up: true, icon: DollarSign },
+  const triageCounts = { emergency: 5, urgent: 12, routine: 28 };
+  const bedOccupancy = 82;
+  const avgWaitMinutes = 18;
+  const criticalAlerts = [
+    { patient: "M. Garcia", alert: "Irregular heart rate detected — BP 160/95", time: "2 min ago" },
+    { patient: "R. Patel", alert: "SpO₂ dropped below 92%", time: "8 min ago" },
   ];
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      {kpis.map(k => (
-        <Card key={k.label} className="bg-card/50">
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between mb-2">
-              <k.icon className="w-4 h-4 text-primary" />
-              <span className={`text-[10px] flex items-center gap-0.5 ${k.up ? "text-success" : "text-destructive"}`}>
-                {k.up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                {k.change}
-              </span>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 1. Patient Triage Status */}
+      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-[hsl(204,100%,88%)] flex items-center justify-center">
+              <Activity className="w-4 h-4 text-[hsl(204,80%,40%)]" />
             </div>
-            <p className="text-lg font-bold text-foreground">{k.value}</p>
-            <p className="text-[10px] text-muted-foreground">{k.label}</p>
-          </CardContent>
-        </Card>
-      ))}
+            <p className="text-sm font-semibold text-foreground">Patient Triage</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="text-center flex-1">
+              <p className="text-xl font-bold text-destructive">{triageCounts.emergency}</p>
+              <p className="text-[10px] text-muted-foreground font-medium">Emergency</p>
+            </div>
+            <div className="w-px h-8 bg-border" />
+            <div className="text-center flex-1">
+              <p className="text-xl font-bold text-[hsl(35,90%,50%)]">{triageCounts.urgent}</p>
+              <p className="text-[10px] text-muted-foreground font-medium">Urgent</p>
+            </div>
+            <div className="w-px h-8 bg-border" />
+            <div className="text-center flex-1">
+              <p className="text-xl font-bold text-[hsl(152,60%,42%)]">{triageCounts.routine}</p>
+              <p className="text-[10px] text-muted-foreground font-medium">Routine</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 2. Live Bed Occupancy — Circular Progress */}
+      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-[hsl(174,60%,88%)] flex items-center justify-center">
+              <Heart className="w-4 h-4 text-[hsl(174,60%,35%)]" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">Bed Occupancy</p>
+          </div>
+          <div className="flex items-center justify-center">
+            <div className="relative w-20 h-20">
+              <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(174,30%,90%)" strokeWidth="7" />
+                <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(174,60%,42%)" strokeWidth="7"
+                  strokeDasharray={`${2 * Math.PI * 34}`}
+                  strokeDashoffset={`${2 * Math.PI * 34 * (1 - bedOccupancy / 100)}`}
+                  strokeLinecap="round"
+                  className="transition-all duration-1000"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-lg font-bold text-foreground">{bedOccupancy}%</span>
+                <span className="text-[9px] text-muted-foreground">Full</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 3. Avg Wait Time */}
+      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-[hsl(204,100%,88%)] flex items-center justify-center">
+              <Clock className="w-4 h-4 text-[hsl(204,80%,40%)]" />
+            </div>
+            <p className="text-sm font-semibold text-foreground">Avg. Wait Time</p>
+          </div>
+          <div className="flex items-center justify-center gap-2">
+            <Timer className="w-6 h-6 text-[hsl(204,80%,50%)]" />
+            <span className="text-3xl font-bold text-foreground">{avgWaitMinutes}</span>
+            <span className="text-sm text-muted-foreground font-medium">Mins</span>
+          </div>
+          <div className="flex items-center justify-center gap-1 mt-2">
+            <ArrowDownRight className="w-3 h-3 text-[hsl(152,60%,42%)]" />
+            <span className="text-[10px] text-[hsl(152,60%,42%)] font-medium">-3 min from yesterday</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 4. AI Critical Alerts — Pulse */}
+      <Card className={`border shadow-sm relative overflow-hidden ${criticalAlerts.length > 0 ? "bg-destructive/5 border-destructive/20 animate-[pulse_3s_ease-in-out_infinite]" : "bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60"}`}>
+        <CardContent className="p-4 relative z-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${criticalAlerts.length > 0 ? "bg-destructive/15" : "bg-[hsl(152,60%,88%)]"}`}>
+              <AlertTriangle className={`w-4 h-4 ${criticalAlerts.length > 0 ? "text-destructive" : "text-[hsl(152,60%,42%)]"}`} />
+            </div>
+            <p className="text-sm font-semibold text-foreground">AI Critical Alerts</p>
+            {criticalAlerts.length > 0 && (
+              <Badge variant="destructive" className="text-[10px] ml-auto">{criticalAlerts.length}</Badge>
+            )}
+          </div>
+          {criticalAlerts.length > 0 ? (
+            <div className="space-y-2">
+              {criticalAlerts.map((a, i) => (
+                <div key={i} className="p-2 bg-background/80 rounded-md border border-destructive/10">
+                  <p className="text-xs font-medium text-foreground">{a.patient}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.alert}</p>
+                  <p className="text-[9px] text-muted-foreground mt-0.5">{a.time}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-2">
+              <CheckCircle2 className="w-6 h-6 text-[hsl(152,60%,42%)] mx-auto mb-1" />
+              <p className="text-xs text-muted-foreground">All vitals normal</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
