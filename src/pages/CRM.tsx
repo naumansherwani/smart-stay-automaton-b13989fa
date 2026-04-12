@@ -36,7 +36,6 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
 import { getUserDisplayName } from "@/lib/utils";
-import { ConversationProvider } from "@elevenlabs/react";
 import AppLayout from "@/components/app/AppLayout";
 
 export default function CRM() {
