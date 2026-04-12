@@ -1533,6 +1533,134 @@ function MedicationSafetyWall() {
   );
 }
 
+// ─── Critical Medicine Supply Tracker ───
+function SupplyTracker() {
+  const supplies = [
+    { name: "Insulin (Rapid-Acting)", unit: "vials", current: 18, max: 100, reorderAt: 25, critical: true },
+    { name: "Oxygen Cylinders", unit: "units", current: 12, max: 60, reorderAt: 15, critical: true },
+    { name: "Epinephrine Auto-Injectors", unit: "pcs", current: 8, max: 40, reorderAt: 10, critical: true },
+    { name: "Morphine 10mg", unit: "ampoules", current: 45, max: 80, reorderAt: 20, critical: false },
+    { name: "Saline IV 500ml", unit: "bags", current: 120, max: 200, reorderAt: 50, critical: false },
+    { name: "Blood Units (O-)", unit: "units", current: 6, max: 30, reorderAt: 8, critical: true },
+  ];
+
+  const lowCount = supplies.filter(s => s.current <= s.reorderAt).length;
+
+  const barColor = (s: typeof supplies[0]) => {
+    const pct = s.current / s.max;
+    if (pct <= 0.15) return "hsl(0,70%,55%)";
+    if (s.current <= s.reorderAt) return "hsl(35,90%,50%)";
+    return "hsl(152,60%,42%)";
+  };
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Package className="w-4 h-4 text-primary" />
+            Critical Medicine Supply Tracker
+            <span className="relative flex h-2.5 w-2.5 ml-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+            </span>
+          </CardTitle>
+          {lowCount > 0 && (
+            <Badge variant="destructive" className="text-[10px]">{lowCount} low stock</Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground">Real-time hospital inventory — AI alerts when supplies drop below safe levels</p>
+      </CardHeader>
+      <CardContent className="space-y-2.5">
+        {supplies.map(s => {
+          const pct = Math.round((s.current / s.max) * 100);
+          const isLow = s.current <= s.reorderAt;
+          const color = barColor(s);
+          return (
+            <div key={s.name} className={`p-2.5 rounded-lg border ${isLow ? "bg-[hsl(0,86%,97%)] border-destructive/15" : "bg-background/60 border-border/30"}`}>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-foreground">{s.name}</span>
+                  {isLow && (
+                    <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3.5">REORDER</Badge>
+                  )}
+                </div>
+                <span className="text-[10px] text-muted-foreground font-medium">{s.current}/{s.max} {s.unit}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${pct}%`, backgroundColor: color }}
+                  />
+                </div>
+                <span className="text-[10px] font-bold" style={{ color }}>{pct}%</span>
+              </div>
+              {isLow && (
+                <p className="text-[10px] text-destructive mt-1 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" />
+                  Below safe level ({s.reorderAt} {s.unit}) — AI recommends immediate reorder
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Global Voice Command Bar (ElevenLabs) ───
+function GlobalVoiceCommandBar() {
+  const [listening, setListening] = useState(false);
+
+  const handleVoice = () => {
+    if (listening) {
+      setListening(false);
+      toast.success("🎙️ Voice command received: 'Order 50 more units of Oxygen' — Purchase request submitted to pharmacy.");
+    } else {
+      setListening(true);
+      toast.info("🎤 Listening... Say your command (e.g., 'Order 50 units of Insulin')");
+      setTimeout(() => {
+        setListening(false);
+        toast.success("🎙️ Voice command processed: 'Assign Dr. Khan to ICU Ward 3' — Schedule updated.");
+      }, 4000);
+    }
+  };
+
+  return (
+    <div className="rounded-lg border border-[hsl(204,100%,86%)]/60 bg-background/90 backdrop-blur-sm shadow-sm">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <Button
+          size="sm"
+          onClick={handleVoice}
+          className={`rounded-full h-9 px-4 gap-2 transition-all ${
+            listening
+              ? "bg-destructive text-destructive-foreground animate-pulse"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
+          }`}
+        >
+          <Volume2 className="w-4 h-4" />
+          {listening ? "Listening..." : "Voice Command"}
+        </Button>
+
+        <div className="flex-1 flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/40 border border-border/30">
+          <Mic className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground italic">
+            {listening ? "🔴 Speak now — e.g., 'Order 50 more units of Oxygen'" : "Click to give a voice command..."}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0 opacity-60">
+          <span className="text-[9px] text-muted-foreground">Powered by</span>
+          <span className="text-[9px] font-semibold text-foreground">ElevenLabs</span>
+          <Volume2 className="w-3 h-3 text-muted-foreground" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
