@@ -62,11 +62,36 @@ const HeroSection = () => {
           </div>
 
           {/* Sub-headline */}
-          <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed font-medium">
-            The Smart Calendar AI That Runs Your Business
-            <br className="hidden md:block" />
-            — Not Just Your Schedule.
-          </p>
+          <div className="max-w-3xl mx-auto space-y-4">
+            <p className="text-lg md:text-xl text-white/60 font-semibold leading-relaxed tracking-wide">
+              The World's First Industry-Sovereign AI OS.
+              <br className="hidden md:block" />
+              <span className="text-white/40">Don't Just Manage Data</span>—<span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)]">Command Your Business</span>
+            </p>
+            <p className="text-base text-white/35 max-w-2xl mx-auto leading-relaxed font-medium">
+              Predict revenue, automate operations, and lead with voice-activated intelligence.
+              <br className="hidden md:block" />
+              Dedicated AI workspaces for Airlines, Healthcare, Logistics, and beyond.
+            </p>
+          </div>
+
+          {/* Glassmorphism Feature Badges */}
+          <div className="flex flex-wrap items-stretch justify-center gap-4 pt-2 max-w-3xl mx-auto">
+            {[
+              { emoji: "✨", title: "Agentic AI", desc: "Autonomous workflows that work for you" },
+              { emoji: "🎙️", title: "Voice Powered", desc: "ElevenLabs integration for hands-free CRM" },
+              { emoji: "📊", title: "Predictive", desc: "99% accuracy in revenue & churn forecasting" },
+            ].map((b) => (
+              <div
+                key={b.title}
+                className="flex-1 min-w-[160px] max-w-[220px] px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.08] backdrop-blur-xl hover:bg-white/[0.07] hover:border-white/[0.14] transition-all duration-500 group"
+              >
+                <div className="text-2xl mb-2">{b.emoji}</div>
+                <p className="text-sm font-bold text-white/90 mb-1 group-hover:text-white transition-colors">{b.title}</p>
+                <p className="text-xs text-white/40 leading-relaxed">{b.desc}</p>
+              </div>
+            ))}
+          </div>
 
           {/* CTA buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
