@@ -149,7 +149,45 @@ export default function AirlineOperationsDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* ═══ TOP ROW: 4 Metric Cards ═══ */}
+      {/* ═══ BREADCRUMBS + SEARCH + LIVE INDICATOR ═══ */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard" className="text-xs">Workspaces</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard" className="text-xs">Airlines</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-xs">Dashboard</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {/* Search Bar */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <Input
+              placeholder="Search flight, passenger..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8 h-8 text-xs bg-card/70 border-border/50"
+            />
+          </div>
+
+          {/* Real-time Indicator */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-success/10 border border-success/20 shrink-0">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+            <Wifi className="w-3 h-3 text-success" />
+            <span className="text-[10px] font-medium text-success">Live</span>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Live Load Factor */}
         <GlassCard>
