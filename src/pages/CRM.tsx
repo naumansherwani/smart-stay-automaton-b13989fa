@@ -141,6 +141,11 @@ export default function CRM() {
               <TabsTrigger value="contacts" className="flex items-center gap-1.5">
                 <Users className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.contactLabelPlural}</span>
               </TabsTrigger>
+              {industry === "airlines" && (
+                <TabsTrigger value="flight-ops" className="flex items-center gap-1.5">
+                  <Plane className="h-4 w-4" /><span className="hidden sm:inline">Flight Ops</span>
+                </TabsTrigger>
+              )}
               <TabsTrigger value="tickets" className="flex items-center gap-1.5">
                 <TicketCheck className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.ticketLabelPlural}</span>
               </TabsTrigger>
