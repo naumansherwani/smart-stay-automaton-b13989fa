@@ -240,7 +240,7 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div className="flex items-center gap-3">
           {/* Photo / Initials */}
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${isAirline ? "bg-gradient-to-br from-sky-600 to-blue-800 text-white" : "bg-primary/10 text-primary"}`}>
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${isAirline ? "bg-gradient-to-br from-sky-600 to-blue-800 text-white" : isHealthcare ? "bg-gradient-to-br from-[hsl(204,100%,40%)] to-[hsl(204,100%,30%)] text-white" : "bg-primary/10 text-primary"}`}>
             {contact.avatar_url ? <img src={contact.avatar_url} className="w-full h-full rounded-full object-cover" /> : contact.name.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -249,12 +249,27 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
               {isAirline && (
                 <Badge className={`${loyalty.color} text-xs`}>{loyalty.icon} {loyalty.tier}</Badge>
               )}
+              {isHealthcare && patientMeta && (
+                <>
+                  <Badge variant="outline" className="text-[10px]">{patientMeta.age}y · {patientMeta.gender}</Badge>
+                  <Badge className="bg-[hsl(0,70%,95%)] text-[hsl(0,70%,45%)] border-[hsl(0,70%,80%)] text-[10px] font-bold">🩸 {patientMeta.bloodGroup}</Badge>
+                </>
+              )}
               <Badge className={`${config.lifecycleStages.find(s => s.value === contact.lifecycle_stage)?.color || "bg-muted"} text-white text-xs`}>
                 {config.lifecycleStages.find(s => s.value === contact.lifecycle_stage)?.label || contact.lifecycle_stage}
               </Badge>
               {contact.churn_risk === "high" && <Badge variant="destructive" className="text-xs"><AlertTriangle className="h-3 w-3 mr-1" />Churn Risk</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">{contact.company || "No company"} • Added {format(new Date(contact.created_at), "MMM d, yyyy")}</p>
+            {/* Allergy Alerts */}
+            {isHealthcare && patientMeta && patientMeta.allergies.length > 0 && (
+              <div className="flex items-center gap-1.5 mt-1">
+                <ShieldAlert className="h-3.5 w-3.5 text-destructive" />
+                {patientMeta.allergies.map((a, i) => (
+                  <Badge key={i} variant="destructive" className="text-[9px] font-bold">{a}</Badge>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
