@@ -3,10 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import {
+  Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
+  BreadcrumbSeparator, BreadcrumbPage
+} from "@/components/ui/breadcrumb";
 import {
   Plane, Users, DollarSign, Clock, TrendingUp, AlertTriangle,
   Zap, ArrowUpRight, ArrowDownRight, CheckCircle2, XCircle,
-  BarChart3, Smile, Meh, Frown, RefreshCw, Shield
+  BarChart3, Smile, Meh, Frown, RefreshCw, Shield, Search, Wifi
 } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
