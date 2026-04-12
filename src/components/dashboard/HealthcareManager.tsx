@@ -1083,6 +1083,131 @@ function BedDischargePredictor() {
   );
 }
 
+// ─── Incoming Ambulance / Emergency Alerts ───
+function AmbulanceAlerts() {
+  const alerts = [
+    { id: "AMB-01", eta: "4 min", patient: "Male, ~55y", condition: "Chest pain, suspected MI", severity: "critical", from: "Downtown Station" },
+    { id: "AMB-02", eta: "12 min", patient: "Female, ~30y", condition: "Severe allergic reaction", severity: "high", from: "West District" },
+    { id: "AMB-03", eta: "18 min", patient: "Child, ~8y", condition: "Fractured arm, stable", severity: "moderate", from: "School Zone 4" },
+    { id: "AMB-04", eta: "25 min", patient: "Male, ~70y", condition: "Difficulty breathing, COPD history", severity: "high", from: "Nursing Home" },
+  ];
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Zap className="w-4 h-4 text-destructive" />
+          Incoming Emergency Alerts
+          <span className="relative flex h-2.5 w-2.5 ml-1">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+          </span>
+          <Badge variant="outline" className="text-[10px] ml-auto">Live</Badge>
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">Ambulance dispatch feed — prepare rooms & staff</p>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {alerts.map(a => (
+          <div key={a.id} className={`flex items-center gap-3 p-2.5 rounded-lg border ${
+            a.severity === "critical" ? "bg-[hsl(0,86%,97%)] border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
+          }`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+              a.severity === "critical" ? "bg-destructive/15 text-destructive" : a.severity === "high" ? "bg-[hsl(35,90%,50%)]/15 text-[hsl(35,90%,50%)]" : "bg-primary/10 text-primary"
+            }`}>
+              {a.eta.split(" ")[0]}m
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-foreground">{a.patient}</span>
+                <Badge variant={a.severity === "critical" ? "destructive" : "outline"} className="text-[9px]">{a.severity}</Badge>
+              </div>
+              <p className="text-[10px] text-muted-foreground truncate">{a.condition}</p>
+              <p className="text-[9px] text-muted-foreground">From: {a.from} · ETA: {a.eta}</p>
+            </div>
+            <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1 shrink-0" onClick={() => toast.info(`Room prep initiated for ${a.id}`)}>
+              <CheckCircle2 className="w-3 h-3" />Prep Room
+            </Button>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Staffing Optimization Indicator ───
+function StaffingOptimizer() {
+  const departments = [
+    { name: "ICU", nurses: 4, needed: 6, patients: 8, criticalCount: 5, status: "understaffed" },
+    { name: "Emergency", nurses: 6, needed: 7, patients: 12, criticalCount: 3, status: "understaffed" },
+    { name: "General Ward", nurses: 8, needed: 6, patients: 18, criticalCount: 0, status: "optimal" },
+    { name: "Pediatrics", nurses: 3, needed: 3, patients: 6, criticalCount: 1, status: "optimal" },
+    { name: "Surgery Recovery", nurses: 2, needed: 4, patients: 7, criticalCount: 2, status: "understaffed" },
+  ];
+
+  const understaffed = departments.filter(d => d.status === "understaffed").length;
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Users className="w-4 h-4 text-primary" />
+            AI Staffing Optimizer
+            <span className="relative flex h-2.5 w-2.5 ml-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+            </span>
+          </CardTitle>
+          {understaffed > 0 && (
+            <Badge variant="destructive" className="text-[10px]">{understaffed} need attention</Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground">AI recommends nurse allocation based on patient critical scores</p>
+      </CardHeader>
+      <CardContent className="space-y-2.5">
+        {departments.map(d => (
+          <div key={d.name} className={`p-2.5 rounded-lg border ${
+            d.status === "understaffed" ? "bg-[hsl(0,86%,97%)] border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
+          }`}>
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-foreground">{d.name}</span>
+                {d.status === "understaffed" && (
+                  <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3.5">NEED STAFF</Badge>
+                )}
+              </div>
+              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                <span>{d.patients} patients</span>
+                <span>{d.criticalCount} critical</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.min((d.nurses / d.needed) * 100, 100)}%`,
+                    backgroundColor: d.nurses >= d.needed ? "hsl(152,60%,42%)" : d.nurses >= d.needed * 0.7 ? "hsl(35,90%,50%)" : "hsl(0,70%,55%)",
+                  }}
+                />
+              </div>
+              <span className={`text-xs font-bold ${d.nurses >= d.needed ? "text-[hsl(152,60%,42%)]" : "text-destructive"}`}>
+                {d.nurses}/{d.needed}
+              </span>
+            </div>
+            {d.status === "understaffed" && (
+              <p className="text-[10px] text-destructive mt-1 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                AI suggests +{d.needed - d.nurses} nurse(s) — {d.criticalCount} critical patients need closer monitoring
+              </p>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
