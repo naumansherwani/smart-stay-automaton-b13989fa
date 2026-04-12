@@ -15,7 +15,6 @@ import Footer from "@/components/landing/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
-<meta property="og:image" content="https://via.placeholder.com/1200x630.jpg" />;
 const Index = () => (
   <div className="min-h-screen">
     <AnimatedTopBorder />
