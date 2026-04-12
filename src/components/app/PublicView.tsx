@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket } from "lucide-react";
 import Logo from "@/components/Logo";
+import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 
 interface PublicViewProps {
   onReturn: () => void;
@@ -30,6 +31,7 @@ const FOOTER_COLUMNS = [
 export default function PublicView({ onReturn }: PublicViewProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <AnimatedTopBorder />
       {/* Top Nav */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
