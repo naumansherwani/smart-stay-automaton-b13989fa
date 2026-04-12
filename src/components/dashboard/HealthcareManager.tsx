@@ -712,11 +712,178 @@ function PatientsPanel() {
   );
 }
 
+// ─── Middle Row: Patient Admission Forecast ───
+function AdmissionForecast() {
+  const pastData = [
+    { day: "Apr 6", patients: 38 },
+    { day: "Apr 7", patients: 42 },
+    { day: "Apr 8", patients: 35 },
+    { day: "Apr 9", patients: 48 },
+    { day: "Apr 10", patients: 44 },
+    { day: "Apr 11", patients: 51 },
+    { day: "Apr 12", patients: 46 },
+  ];
+  const forecastData = [
+    { day: "Apr 13", patients: 52, predicted: true },
+    { day: "Apr 14", patients: 58, predicted: true },
+    { day: "Apr 15", patients: 63, predicted: true },
+    { day: "Apr 16", patients: 55, predicted: true },
+    { day: "Apr 17", patients: 49, predicted: true },
+    { day: "Apr 18", patients: 61, predicted: true },
+    { day: "Apr 19", patients: 67, predicted: true },
+  ];
+  const allData = [...pastData.map(d => ({ ...d, predicted: false })), ...forecastData];
+  const maxVal = Math.max(...allData.map(d => d.patients));
+
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Brain className="w-4 h-4 text-[hsl(174,60%,42%)]" />
+          Patient Admission Forecast
+          <Badge variant="outline" className="text-[10px] ml-auto">AI Powered</Badge>
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">7-day history + 7-day AI prediction — plan staff & beds ahead</p>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-end gap-1.5 h-40">
+          {allData.map((d, i) => {
+            const height = (d.patients / maxVal) * 100;
+            return (
+              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
+                <span className="text-[9px] text-muted-foreground font-medium">{d.patients}</span>
+                <div className="w-full relative" style={{ height: `${height}%` }}>
+                  <div
+                    className={`w-full h-full rounded-t-md transition-all ${
+                      d.predicted
+                        ? "bg-gradient-to-t from-[hsl(174,60%,42%)]/30 to-[hsl(174,60%,42%)]/60 border border-dashed border-[hsl(174,60%,42%)]/40"
+                        : "bg-gradient-to-t from-[hsl(174,60%,42%)] to-[hsl(174,50%,55%)]"
+                    }`}
+                  />
+                </div>
+                <span className={`text-[8px] ${d.predicted ? "text-[hsl(174,60%,42%)] font-medium" : "text-muted-foreground"}`}>
+                  {d.day.split(" ")[1]}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-border">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-2 rounded-sm bg-[hsl(174,60%,42%)]" />
+            <span className="text-[10px] text-muted-foreground">Actual</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-2 rounded-sm bg-[hsl(174,60%,42%)]/40 border border-dashed border-[hsl(174,60%,42%)]/50" />
+            <span className="text-[10px] text-muted-foreground">AI Forecast</span>
+          </div>
+          <div className="flex items-center gap-1 ml-2">
+            <ArrowUpRight className="w-3 h-3 text-[hsl(35,90%,50%)]" />
+            <span className="text-[10px] text-[hsl(35,90%,50%)] font-medium">+22% expected (flu season)</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Middle Row: Sentiment & Mood Heatmap ───
+function SentimentHeatmap() {
+  const sentimentData = { happy: 64, neutral: 22, distressed: 14 };
+  const total = sentimentData.happy + sentimentData.neutral + sentimentData.distressed;
+  const segments = [
+    { label: "Happy", value: sentimentData.happy, pct: Math.round((sentimentData.happy / total) * 100), color: "hsl(152,60%,45%)", emoji: "😊" },
+    { label: "Neutral", value: sentimentData.neutral, pct: Math.round((sentimentData.neutral / total) * 100), color: "hsl(40,90%,55%)", emoji: "😐" },
+    { label: "Distressed", value: sentimentData.distressed, pct: Math.round((sentimentData.distressed / total) * 100), color: "hsl(0,70%,60%)", emoji: "😟" },
+  ];
+
+  // SVG donut
+  const radius = 38;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Heart className="w-4 h-4 text-[hsl(0,70%,60%)]" />
+          Patient Sentiment
+          <Badge variant="outline" className="text-[10px] ml-auto">Live</Badge>
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">Real-time patient mood from feedback & nurse inputs</p>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-6">
+          {/* Donut Chart */}
+          <div className="relative w-32 h-32 shrink-0">
+            <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+              {segments.map((seg) => {
+                const dashLength = (seg.pct / 100) * circumference;
+                const currentOffset = offset;
+                offset += dashLength;
+                return (
+                  <circle
+                    key={seg.label}
+                    cx="50" cy="50" r={radius}
+                    fill="none"
+                    stroke={seg.color}
+                    strokeWidth="10"
+                    strokeDasharray={`${dashLength} ${circumference - dashLength}`}
+                    strokeDashoffset={-currentOffset}
+                    strokeLinecap="round"
+                    className="transition-all duration-700"
+                  />
+                );
+              })}
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-lg font-bold text-foreground">{total}</span>
+              <span className="text-[9px] text-muted-foreground">Responses</span>
+            </div>
+          </div>
+
+          {/* Legend + Details */}
+          <div className="flex-1 space-y-3">
+            {segments.map(seg => (
+              <div key={seg.label} className="flex items-center gap-3">
+                <span className="text-lg">{seg.emoji}</span>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="text-sm font-medium text-foreground">{seg.label}</span>
+                    <span className="text-sm font-bold text-foreground">{seg.value} ({seg.pct}%)</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${seg.pct}%`, backgroundColor: seg.color }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+            {sentimentData.distressed > 10 && (
+              <div className="p-2 bg-destructive/5 rounded-md border border-destructive/10 flex items-start gap-2">
+                <AlertTriangle className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
+                <p className="text-[10px] text-muted-foreground">
+                  <strong className="text-destructive">Alert:</strong> Distressed count above threshold — AI recommends wellness check rounds
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
     <div className="space-y-6">
       <HealthcareKPIs />
+
+      {/* Middle Row: Intelligence Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <AdmissionForecast />
+        <SentimentHeatmap />
+      </div>
 
       <Tabs defaultValue="appointments" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:w-auto lg:inline-grid gap-1">
