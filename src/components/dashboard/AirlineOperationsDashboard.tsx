@@ -98,6 +98,8 @@ export default function AirlineOperationsDashboard() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [resolvingFlights, setResolvingFlights] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [lastSynced, setLastSynced] = useState<Date>(new Date());
 
   useEffect(() => {
     if (!user) return;
