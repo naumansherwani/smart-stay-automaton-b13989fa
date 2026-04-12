@@ -150,8 +150,19 @@ function getHelpResponse(industry: IndustryType): string {
 function getGreetingResponse(industry: IndustryType): string {
   const config = getIndustryConfig(industry);
   const hour = new Date().getHours();
-  const timeGreeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  return `${timeGreeting}! I'm Aria, your AI assistant for ${config.label} CRM. How can I help you today? You can ask me to open any feature, get insights, or just have a conversation. Say "help" to see all my commands.`;
+
+  let greeting: string;
+  if (hour >= 5 && hour < 12) {
+    greeting = "Good morning! ☀️ Hope you're having a fresh start today.";
+  } else if (hour >= 12 && hour < 17) {
+    greeting = "Good afternoon! 🌤️ Let's keep the momentum going.";
+  } else if (hour >= 17 && hour < 21) {
+    greeting = "Good evening! 🌇 Wrapping up the day? I'm here to help.";
+  } else {
+    greeting = "Hey there, night owl! 🌙 Working late? I've got you covered.";
+  }
+
+  return `${greeting} I'm Aria, your AI assistant for ${config.label}. How may I help you? Just say a command or ask me anything — say "help" to see what I can do.`;
 }
 
 // ─── Text-to-Speech with female voice ───────────────────────────────────────
