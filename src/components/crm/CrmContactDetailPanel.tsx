@@ -16,6 +16,7 @@ import {
   TicketCheck, Clock, Activity, Tag, AlertTriangle, Star, MessageSquare,
   Crown, Plane, Armchair, UtensilsCrossed, MapPinned, Mic, Loader2, RefreshCw,
   Heart, Thermometer, ShieldAlert, Pill, Brain, Gauge, Stethoscope, Volume2, FlaskConical, Video, FileSignature,
+  Search, BookOpen, Zap, ClipboardList,
 } from "lucide-react";
 import type { CrmContact, CrmTicket, CrmDeal, CrmActivity } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
