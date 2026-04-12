@@ -6,10 +6,10 @@ import { Briefcase, Plus } from "lucide-react";
 import AddIndustryDialog from "./AddIndustryDialog";
 
 const WorkspaceSwitcher = () => {
-  const { workspaces, activeWorkspace, switchWorkspace } = useWorkspaces();
+  const { workspaces, activeWorkspace, loading, switchWorkspace } = useWorkspaces();
   const [showAddDialog, setShowAddDialog] = useState(false);
 
-  if (!activeWorkspace || workspaces.length === 0) return null;
+  if (loading || !activeWorkspace) return null;
 
   const handleValueChange = (value: string) => {
     if (value === "__add_industry__") {
@@ -22,11 +22,11 @@ const WorkspaceSwitcher = () => {
   return (
     <>
       <Select value={activeWorkspace.id} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-[240px] bg-card border-border">
+        <SelectTrigger className="w-[260px] bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border border-primary/25 rounded-full h-9 shadow-sm hover:shadow-md hover:border-primary/40 transition-all duration-300">
           <SelectValue>
             <span className="flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-primary" />
-              <span className="font-medium truncate">Workspace: {activeWorkspace.name}</span>
+              <IndustryIcon industry={activeWorkspace.industry} size={16} />
+              <span className="font-semibold text-sm truncate">{activeWorkspace.name}</span>
             </span>
           </SelectValue>
         </SelectTrigger>

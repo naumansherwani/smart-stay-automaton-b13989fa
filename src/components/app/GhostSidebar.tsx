@@ -18,8 +18,8 @@ const primaryNav = [
 ];
 
 const conditionalNav = [
-  { title: "Calendar", url: "/dashboard?tab=calendar", icon: CalendarDays, industries: ["hospitality", "healthcare", "education", "events"] },
-  { title: "Operations", url: "/dashboard?tab=operations", icon: ListTodo, industries: ["logistics", "railway", "car_rental", "airline"] },
+  { title: "Calendar", url: "/dashboard?tab=calendar", icon: CalendarDays, industries: ["hospitality", "healthcare", "education", "events_entertainment"] },
+  { title: "Operations", url: "/dashboard?tab=operations", icon: ListTodo, industries: ["logistics", "railways", "car_rental", "airlines"] },
 ];
 
 export function GhostSidebar() {

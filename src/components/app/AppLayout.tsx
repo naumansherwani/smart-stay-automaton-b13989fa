@@ -3,14 +3,14 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Globe, ChevronDown, LogIn } from "lucide-react";
+import { LogOut, Settings, Globe, LogIn } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
-import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import PublicView from "./PublicView";
+import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -48,23 +48,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
   const initials = getUserInitials(displayName, user?.email);
 
-  const industryLabel = profile?.industry
-    ? INDUSTRY_CONFIGS[profile.industry]?.label || profile.industry
-    : "";
-
   return (
     <div className="min-h-screen flex flex-col w-full">
       <GhostSidebar />
 
       <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4 md:pl-6">
         <div className="flex items-center gap-3 ml-8 md:ml-14">
-          {industryLabel && (
-            <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 via-primary/5 to-accent/10 border border-primary/25 shadow-[0_0_12px_-3px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_18px_-3px_hsl(var(--primary)/0.35)] hover:border-primary/40 hover:brightness-105 transition-all duration-300 cursor-pointer group">
-              <span className="text-sm text-muted-foreground font-medium">Workspace:</span>
-              <span className="text-sm font-bold text-foreground">{industryLabel}</span>
-              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-            </div>
-          )}
+          <div className="hidden sm:block">
+            <WorkspaceSwitcher />
+          </div>
         </div>
 
         <div className="flex items-center gap-1 md:gap-2">
