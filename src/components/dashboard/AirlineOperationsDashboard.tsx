@@ -101,6 +101,9 @@ export default function AirlineOperationsDashboard() {
   const [resolvingFlights, setResolvingFlights] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [lastSynced, setLastSynced] = useState<Date>(new Date());
+  const [resolveDialogOpen, setResolveDialogOpen] = useState(false);
+  const [selectedDisruption, setSelectedDisruption] = useState<typeof disruptedFlights[0] | null>(null);
+  const [resolvedFlights, setResolvedFlights] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
