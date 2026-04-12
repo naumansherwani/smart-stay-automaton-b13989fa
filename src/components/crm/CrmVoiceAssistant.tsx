@@ -112,6 +112,9 @@ function getIndustryCommands(industry: IndustryType): VoiceCommand[] {
       { keywords: ["route", "routes", "destinations"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
       { keywords: ["capacity", "load factor", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
       { keywords: ["fill gaps", "gap filler", "empty seats"], action: "navigate", tab: "tool-ai-calendar", response: "AI is finding gap-fill opportunities for flights." },
+      { keywords: ["reschedule all passengers", "reschedule passengers", "move passengers"], action: "navigate", tab: "flight-ops", response: "Opening Flight Operations to reschedule passengers. Select the flight to begin rebooking." },
+      { keywords: ["sentiment trend", "sentiment for flight", "passenger mood", "last night flight"], action: "navigate", tab: "sentiment", response: "Opening Sentiment Dashboard — showing trend for recent flights." },
+      { keywords: ["passenger profile", "passenger detail", "show passenger"], action: "navigate", tab: "contacts", response: "Opening Passenger Manager — click on a passenger to view their 360° profile." },
     ],
     hospitality: [
       { keywords: ["pricing", "price", "room rate", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Room Pricing." },
@@ -280,6 +283,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   const [isSpeaking, setIsSpeaking] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasGreeted = useRef(false);
+  const conversationMemory = useRef<string[]>([]); // Contextual memory - last 5 exchanges
 
   const commands = getIndustryCommands(industry);
 
@@ -306,6 +310,9 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
 
   const processCommand = useCallback((userText: string) => {
     const lower = userText.toLowerCase().trim();
+
+    // Store in contextual memory (last 5 exchanges)
+    conversationMemory.current = [...conversationMemory.current.slice(-4), userText];
 
     setMessages(prev => [...prev, { role: "user", text: userText, timestamp: new Date() }]);
 
@@ -340,9 +347,20 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
         aiResponse = matched.response;
       }
     } else {
+      // Check contextual memory for follow-ups
+      const lastContext = conversationMemory.current.slice(-3).join(" ").toLowerCase();
       const config = getIndustryConfig(industry);
+
       if (lower.includes("how are you") || lower.includes("how do you do") || lower.includes("کیسی ہو") || lower.includes("कैसी हो")) {
         aiResponse = `I'm great! How can I help you with ${config.label}?`;
+      } else if (lower.includes("again") || lower.includes("repeat") || lower.includes("دوبارہ")) {
+        // Contextual: repeat last action
+        const lastAiMsg = messages.filter(m => m.role === "ai").pop();
+        aiResponse = lastAiMsg ? `Sure, repeating: ${lastAiMsg.text}` : "Nothing to repeat yet.";
+      } else if (lower.includes("what did i say") || lower.includes("last command") || lower.includes("پچھلا")) {
+        // Contextual: recall last command
+        const recentCmds = conversationMemory.current.slice(0, -1);
+        aiResponse = recentCmds.length > 0 ? `Your recent commands: ${recentCmds.join(", ")}` : "No previous commands in this session.";
       } else {
         aiResponse = `I heard "${userText}". Try saying "help" to see my commands.`;
       }
@@ -357,7 +375,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
 
     // Only speak when responding to a command (not auto)
     speakText(aiResponse);
-  }, [commands, industry, onNavigate, onCommand]);
+  }, [commands, industry, onNavigate, onCommand, messages]);
 
   const { isListening, start: startListening, stop: stopListening } = useSpeechRecognition(processCommand);
 

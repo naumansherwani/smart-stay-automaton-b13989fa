@@ -309,14 +309,42 @@ Return JSON: { "total_forecast_value": 0, "weighted_pipeline": 0, "expected_clos
   return JSON.parse(result);
 }
 
-async function composeEmail(data: { industry: string; emailType: string; tone: string; customPrompt?: string; contact?: any }) {
-  const contactInfo = data.contact ? `\nContact: ${data.contact.name}, Stage: ${data.contact.lifecycle_stage}, Revenue: $${data.contact.total_revenue || 0}, Bookings: ${data.contact.total_bookings || 0}` : "";
-  const prompt = `Compose a ${data.tone} ${data.emailType} email for a ${data.industry} business.${contactInfo}${data.customPrompt ? `\nAdditional instructions: ${data.customPrompt}` : ""}
+async function composeEmail(data: { industry: string; emailType: string; tone: string; customPrompt?: string; contact?: any; language?: string; passengerTier?: string; voucher?: { code: string; type: string } | null }) {
+  const contactInfo = data.contact ? `\nContact: ${data.contact.name}, Stage: ${data.contact.lifecycle_stage}, Revenue: $${data.contact.total_revenue || 0}, Bookings: ${data.contact.total_bookings || 0}, Tags: ${(data.contact.tags || []).join(", ")}` : "";
+  
+  // Segmented template logic
+  let toneInstruction = `Tone: ${data.tone}.`;
+  if (data.passengerTier === "vip") {
+    toneInstruction = "Tone: Extremely respectful, humble, and exclusive. Address them as a valued VIP member. Use premium language befitting their status.";
+  } else if (data.passengerTier === "high-value") {
+    toneInstruction = "Tone: Premium and appreciative. Acknowledge their loyalty and importance to the business.";
+  }
+
+  // Voucher insertion
+  let voucherInstruction = "";
+  if (data.voucher) {
+    const voucherLabels: Record<string, string> = {
+      discount: "15% Discount Voucher",
+      lounge_pass: "Complimentary Lounge Access Pass",
+      upgrade: "Complimentary Seat Upgrade",
+      miles: "5,000 Bonus Miles Credit",
+    };
+    voucherInstruction = `\n\nIMPORTANT: Include this compensation in the email body:\nVoucher Code: ${data.voucher.code}\nVoucher Type: ${voucherLabels[data.voucher.type] || data.voucher.type}\nPresent it professionally within the email as a gesture of goodwill.`;
+  }
+
+  // Multi-language instruction
+  let langInstruction = "";
+  if (data.language && data.language !== "en") {
+    const langNames: Record<string, string> = { ar: "Arabic", ur: "Urdu", hi: "Hindi", es: "Spanish", fr: "French", de: "German", pt: "Portuguese", zh: "Chinese", ja: "Japanese", ko: "Korean", tr: "Turkish" };
+    langInstruction = `\n\nCRITICAL: Write the ENTIRE email (subject and body) in ${langNames[data.language] || data.language}. Do NOT write in English.`;
+  }
+
+  const prompt = `Compose a ${data.emailType} email for a ${data.industry} business.${contactInfo}\n${toneInstruction}${voucherInstruction}${langInstruction}${data.customPrompt ? `\nAdditional instructions: ${data.customPrompt}` : ""}
 
 Return JSON: { "subject": "email subject line", "body": "full email body with greeting and sign-off" }`;
 
   const result = await callAI(
-    `You are an expert email copywriter for ${data.industry} businesses. Write compelling, personalized emails that drive engagement and conversions. Always return valid JSON.`,
+    `You are an expert email copywriter for ${data.industry} businesses. Write compelling, personalized emails. ${data.passengerTier === "vip" ? "This is a VIP client - use the most respectful and exclusive language." : ""} Always return valid JSON.`,
     prompt
   );
   return JSON.parse(result);
