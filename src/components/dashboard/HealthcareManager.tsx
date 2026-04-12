@@ -1208,25 +1208,68 @@ function StaffingOptimizer() {
   );
 }
 
-// ─── AI Ward-Map Heatmap ───
+// ─── Global AI Summary Ticker ───
+function GlobalAISummary() {
+  const insights = [
+    "🚨 AI Insight: Emergency Room load is 20% higher than usual, suggesting extra staff deployment.",
+    "📊 AI Insight: ICU occupancy at 92% — 2 patients eligible for step-down transfer within 6 hours.",
+    "💊 AI Insight: Pharmacy restock alert — Insulin supply projected to run low by tomorrow evening.",
+    "🩺 AI Insight: Cardiology consultations up 35% this week — consider adding evening slots.",
+    "🔄 AI Insight: Average discharge processing time increased to 4.2 hours — workflow optimization recommended.",
+  ];
+
+  return (
+    <div className="rounded-lg border border-[hsl(204,100%,86%)]/60 bg-background/90 backdrop-blur-sm shadow-sm overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-2.5">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Brain className="w-4 h-4 text-primary" />
+          <span className="text-xs font-semibold text-primary">AI LIVE</span>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(152,70%,45%)]" />
+          </span>
+        </div>
+        <div className="overflow-hidden flex-1">
+          <div className="animate-marquee whitespace-nowrap text-xs text-muted-foreground">
+            {insights.join("   ●   ")}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── AI Ward-Map Heatmap (Enhanced with Doctor On-Call) ───
 function WardMapHeatmap() {
   const wards = [
-    { name: "ICU", floor: 3, beds: 12, occupied: 11, critical: 4, x: 10, y: 10, w: 28, h: 40 },
-    { name: "Emergency", floor: 1, beds: 20, occupied: 18, critical: 6, x: 42, y: 10, w: 25, h: 40 },
-    { name: "Ward A", floor: 2, beds: 30, occupied: 22, critical: 1, x: 71, y: 10, w: 25, h: 18 },
-    { name: "Ward B", floor: 2, beds: 28, occupied: 25, critical: 3, x: 71, y: 32, w: 25, h: 18 },
-    { name: "Pediatrics", floor: 1, beds: 15, occupied: 9, critical: 0, x: 10, y: 55, w: 22, h: 35 },
-    { name: "Surgery", floor: 3, beds: 8, occupied: 7, critical: 2, x: 36, y: 55, w: 20, h: 35 },
-    { name: "Maternity", floor: 1, beds: 18, occupied: 12, critical: 0, x: 60, y: 55, w: 18, h: 35 },
-    { name: "Rehab", floor: 2, beds: 16, occupied: 10, critical: 0, x: 82, y: 55, w: 14, h: 35 },
+    { name: "ICU", floor: 3, beds: 12, occupied: 11, critical: 4, x: 10, y: 8, w: 28, h: 42 },
+    { name: "Emergency", floor: 1, beds: 20, occupied: 18, critical: 6, x: 42, y: 8, w: 25, h: 42 },
+    { name: "Ward A", floor: 2, beds: 30, occupied: 22, critical: 1, x: 10, y: 55, w: 25, h: 38 },
+    { name: "Ward B", floor: 2, beds: 28, occupied: 25, critical: 3, x: 39, y: 55, w: 28, h: 38 },
+    { name: "Pediatrics", floor: 1, beds: 15, occupied: 9, critical: 0, x: 71, y: 8, w: 25, h: 20 },
+    { name: "Surgery", floor: 3, beds: 8, occupied: 7, critical: 2, x: 71, y: 32, w: 25, h: 18 },
+    { name: "Maternity", floor: 1, beds: 18, occupied: 12, critical: 0, x: 71, y: 55, w: 25, h: 38 },
+  ];
+
+  const onCallDoctors = [
+    { ward: "ICU", doctor: "Dr. Fatima Khan", specialty: "Intensivist", status: "active" as const },
+    { ward: "Emergency", doctor: "Dr. Ahmed Raza", specialty: "ER Specialist", status: "active" as const },
+    { ward: "Surgery", doctor: "Dr. Sana Malik", specialty: "Surgeon", status: "busy" as const },
+    { ward: "Ward A", doctor: "Dr. Imran Ali", specialty: "General Med", status: "active" as const },
+    { ward: "Ward B", doctor: "Dr. Hira Noor", specialty: "Internal Med", status: "break" as const },
+    { ward: "Pediatrics", doctor: "Dr. Zara Shah", specialty: "Pediatrician", status: "active" as const },
+    { ward: "Maternity", doctor: "Dr. Nadia Tariq", specialty: "OB/GYN", status: "active" as const },
   ];
 
   const getHeatColor = (critical: number, occupied: number, beds: number) => {
-    if (critical >= 4) return { bg: "hsl(0,70%,55%)", glow: "hsl(0,70%,55%)", label: "Critical" };
-    if (critical >= 2) return { bg: "hsl(25,90%,55%)", glow: "hsl(25,90%,55%)", label: "High" };
-    if (occupied / beds > 0.85) return { bg: "hsl(45,90%,50%)", glow: "hsl(45,90%,50%)", label: "Busy" };
-    return { bg: "hsl(152,60%,42%)", glow: "hsl(152,60%,42%)", label: "Normal" };
+    if (critical >= 4) return { bg: "hsl(0,70%,55%)", glow: "hsl(0,70%,65%)", label: "Critical" };
+    if (critical >= 2) return { bg: "hsl(25,90%,55%)", glow: "hsl(25,90%,65%)", label: "High" };
+    if (occupied / beds > 0.85) return { bg: "hsl(45,90%,50%)", glow: "hsl(45,90%,60%)", label: "Busy" };
+    return { bg: "hsl(152,60%,42%)", glow: "hsl(152,60%,52%)", label: "Stable" };
   };
+
+  const statusColor = (s: string) =>
+    s === "active" ? "hsl(152,60%,42%)" : s === "busy" ? "hsl(25,90%,55%)" : "hsl(45,90%,50%)";
 
   const totalCritical = wards.reduce((s, w) => s + w.critical, 0);
 
@@ -1249,64 +1292,103 @@ function WardMapHeatmap() {
         <p className="text-xs text-muted-foreground">Real-time spatial view — ward urgency at a glance</p>
       </CardHeader>
       <CardContent>
-        <div className="relative w-full rounded-xl border border-border/40 bg-background/80 overflow-hidden" style={{ aspectRatio: "2.2/1" }}>
-          {/* Grid lines */}
-          <div className="absolute inset-0 opacity-[0.06]" style={{
-            backgroundImage: "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
-            backgroundSize: "10% 10%",
-          }} />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-4">
+          {/* Map */}
+          <div className="relative w-full rounded-xl border border-border/40 bg-background/80 overflow-hidden" style={{ aspectRatio: "1.8/1" }}>
+            <div className="absolute inset-0 opacity-[0.06]" style={{
+              backgroundImage: "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
+              backgroundSize: "10% 10%",
+            }} />
 
-          {wards.map(ward => {
-            const heat = getHeatColor(ward.critical, ward.occupied, ward.beds);
-            return (
-              <div
-                key={ward.name}
-                className="absolute rounded-lg border flex flex-col items-center justify-center cursor-default transition-all duration-300 hover:scale-[1.04] hover:z-10 group"
-                style={{
-                  left: `${ward.x}%`, top: `${ward.y}%`, width: `${ward.w}%`, height: `${ward.h}%`,
-                  backgroundColor: `${heat.bg}20`,
-                  borderColor: `${heat.bg}60`,
-                  boxShadow: ward.critical >= 2 ? `0 0 12px ${heat.glow}30` : "none",
-                }}
-              >
-                {/* Pulse dot for critical */}
-                {ward.critical >= 2 && (
-                  <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                    <span className="animate-ping absolute h-full w-full rounded-full opacity-75" style={{ backgroundColor: heat.bg }} />
-                    <span className="relative rounded-full h-2 w-2" style={{ backgroundColor: heat.bg }} />
+            {wards.map(ward => {
+              const heat = getHeatColor(ward.critical, ward.occupied, ward.beds);
+              const isCritical = ward.critical >= 2;
+              return (
+                <div
+                  key={ward.name}
+                  className="absolute rounded-lg border flex flex-col items-center justify-center cursor-default transition-all duration-300 hover:scale-[1.04] hover:z-10 group"
+                  style={{
+                    left: `${ward.x}%`, top: `${ward.y}%`, width: `${ward.w}%`, height: `${ward.h}%`,
+                    backgroundColor: `${heat.bg}15`,
+                    borderColor: `${heat.bg}50`,
+                    boxShadow: isCritical
+                      ? `0 0 18px ${heat.glow}35, inset 0 0 12px ${heat.glow}10`
+                      : `0 1px 3px hsl(0 0% 0% / 0.04)`,
+                  }}
+                >
+                  {/* AI Glowing Dot */}
+                  <span className={`absolute top-1.5 right-1.5 flex h-2.5 w-2.5`}>
+                    {isCritical && (
+                      <span className="animate-ping absolute h-full w-full rounded-full opacity-60" style={{ backgroundColor: heat.bg }} />
+                    )}
+                    <span className="relative rounded-full h-2.5 w-2.5 shadow-sm" style={{
+                      backgroundColor: heat.bg,
+                      boxShadow: `0 0 6px ${heat.glow}80`,
+                    }} />
                   </span>
-                )}
-                <span className="text-[10px] sm:text-xs font-bold text-foreground">{ward.name}</span>
-                <span className="text-[8px] sm:text-[10px] text-muted-foreground">{ward.occupied}/{ward.beds} beds</span>
-                {ward.critical > 0 && (
-                  <span className="text-[8px] font-semibold mt-0.5" style={{ color: heat.bg }}>
-                    {ward.critical} critical
-                  </span>
-                )}
 
-                {/* Hover tooltip */}
-                <div className="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-popover border rounded-lg shadow-lg p-2 z-20 min-w-[120px] flex-col items-center">
-                  <span className="text-[10px] font-bold text-foreground">{ward.name} — Floor {ward.floor}</span>
-                  <span className="text-[9px] text-muted-foreground">{ward.occupied}/{ward.beds} occupied · {ward.critical} critical</span>
-                  <Badge className="mt-1 text-[8px] px-1.5 py-0" style={{ backgroundColor: `${heat.bg}20`, color: heat.bg, borderColor: `${heat.bg}40` }}>
-                    {heat.label}
-                  </Badge>
+                  <span className="text-[10px] sm:text-xs font-bold text-foreground">{ward.name}</span>
+                  <span className="text-[8px] sm:text-[10px] text-muted-foreground">{ward.occupied}/{ward.beds} beds</span>
+                  {ward.critical > 0 && (
+                    <span className="text-[8px] font-semibold mt-0.5" style={{ color: heat.bg }}>
+                      {ward.critical} critical
+                    </span>
+                  )}
+
+                  <div className="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-popover border rounded-lg shadow-lg p-2 z-20 min-w-[120px] flex-col items-center">
+                    <span className="text-[10px] font-bold text-foreground">{ward.name} — Floor {ward.floor}</span>
+                    <span className="text-[9px] text-muted-foreground">{ward.occupied}/{ward.beds} occupied · {ward.critical} critical</span>
+                    <Badge className="mt-1 text-[8px] px-1.5 py-0" style={{ backgroundColor: `${heat.bg}20`, color: heat.bg, borderColor: `${heat.bg}40` }}>
+                      {heat.label}
+                    </Badge>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Doctor On-Call Sidebar */}
+          <div className="rounded-xl border border-border/40 bg-background/80 p-3 space-y-2">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Stethoscope className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-semibold text-foreground">Doctor On-Call</span>
+            </div>
+            {onCallDoctors.map(d => (
+              <div key={d.ward} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-muted/40 transition-colors">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="relative rounded-full h-2 w-2" style={{ backgroundColor: statusColor(d.status) }} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-medium text-foreground truncate">{d.doctor}</p>
+                  <p className="text-[8px] text-muted-foreground">{d.ward} · {d.specialty}</p>
                 </div>
               </div>
-            );
-          })}
+            ))}
+            <div className="flex items-center gap-3 pt-1 border-t border-border/30">
+              {[
+                { c: "hsl(152,60%,42%)", l: "Active" },
+                { c: "hsl(25,90%,55%)", l: "Busy" },
+                { c: "hsl(45,90%,50%)", l: "Break" },
+              ].map(s => (
+                <div key={s.l} className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.c }} />
+                  <span className="text-[8px] text-muted-foreground">{s.l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Legend */}
         <div className="flex items-center justify-center gap-4 mt-3">
           {[
-            { color: "hsl(152,60%,42%)", label: "Normal" },
+            { color: "hsl(152,60%,42%)", label: "Stable" },
             { color: "hsl(45,90%,50%)", label: "Busy" },
             { color: "hsl(25,90%,55%)", label: "High" },
             { color: "hsl(0,70%,55%)", label: "Critical" },
           ].map(l => (
             <div key={l.label} className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: l.color }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: l.color, boxShadow: `0 0 5px ${l.color}60` }} />
               <span className="text-[10px] text-muted-foreground">{l.label}</span>
             </div>
           ))}
@@ -1320,6 +1402,9 @@ function WardMapHeatmap() {
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
     <div className="space-y-6">
+      {/* Global AI Summary Ticker */}
+      <GlobalAISummary />
+
       <HealthcareKPIs />
 
       {/* Middle Row: Intelligence Widgets */}
