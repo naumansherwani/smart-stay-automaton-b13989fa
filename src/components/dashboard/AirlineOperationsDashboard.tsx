@@ -405,6 +405,9 @@ export default function AirlineOperationsDashboard() {
         </GlassCard>
       </div>
 
+      {/* ═══ FLEET INTELLIGENCE ═══ */}
+      <FleetIntelligence />
+
       {/* ═══ BOTTOM ROW: Sentiment + Disruption Monitor ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Passenger Sentiment Meter */}
