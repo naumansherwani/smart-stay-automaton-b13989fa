@@ -221,9 +221,7 @@ export default function CRM() {
         </Tabs>
       </div>
 
-      <ConversationProvider>
-        <CrmVoiceAssistant industry={industry} />
-      </ConversationProvider>
+      <CrmVoiceAssistant industry={industry} onNavigate={setTab} />
     </AppLayout>
   );
 }
