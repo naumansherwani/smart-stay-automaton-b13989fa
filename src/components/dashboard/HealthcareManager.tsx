@@ -4,7 +4,7 @@ import {
   Plus, Search, Phone, Mail, MapPin, Star, Shield, Zap, Brain,
   CheckCircle2, XCircle, Timer, Gauge, UserCheck, UserX, Bell,
   ArrowUpRight, ArrowDownRight, DollarSign, ClipboardList,
-  CalendarClock, Pill, Thermometer, FileText, BadgeCheck, CircleDot, Mic, LayoutGrid, ShieldAlert
+  CalendarClock, Pill, Thermometer, FileText, BadgeCheck, CircleDot, Mic, LayoutGrid, ShieldAlert, Package, Volume2
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
