@@ -27,7 +27,8 @@ import CrmSentimentDashboard from "@/components/crm/CrmSentimentDashboard";
 import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler";
 import CrmPerformanceTab from "@/components/crm/CrmPerformanceTab";
 import CrmSecurityPanel from "@/components/crm/CrmSecurityPanel";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2 } from "lucide-react";
+import CrmFlightOpsCalendar from "@/components/crm/CrmFlightOpsCalendar";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2, Plane } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -140,6 +141,11 @@ export default function CRM() {
               <TabsTrigger value="contacts" className="flex items-center gap-1.5">
                 <Users className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.contactLabelPlural}</span>
               </TabsTrigger>
+              {industry === "airlines" && (
+                <TabsTrigger value="flight-ops" className="flex items-center gap-1.5">
+                  <Plane className="h-4 w-4" /><span className="hidden sm:inline">Flight Ops</span>
+                </TabsTrigger>
+              )}
               <TabsTrigger value="tickets" className="flex items-center gap-1.5">
                 <TicketCheck className="h-4 w-4" /><span className="hidden sm:inline">{crmConfig.ticketLabelPlural}</span>
               </TabsTrigger>
@@ -192,6 +198,9 @@ export default function CRM() {
             <CrmQuickActions industry={industry} onNavigate={setTab} />
           </TabsContent>
           <TabsContent value="contacts"><CrmContactsTab industry={industry} /></TabsContent>
+          {industry === "airlines" && (
+            <TabsContent value="flight-ops"><CrmFlightOpsCalendar /></TabsContent>
+          )}
           <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={true} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>

@@ -16,6 +16,7 @@ interface Props { industry: IndustryType; }
 const EMAIL_TONES = [
   { value: "professional", label: "Professional" },
   { value: "friendly", label: "Friendly" },
+  { value: "apologetic", label: "Apologetic" },
   { value: "urgent", label: "Urgent" },
   { value: "follow-up", label: "Follow-up" },
   { value: "promotional", label: "Promotional" },
