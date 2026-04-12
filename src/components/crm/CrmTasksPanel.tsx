@@ -182,9 +182,14 @@ export default function CrmTasksPanel({ industry }: Props) {
                       <Badge variant="outline" className={`text-[10px] ${PRIORITY_COLORS[task.priority] || ""}`}>
                         {task.priority}
                       </Badge>
-                      {task.ai_priority_score && (
-                        <Badge variant="secondary" className="text-[10px]">
-                          <Sparkles className="h-2.5 w-2.5 mr-0.5" />AI: {task.ai_priority_score}
+                      {task.ai_priority_score != null && (
+                        <Badge variant="secondary" className={`text-[10px] ${
+                          task.ai_priority_score >= 80 ? "bg-red-500/10 text-red-600 border-red-500/20" :
+                          task.ai_priority_score >= 50 ? "bg-orange-500/10 text-orange-600 border-orange-500/20" :
+                          ""
+                        }`}>
+                          <Sparkles className="h-2.5 w-2.5 mr-0.5" />
+                          Urgency: {task.ai_priority_score}
                         </Badge>
                       )}
                       {task.ai_category && (
