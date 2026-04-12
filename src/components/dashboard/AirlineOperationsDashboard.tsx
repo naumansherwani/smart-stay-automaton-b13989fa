@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import AirlineAIResolveDialog from "./AirlineAIResolveDialog";
+import FleetIntelligence from "./FleetIntelligence";
 
 // ─── Glassmorphism card wrapper ──────────────────────────────────────────────
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
