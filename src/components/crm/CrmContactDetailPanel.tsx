@@ -146,6 +146,10 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [aiScribeActive, setAiScribeActive] = useState(false);
   const [scribeFields, setScribeFields] = useState({ symptoms: "", diagnosis: "", prescription: "" });
+  const [aiDiagnoses, setAiDiagnoses] = useState<{ name: string; confidence: number; tests: string[] }[]>([]);
+  const [diagnosisLoading, setDiagnosisLoading] = useState(false);
+  const [educationSummary, setEducationSummary] = useState<string | null>(null);
+  const [educationLoading, setEducationLoading] = useState(false);
 
   const isAirline = industry === "airlines";
   const isHealthcare = industry === "healthcare";
