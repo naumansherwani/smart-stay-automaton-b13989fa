@@ -15,7 +15,7 @@ import {
   Calendar, FileText, CheckSquare, Sparkles, TrendingUp, DollarSign,
   TicketCheck, Clock, Activity, Tag, AlertTriangle, Star, MessageSquare,
   Crown, Plane, Armchair, UtensilsCrossed, MapPinned, Mic, Loader2, RefreshCw,
-  Heart, Thermometer, ShieldAlert, Pill, Brain, Gauge, Stethoscope, Volume2,
+  Heart, Thermometer, ShieldAlert, Pill, Brain, Gauge, Stethoscope, Volume2, FlaskConical, Video, FileSignature,
 } from "lucide-react";
 import type { CrmContact, CrmTicket, CrmDeal, CrmActivity } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
@@ -808,6 +808,23 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
           </Tabs>
         </Card>
       </div>
+
+      {/* Healthcare: Floating Quick Actions Bar */}
+      {isHealthcare && (
+        <div className="sticky bottom-0 z-10 mt-4 -mx-1">
+          <div className="flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-background/95 backdrop-blur-md border border-[hsl(204,100%,86%)]/60 shadow-lg">
+            <Button size="sm" className="rounded-full gap-1.5 bg-[hsl(204,100%,40%)] hover:bg-[hsl(204,100%,35%)] text-white" onClick={() => toast.success("Lab test order initiated for " + contact.name)}>
+              <FlaskConical className="h-3.5 w-3.5" />Order Lab Test
+            </Button>
+            <Button size="sm" className="rounded-full gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => toast.success("E-Prescription module opened for " + contact.name)}>
+              <FileSignature className="h-3.5 w-3.5" />E-Prescribe
+            </Button>
+            <Button size="sm" className="rounded-full gap-1.5 bg-[hsl(152,60%,42%)] hover:bg-[hsl(152,60%,36%)] text-white" onClick={() => toast.success("Starting video call with " + contact.name)}>
+              <Video className="h-3.5 w-3.5" />Video Call
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
