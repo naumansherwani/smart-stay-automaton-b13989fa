@@ -27,6 +27,7 @@ import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
 import FlightManager from "@/components/dashboard/FlightManager";
+import AirlineOperationsDashboard from "@/components/dashboard/AirlineOperationsDashboard";
 import VehicleManager from "@/components/dashboard/VehicleManager";
 import TimetableManager from "@/components/dashboard/TimetableManager";
 import LogisticsManager from "@/components/dashboard/LogisticsManager";
@@ -378,7 +379,8 @@ const Dashboard = () => {
           </TabsList>
 
           {isAirlines(currentIndustry) && (
-            <TabsContent value="flights">
+            <TabsContent value="flights" className="space-y-6">
+              <AirlineOperationsDashboard />
               <FlightManager config={config} />
             </TabsContent>
           )}
