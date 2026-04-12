@@ -1208,6 +1208,114 @@ function StaffingOptimizer() {
   );
 }
 
+// ─── AI Ward-Map Heatmap ───
+function WardMapHeatmap() {
+  const wards = [
+    { name: "ICU", floor: 3, beds: 12, occupied: 11, critical: 4, x: 10, y: 10, w: 28, h: 40 },
+    { name: "Emergency", floor: 1, beds: 20, occupied: 18, critical: 6, x: 42, y: 10, w: 25, h: 40 },
+    { name: "Ward A", floor: 2, beds: 30, occupied: 22, critical: 1, x: 71, y: 10, w: 25, h: 18 },
+    { name: "Ward B", floor: 2, beds: 28, occupied: 25, critical: 3, x: 71, y: 32, w: 25, h: 18 },
+    { name: "Pediatrics", floor: 1, beds: 15, occupied: 9, critical: 0, x: 10, y: 55, w: 22, h: 35 },
+    { name: "Surgery", floor: 3, beds: 8, occupied: 7, critical: 2, x: 36, y: 55, w: 20, h: 35 },
+    { name: "Maternity", floor: 1, beds: 18, occupied: 12, critical: 0, x: 60, y: 55, w: 18, h: 35 },
+    { name: "Rehab", floor: 2, beds: 16, occupied: 10, critical: 0, x: 82, y: 55, w: 14, h: 35 },
+  ];
+
+  const getHeatColor = (critical: number, occupied: number, beds: number) => {
+    if (critical >= 4) return { bg: "hsl(0,70%,55%)", glow: "hsl(0,70%,55%)", label: "Critical" };
+    if (critical >= 2) return { bg: "hsl(25,90%,55%)", glow: "hsl(25,90%,55%)", label: "High" };
+    if (occupied / beds > 0.85) return { bg: "hsl(45,90%,50%)", glow: "hsl(45,90%,50%)", label: "Busy" };
+    return { bg: "hsl(152,60%,42%)", glow: "hsl(152,60%,42%)", label: "Normal" };
+  };
+
+  const totalCritical = wards.reduce((s, w) => s + w.critical, 0);
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <LayoutGrid className="w-4 h-4 text-primary" />
+            AI Ward-Map Heatmap
+            <span className="relative flex h-2.5 w-2.5 ml-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+            </span>
+          </CardTitle>
+          <Badge className="bg-[hsl(204,100%,94%)] text-primary border-primary/20 text-[10px]">
+            {totalCritical} critical zones
+          </Badge>
+        </div>
+        <p className="text-xs text-muted-foreground">Real-time spatial view — ward urgency at a glance</p>
+      </CardHeader>
+      <CardContent>
+        <div className="relative w-full rounded-xl border border-border/40 bg-background/80 overflow-hidden" style={{ aspectRatio: "2.2/1" }}>
+          {/* Grid lines */}
+          <div className="absolute inset-0 opacity-[0.06]" style={{
+            backgroundImage: "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
+            backgroundSize: "10% 10%",
+          }} />
+
+          {wards.map(ward => {
+            const heat = getHeatColor(ward.critical, ward.occupied, ward.beds);
+            return (
+              <div
+                key={ward.name}
+                className="absolute rounded-lg border flex flex-col items-center justify-center cursor-default transition-all duration-300 hover:scale-[1.04] hover:z-10 group"
+                style={{
+                  left: `${ward.x}%`, top: `${ward.y}%`, width: `${ward.w}%`, height: `${ward.h}%`,
+                  backgroundColor: `${heat.bg}20`,
+                  borderColor: `${heat.bg}60`,
+                  boxShadow: ward.critical >= 2 ? `0 0 12px ${heat.glow}30` : "none",
+                }}
+              >
+                {/* Pulse dot for critical */}
+                {ward.critical >= 2 && (
+                  <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                    <span className="animate-ping absolute h-full w-full rounded-full opacity-75" style={{ backgroundColor: heat.bg }} />
+                    <span className="relative rounded-full h-2 w-2" style={{ backgroundColor: heat.bg }} />
+                  </span>
+                )}
+                <span className="text-[10px] sm:text-xs font-bold text-foreground">{ward.name}</span>
+                <span className="text-[8px] sm:text-[10px] text-muted-foreground">{ward.occupied}/{ward.beds} beds</span>
+                {ward.critical > 0 && (
+                  <span className="text-[8px] font-semibold mt-0.5" style={{ color: heat.bg }}>
+                    {ward.critical} critical
+                  </span>
+                )}
+
+                {/* Hover tooltip */}
+                <div className="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-popover border rounded-lg shadow-lg p-2 z-20 min-w-[120px] flex-col items-center">
+                  <span className="text-[10px] font-bold text-foreground">{ward.name} — Floor {ward.floor}</span>
+                  <span className="text-[9px] text-muted-foreground">{ward.occupied}/{ward.beds} occupied · {ward.critical} critical</span>
+                  <Badge className="mt-1 text-[8px] px-1.5 py-0" style={{ backgroundColor: `${heat.bg}20`, color: heat.bg, borderColor: `${heat.bg}40` }}>
+                    {heat.label}
+                  </Badge>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-4 mt-3">
+          {[
+            { color: "hsl(152,60%,42%)", label: "Normal" },
+            { color: "hsl(45,90%,50%)", label: "Busy" },
+            { color: "hsl(25,90%,55%)", label: "High" },
+            { color: "hsl(0,70%,55%)", label: "Critical" },
+          ].map(l => (
+            <div key={l.label} className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: l.color }} />
+              <span className="text-[10px] text-muted-foreground">{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
