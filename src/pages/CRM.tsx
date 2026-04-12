@@ -28,7 +28,7 @@ import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler"
 import CrmPerformanceTab from "@/components/crm/CrmPerformanceTab";
 import CrmSecurityPanel from "@/components/crm/CrmSecurityPanel";
 import CrmFlightOpsCalendar from "@/components/crm/CrmFlightOpsCalendar";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2 } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2, Plane } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
