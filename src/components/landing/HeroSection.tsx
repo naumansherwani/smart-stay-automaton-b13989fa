@@ -19,7 +19,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative pt-28 pb-28 md:pt-36 md:pb-36 overflow-hidden">
+    <section className="relative pt-24 pb-16 md:pt-32 md:pb-20 overflow-hidden">
       {/* Premium dark background */}
       <div className="absolute inset-0 bg-[hsl(222,47%,8%)]" />
       

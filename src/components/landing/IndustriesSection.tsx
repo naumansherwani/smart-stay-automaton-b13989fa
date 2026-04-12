@@ -32,7 +32,7 @@ const IndustriesSection = () => {
   };
 
   return (
-    <section id="industries" className="py-24 bg-background relative overflow-hidden">
+    <section id="industries" className="py-16 bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(217,91%,60%,0.03),transparent_60%)]" />
 
       <div className="container relative z-10 space-y-12">
