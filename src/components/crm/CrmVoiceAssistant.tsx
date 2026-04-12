@@ -112,6 +112,9 @@ function getIndustryCommands(industry: IndustryType): VoiceCommand[] {
       { keywords: ["route", "routes", "destinations"], action: "navigate", tab: "tool-route-optimizer", response: "Opening Route Optimizer." },
       { keywords: ["capacity", "load factor", "seats"], action: "navigate", tab: "tool-capacity-planner", response: "Opening Capacity Planner." },
       { keywords: ["fill gaps", "gap filler", "empty seats"], action: "navigate", tab: "tool-ai-calendar", response: "AI is finding gap-fill opportunities for flights." },
+      { keywords: ["reschedule all passengers", "reschedule passengers", "move passengers"], action: "navigate", tab: "flight-ops", response: "Opening Flight Operations to reschedule passengers. Select the flight to begin rebooking." },
+      { keywords: ["sentiment trend", "sentiment for flight", "passenger mood", "last night flight"], action: "navigate", tab: "sentiment", response: "Opening Sentiment Dashboard — showing trend for recent flights." },
+      { keywords: ["passenger profile", "passenger detail", "show passenger"], action: "navigate", tab: "contacts", response: "Opening Passenger Manager — click on a passenger to view their 360° profile." },
     ],
     hospitality: [
       { keywords: ["pricing", "price", "room rate", "rates"], action: "navigate", tab: "tool-ai-pricing", response: "Opening AI Room Pricing." },
