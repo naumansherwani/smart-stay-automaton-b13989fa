@@ -30,7 +30,6 @@ const Index = () => (
     <StatsSection />
     <HowItWorksSection />
     <FeaturesSection />
-    <VoiceAISection />
     <TestimonialsSection />
     <ReviewsSection />
     <TrustBadgesSection />
