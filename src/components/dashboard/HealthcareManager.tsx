@@ -904,6 +904,116 @@ function SentimentHeatmap() {
   );
 }
 
+// ─── Bottom Row: Critical Patient Monitor ───
+function CriticalPatientMonitor() {
+  const criticalPatients = [
+    { name: "M. Garcia", room: "ICU-3", score: 98, condition: "Irregular HR, BP 160/95", sentiment: "😡", specialist: "Cardiologist", critical: true },
+    { name: "R. Patel", room: "Room 201", score: 91, condition: "SpO₂ 89%, post-op fever", sentiment: "😟", specialist: "Pulmonologist", critical: true },
+    { name: "A. Thompson", room: "Room 105", score: 74, condition: "Diabetic ketoacidosis risk", sentiment: "😐", specialist: "Endocrinologist", critical: false },
+    { name: "K. Lee", room: "Room 302", score: 62, condition: "Elevated WBC, awaiting labs", sentiment: "😐", specialist: "Internal Medicine", critical: false },
+    { name: "J. Taylor", room: "Room 108", score: 45, condition: "Stable, scheduled discharge", sentiment: "😊", specialist: "General", critical: false },
+    { name: "S. Brown", room: "Room 204", score: 38, condition: "Routine post-op recovery", sentiment: "😊", specialist: "Surgeon", critical: false },
+  ];
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Shield className="w-4 h-4 text-destructive" />
+            Critical Patient Monitor
+            <Badge variant="outline" className="text-[10px]">AI Scored</Badge>
+          </CardTitle>
+          <Badge variant="destructive" className="text-[10px]">
+            {criticalPatients.filter(p => p.critical).length} Critical
+          </Badge>
+        </div>
+        <p className="text-xs text-muted-foreground">AI-prioritized patient list — attend highest scores first</p>
+      </CardHeader>
+      <CardContent>
+        {/* Table Header */}
+        <div className="grid grid-cols-12 gap-2 px-3 py-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/50">
+          <div className="col-span-3">Patient</div>
+          <div className="col-span-1 text-center">Room</div>
+          <div className="col-span-1 text-center">Score</div>
+          <div className="col-span-1 text-center">Mood</div>
+          <div className="col-span-3">Condition</div>
+          <div className="col-span-3 text-right">Actions</div>
+        </div>
+
+        {/* Table Rows */}
+        <div className="divide-y divide-border/30">
+          {criticalPatients.map((p, i) => (
+            <div
+              key={p.name}
+              className={`grid grid-cols-12 gap-2 px-3 py-3 items-center transition-colors ${
+                p.critical ? "bg-[hsl(0,86%,97%)] dark:bg-destructive/5" : "hover:bg-muted/30"
+              }`}
+            >
+              {/* Patient Name */}
+              <div className="col-span-3 flex items-center gap-2">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                  p.critical ? "bg-destructive/15 text-destructive" : "bg-primary/10 text-primary"
+                }`}>
+                  {p.name.charAt(0)}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{p.name}</p>
+                  {p.critical && <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3.5">CRITICAL</Badge>}
+                </div>
+              </div>
+
+              {/* Room */}
+              <div className="col-span-1 text-center">
+                <Badge variant="outline" className="text-[10px]">{p.room}</Badge>
+              </div>
+
+              {/* AI Score */}
+              <div className="col-span-1 text-center">
+                <span className={`text-sm font-bold ${
+                  p.score >= 90 ? "text-destructive" : p.score >= 60 ? "text-[hsl(35,90%,50%)]" : "text-[hsl(152,60%,42%)]"
+                }`}>
+                  {p.score}
+                </span>
+              </div>
+
+              {/* Sentiment */}
+              <div className="col-span-1 text-center text-lg">{p.sentiment}</div>
+
+              {/* Condition */}
+              <div className="col-span-3">
+                <p className="text-xs text-muted-foreground">{p.condition}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="col-span-3 flex items-center justify-end gap-1.5">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[10px] gap-1 border-purple-300 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-500/10"
+                  onClick={() => toast.info(`AI Scribe activated for ${p.name} — speak your notes now`)}
+                >
+                  <Mic className="w-3 h-3" />
+                  AI Scribe
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[10px] gap-1 border-blue-300 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                  onClick={() => toast.success(`Alert sent to ${p.specialist} for ${p.name}`)}
+                >
+                  <Bell className="w-3 h-3" />
+                  {p.specialist}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
@@ -915,6 +1025,9 @@ export default function HealthcareManager({ config }: { config: IndustryConfig }
         <AdmissionForecast />
         <SentimentHeatmap />
       </div>
+
+      {/* Bottom Row: Action Center */}
+      <CriticalPatientMonitor />
 
       <Tabs defaultValue="appointments" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:w-auto lg:inline-grid gap-1">
