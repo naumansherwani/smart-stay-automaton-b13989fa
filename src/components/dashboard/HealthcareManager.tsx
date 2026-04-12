@@ -1563,6 +1563,9 @@ export default function HealthcareManager({ config }: { config: IndustryConfig }
       {/* AI Ward-Map Heatmap */}
       <WardMapHeatmap />
 
+      {/* AI Pharmacy & Drug-Interaction Guard */}
+      <MedicationSafetyWall />
+
       <Tabs defaultValue="appointments" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:w-auto lg:inline-grid gap-1">
           <TabsTrigger value="appointments" className="gap-1.5 text-xs md:text-sm"><ClipboardList className="w-3.5 h-3.5" />Appointments</TabsTrigger>
