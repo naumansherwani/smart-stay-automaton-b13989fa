@@ -1015,6 +1015,74 @@ function CriticalPatientMonitor() {
   );
 }
 
+// ─── AI Bed-Traffic & Discharge Predictor ───
+function BedDischargePredictor() {
+  const dischargePatients = [
+    { name: "J. Taylor", room: "Room 108", probability: 94, reason: "Vitals stable 48h, wound healing well", eta: "Tomorrow AM" },
+    { name: "S. Brown", room: "Room 204", probability: 88, reason: "Post-op recovery on track, no complications", eta: "Tomorrow PM" },
+    { name: "F. Anderson", room: "Room 301", probability: 82, reason: "Lab results normal, awaiting final review", eta: "Tomorrow AM" },
+    { name: "D. Kim", room: "Room 112", probability: 75, reason: "Responding well to antibiotics, temp normalized", eta: "Tomorrow PM" },
+    { name: "L. Johnson", room: "Room 205", probability: 61, reason: "Mobility improving, PT clearance pending", eta: "48h" },
+    { name: "H. Jackson", room: "ICU-2", probability: 42, reason: "Stable but monitoring BP fluctuations", eta: "72h+" },
+  ];
+
+  const bedsFreeing = dischargePatients.filter(p => p.probability >= 75).length;
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[hsl(174,60%,42%)]" />
+            AI Bed-Traffic & Discharge Predictor
+            <Badge variant="outline" className="text-[10px]">Next 24h</Badge>
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Badge className="bg-[hsl(174,60%,42%)]/15 text-[hsl(174,60%,35%)] border-[hsl(174,60%,42%)]/20 text-[10px]">
+              ~{bedsFreeing} beds freeing soon
+            </Badge>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground">AI predicts which patients are likely to be discharged — plan new admissions ahead</p>
+      </CardHeader>
+      <CardContent className="space-y-2.5">
+        {dischargePatients.map(p => (
+          <div key={p.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-background/60 border border-border/30">
+            <div className="w-7 h-7 rounded-full bg-[hsl(174,60%,42%)]/10 flex items-center justify-center text-xs font-bold text-[hsl(174,60%,42%)]">
+              {p.name.charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-medium text-foreground">{p.name}</span>
+                <Badge variant="outline" className="text-[9px]">{p.room}</Badge>
+                <span className="text-[10px] text-muted-foreground ml-auto">ETA: {p.eta}</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground truncate">{p.reason}</p>
+            </div>
+            <div className="w-28 shrink-0">
+              <div className="flex items-center justify-between mb-0.5">
+                <span className="text-[9px] text-muted-foreground">Discharge</span>
+                <span className={`text-xs font-bold ${
+                  p.probability >= 80 ? "text-[hsl(152,60%,42%)]" : p.probability >= 60 ? "text-[hsl(35,90%,50%)]" : "text-muted-foreground"
+                }`}>{p.probability}%</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{
+                    width: `${p.probability}%`,
+                    backgroundColor: p.probability >= 80 ? "hsl(152,60%,42%)" : p.probability >= 60 ? "hsl(35,90%,50%)" : "hsl(220,10%,70%)",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
@@ -1030,6 +1098,8 @@ export default function HealthcareManager({ config }: { config: IndustryConfig }
       {/* Bottom Row: Action Center */}
       <CriticalPatientMonitor />
 
+      {/* AI Bed-Traffic & Discharge Predictor */}
+      <BedDischargePredictor />
       <Tabs defaultValue="appointments" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:w-auto lg:inline-grid gap-1">
           <TabsTrigger value="appointments" className="gap-1.5 text-xs md:text-sm"><ClipboardList className="w-3.5 h-3.5" />Appointments</TabsTrigger>
