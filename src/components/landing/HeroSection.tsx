@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Brain, Shield, Zap, TrendingUp, Globe, Play, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const ROTATING_WORDS = ["Hotels", "Airlines", "Clinics", "Schools", "Fleets", "Events", "Warehouses", "Railways"];
+const ROTATING_WORDS = ["Hotels", "Airlines", "Clinics", "Schools", "Fleets", "Events", "Railways"];
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -63,10 +63,12 @@ const HeroSection = () => {
 
           {/* Sub-headline */}
           <div className="max-w-3xl mx-auto space-y-4">
-            <p className="text-lg md:text-xl text-white/60 font-semibold leading-relaxed tracking-wide">
-              The World's First Industry-Sovereign AI OS.
+            <p className="text-lg md:text-xl font-semibold leading-relaxed tracking-wide">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(280,100%,70%)] via-[hsl(320,90%,65%)] to-[hsl(350,95%,65%)] drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">The World's First Industry-Sovereign AI OS.</span>
               <br className="hidden md:block" />
-              <span className="text-white/40">Don't Just Manage Data</span>—<span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)]">Command Your Business</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,60%)] via-[hsl(25,95%,60%)] to-[hsl(350,90%,65%)] drop-shadow-[0_0_15px_rgba(251,146,60,0.3)]">Don't Just Manage Data</span>
+              <span className="text-white/50">—</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(190,80%,60%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">Command Your Business</span>
             </p>
             <p className="text-base text-white/35 max-w-2xl mx-auto leading-relaxed font-medium">
               Predict revenue, automate operations, and lead with voice-activated intelligence.
