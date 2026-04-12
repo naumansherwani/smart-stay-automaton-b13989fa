@@ -24,6 +24,7 @@ const Index = () => (
       <SmartGreetingBanner compact />
     </div>
     <HeroSection />
+    <VoiceAISection />
     <IndustriesSection />
     <PricingSection />
     <StatsSection />
