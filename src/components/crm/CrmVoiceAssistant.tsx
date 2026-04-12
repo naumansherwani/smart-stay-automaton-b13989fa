@@ -280,6 +280,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   const [isSpeaking, setIsSpeaking] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasGreeted = useRef(false);
+  const conversationMemory = useRef<string[]>([]); // Contextual memory - last 5 exchanges
 
   const commands = getIndustryCommands(industry);
 

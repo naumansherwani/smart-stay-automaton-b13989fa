@@ -528,6 +528,3 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
     </div>
   );
 }
-
-// Need to import RefreshCw
-import { RefreshCw } from "lucide-react";
