@@ -15,7 +15,7 @@ import {
   Calendar, FileText, CheckSquare, Sparkles, TrendingUp, DollarSign,
   TicketCheck, Clock, Activity, Tag, AlertTriangle, Star, MessageSquare,
   Crown, Plane, Armchair, UtensilsCrossed, MapPinned, Mic, Loader2, RefreshCw,
-  Heart, Thermometer, ShieldAlert, Pill, Brain, Gauge, Stethoscope, Volume2,
+  Heart, Thermometer, ShieldAlert, Pill, Brain, Gauge, Stethoscope, Volume2, FlaskConical, Video, FileSignature,
 } from "lucide-react";
 import type { CrmContact, CrmTicket, CrmDeal, CrmActivity } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
