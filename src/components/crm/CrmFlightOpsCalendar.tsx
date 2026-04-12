@@ -333,11 +333,16 @@ export default function CrmFlightOpsCalendar() {
                       </td>
                       <td className="py-2 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <span className="text-xs font-bold text-foreground">${displayPrice}</span>
+                          <span className={`text-xs font-bold ${priceView === "ai" ? "text-[hsl(160,60%,45%)]" : "text-foreground"}`}>
+                            ${displayPrice}
+                          </span>
                           {priceView === "ai" && priceDiff !== 0 && (
-                            <Badge variant={priceDiff > 0 ? "default" : "secondary"} className="text-[8px] px-1">
-                              {priceDiff > 0 ? `+$${priceDiff}` : `-$${Math.abs(priceDiff)}`}
+                            <Badge className={`text-[8px] px-1 border-0 ${priceDiff > 0 ? "bg-[hsl(160,60%,45%)]/15 text-[hsl(160,60%,45%)]" : "bg-[hsl(38,92%,50%)]/15 text-[hsl(38,92%,50%)]"}`}>
+                              {priceDiff > 0 ? `+$${priceDiff} ↑` : `-$${Math.abs(priceDiff)} ↓`}
                             </Badge>
+                          )}
+                          {priceView === "ai" && (
+                            <Zap className="h-3 w-3 text-[hsl(160,60%,45%)]" />
                           )}
                         </div>
                       </td>

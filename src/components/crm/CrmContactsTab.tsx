@@ -15,6 +15,7 @@ import { getCrmConfig } from "@/lib/crmConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 import type { CrmContact } from "@/hooks/useCrm";
 import CrmContactDetailPanel from "./CrmContactDetailPanel";
+import CrmAiEmailComposer from "./CrmAiEmailComposer";
 import { toast } from "sonner";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import LimitReachedPopup from "@/components/conversion/LimitReachedPopup";
@@ -39,6 +40,7 @@ export default function CrmContactsTab({ industry }: Props) {
   const [limitPopup, setLimitPopup] = useState(false);
   const [successPopup, setSuccessPopup] = useState(false);
   const [lastAddedName, setLastAddedName] = useState("");
+  const [emailContact, setEmailContact] = useState<CrmContact | null>(null);
   const hadContactsBefore = useRef(contacts.length > 0);
 
   const filtered = contacts.filter(c => {
@@ -308,6 +310,9 @@ export default function CrmContactsTab({ industry }: Props) {
                   </div>
                   <div className="w-24 text-center" onClick={e => e.stopPropagation()}>
                     <div className="flex items-center gap-1 justify-center">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Contact via Email" onClick={() => setEmailContact(contact)}>
+                        <Mail className="h-3 w-3 text-[hsl(217,91%,60%)]" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-7 w-7" title="Voice Note" onClick={() => {
                         navigator.mediaDevices?.getUserMedia({ audio: true })
                           .then(() => toast.info(`🎤 Listening for voice note on ${contact.name}...`))
@@ -344,6 +349,18 @@ export default function CrmContactsTab({ industry }: Props) {
         type="contact"
         itemName={lastAddedName}
       />
+      {/* Email Composer Modal */}
+      <Dialog open={!!emailContact} onOpenChange={(open) => { if (!open) setEmailContact(null); }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-[hsl(217,91%,60%)]" />
+              Contact {emailContact?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <CrmAiEmailComposer industry={industry} preselectedContactId={emailContact?.id} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
