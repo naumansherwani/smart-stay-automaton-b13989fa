@@ -20,6 +20,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import AirlineAIResolveDialog from "./AirlineAIResolveDialog";
 
 // ─── Glassmorphism card wrapper ──────────────────────────────────────────────
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -100,6 +101,9 @@ export default function AirlineOperationsDashboard() {
   const [resolvingFlights, setResolvingFlights] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [lastSynced, setLastSynced] = useState<Date>(new Date());
+  const [resolveDialogOpen, setResolveDialogOpen] = useState(false);
+  const [selectedDisruption, setSelectedDisruption] = useState<typeof disruptedFlights[0] | null>(null);
+  const [resolvedFlights, setResolvedFlights] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) return;
@@ -129,12 +133,16 @@ export default function AirlineOperationsDashboard() {
   const revenueAtRisk = disruptedFlights.reduce((s, f) => s + f.passengers * 45, 0); // avg compensation per pax
   const otpRate = 87; // On-time performance
 
-  const handleAIResolve = async (flightCode: string) => {
-    setResolvingFlights(prev => new Set(prev).add(flightCode));
-    // Simulate AI resolution
-    await new Promise(r => setTimeout(r, 2000));
-    setResolvingFlights(prev => { const n = new Set(prev); n.delete(flightCode); return n; });
-    toast.success(`✈️ AI resolved disruption for ${flightCode}: Passengers rebooked, compensation queued.`);
+  const handleAIResolve = (flightCode: string) => {
+    const disruption = disruptedFlights.find(f => f.flight === flightCode);
+    if (disruption) {
+      setSelectedDisruption(disruption);
+      setResolveDialogOpen(true);
+    }
+  };
+
+  const handleFlightResolved = (flightCode: string) => {
+    setResolvedFlights(prev => new Set(prev).add(flightCode));
   };
 
   const handleApplyPrice = (route: string, price: number) => {
@@ -482,6 +490,7 @@ export default function AirlineOperationsDashboard() {
               </div>
               {disruptedFlights.map((f) => {
                 const isResolving = resolvingFlights.has(f.flight);
+                const isResolved = resolvedFlights.has(f.flight);
                 const severityColor = f.severity === "critical"
                   ? "border-destructive/30 bg-destructive/5"
                   : f.severity === "high"
@@ -489,7 +498,7 @@ export default function AirlineOperationsDashboard() {
                   : "border-border bg-muted/20";
 
                 return (
-                  <div key={f.flight} className={`grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border ${severityColor} transition-colors`}>
+                  <div key={f.flight} className={`grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border ${isResolved ? "border-success/30 bg-success/5" : severityColor} transition-colors`}>
                     <div className="col-span-2">
                       <p className="text-sm font-bold text-foreground">{f.flight}</p>
                       <Badge
@@ -515,19 +524,21 @@ export default function AirlineOperationsDashboard() {
                       <p className="text-[10px] text-muted-foreground">{f.connections} connections</p>
                     </div>
                     <div className="col-span-3 flex justify-end">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-xs gap-1 border-primary/30 hover:bg-primary/5 text-primary"
-                        onClick={() => handleAIResolve(f.flight)}
-                        disabled={isResolving}
-                      >
-                        {isResolving ? (
-                          <><RefreshCw className="w-3 h-3 animate-spin" /> Resolving...</>
-                        ) : (
-                          <><Zap className="w-3 h-3" /> AI Resolve</>
-                        )}
-                      </Button>
+                      {isResolved ? (
+                        <Badge variant="outline" className="text-[10px] text-success border-success/30 bg-success/10 gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Resolved
+                        </Badge>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs gap-1 border-primary/30 hover:bg-primary/5 text-primary"
+                          onClick={() => handleAIResolve(f.flight)}
+                          disabled={isResolving}
+                        >
+                          <Zap className="w-3 h-3" /> AI Resolve
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
@@ -536,6 +547,14 @@ export default function AirlineOperationsDashboard() {
           </CardContent>
         </GlassCard>
       </div>
+
+      {/* AI Resolve Dialog */}
+      <AirlineAIResolveDialog
+        open={resolveDialogOpen}
+        onOpenChange={setResolveDialogOpen}
+        flight={selectedDisruption}
+        onResolved={handleFlightResolved}
+      />
     </div>
   );
 }
