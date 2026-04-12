@@ -287,6 +287,27 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
           </div>
         )}
 
+        {/* Healthcare: Vital Pulse + Sentiment */}
+        {isHealthcare && patientVitals && patientSentiment && (
+          <div className="ml-auto flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[hsl(204,100%,94%)]/40 border border-[hsl(204,100%,86%)]/60">
+              <Heart className="h-3.5 w-3.5 text-destructive animate-pulse" />
+              <span className="text-xs font-bold">{patientVitals.hr}</span>
+              <span className="text-[9px] text-muted-foreground mx-0.5">|</span>
+              <span className="text-xs">SpO₂ {patientVitals.spo2}%</span>
+              <span className="text-[9px] text-muted-foreground mx-0.5">|</span>
+              <span className="text-xs">BP {patientVitals.bp}</span>
+              <span className="text-[9px] text-muted-foreground mx-0.5">|</span>
+              <Thermometer className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs">{patientVitals.temp}</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border" style={{ borderColor: `${patientSentiment.color}40`, backgroundColor: `${patientSentiment.color}08` }}>
+              <span className="text-lg">{patientSentiment.emoji}</span>
+              <span className="text-[10px] font-medium" style={{ color: patientSentiment.color }}>{patientSentiment.label}</span>
+            </div>
+          </div>
+        )}
+
         {/* Edit / Actions */}
         <div className="flex gap-2 ml-auto">
           {!editing ? (
