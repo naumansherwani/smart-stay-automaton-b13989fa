@@ -349,6 +349,18 @@ export default function CrmContactsTab({ industry }: Props) {
         type="contact"
         itemName={lastAddedName}
       />
+      {/* Email Composer Modal */}
+      <Dialog open={!!emailContact} onOpenChange={(open) => { if (!open) setEmailContact(null); }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-[hsl(217,91%,60%)]" />
+              Contact {emailContact?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <CrmAiEmailComposer industry={industry} preselectedContactId={emailContact?.id} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
