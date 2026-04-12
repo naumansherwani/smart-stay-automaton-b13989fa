@@ -198,6 +198,9 @@ export default function CRM() {
             <CrmQuickActions industry={industry} onNavigate={setTab} />
           </TabsContent>
           <TabsContent value="contacts"><CrmContactsTab industry={industry} /></TabsContent>
+          {industry === "airlines" && (
+            <TabsContent value="flight-ops"><CrmFlightOpsCalendar /></TabsContent>
+          )}
           <TabsContent value="tickets"><CrmTicketsTab industry={industry} isPremium={true} /></TabsContent>
           <TabsContent value="deals"><CrmDealsTab industry={industry} /></TabsContent>
           <TabsContent value="activities"><CrmActivitiesTab industry={industry} /></TabsContent>
