@@ -544,6 +544,14 @@ export default function AirlineOperationsDashboard() {
           </CardContent>
         </GlassCard>
       </div>
+
+      {/* AI Resolve Dialog */}
+      <AirlineAIResolveDialog
+        open={resolveDialogOpen}
+        onOpenChange={setResolveDialogOpen}
+        flight={selectedDisruption}
+        onResolved={handleFlightResolved}
+      />
     </div>
   );
 }
