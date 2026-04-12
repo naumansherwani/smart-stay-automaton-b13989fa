@@ -311,6 +311,9 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   const processCommand = useCallback((userText: string) => {
     const lower = userText.toLowerCase().trim();
 
+    // Store in contextual memory (last 5 exchanges)
+    conversationMemory.current = [...conversationMemory.current.slice(-4), userText];
+
     setMessages(prev => [...prev, { role: "user", text: userText, timestamp: new Date() }]);
 
     // Find matching command
@@ -344,9 +347,20 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
         aiResponse = matched.response;
       }
     } else {
+      // Check contextual memory for follow-ups
+      const lastContext = conversationMemory.current.slice(-3).join(" ").toLowerCase();
       const config = getIndustryConfig(industry);
+
       if (lower.includes("how are you") || lower.includes("how do you do") || lower.includes("کیسی ہو") || lower.includes("कैसी हो")) {
         aiResponse = `I'm great! How can I help you with ${config.label}?`;
+      } else if (lower.includes("again") || lower.includes("repeat") || lower.includes("دوبارہ")) {
+        // Contextual: repeat last action
+        const lastAiMsg = messages.filter(m => m.role === "ai").pop();
+        aiResponse = lastAiMsg ? `Sure, repeating: ${lastAiMsg.text}` : "Nothing to repeat yet.";
+      } else if (lower.includes("what did i say") || lower.includes("last command") || lower.includes("پچھلا")) {
+        // Contextual: recall last command
+        const recentCmds = conversationMemory.current.slice(0, -1);
+        aiResponse = recentCmds.length > 0 ? `Your recent commands: ${recentCmds.join(", ")}` : "No previous commands in this session.";
       } else {
         aiResponse = `I heard "${userText}". Try saying "help" to see my commands.`;
       }
@@ -361,7 +375,7 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
 
     // Only speak when responding to a command (not auto)
     speakText(aiResponse);
-  }, [commands, industry, onNavigate, onCommand]);
+  }, [commands, industry, onNavigate, onCommand, messages]);
 
   const { isListening, start: startListening, stop: stopListening } = useSpeechRecognition(processCommand);
 
