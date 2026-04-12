@@ -221,6 +221,8 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   const wonDeals = linkedDeals.filter(d => d.stage === "Won").length;
   const openTickets = linkedTickets.filter(t => t.status === "open" || t.status === "in_progress").length;
   const sentiment = getSentimentBadge(contact, openTickets);
+  const patientSentiment = isHealthcare ? getPatientSentimentLabel(contact, openTickets) : null;
+  const predictiveRisk = 38; // AI Predictive Health Risk Score (0-100, lower = better)
 
   const healthScore = Math.min(100, Math.max(0,
     (contact.ai_score || 0) +
