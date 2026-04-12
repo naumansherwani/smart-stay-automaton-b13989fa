@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle } from "lucide-react";
+import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -65,6 +66,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <AnimatedTopBorder />
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-3 cursor-pointer" onClick={() => navigate("/")}>
           <p className="text-xs font-medium tracking-[0.35em] uppercase text-primary/70">Join</p>
