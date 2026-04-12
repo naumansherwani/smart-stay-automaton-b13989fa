@@ -35,7 +35,7 @@ export default function PublicView({ onReturn }: PublicViewProps) {
       {/* Top Nav */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
-          <Logo size="md" showName />
+          <Logo size="lg" showName />
           <nav className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map(l => (
               <a key={l} href={`#${l.toLowerCase()}`} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">{l}</a>
