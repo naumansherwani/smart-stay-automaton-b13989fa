@@ -1402,6 +1402,9 @@ function WardMapHeatmap() {
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
     <div className="space-y-6">
+      {/* Global AI Summary Ticker */}
+      <GlobalAISummary />
+
       <HealthcareKPIs />
 
       {/* Middle Row: Intelligence Widgets */}
