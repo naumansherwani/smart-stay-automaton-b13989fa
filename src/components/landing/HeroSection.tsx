@@ -64,16 +64,16 @@ const HeroSection = () => {
           {/* Sub-headline */}
           <div className="max-w-3xl mx-auto space-y-4">
             <p className="text-lg md:text-xl font-semibold leading-relaxed tracking-wide">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(280,100%,70%)] via-[hsl(320,90%,65%)] to-[hsl(350,95%,65%)] drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">The World's First Industry-Sovereign AI OS.</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] via-[hsl(190,80%,55%)] to-[hsl(217,91%,60%)] drop-shadow-[0_0_20px_rgba(45,212,191,0.35)]">The World's First Industry-Sovereign AI OS.</span>
               <br className="hidden md:block" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,60%)] via-[hsl(25,95%,60%)] to-[hsl(350,90%,65%)] drop-shadow-[0_0_15px_rgba(251,146,60,0.3)]">Don't Just Manage Data</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(190,80%,55%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.3)]">Don't Just Manage Data</span>
               <span className="text-white/50">—</span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(190,80%,60%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">Command Your Business</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] drop-shadow-[0_0_15px_rgba(45,212,191,0.4)]">Command Your Business</span>
             </p>
-            <p className="text-base text-white/35 max-w-2xl mx-auto leading-relaxed font-medium">
-              Predict revenue, automate operations, and lead with voice-activated intelligence.
+            <p className="text-base max-w-2xl mx-auto leading-relaxed font-medium">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(38,92%,65%)] via-[hsl(174,62%,50%)] to-[hsl(270,80%,65%)] drop-shadow-[0_0_12px_rgba(45,212,191,0.2)]">Predict revenue, automate operations, and lead with voice-activated intelligence.</span>
               <br className="hidden md:block" />
-              Dedicated AI workspaces for Airlines, Healthcare, Logistics, and beyond.
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[hsl(217,91%,65%)] via-[hsl(0,72%,60%)] via-[hsl(270,80%,65%)] to-[hsl(174,62%,55%)] drop-shadow-[0_0_12px_rgba(96,165,250,0.2)]">Dedicated AI workspaces for Airlines, Healthcare, Logistics, and beyond.</span>
             </p>
           </div>
 
