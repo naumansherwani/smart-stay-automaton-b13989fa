@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Search, User, Mail, Phone, Building2, Trash2, Sparkles, Download, Upload, Eye, MoreHorizontal, Tag, Filter } from "lucide-react";
+import { Plus, Search, User, Mail, Phone, Building2, Trash2, Sparkles, Download, Upload, Eye, MoreHorizontal, Tag, Filter, Mic } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useCrmContacts } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
