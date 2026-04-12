@@ -84,6 +84,44 @@ const MOCK_FLIGHT_HISTORY = [
   { flight: "AI-410", route: "SIN → HKG", date: "2025-12-22", status: "Cancelled", delay: 0 },
 ];
 
+// ─── Healthcare helpers ────────────────────────────────────────────────────
+function getPatientVitals() {
+  return { hr: 78, spo2: 97, bp: "128/82", temp: "98.4°F" };
+}
+
+function getPatientMeta(contact: CrmContact) {
+  const tags = contact.tags || [];
+  return {
+    bloodGroup: tags.find(t => /^[ABO]{1,2}[+-]$/.test(t)) || "O+",
+    allergies: tags.filter(t => t.startsWith("allergy:")).map(t => t.replace("allergy:", "")),
+    age: 54,
+    gender: "Male",
+  };
+}
+
+function getPatientSentimentLabel(contact: CrmContact, openTickets: number) {
+  if (openTickets >= 2 || contact.churn_risk === "high") return { label: "Distressed", emoji: "😟", color: "hsl(0,70%,55%)" };
+  if (openTickets >= 1) return { label: "Anxious but Cooperative", emoji: "😐", color: "hsl(45,90%,50%)" };
+  return { label: "Calm & Cooperative", emoji: "😊", color: "hsl(152,60%,42%)" };
+}
+
+const MOCK_TREATMENT_TIMELINE = [
+  { date: "2026-03-28", event: "Routine Checkup", type: "visit", detail: "BP elevated, adjusted Amlodipine dosage" },
+  { date: "2026-02-15", event: "Blood Panel (HbA1c)", type: "lab", detail: "HbA1c: 7.1% — improved from 8.3%" },
+  { date: "2025-12-10", event: "Kidney Function Test", type: "lab", detail: "eGFR: 72 mL/min — stable, no decline" },
+  { date: "2025-10-05", event: "Cardiology Consult", type: "visit", detail: "ECG normal, mild LVH noted" },
+  { date: "2025-07-22", event: "Emergency Visit", type: "emergency", detail: "Hypoglycemic episode, stabilized with IV glucose" },
+  { date: "2024-11-30", event: "Annual Eye Exam", type: "visit", detail: "Mild diabetic retinopathy detected" },
+  { date: "2024-06-15", event: "Minor Surgery", type: "surgery", detail: "Ingrown toenail removal under local anesthesia" },
+];
+
+const MOCK_CURRENT_MEDICATIONS = [
+  { name: "Metformin 1000mg", frequency: "2x daily", since: "2018" },
+  { name: "Amlodipine 5mg", frequency: "1x daily", since: "2024" },
+  { name: "Atorvastatin 20mg", frequency: "1x night", since: "2023" },
+  { name: "Aspirin 75mg", frequency: "1x daily", since: "2025" },
+];
+
 export default function CrmContactDetailPanel({ contact, industry, onBack, onUpdate }: Props) {
   const config = getCrmConfig(industry);
   const { user } = useAuth();
