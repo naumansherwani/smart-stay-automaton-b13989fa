@@ -133,12 +133,16 @@ export default function AirlineOperationsDashboard() {
   const revenueAtRisk = disruptedFlights.reduce((s, f) => s + f.passengers * 45, 0); // avg compensation per pax
   const otpRate = 87; // On-time performance
 
-  const handleAIResolve = async (flightCode: string) => {
-    setResolvingFlights(prev => new Set(prev).add(flightCode));
-    // Simulate AI resolution
-    await new Promise(r => setTimeout(r, 2000));
-    setResolvingFlights(prev => { const n = new Set(prev); n.delete(flightCode); return n; });
-    toast.success(`✈️ AI resolved disruption for ${flightCode}: Passengers rebooked, compensation queued.`);
+  const handleAIResolve = (flightCode: string) => {
+    const disruption = disruptedFlights.find(f => f.flight === flightCode);
+    if (disruption) {
+      setSelectedDisruption(disruption);
+      setResolveDialogOpen(true);
+    }
+  };
+
+  const handleFlightResolved = (flightCode: string) => {
+    setResolvedFlights(prev => new Set(prev).add(flightCode));
   };
 
   const handleApplyPrice = (route: string, price: number) => {
