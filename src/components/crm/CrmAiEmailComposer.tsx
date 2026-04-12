@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { IndustryType } from "@/lib/industryConfig";
 
-interface Props { industry: IndustryType; }
+interface Props { industry: IndustryType; preselectedContactId?: string; }
 
 const EMAIL_TONES = [
   { value: "professional", label: "Professional" },
@@ -32,9 +32,9 @@ const EMAIL_TYPES = [
   { value: "custom", label: "Custom" },
 ];
 
-export default function CrmAiEmailComposer({ industry }: Props) {
+export default function CrmAiEmailComposer({ industry, preselectedContactId }: Props) {
   const { contacts } = useCrmContacts();
-  const [selectedContact, setSelectedContact] = useState("");
+  const [selectedContact, setSelectedContact] = useState(preselectedContactId || "");
   const [emailType, setEmailType] = useState("follow-up");
   const [tone, setTone] = useState("professional");
   const [subject, setSubject] = useState("");
