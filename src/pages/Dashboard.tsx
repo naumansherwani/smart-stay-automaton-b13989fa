@@ -269,6 +269,9 @@ const Dashboard = () => {
                 <TabsTrigger value="bookings" className="gap-1.5 text-xs md:text-sm">
                   <ClipboardList className="w-3.5 h-3.5" /> Bookings
                 </TabsTrigger>
+                <TabsTrigger value="pricing" className="gap-1.5 text-xs md:text-sm">
+                  <DollarSign className="w-3.5 h-3.5" /> Pricing
+                </TabsTrigger>
                 <TabsTrigger value="ai-tools" className="gap-1.5 text-xs md:text-sm">
                   <Sparkles className="w-3.5 h-3.5" /> AI Tools
                 </TabsTrigger>

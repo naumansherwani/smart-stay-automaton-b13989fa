@@ -7,6 +7,7 @@ type: feature
 - Basic & Standard users see "Upgrade to Premium" gate
 - Each industry gets different tools inside CRM based on crmTools config in crmConfig.ts
 - Dashboard (/dashboard) remains accessible to ALL plans for basic scheduling
-- Industries that need AI Pricing: hospitality, airlines, car_rental, events, railways, real_estate, coworking, travel_tourism
-- Industries WITHOUT AI Pricing: healthcare, education, legal_services, government, fitness_wellness
+- Industries that need AI Pricing: hospitality, airlines, car_rental, events_entertainment, railways
+- Industries WITHOUT AI Pricing: healthcare, education, logistics
 - All industries get some form of scheduling (AI Calendar or AI Scheduling)
+- industryFeatures.ts PRICING_INDUSTRIES set controls which industries get autoPricing/demandForecast
