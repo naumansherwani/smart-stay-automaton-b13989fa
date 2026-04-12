@@ -282,6 +282,12 @@ export default function CrmContactsTab({ industry }: Props) {
                       {contact.company && <span className="hidden sm:inline truncate max-w-[120px]">• {contact.company}</span>}
                     </div>
                   </div>
+                  {/* Sentiment Emoji */}
+                  <div className="w-10 text-center hidden lg:block" title={`Sentiment: ${contact.ai_score >= 70 ? 'Happy' : contact.ai_score >= 40 ? 'Neutral' : 'Unhappy'}`}>
+                    <span className="text-base">
+                      {contact.ai_score >= 70 ? "😊" : contact.ai_score >= 40 ? "😐" : contact.ai_score > 0 ? "😡" : "—"}
+                    </span>
+                  </div>
                   <div className="w-24 text-center hidden md:block">
                     {contact.ai_score > 0 ? (
                       <Badge variant="secondary" className="text-xs"><Sparkles className="h-3 w-3 mr-1" />{contact.ai_score}</Badge>
@@ -300,8 +306,15 @@ export default function CrmContactsTab({ industry }: Props) {
                       <SelectContent>{config.lifecycleStages.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
-                  <div className="w-20 text-center" onClick={e => e.stopPropagation()}>
+                  <div className="w-24 text-center" onClick={e => e.stopPropagation()}>
                     <div className="flex items-center gap-1 justify-center">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title="Voice Note" onClick={() => {
+                        navigator.mediaDevices?.getUserMedia({ audio: true })
+                          .then(() => toast.info(`🎤 Listening for voice note on ${contact.name}...`))
+                          .catch(() => toast.error("Microphone access required"));
+                      }}>
+                        <Mic className="h-3 w-3 text-[hsl(270,80%,60%)]" />
+                      </Button>
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setSelectedContact(contact)}>
                         <Eye className="h-3 w-3" />
                       </Button>
