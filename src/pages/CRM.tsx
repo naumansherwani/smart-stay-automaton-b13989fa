@@ -95,7 +95,7 @@ export default function CRM() {
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2">
             <span className="text-xl">{industryConfig.icon}</span>
-            <h1 className="text-xl font-bold">AI CRM</h1>
+            <h1 className="text-xl font-bold">Advanced AI CRM</h1>
             <Crown className="h-4 w-4 text-yellow-500" />
           </div>
           {isTrialing && (
@@ -103,7 +103,7 @@ export default function CRM() {
               Trial — {trialDaysLeft}d left
             </Badge>
           )}
-          <p className="text-sm text-muted-foreground">{industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
+          <p className="text-sm text-muted-foreground">Advanced AI CRM — {industryConfig.label} — {crmConfig.contactLabelPlural} Management</p>
         </div>
 
         {isTrialing && (
