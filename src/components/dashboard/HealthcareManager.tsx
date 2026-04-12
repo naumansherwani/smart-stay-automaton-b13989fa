@@ -1398,6 +1398,141 @@ function WardMapHeatmap() {
   );
 }
 
+// ─── AI Pharmacy & Drug-Interaction Guard ───
+function MedicationSafetyWall() {
+  const alerts = [
+    {
+      id: 1,
+      patient: "Asif Mehmood",
+      room: "ICU-3",
+      type: "allergy" as const,
+      drug: "Penicillin",
+      conflict: "Patient has documented Penicillin allergy (Anaphylaxis risk)",
+      severity: "critical" as const,
+      time: "2 min ago",
+      suggestion: "Switch to Azithromycin 500mg",
+    },
+    {
+      id: 2,
+      patient: "Samira Bibi",
+      room: "Ward B-12",
+      type: "interaction" as const,
+      drug: "Warfarin + Aspirin",
+      conflict: "High bleeding risk — concurrent anticoagulant + antiplatelet",
+      severity: "critical" as const,
+      time: "8 min ago",
+      suggestion: "Consult hematologist before co-prescription",
+    },
+    {
+      id: 3,
+      patient: "Tariq Hussain",
+      room: "Ward A-5",
+      type: "interaction" as const,
+      drug: "Metformin + Contrast Dye",
+      conflict: "Lactic acidosis risk if CT scan with contrast is scheduled",
+      severity: "warning" as const,
+      time: "15 min ago",
+      suggestion: "Hold Metformin 48h before & after contrast procedure",
+    },
+    {
+      id: 4,
+      patient: "Nadia Farooq",
+      room: "ER-7",
+      type: "dosage" as const,
+      drug: "Morphine 15mg IV",
+      conflict: "Dosage exceeds recommended limit for patient weight (48kg)",
+      severity: "warning" as const,
+      time: "22 min ago",
+      suggestion: "Reduce to 8mg IV, monitor respiratory rate",
+    },
+  ];
+
+  const criticalCount = alerts.filter(a => a.severity === "critical").length;
+
+  const severityStyle = (s: string) =>
+    s === "critical"
+      ? { bg: "bg-[hsl(0,86%,97%)]", border: "border-destructive/20", badge: "bg-destructive text-destructive-foreground", dot: "hsl(0,70%,55%)" }
+      : { bg: "bg-[hsl(45,100%,96%)]", border: "border-[hsl(45,90%,50%)]/20", badge: "bg-[hsl(45,90%,50%)] text-foreground", dot: "hsl(45,90%,50%)" };
+
+  const typeIcon = (t: string) =>
+    t === "allergy" ? "🚫" : t === "interaction" ? "⚠️" : "💊";
+
+  return (
+    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-destructive" />
+            Medication Safety Wall
+            <span className="relative flex h-2.5 w-2.5 ml-1">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-destructive" />
+            </span>
+          </CardTitle>
+          {criticalCount > 0 && (
+            <Badge variant="destructive" className="text-[10px]">
+              {criticalCount} critical conflict{criticalCount > 1 ? "s" : ""}
+            </Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground">AI scans prescriptions for allergies, drug interactions & dosage errors in real-time</p>
+      </CardHeader>
+      <CardContent className="space-y-2.5">
+        {alerts.map(alert => {
+          const style = severityStyle(alert.severity);
+          return (
+            <div key={alert.id} className={`p-3 rounded-lg border ${style.bg} ${style.border} transition-all`}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2 min-w-0 flex-1">
+                  <span className="text-sm mt-0.5">{typeIcon(alert.type)}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-bold text-foreground">{alert.patient}</span>
+                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-3.5">{alert.room}</Badge>
+                      <Badge className={`text-[8px] px-1.5 py-0 h-3.5 ${style.badge}`}>
+                        {alert.severity === "critical" ? "CRITICAL" : "WARNING"}
+                      </Badge>
+                    </div>
+                    <p className="text-[11px] font-medium text-foreground mt-1">
+                      <Pill className="w-3 h-3 inline mr-1 text-muted-foreground" />
+                      {alert.drug}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{alert.conflict}</p>
+                    <div className="flex items-center gap-1 mt-1.5 p-1.5 rounded bg-background/60 border border-border/30">
+                      <Brain className="w-3 h-3 text-primary shrink-0" />
+                      <span className="text-[10px] text-primary font-medium">AI Suggestion: {alert.suggestion}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  <span className="text-[9px] text-muted-foreground">{alert.time}</span>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-6 text-[9px] px-2 rounded-full border-primary/30 text-primary hover:bg-primary/5"
+                      onClick={() => toast.success(`Override accepted for ${alert.patient}`)}
+                    >
+                      Override
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="h-6 text-[9px] px-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={() => toast.success(`AI suggestion applied for ${alert.patient}`)}
+                    >
+                      Apply Fix
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
   return (
