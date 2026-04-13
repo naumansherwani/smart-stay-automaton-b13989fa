@@ -7,13 +7,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Loader2, Users, Hotel, Compass } from "lucide-react";
+import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Loader2, Users, Hotel, Compass, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import type { IndustryConfig } from "@/lib/industryConfig";
+import type { IndustryConfig, IndustryType } from "@/lib/industryConfig";
 import SmartEmptyState from "@/components/conversion/SmartEmptyState";
 import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
+import TicketModal, { isTicketIndustry } from "@/components/tickets/TicketModal";
 
 interface BookingRow {
   id: string;
