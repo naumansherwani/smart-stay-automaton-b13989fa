@@ -19,6 +19,7 @@ const PLATFORM_FEATURES = [
     "Voice Commands (ElevenLabs) for Fleet",
     "AI Maintenance Prediction",
     "AI Double Booking Guard (Auto-Reassign Gate/Aircraft, Auto-Reschedule + AI Email)",
+    "AI Ticket Generator — Boarding Pass with QR Code (Dashboard)",
     "Breadcrumbs Navigation",
     "Global Search (Flight/Passenger)",
     "Real-time Live Sync Indicator",
@@ -64,6 +65,7 @@ const PLATFORM_FEATURES = [
     "Events Manager",
     "Venue & Ticket Widgets",
     "AI Double Booking Guard (Auto-Reassign Venue/Hall, Auto-Reschedule + AI Email)",
+    "AI Ticket Generator — Event Ticket with QR Code (Dashboard)",
     "Custom AI Training (Premium)",
   ]},
   { industry: "Railway", icon: Train, color: "#f59e0b", features: [
@@ -73,6 +75,7 @@ const PLATFORM_FEATURES = [
     "Booking & Passenger Management",
     "Railway Notifications System",
     "AI Double Booking Guard (Auto-Reassign Coach/Platform, Auto-Reschedule + AI Email)",
+    "AI Ticket Generator — Train Ticket with QR Code (Dashboard)",
     "Custom AI Training (Premium)",
   ]},
 ];

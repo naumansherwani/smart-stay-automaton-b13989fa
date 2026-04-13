@@ -7,13 +7,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Loader2, Users, Hotel, Compass } from "lucide-react";
+import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Loader2, Users, Hotel, Compass, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import type { IndustryConfig } from "@/lib/industryConfig";
+import type { IndustryConfig, IndustryType } from "@/lib/industryConfig";
 import SmartEmptyState from "@/components/conversion/SmartEmptyState";
 import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
+import TicketModal, { isTicketIndustry } from "@/components/tickets/TicketModal";
 
 interface BookingRow {
   id: string;
@@ -75,6 +76,8 @@ const BookingManager = ({ config }: BookingManagerProps) => {
   const [successPopup, setSuccessPopup] = useState(false);
   const [lastBookingName, setLastBookingName] = useState("");
   const hadBookingsBefore = useRef(false);
+  const [ticketBooking, setTicketBooking] = useState<BookingRow | null>(null);
+  const showTickets = isTicketIndustry(config.id as IndustryType);
   const [form, setForm] = useState({
     guest_name: "",
     guest_email: "",
@@ -618,6 +621,16 @@ const BookingManager = ({ config }: BookingManagerProps) => {
                           </Button>
                         </div>
                       )}
+                      {showTickets && (b.status === "confirmed" || b.status === "completed" || b.status === "checked-in") && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs gap-1"
+                          onClick={() => setTicketBooking(b)}
+                        >
+                          <Ticket className="w-3 h-3" /> Ticket
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -634,6 +647,28 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         type="booking"
         itemName={lastBookingName}
       />
+
+      {/* AI Ticket Modal — Airlines, Railways, Events only */}
+      {showTickets && ticketBooking && (
+        <TicketModal
+          open={!!ticketBooking}
+          onClose={() => setTicketBooking(null)}
+          ticket={{
+            id: ticketBooking.id,
+            passengerName: ticketBooking.guest_name,
+            email: ticketBooking.guest_email || undefined,
+            resourceName: getResourceName(ticketBooking.resource_id),
+            departure: ticketBooking.check_in,
+            arrival: ticketBooking.check_out,
+            status: ticketBooking.status,
+            price: ticketBooking.total_price || undefined,
+            platform: ticketBooking.platform || undefined,
+            bookingRef: ticketBooking.id.slice(0, 8).toUpperCase(),
+            industry: config.id as IndustryType,
+            metadata: ticketBooking.metadata || undefined,
+          }}
+        />
+      )}
     </div>
   );
 };

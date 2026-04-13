@@ -21,6 +21,7 @@ Healthcare, Education, Logistics
 - Crew Scheduling: Airlines, Railways
 - Ticket Capacity: ONLY Events
 - Route Optimization: Logistics, Airlines, Railways
+- AI Ticket Generator: ONLY Airlines, Railways, Events (Dashboard feature, NOT CRM)
 
 ## Common to ALL 8 Industries:
 - AI Calendar/Scheduling
