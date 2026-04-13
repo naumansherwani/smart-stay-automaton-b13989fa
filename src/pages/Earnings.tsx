@@ -206,7 +206,6 @@ const Earnings = () => {
                     <SelectContent>
                       <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
                       <SelectItem value="paypal">PayPal</SelectItem>
-                      <SelectItem value="stripe">Stripe Payout</SelectItem>
                       <SelectItem value="wise">Wise</SelectItem>
                       <SelectItem value="payoneer">Payoneer</SelectItem>
                       <SelectItem value="easypaisa">Easypaisa</SelectItem>

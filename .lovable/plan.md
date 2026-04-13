@@ -65,9 +65,9 @@
    - Services gallery
 
 ## Phase 3: Featured Listings Payment
-- Use existing Stripe integration
-- Create "Featured Listing" product in Stripe
-- One-time payment to feature a listing for 7/30 days
+- Use manual payment approval flow
+- Offer featured listing upgrades via payment request
+- Feature a listing for 7/30 days after manual confirmation
 - Auto-expire featured status
 
 ## Privacy & Security
