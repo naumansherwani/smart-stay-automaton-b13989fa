@@ -7,12 +7,12 @@ const FAQS = [
     a: "Absolutely. We use 256-bit encryption, row-level security policies, and privacy-first data handling. Your data is isolated and never shared with other users or used for AI training."
   },
   {
-    q: "How does the 3-day free trial work?",
-    a: "You get full access to all features for 3 days — no credit card required. After the trial, choose a plan that fits your business. You can cancel anytime."
+    q: "How does the 7-day free trial work?",
+    a: "You get full access to all features for 7 days — no credit card required. After the trial, choose a plan that fits your business. You can cancel anytime."
   },
   {
     q: "What plans are available?",
-    a: "We offer 3 plans: Basic ($25/mo) for solo operators, Pro ($55/mo) for growing businesses, and Premium ($110/mo) for enterprises. All plans include a 3-day free trial."
+    a: "We offer 3 plans: Basic ($25/mo) for solo operators, Pro ($55/mo) for growing businesses, and Premium ($110/mo) for advanced AI operations. All plans include a 7-day free trial."
   },
   {
     q: "What is the AI CRM?",
@@ -24,7 +24,7 @@ const FAQS = [
   },
   {
     q: "How accurate is the AI pricing engine?",
-    a: "Our AI analyzes demand patterns, competitor pricing, seasonality, and capacity to optimize your rates. Customers report an average 34% revenue increase within the first month."
+    a: "Our AI analyzes demand patterns, competitor pricing, seasonality, and capacity to optimize your rates. Available for Hospitality, Airlines, Car Rental, Events & Railways. Customers report an average 34% revenue increase within the first month."
   },
   {
     q: "What happens if the AI makes a mistake?",

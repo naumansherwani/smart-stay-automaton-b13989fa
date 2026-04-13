@@ -45,10 +45,10 @@ function UtilizationWidget({ config }: { config: IndustryConfig }) {
   );
 }
 
-function AIInsightsWidget({ config }: { config: IndustryConfig }) {
+function AIInsightsWidget({ config, showPricing }: { config: IndustryConfig; showPricing?: boolean }) {
   const insights = [
-    { type: "optimization", text: `AI detected 3 underutilized ${config.resourceLabelPlural.toLowerCase()} — suggest promotional pricing`, priority: "high" },
-    { type: "prediction", text: `Demand spike predicted for next week (+25%) — consider dynamic pricing`, priority: "medium" },
+    { type: "optimization", text: `AI detected 3 underutilized ${config.resourceLabelPlural.toLowerCase()} — suggest schedule adjustment`, priority: "high" },
+    ...(showPricing ? [{ type: "prediction", text: `Demand spike predicted for next week (+25%) — consider dynamic pricing`, priority: "medium" }] : []),
     { type: "conflict", text: `Potential scheduling conflict detected for ${config.resourceLabel} 2 on Friday`, priority: "high" },
     { type: "pattern", text: `${config.clientLabel} no-show pattern: Mondays 3PM have 22% higher no-show rate`, priority: "low" },
   ];
@@ -76,12 +76,12 @@ function AIInsightsWidget({ config }: { config: IndustryConfig }) {
   );
 }
 
-function LiveActivityWidget({ config }: { config: IndustryConfig }) {
+function LiveActivityWidget({ config, showPricing }: { config: IndustryConfig; showPricing?: boolean }) {
   const activities = [
     { time: "2 min ago", action: `New ${config.bookingLabel.toLowerCase()} confirmed`, detail: `${config.clientLabel} #1847`, type: "success" },
     { time: "8 min ago", action: `${config.bookingLabel} rescheduled`, detail: `${config.resourceLabel} 3 → ${config.resourceLabel} 5`, type: "warning" },
     { time: "15 min ago", action: `${config.clientLabel} checked in`, detail: `${config.resourceLabel} 1`, type: "info" },
-    { time: "22 min ago", action: "Smart pricing updated", detail: "+8% for peak hours", type: "info" },
+    ...(showPricing ? [{ time: "22 min ago", action: "Smart pricing updated", detail: "+8% for peak hours", type: "info" }] : []),
     { time: "30 min ago", action: `Conflict resolved by AI`, detail: `Auto-reassigned ${config.resourceLabel} 2`, type: "success" },
   ];
 
@@ -258,7 +258,7 @@ const IndustryWidgets = ({ config, features }: IndustryWidgetsProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
-        <AIInsightsWidget config={config} />
+        <AIInsightsWidget config={config} showPricing={showDemand} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {showDemand && <DemandForecastWidget config={config} />}
           <AutoSchedulerWidget config={config} />
@@ -267,7 +267,7 @@ const IndustryWidgets = ({ config, features }: IndustryWidgetsProps) => {
       </div>
       <div className="space-y-6">
         <ConflictResolverWidget config={config} />
-        <LiveActivityWidget config={config} />
+        <LiveActivityWidget config={config} showPricing={showDemand} />
         <SecurityWidget />
       </div>
     </div>
