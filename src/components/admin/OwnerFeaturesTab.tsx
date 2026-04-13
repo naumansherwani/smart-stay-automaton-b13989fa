@@ -24,6 +24,7 @@ const PLATFORM_FEATURES = [
     "Real-time Live Sync Indicator",
     "Revenue & Auto-Pricing Charts",
     "Passenger Satisfaction Gauges",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Hospitality", icon: Hotel, color: "#0d9488", features: [
     "Smart Booking Calendar",
@@ -33,31 +34,37 @@ const PLATFORM_FEATURES = [
     "Auto Pricing Panel",
     "Smart Pricing Card",
     "Competitor Radar",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Car Rental", icon: Car, color: "#0ea5e9", features: [
     "Vehicle Manager",
     "Fleet Tracking Widgets",
     "AI Double Booking Guard (Auto-Reassign Vehicle, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Healthcare", icon: Stethoscope, color: "#ef4444", features: [
     "Healthcare Manager",
     "Patient Booking Widgets",
     "AI Double Booking Guard (Auto-Reassign Doctor/Room, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Education", icon: GraduationCap, color: "#8b5cf6", features: [
     "Timetable Manager",
     "Education Widgets",
     "AI Double Booking Guard (Auto-Reassign Classroom/Lab, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Logistics", icon: Truck, color: "#f97316", features: [
     "Logistics Manager",
     "Shipment Tracking Widgets",
     "AI Double Booking Guard (Auto-Reassign Vehicle/Driver, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Events", icon: Theater, color: "#d946ef", features: [
     "Events Manager",
     "Venue & Ticket Widgets",
     "AI Double Booking Guard (Auto-Reassign Venue/Hall, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
   { industry: "Railway", icon: Train, color: "#f59e0b", features: [
     "Train & Coach Manager",
@@ -66,6 +73,7 @@ const PLATFORM_FEATURES = [
     "Booking & Passenger Management",
     "Railway Notifications System",
     "AI Double Booking Guard (Auto-Reassign Coach/Platform, Auto-Reschedule + AI Email)",
+    "Custom AI Training (Premium)",
   ]},
 ];
 

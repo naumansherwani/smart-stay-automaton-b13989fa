@@ -11,6 +11,7 @@ const FEATURES = [
   { icon: Users, title: "Client Scoring & VIP Detection", desc: "AI scores every client — identify VIPs, repeat customers, and risk signals automatically. Available for all industries.", color: "hsl(217,91%,60%)", glow: "rgba(59,130,246,0.1)" },
   { icon: BarChart3, title: "Revenue & Scheduling Optimizer", desc: "Turnover analysis and profit tracking for all industries. Gap-filling available for Hospitality.", color: "hsl(38,92%,55%)", glow: "rgba(245,158,11,0.1)" },
   { icon: Sparkles, title: "AI-Powered Automation", desc: "Automate repetitive tasks — AI handles scheduling, reminders & follow-ups across all 8 industries.", color: "hsl(174,62%,50%)", glow: "rgba(45,212,191,0.1)" },
+  { icon: Brain, title: "Custom AI Training", desc: "Train AI on your specific business patterns, terminology & workflows — available for all 8 industries. Premium only.", color: "hsl(330,80%,60%)", glow: "rgba(236,72,153,0.1)" },
 ];
 
 const FeaturesSection = () => (

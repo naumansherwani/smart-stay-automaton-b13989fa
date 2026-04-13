@@ -78,6 +78,10 @@ const DASHBOARD_FEATURES: Record<string, string[]> = {
   ],
 };
 
+const PREMIUM_FEATURES = [
+  "Custom AI Training — Train AI on your specific business patterns, terminology and workflows. Available for ALL 8 industries. Premium plan only.",
+];
+
 const CRM_FEATURES = [
   "Contacts — Manage all your contacts with AI scoring, lifecycle stages, tags and churn prediction",
   "Tickets — Customer support tickets with AI categorization, sentiment analysis and SLA tracking",
@@ -117,6 +121,9 @@ function buildSystemPrompt(context: string, industry: string): string {
     featureList = `
 ## Dashboard Features (${industry}):
 ${dashboardFeatures.map((f) => `- ${f}`).join("\n")}
+
+## Premium-Only Features:
+${PREMIUM_FEATURES.map((f) => `- ${f}`).join("\n")}
 
 IMPORTANT: Only explain Dashboard features. Do NOT mix with CRM features.`;
   } else if (context === "crm") {
