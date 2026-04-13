@@ -57,7 +57,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4 md:pl-6">
         <div className="flex items-center gap-3 ml-8 md:ml-14">
           <div className="hidden sm:block">
-            <WorkspaceSwitcher />
+            <WorkspaceSlidePanel />
           </div>
         </div>
 
