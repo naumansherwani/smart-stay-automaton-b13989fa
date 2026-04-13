@@ -621,6 +621,16 @@ const BookingManager = ({ config }: BookingManagerProps) => {
                           </Button>
                         </div>
                       )}
+                      {showTickets && (b.status === "confirmed" || b.status === "completed" || b.status === "checked-in") && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs gap-1"
+                          onClick={() => setTicketBooking(b)}
+                        >
+                          <Ticket className="w-3 h-3" /> Ticket
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
