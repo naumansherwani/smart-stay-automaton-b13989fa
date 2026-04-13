@@ -1,14 +1,12 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown } from "lucide-react";
+import { Check, Crown, Mail } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import PaymentFormModal from "@/components/payment/PaymentFormModal";
 
 const PLANS = [
   {
@@ -89,14 +87,14 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: number } | null>(null);
 
-  const handleGetLink = (plan: { name: string; price: number }) => {
+  const handleSelect = (plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    setSelectedPlan(plan);
+    // Payment will be handled by Paddle once enabled
+    window.location.href = `mailto:support@hostflowai.com?subject=Upgrade to ${plan.name} Plan&body=Hi, I'd like to upgrade to the ${plan.name} plan ($${plan.price}/mo). My email: ${user.email}`;
   };
 
   return (
@@ -109,11 +107,14 @@ export default function Pricing() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered scheduling for every industry. 1 industry per plan.
           </p>
+          <p className="text-sm text-muted-foreground">
+            Payment system coming soon — contact us to upgrade your plan.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {PLANS.map((p) => {
-            const isCurrent = p.plan && subscription?.plan === p.plan && subscription?.status === "active";
+            const isCurrent = p.plan && subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
               <Card key={p.name} className={`relative flex flex-col transition-all duration-300 ${p.starter ? "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]" : p.popular ? "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]" : p.highlight ? "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]" : ""}`}>
                 {p.starter && (
@@ -130,7 +131,7 @@ export default function Pricing() {
                   </div>
                 )}
                 {isCurrent && (
-                  <Badge className="absolute -top-3 right-4 bg-success text-success-foreground">Current Plan</Badge>
+                  <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground">Current Plan</Badge>
                 )}
                 <CardHeader className="text-center pb-2 pt-8">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
@@ -155,9 +156,11 @@ export default function Pricing() {
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
                     disabled={!!isCurrent}
-                    onClick={() => handleGetLink(p)}
+                    onClick={() => handleSelect(p)}
                   >
-                    {isCurrent ? "Current Plan" : "Get Payment Link (USD)"}
+                    {isCurrent ? "Current Plan" : user ? (
+                      <><Mail className="w-4 h-4 mr-2" /> Contact to Upgrade</>
+                    ) : "Start Free Trial"}
                   </Button>
                 </CardContent>
               </Card>
@@ -166,12 +169,6 @@ export default function Pricing() {
         </div>
       </main>
 
-      <PaymentFormModal
-        open={!!selectedPlan}
-        onOpenChange={(open) => !open && setSelectedPlan(null)}
-        planName={selectedPlan?.name ?? ""}
-        planPrice={selectedPlan?.price ?? 0}
-      />
       <Footer />
     </div>
   );

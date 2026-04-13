@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import PaymentFormModal from "@/components/payment/PaymentFormModal";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const PLANS = [
   {
     name: "Basic",
     price: 25,
+    plan: "basic" as const,
     starter: true,
     desc: "Best for individuals getting started",
     features: [
@@ -30,6 +30,7 @@ const PLANS = [
   {
     name: "Pro",
     price: 55,
+    plan: "standard" as const,
     popular: true,
     desc: "Best for growing businesses",
     features: [
@@ -56,6 +57,7 @@ const PLANS = [
   {
     name: "Premium",
     price: 110,
+    plan: "premium" as const,
     desc: "For scaling businesses and advanced operations",
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
@@ -90,14 +92,14 @@ const PLANS = [
 const PricingSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: number } | null>(null);
+  const { subscription } = useSubscription();
 
-  const handleGetLink = (plan: { name: string; price: number }) => {
+  const handleClick = (plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    setSelectedPlan(plan);
+    navigate("/pricing");
   };
 
   return (
@@ -118,69 +120,69 @@ const PricingSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {PLANS.map((p) => (
-            <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
-              {p.starter && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
-                  🚀 Great Start
-                </Badge>
-              )}
-              {p.popular && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
-                  <Crown className="w-3 h-3 mr-1" /> Most Popular
-                </Badge>
-              )}
-              {p.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
-                  {p.highlight}
-                </div>
-              )}
-              <CardHeader className="text-center pb-2 pt-8">
-                <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
-                <p className="text-xs text-muted-foreground">{p.desc}</p>
-                <div className="mt-4">
-                  <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
-                  <span className="text-muted-foreground">/mo</span>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col pt-4">
-                <ul className="space-y-2.5 flex-1 mb-4">
-                  {p.features.map((f, i) =>
-                    f === "" ? (
-                      <li key={`sep-${i}`} className="border-t border-border/30 my-1" />
-                    ) : (
-                      <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary" : ""}`}>
-                        <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                        <span className="text-foreground/80">{f}</span>
-                      </li>
-                    )
-                  )}
-                </ul>
-                {p.upgradeNote && (
-                  <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
+          {PLANS.map((p) => {
+            const isCurrent = subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
+            return (
+              <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+                {p.starter && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
+                    🚀 Great Start
+                  </Badge>
                 )}
-                <Button
-                  className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                  variant="default"
-                  onClick={() => handleGetLink(p)}
-                >
-                  Get Payment Link (USD)
-                </Button>
-                <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                  7-day free trial included — no credit card required
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+                {p.popular && (
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
+                    <Crown className="w-3 h-3 mr-1" /> Most Popular
+                  </Badge>
+                )}
+                {p.highlight && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
+                    {p.highlight}
+                  </div>
+                )}
+                {isCurrent && (
+                  <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground">Current Plan</Badge>
+                )}
+                <CardHeader className="text-center pb-2 pt-8">
+                  <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
+                  <p className="text-xs text-muted-foreground">{p.desc}</p>
+                  <div className="mt-4">
+                    <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
+                    <span className="text-muted-foreground">/mo</span>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-1 flex flex-col pt-4">
+                  <ul className="space-y-2.5 flex-1 mb-4">
+                    {p.features.map((f, i) =>
+                      f === "" ? (
+                        <li key={`sep-${i}`} className="border-t border-border/30 my-1" />
+                      ) : (
+                        <li key={f} className={`flex items-start gap-2 text-sm ${f.startsWith("⭐") ? "font-semibold text-primary" : ""}`}>
+                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
+                          <span className="text-foreground/80">{f}</span>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                  {p.upgradeNote && (
+                    <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
+                  )}
+                  <Button
+                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                    variant="default"
+                    disabled={!!isCurrent}
+                    onClick={() => handleClick(p)}
+                  >
+                    {isCurrent ? "Current Plan" : user ? "Choose Plan" : "Start Free Trial"}
+                  </Button>
+                  <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                    7-day free trial included — no credit card required
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
-
-      <PaymentFormModal
-        open={!!selectedPlan}
-        onOpenChange={(open) => !open && setSelectedPlan(null)}
-        planName={selectedPlan?.name ?? ""}
-        planPrice={selectedPlan?.price ?? 0}
-      />
     </section>
   );
 };
