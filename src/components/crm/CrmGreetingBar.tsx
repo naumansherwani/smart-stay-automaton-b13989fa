@@ -38,6 +38,7 @@ interface Props {
 
 export default function CrmGreetingBar({ displayName, showClock = true }: Props) {
   const [now, setNow] = useState(new Date());
+  const { user } = useAuth();
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 30_000);
@@ -46,6 +47,7 @@ export default function CrmGreetingBar({ displayName, showClock = true }: Props)
 
   const greeting = getGreeting(now.getHours());
   const firstName = displayName.split(/\s+/)[0];
+  const vipBadge = user?.email ? VIP_BADGES[user.email] : null;
 
   return (
     <div className="rounded-lg border bg-gradient-to-r from-primary/5 via-primary/10 to-accent/5 px-4 py-3">
@@ -55,6 +57,12 @@ export default function CrmGreetingBar({ displayName, showClock = true }: Props)
           <h2 className="text-lg font-semibold text-foreground">
             {greeting.text}, <span className="text-white">{firstName}</span>
           </h2>
+          {vipBadge && (
+            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold text-white bg-gradient-to-r ${vipBadge.color} shadow-lg animate-pulse`}>
+              <span>{vipBadge.emoji}</span>
+              {vipBadge.label}
+            </span>
+          )}
         </div>
 
         {showClock && (
