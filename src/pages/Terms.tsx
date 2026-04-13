@@ -11,7 +11,7 @@ const Terms = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">1. Acceptance of Terms</h2>
-          <p>By accessing or using HostFlow AI ("the Platform"), you agree to be bound by these Terms & Conditions. If you do not agree, you may not use the Platform.</p>
+          <p><p>By accessing or using HostFlow AI, a product of HostFlow AI Technologies ("the Platform"), you agree to be bound by these Terms & Conditions. If you do not agree, you may not use the Platform.</p>, you agree to be bound by these Terms & Conditions. If you do not agree, you may not use the Platform.</p>
         </section>
 
         <section className="space-y-3">
