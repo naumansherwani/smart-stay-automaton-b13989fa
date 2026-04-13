@@ -10,7 +10,9 @@ export interface TemplateEntry {
 }
 
 import { template as paymentLink } from './payment-link.tsx'
+import { template as bookingReschedule } from './booking-reschedule.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'payment-link': paymentLink,
+  'booking-reschedule': bookingReschedule,
 }

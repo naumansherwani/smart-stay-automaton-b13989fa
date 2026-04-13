@@ -44,6 +44,93 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_conflicts: {
+        Row: {
+          conflict_type: string
+          created_at: string
+          email_sent: boolean | null
+          existing_client: string
+          existing_time_end: string
+          existing_time_start: string
+          id: string
+          industry: string
+          metadata: Json | null
+          new_client: string
+          new_client_email: string | null
+          new_time_end: string
+          new_time_start: string
+          resolution: string
+          resolved_resource_id: string | null
+          resolved_resource_name: string | null
+          resource_id: string | null
+          resource_name: string
+          suggested_slot_end: string | null
+          suggested_slot_start: string | null
+          user_id: string
+        }
+        Insert: {
+          conflict_type?: string
+          created_at?: string
+          email_sent?: boolean | null
+          existing_client: string
+          existing_time_end: string
+          existing_time_start: string
+          id?: string
+          industry?: string
+          metadata?: Json | null
+          new_client: string
+          new_client_email?: string | null
+          new_time_end: string
+          new_time_start: string
+          resolution?: string
+          resolved_resource_id?: string | null
+          resolved_resource_name?: string | null
+          resource_id?: string | null
+          resource_name: string
+          suggested_slot_end?: string | null
+          suggested_slot_start?: string | null
+          user_id: string
+        }
+        Update: {
+          conflict_type?: string
+          created_at?: string
+          email_sent?: boolean | null
+          existing_client?: string
+          existing_time_end?: string
+          existing_time_start?: string
+          id?: string
+          industry?: string
+          metadata?: Json | null
+          new_client?: string
+          new_client_email?: string | null
+          new_time_end?: string
+          new_time_start?: string
+          resolution?: string
+          resolved_resource_id?: string | null
+          resolved_resource_name?: string | null
+          resource_id?: string | null
+          resource_name?: string
+          suggested_slot_end?: string | null
+          suggested_slot_start?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_conflicts_resolved_resource_id_fkey"
+            columns: ["resolved_resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_conflicts_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           assigned_room: string | null
