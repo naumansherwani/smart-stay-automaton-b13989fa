@@ -647,6 +647,28 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         type="booking"
         itemName={lastBookingName}
       />
+
+      {/* AI Ticket Modal — Airlines, Railways, Events only */}
+      {showTickets && ticketBooking && (
+        <TicketModal
+          open={!!ticketBooking}
+          onClose={() => setTicketBooking(null)}
+          ticket={{
+            id: ticketBooking.id,
+            passengerName: ticketBooking.guest_name,
+            email: ticketBooking.guest_email || undefined,
+            resourceName: getResourceName(ticketBooking.resource_id),
+            departure: ticketBooking.check_in,
+            arrival: ticketBooking.check_out,
+            status: ticketBooking.status,
+            price: ticketBooking.total_price || undefined,
+            platform: ticketBooking.platform || undefined,
+            bookingRef: ticketBooking.id.slice(0, 8).toUpperCase(),
+            industry: config.id as IndustryType,
+            metadata: ticketBooking.metadata || undefined,
+          }}
+        />
+      )}
     </div>
   );
 };
