@@ -117,6 +117,39 @@ const BookingManager = ({ config }: BookingManagerProps) => {
   const selectedResource = resources.find(r => r.id === form.resource_id);
   const isTourBooking = selectedResource?.business_type === "tour";
 
+  // Send reschedule/decline/reassign email
+  const sendRescheduleEmail = async (params: {
+    email: string;
+    clientName: string;
+    originalDate: string;
+    newDate?: string;
+    resourceName: string;
+    newResourceName?: string;
+    resolution: "reassigned" | "rescheduled" | "declined";
+    bookingId?: string;
+  }) => {
+    try {
+      await supabase.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "booking-reschedule",
+          recipientEmail: params.email,
+          idempotencyKey: `booking-reschedule-${params.bookingId || crypto.randomUUID()}`,
+          templateData: {
+            clientName: params.clientName,
+            originalDate: params.originalDate,
+            newDate: params.newDate,
+            resourceName: params.resourceName,
+            newResourceName: params.newResourceName,
+            resolution: params.resolution,
+            industry: config.id,
+          },
+        },
+      });
+    } catch (e) {
+      console.error("Failed to send reschedule email:", e);
+    }
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !form.resource_id) return;
