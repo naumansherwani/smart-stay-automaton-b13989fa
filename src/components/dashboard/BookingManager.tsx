@@ -297,6 +297,17 @@ const BookingManager = ({ config }: BookingManagerProps) => {
               resolution: "rescheduled",
               bookingId,
             });
+            // Send ticket email for ticket industries
+            sendTicketEmail({
+              email: form.guest_email,
+              passengerName: form.guest_name,
+              resourceName: selectedResource?.name || "",
+              departure: newStart,
+              arrival: newEnd,
+              bookingRef: bookingId.slice(0, 8).toUpperCase(),
+              price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
+              bookingId,
+            });
           }
 
           if (!hadBookingsBefore.current) {
