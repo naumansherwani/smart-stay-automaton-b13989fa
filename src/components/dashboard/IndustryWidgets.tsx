@@ -76,12 +76,12 @@ function AIInsightsWidget({ config }: { config: IndustryConfig }) {
   );
 }
 
-function LiveActivityWidget({ config }: { config: IndustryConfig }) {
+function LiveActivityWidget({ config, showPricing }: { config: IndustryConfig; showPricing?: boolean }) {
   const activities = [
     { time: "2 min ago", action: `New ${config.bookingLabel.toLowerCase()} confirmed`, detail: `${config.clientLabel} #1847`, type: "success" },
     { time: "8 min ago", action: `${config.bookingLabel} rescheduled`, detail: `${config.resourceLabel} 3 → ${config.resourceLabel} 5`, type: "warning" },
     { time: "15 min ago", action: `${config.clientLabel} checked in`, detail: `${config.resourceLabel} 1`, type: "info" },
-    { time: "22 min ago", action: "Smart pricing updated", detail: "+8% for peak hours", type: "info" },
+    ...(showPricing ? [{ time: "22 min ago", action: "Smart pricing updated", detail: "+8% for peak hours", type: "info" }] : []),
     { time: "30 min ago", action: `Conflict resolved by AI`, detail: `Auto-reassigned ${config.resourceLabel} 2`, type: "success" },
   ];
 
@@ -267,7 +267,7 @@ const IndustryWidgets = ({ config, features }: IndustryWidgetsProps) => {
       </div>
       <div className="space-y-6">
         <ConflictResolverWidget config={config} />
-        <LiveActivityWidget config={config} />
+        <LiveActivityWidget config={config} showPricing={showDemand} />
         <SecurityWidget />
       </div>
     </div>
