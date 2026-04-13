@@ -76,6 +76,8 @@ const BookingManager = ({ config }: BookingManagerProps) => {
   const [successPopup, setSuccessPopup] = useState(false);
   const [lastBookingName, setLastBookingName] = useState("");
   const hadBookingsBefore = useRef(false);
+  const [ticketBooking, setTicketBooking] = useState<BookingRow | null>(null);
+  const showTickets = isTicketIndustry(config.id as IndustryType);
   const [form, setForm] = useState({
     guest_name: "",
     guest_email: "",
