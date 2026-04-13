@@ -45,7 +45,7 @@ const Navbar = () => {
       <div className="container flex items-center justify-between h-[68px] px-6 lg:px-10">
         {/* Logo */}
         <div className="cursor-pointer shrink-0 mr-6" onClick={() => navigate("/")}>
-          <Logo size="md" showName />
+          <Logo size="md" showName showTagline />
         </div>
 
         {/* Desktop nav links */}

@@ -3,6 +3,7 @@ import logoImg from "@/assets/logo-h-cal-4.png";
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "hero";
   className?: string;
+  showTagline?: boolean;
   showName?: boolean;
 }
 
@@ -24,7 +25,7 @@ const textSizeMap = {
   hero: "text-5xl",
 };
 
-const Logo = ({ size = "md", className, showName = false }: LogoProps) => (
+const Logo = ({ size = "md", className, showName = false, showTagline = false }: LogoProps) => (
   <div className={`flex items-center gap-3 ${className || ""}`}>
     <img
       src={logoImg}
@@ -35,9 +36,16 @@ const Logo = ({ size = "md", className, showName = false }: LogoProps) => (
       height={1024}
     />
     {showName && (
-      <span className={`${textSizeMap[size]} font-extrabold leading-none bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(213,97%,87%)] bg-clip-text text-transparent drop-shadow-[0_0_10px_hsl(174,62%,50%,0.5)]`}>
-        HostFlow AI
-      </span>
+      <div className="flex flex-col">
+        <span className={`${textSizeMap[size]} font-extrabold leading-none bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(213,97%,87%)] bg-clip-text text-transparent drop-shadow-[0_0_10px_hsl(174,62%,50%,0.5)]`}>
+          HostFlow AI
+        </span>
+        {showTagline && (
+          <span className="text-[11px] font-light tracking-[0.08em] text-muted-foreground/70 mt-0.5">
+            Experience the Future of AI SaaS
+          </span>
+        )}
+      </div>
     )}
   </div>
 );
