@@ -13,7 +13,7 @@ const DASHBOARD_FEATURES: Record<string, string[]> = {
     "Resource Manager — Manage properties, rooms, tour packages and assets",
     "AI Auto-Schedule — Let AI automatically fill gaps and optimize scheduling",
     "Auto Pricing — Dynamic pricing based on demand, season and competition",
-    "Double Booking Guard — Prevents scheduling conflicts automatically",
+    "Double Booking Guard — AI-powered real-time conflict detection. Automatically detects overlapping bookings, tries auto-reassignment to a different resource, auto-reschedules to next available slot (up to 7 days), or auto-declines with explanation. Sends AI confirmation/reschedule emails to customers automatically. All conflicts logged in booking_conflicts table.",
     "Occupancy Heatmap, Revenue Forecast, Guest Scoring, Gap Filler widgets",
     "Smart Pricing Card — AI suggests optimal prices per night",
     "Alerts Panel — Real-time notifications for bookings and issues",

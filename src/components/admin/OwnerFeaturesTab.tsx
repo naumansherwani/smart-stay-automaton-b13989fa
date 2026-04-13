@@ -28,7 +28,7 @@ const PLATFORM_FEATURES = [
     "Smart Booking Calendar",
     "Gap Night Filler",
     "Guest Score Card",
-    "Double Booking Guard",
+    "AI Double Booking Guard (Auto-Reassign, Auto-Reschedule, Auto-Decline + AI Email)",
     "Auto Pricing Panel",
     "Smart Pricing Card",
     "Competitor Radar",
