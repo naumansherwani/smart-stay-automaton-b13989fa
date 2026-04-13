@@ -20,6 +20,7 @@ const PLATFORM_FEATURES = [
     "AI Maintenance Prediction",
     "AI Double Booking Guard (Auto-Reassign Gate/Aircraft, Auto-Reschedule + AI Email)",
     "AI Ticket Generator — Boarding Pass with QR Code (Dashboard)",
+    "AI Ticket Email — Auto-sends ticket to passenger on booking confirm",
     "Breadcrumbs Navigation",
     "Global Search (Flight/Passenger)",
     "Real-time Live Sync Indicator",
@@ -66,6 +67,7 @@ const PLATFORM_FEATURES = [
     "Venue & Ticket Widgets",
     "AI Double Booking Guard (Auto-Reassign Venue/Hall, Auto-Reschedule + AI Email)",
     "AI Ticket Generator — Event Ticket with QR Code (Dashboard)",
+    "AI Ticket Email — Auto-sends ticket to attendee on booking confirm",
     "Custom AI Training (Premium)",
   ]},
   { industry: "Railway", icon: Train, color: "#f59e0b", features: [
@@ -76,6 +78,7 @@ const PLATFORM_FEATURES = [
     "Railway Notifications System",
     "AI Double Booking Guard (Auto-Reassign Coach/Platform, Auto-Reschedule + AI Email)",
     "AI Ticket Generator — Train Ticket with QR Code (Dashboard)",
+    "AI Ticket Email — Auto-sends ticket to passenger on booking confirm",
     "Custom AI Training (Premium)",
   ]},
 ];
