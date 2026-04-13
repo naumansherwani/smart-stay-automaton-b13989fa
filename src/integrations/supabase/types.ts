@@ -2093,8 +2093,6 @@ export type Database = {
           is_lifetime: boolean
           plan: Database["public"]["Enums"]["subscription_plan"]
           status: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
           trial_ends_at: string
           trial_starts_at: string
           updated_at: string
@@ -2108,8 +2106,6 @@ export type Database = {
           is_lifetime?: boolean
           plan?: Database["public"]["Enums"]["subscription_plan"]
           status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
           trial_ends_at?: string
           trial_starts_at?: string
           updated_at?: string
@@ -2123,8 +2119,6 @@ export type Database = {
           is_lifetime?: boolean
           plan?: Database["public"]["Enums"]["subscription_plan"]
           status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
           trial_ends_at?: string
           trial_starts_at?: string
           updated_at?: string
@@ -2325,7 +2319,6 @@ export type Database = {
           name: string
           payment_status: string
           plan: string
-          stripe_subscription_id: string | null
           updated_at: string
           user_id: string
         }
@@ -2342,7 +2335,6 @@ export type Database = {
           name: string
           payment_status?: string
           plan?: string
-          stripe_subscription_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -2359,7 +2351,6 @@ export type Database = {
           name?: string
           payment_status?: string
           plan?: string
-          stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
         }
