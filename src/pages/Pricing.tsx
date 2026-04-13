@@ -5,20 +5,10 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, AlertTriangle, CreditCard, Globe, Loader2 } from "lucide-react";
-import Logo from "@/components/Logo";
+import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-
+import PaymentFormModal from "@/components/payment/PaymentFormModal";
 
 const PLANS = [
   {
@@ -94,37 +84,19 @@ const PLANS = [
     ],
   },
 ];
-const PAYONEER_EMAIL = "your-payoneer@email.com"; // Replace with actual Payoneer email
 
 export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const { toast } = useToast();
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
-  const [showPayoneer, setShowPayoneer] = useState(false);
-  const [selectedPlanForPayoneer, setSelectedPlanForPayoneer] = useState<typeof PLANS[0] | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: number } | null>(null);
 
-  const handleCardPayment = async (plan: "basic" | "standard" | "premium") => {
+  const handleGetLink = (plan: { name: string; price: number }) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    // Payments temporarily disabled — contact support
-    toast({ title: "Contact Us", description: "Please contact support@hostflowai.com for payment." });
-  };
-
-  const handlePayoneer = (plan: typeof PLANS[0]) => {
-    if (!user) {
-      navigate("/signup");
-      return;
-    }
-    setSelectedPlanForPayoneer(plan);
-    setShowPayoneer(true);
-  };
-
-  const handleManageSubscription = async () => {
-    toast({ title: "Contact Us", description: "Please contact support@hostflowai.com to manage your subscription." });
+    setSelectedPlan(plan);
   };
 
   return (
@@ -132,16 +104,11 @@ export default function Pricing() {
       <Navbar />
 
       <main className="container pt-24 pb-16 space-y-12">
-
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">Choose Your Plan</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered scheduling for every industry. 1 industry per plan.
           </p>
-          <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1"><CreditCard className="w-4 h-4" /> Credit/Debit Card</span>
-            <span className="flex items-center gap-1"><Globe className="w-4 h-4" /> Payoneer (International)</span>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -153,7 +120,9 @@ export default function Pricing() {
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">🚀 Great Start</Badge>
                 )}
                 {p.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">Most Popular</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
+                    <Crown className="w-3 h-3 mr-1" /> Most Popular
+                  </Badge>
                 )}
                 {p.highlight && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
@@ -166,14 +135,8 @@ export default function Pricing() {
                 <CardHeader className="text-center pb-2 pt-8">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <div className="mt-4">
-                    {p.price === 0 ? (
-                      <span className="text-4xl font-bold text-foreground">Free</span>
-                    ) : (
-                      <>
-                        <span className="text-4xl font-bold text-foreground">${p.price}</span>
-                        <span className="text-muted-foreground">/month</span>
-                      </>
-                    )}
+                    <span className="text-4xl font-bold text-foreground">${p.price}</span>
+                    <span className="text-muted-foreground">/month</span>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
@@ -189,31 +152,13 @@ export default function Pricing() {
                       )
                     )}
                   </ul>
-                  <div className="space-y-2">
-                    <Button
-                      className={`w-full ${p.popular || p.highlight ? "bg-gradient-primary" : ""}`}
-                      variant={p.popular || p.highlight ? "default" : "outline"}
-                      disabled={!!isCurrent || loadingPlan === p.plan}
-                      onClick={() => handleCardPayment(p.plan)}
-                    >
-                      {loadingPlan === p.plan ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</>
-                      ) : isCurrent ? (
-                        "Current Plan"
-                      ) : (
-                        <><CreditCard className="w-4 h-4 mr-2" /> Pay with Card</>
-                      )}
-                    </Button>
-                    {!isCurrent && (
-                      <Button
-                        variant="ghost"
-                        className="w-full text-muted-foreground hover:text-foreground"
-                        onClick={() => handlePayoneer(p)}
-                      >
-                        <Globe className="w-4 h-4 mr-2" /> Pay with Payoneer
-                      </Button>
-                    )}
-                  </div>
+                  <Button
+                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                    disabled={!!isCurrent}
+                    onClick={() => handleGetLink(p)}
+                  >
+                    {isCurrent ? "Current Plan" : "Get Payment Link (USD)"}
+                  </Button>
                 </CardContent>
               </Card>
             );
@@ -221,34 +166,12 @@ export default function Pricing() {
         </div>
       </main>
 
-      <Dialog open={showPayoneer} onOpenChange={setShowPayoneer}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Pay with Payoneer</DialogTitle>
-            <DialogDescription>
-              For international payments via Payoneer, please follow these steps:
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 text-sm">
-            <div className="bg-muted rounded-lg p-4 space-y-2">
-              <p className="font-medium text-foreground">Plan: {selectedPlanForPayoneer?.name}</p>
-              <p className="font-medium text-foreground">Amount: ${selectedPlanForPayoneer?.price}/month</p>
-            </div>
-            <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-              <li>Log in to your <strong>Payoneer</strong> account</li>
-              <li>Send payment to: <strong className="text-foreground">{PAYONEER_EMAIL}</strong></li>
-              <li>In the payment description, include your email: <strong className="text-foreground">{user?.email}</strong></li>
-              <li>Send <strong className="text-foreground">${selectedPlanForPayoneer?.price} USD</strong></li>
-              <li>After payment, your plan will be activated within 24 hours</li>
-            </ol>
-            <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
-              <p className="text-xs text-muted-foreground">
-                💡 After sending payment, email us at <strong>support@hostflowai.com</strong> with your Payoneer transaction ID for faster activation.
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <PaymentFormModal
+        open={!!selectedPlan}
+        onOpenChange={(open) => !open && setSelectedPlan(null)}
+        planName={selectedPlan?.name ?? ""}
+        planPrice={selectedPlan?.price ?? 0}
+      />
       <Footer />
     </div>
   );

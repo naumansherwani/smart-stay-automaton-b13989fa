@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import PaymentFormModal from "@/components/payment/PaymentFormModal";
 
 const PLANS = [
   {
@@ -22,7 +25,6 @@ const PLANS = [
       "Basic analytics",
     ],
     upgradeNote: "Upgrade to Pro to automate your business and close more clients.",
-    cta: "Start Free Trial",
     style: "border-cyan-400/50 ring-1 ring-cyan-400/20 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_30px_hsl(186,80%,50%,0.25)] hover:border-cyan-400/70",
   },
   {
@@ -49,7 +51,6 @@ const PLANS = [
       "Priority support",
     ],
     upgradeNote: "Automatically capture, follow up, and convert leads into paying customers with AI.",
-    cta: "Get Started",
     style: "border-primary/50 ring-2 ring-primary/30 shadow-[0_0_30px_hsl(174,62%,50%,0.2)] hover:shadow-[0_0_40px_hsl(174,62%,50%,0.35)] scale-[1.03]",
   },
   {
@@ -82,13 +83,22 @@ const PLANS = [
       "Custom AI training",
       "Dedicated account manager",
     ],
-    cta: "Get Started",
     style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
 ];
 
 const PricingSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: number } | null>(null);
+
+  const handleGetLink = (plan: { name: string; price: number }) => {
+    if (!user) {
+      navigate("/signup");
+      return;
+    }
+    setSelectedPlan(plan);
+  };
 
   return (
     <section id="pricing" className="py-24 bg-background relative overflow-hidden">
@@ -152,9 +162,9 @@ const PricingSection = () => {
                 <Button
                   className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
                   variant="default"
-                  onClick={() => navigate("/signup")}
+                  onClick={() => handleGetLink(p)}
                 >
-                  {p.cta}
+                  Get Payment Link (USD)
                 </Button>
                 <p className="text-[11px] text-muted-foreground text-center mt-2.5">
                   7-day free trial included — no credit card required
@@ -164,6 +174,13 @@ const PricingSection = () => {
           ))}
         </div>
       </div>
+
+      <PaymentFormModal
+        open={!!selectedPlan}
+        onOpenChange={(open) => !open && setSelectedPlan(null)}
+        planName={selectedPlan?.name ?? ""}
+        planPrice={selectedPlan?.price ?? 0}
+      />
     </section>
   );
 };
