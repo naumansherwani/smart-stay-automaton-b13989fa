@@ -159,11 +159,84 @@ const BookingManager = ({ config }: BookingManagerProps) => {
           check_out: form.check_out,
           group_size: Number(form.group_size) || 1,
           business_type: selectedResource?.business_type,
+          guest_name: form.guest_name,
+          guest_email: form.guest_email || undefined,
+          industry: config.id,
         },
       });
 
       if (valError) {
         toast.error("Booking validation failed. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+
+      // Handle auto-rescheduled (different date on same resource)
+      if (validation.auto_rescheduled && validation.suggested_slot) {
+        const newStart = validation.suggested_slot.start;
+        const newEnd = validation.suggested_slot.end;
+        const newCheckIn = new Date(newStart);
+        const newCheckOut = new Date(newEnd);
+        const diffMs = newCheckOut.getTime() - newCheckIn.getTime();
+        const nights = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) || 1;
+        const rate = Number(form.nightly_rate) || selectedResource?.base_price || 0;
+
+        const metadata: Record<string, unknown> = {
+          auto_rescheduled: true,
+          original_check_in: form.check_in,
+          original_check_out: form.check_out,
+        };
+        if (isTourBooking) {
+          metadata.group_size = Number(form.group_size) || 1;
+          metadata.booking_type = "tour";
+        } else {
+          metadata.booking_type = "stay";
+        }
+
+        const bookingId = crypto.randomUUID();
+        const { error } = await supabase.from("bookings").insert({
+          id: bookingId,
+          user_id: user.id,
+          resource_id: form.resource_id,
+          guest_name: form.guest_name,
+          guest_email: form.guest_email || null,
+          guest_phone: form.guest_phone || null,
+          check_in: newStart,
+          check_out: newEnd,
+          platform: form.platform,
+          nightly_rate: rate,
+          total_price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
+          notes: form.notes || null,
+          status: "confirmed" as const,
+          metadata: metadata as Record<string, unknown>,
+        } as any);
+
+        if (error) {
+          toast.error("Failed to create rescheduled booking");
+        } else {
+          toast.success(`🤖 AI Auto-Rescheduled to ${newCheckIn.toLocaleDateString()} due to conflict!`, { duration: 6000 });
+
+          // Send confirmation email if guest email exists
+          if (form.guest_email) {
+            sendRescheduleEmail({
+              email: form.guest_email,
+              clientName: form.guest_name,
+              originalDate: `${new Date(form.check_in).toLocaleDateString()} - ${new Date(form.check_out).toLocaleDateString()}`,
+              newDate: `${newCheckIn.toLocaleDateString()} - ${newCheckOut.toLocaleDateString()}`,
+              resourceName: selectedResource?.name || "",
+              resolution: "rescheduled",
+              bookingId,
+            });
+          }
+
+          if (!hadBookingsBefore.current) {
+            setLastBookingName(form.guest_name);
+            setSuccessPopup(true);
+            hadBookingsBefore.current = true;
+          }
+          setDialogOpen(false);
+          setForm({ guest_name: "", guest_email: "", guest_phone: "", resource_id: "", check_in: "", check_out: "", platform: "direct", nightly_rate: "", notes: "", group_size: "1" });
+        }
         setSubmitting(false);
         return;
       }
@@ -175,11 +248,23 @@ const BookingManager = ({ config }: BookingManagerProps) => {
             ? `Conflicts with: ${validation.conflicting_bookings.map((c: any) => c.guest_name).join(", ")}`
             : undefined,
         });
+
+        // Send decline email if guest email exists
+        if (form.guest_email) {
+          sendRescheduleEmail({
+            email: form.guest_email,
+            clientName: form.guest_name,
+            originalDate: `${new Date(form.check_in).toLocaleDateString()} - ${new Date(form.check_out).toLocaleDateString()}`,
+            resourceName: selectedResource?.name || "",
+            resolution: "declined",
+          });
+        }
+
         setSubmitting(false);
         return;
       }
 
-      // Handle auto-reassignment
+      // Handle auto-reassignment (different resource, same dates)
       const finalResourceId = validation.auto_reassigned
         ? validation.reassigned_resource_id
         : form.resource_id;
@@ -206,7 +291,9 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         metadata.original_resource_id = form.resource_id;
       }
 
+      const bookingId = crypto.randomUUID();
       const { error } = await supabase.from("bookings").insert({
+        id: bookingId,
         user_id: user.id,
         resource_id: finalResourceId,
         guest_name: form.guest_name,
@@ -226,7 +313,21 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         toast.error("Failed to create booking");
       } else {
         toast.success(`${config.bookingLabel} created successfully!`);
-        // Show first success celebration
+
+        // Send reassignment email if auto-reassigned and guest email exists
+        if (validation.auto_reassigned && form.guest_email) {
+          sendRescheduleEmail({
+            email: form.guest_email,
+            clientName: form.guest_name,
+            originalDate: `${checkIn.toLocaleDateString()} - ${checkOut.toLocaleDateString()}`,
+            newDate: `${checkIn.toLocaleDateString()} - ${checkOut.toLocaleDateString()}`,
+            resourceName: selectedResource?.name || "",
+            newResourceName: validation.reassigned_resource_name,
+            resolution: "reassigned",
+            bookingId,
+          });
+        }
+
         if (!hadBookingsBefore.current) {
           setLastBookingName(form.guest_name);
           setSuccessPopup(true);
