@@ -41,8 +41,8 @@ const Logo = ({ size = "md", className, showName = false, showTagline = false }:
           HostFlow AI
         </span>
         {showTagline && (
-          <span className="text-[11px] font-light tracking-[0.08em] text-muted-foreground/70 mt-0.5">
-            Experience the Future of AI SaaS
+          <span className="text-[11px] font-light tracking-[0.08em] mt-0.5 bg-gradient-to-r from-[#6366F1] to-[#06B6D4] bg-clip-text text-transparent">
+            Automating the Future of AI SaaS
           </span>
         )}
       </div>
