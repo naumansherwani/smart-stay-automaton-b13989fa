@@ -1,8 +1,51 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useSubscription } from "./useSubscription";
 
+// All feature keys that map to pricing card features
+export type FeatureKey =
+  | "crm_contacts"
+  | "bookings"
+  | "ai_calendar"
+  | "ai_pricing"
+  | "ai_scheduling"
+  | "ai_followups"
+  | "lead_scoring"
+  | "advanced_analytics"
+  | "basic_analytics"
+  | "competitor_insights"
+  | "gap_filling"
+  | "calendar_sync"
+  | "double_booking_protection"
+  | "email_notifications"
+  | "advanced_crm"
+  | "voice_assistant"
+  | "ai_voice_assistant"
+  | "white_label"
+  | "multi_team"
+  | "custom_ai_training"
+  | "smart_tasks"
+  | "deal_pipeline"
+  | "google_workspace"
+  | "ai_demand_forecasting"
+  | "ai_conflict_resolution"
+  | "revenue_optimization"
+  | "dynamic_route_optimization"
+  | "industries";
+
+interface FeatureLimit {
+  limit_value: number;
+  is_unlimited: boolean;
+}
+
+export interface FeatureUsage {
+  ai_pricing: number;
+  ai_follow_ups: number;
+  crm_contacts: number;
+}
+
+// Legacy interface for backward compatibility
 export interface TrialLimits {
   crmContacts: number;
   bookings: number;
@@ -15,49 +58,10 @@ export interface TrialLimits {
   multiTeam: boolean;
 }
 
-export interface FeatureUsage {
-  ai_pricing: number;
-  ai_follow_ups: number;
-  crm_contacts: number;
-}
-
-const DEFAULT_TRIAL: TrialLimits = {
-  crmContacts: 150, bookings: -1, aiCalendar: true,
-  aiPricingUses: 20, aiFollowUps: 10,
-  advancedCrm: false, voiceAssistant: false, whiteLabel: false, multiTeam: false,
-};
-
-const FULL_ACCESS: TrialLimits = {
-  crmContacts: -1, bookings: -1, aiCalendar: true,
-  aiPricingUses: -1, aiFollowUps: -1,
-  advancedCrm: true, voiceAssistant: true, whiteLabel: true, multiTeam: true,
-};
-
-const EXPIRED_LIMITS: TrialLimits = {
-  crmContacts: 10, bookings: 5, aiCalendar: false,
-  aiPricingUses: 0, aiFollowUps: 0,
-  advancedCrm: false, voiceAssistant: false, whiteLabel: false, multiTeam: false,
-};
-
-function mapBackendLimits(rows: { feature_key: string; limit_value: number; is_unlimited: boolean }[]): TrialLimits {
-  const get = (key: string) => rows.find(r => r.feature_key === key);
-  return {
-    crmContacts: get("crm_contacts")?.is_unlimited ? -1 : (get("crm_contacts")?.limit_value ?? 150),
-    bookings: get("bookings")?.is_unlimited ? -1 : (get("bookings")?.limit_value ?? -1),
-    aiCalendar: get("ai_calendar")?.is_unlimited || (get("ai_calendar")?.limit_value ?? -1) !== 0,
-    aiPricingUses: get("ai_pricing")?.is_unlimited ? -1 : (get("ai_pricing")?.limit_value ?? 20),
-    aiFollowUps: get("ai_follow_ups")?.is_unlimited ? -1 : (get("ai_follow_ups")?.limit_value ?? 10),
-    advancedCrm: (get("advanced_crm")?.limit_value ?? 0) !== 0 || !!get("advanced_crm")?.is_unlimited,
-    voiceAssistant: (get("voice_assistant")?.limit_value ?? 0) !== 0 || !!get("voice_assistant")?.is_unlimited,
-    whiteLabel: (get("white_label")?.limit_value ?? 0) !== 0 || !!get("white_label")?.is_unlimited,
-    multiTeam: (get("multi_team")?.limit_value ?? 0) !== 0 || !!get("multi_team")?.is_unlimited,
-  };
-}
-
 export function useTrialLimits() {
   const { user } = useAuth();
   const { subscription, isTrialing, isExpired, isActive } = useSubscription();
-  const [limits, setLimits] = useState<TrialLimits>(DEFAULT_TRIAL);
+  const [featureLimits, setFeatureLimits] = useState<Record<string, FeatureLimit>>({});
   const [usage, setUsage] = useState<FeatureUsage>({ ai_pricing: 0, ai_follow_ups: 0, crm_contacts: 0 });
   const [loaded, setLoaded] = useState(false);
 
@@ -72,13 +76,11 @@ export function useTrialLimits() {
       .eq("plan", plan)
       .then(({ data }) => {
         if (data && data.length > 0) {
-          setLimits(mapBackendLimits(data));
-        } else if (isExpired) {
-          setLimits(EXPIRED_LIMITS);
-        } else if (isTrialing) {
-          setLimits(DEFAULT_TRIAL);
-        } else {
-          setLimits(FULL_ACCESS);
+          const map: Record<string, FeatureLimit> = {};
+          data.forEach(r => {
+            map[r.feature_key] = { limit_value: r.limit_value, is_unlimited: r.is_unlimited };
+          });
+          setFeatureLimits(map);
         }
         setLoaded(true);
       });
@@ -130,11 +132,85 @@ export function useTrialLimits() {
     setUsage(prev => ({ ...prev, [featureKey]: (prev[featureKey] || 0) + 1 }));
   }, [user]);
 
+  /**
+   * Check if a feature is accessible on the current plan.
+   * - is_unlimited = true → allowed
+   * - limit_value > 0 → allowed (with limits)
+   * - limit_value = 0 → locked
+   * - not found in DB → locked for trial/expired, allowed for paid
+   */
+  const canAccess = useCallback((key: FeatureKey): boolean => {
+    if (subscription?.is_lifetime) return true;
+    if (isExpired) return false;
+
+    const feat = featureLimits[key];
+    if (!feat) {
+      // If no DB row exists, default: paid plans get access, trial doesn't for premium features
+      const isPaid = isActive && subscription?.plan !== "trial";
+      return isPaid;
+    }
+    return feat.is_unlimited || feat.limit_value > 0;
+  }, [featureLimits, subscription, isActive, isExpired]);
+
+  /**
+   * Get the numeric limit for a feature (-1 = unlimited, 0 = locked)
+   */
+  const getLimit = useCallback((key: FeatureKey): number => {
+    if (subscription?.is_lifetime) return -1;
+    if (isExpired) return 0;
+
+    const feat = featureLimits[key];
+    if (!feat) return isActive && subscription?.plan !== "trial" ? -1 : 0;
+    return feat.is_unlimited ? -1 : feat.limit_value;
+  }, [featureLimits, subscription, isActive, isExpired]);
+
+  /**
+   * Get the minimum required plan name for a feature
+   */
+  const requiredPlan = useCallback((key: FeatureKey): string => {
+    // Map features to their minimum plan
+    const proFeatures: FeatureKey[] = [
+      "ai_scheduling", "ai_followups", "lead_scoring", "advanced_analytics",
+      "competitor_insights", "gap_filling",
+    ];
+    const premiumFeatures: FeatureKey[] = [
+      "advanced_crm", "voice_assistant", "ai_voice_assistant", "white_label",
+      "multi_team", "custom_ai_training", "smart_tasks", "deal_pipeline",
+      "google_workspace", "ai_demand_forecasting", "ai_conflict_resolution",
+      "revenue_optimization", "dynamic_route_optimization",
+    ];
+    if (premiumFeatures.includes(key)) return "Premium";
+    if (proFeatures.includes(key)) return "Pro";
+    return "Basic";
+  }, []);
+
+  // Legacy limits object for backward compatibility
+  const limits = useMemo<TrialLimits>(() => ({
+    crmContacts: getLimit("crm_contacts") === 0 ? 10 : getLimit("crm_contacts"),
+    bookings: getLimit("bookings"),
+    aiCalendar: canAccess("ai_calendar"),
+    aiPricingUses: getLimit("ai_pricing"),
+    aiFollowUps: getLimit("ai_followups") === 0 ? getLimit("ai_follow_ups" as any) : getLimit("ai_followups"),
+    advancedCrm: canAccess("advanced_crm"),
+    voiceAssistant: canAccess("voice_assistant") || canAccess("ai_voice_assistant"),
+    whiteLabel: canAccess("white_label"),
+    multiTeam: canAccess("multi_team"),
+  }), [canAccess, getLimit]);
+
   const isPaid = isActive && subscription?.plan !== "trial";
 
-  if (isExpired) return { limits: loaded ? limits : EXPIRED_LIMITS, usage, incrementUsage, isTrial: false, isExpired: true, isPaid: false };
-  if (isTrialing) return { limits: loaded ? limits : DEFAULT_TRIAL, usage, incrementUsage, isTrial: true, isExpired: false, isPaid: false };
-  if (isPaid) return { limits: loaded ? limits : FULL_ACCESS, usage, incrementUsage, isTrial: false, isExpired: false, isPaid: true };
-
-  return { limits: loaded ? limits : DEFAULT_TRIAL, usage, incrementUsage, isTrial: true, isExpired: false, isPaid: false };
+  return {
+    limits,
+    usage,
+    incrementUsage,
+    isTrial: isTrialing ?? false,
+    isExpired: isExpired ?? false,
+    isPaid: isPaid ?? false,
+    // New API
+    canAccess,
+    getLimit,
+    requiredPlan,
+    loaded,
+    plan: subscription?.plan ?? "trial",
+  };
 }
