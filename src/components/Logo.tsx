@@ -3,6 +3,7 @@ import logoImg from "@/assets/logo-h-cal-4.png";
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "hero";
   className?: string;
+  showTagline?: boolean;
   showName?: boolean;
 }
 
