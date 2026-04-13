@@ -59,12 +59,12 @@ const TESTIMONIALS = [
     avatar: "RM",
   },
   {
-    name: "A. Sharma",
+    name: "G. Freddy",
     role: "Station Manager, Railway Network",
     text: "Managing 50+ daily trains with AI scheduling — platform conflicts dropped to zero. Dynamic pricing boosted revenue 28%.",
     rating: 5,
     industry: "Railways",
-    avatar: "AS",
+    avatar: "GF",
   },
 ];
 
