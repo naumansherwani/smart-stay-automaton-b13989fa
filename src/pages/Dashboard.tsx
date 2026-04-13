@@ -37,6 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import UpgradeNudge from "@/components/conversion/UpgradeNudge";
+import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
