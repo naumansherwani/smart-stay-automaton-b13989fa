@@ -153,6 +153,40 @@ const BookingManager = ({ config }: BookingManagerProps) => {
     }
   };
 
+  // Send ticket confirmation email for Airlines/Railways/Events
+  const sendTicketEmail = async (params: {
+    email: string;
+    passengerName: string;
+    resourceName: string;
+    departure: string;
+    arrival: string;
+    bookingRef: string;
+    price?: number;
+    bookingId: string;
+  }) => {
+    if (!showTickets) return;
+    try {
+      await supabase.functions.invoke("send-transactional-email", {
+        body: {
+          templateName: "ticket-confirmation",
+          recipientEmail: params.email,
+          idempotencyKey: `ticket-confirm-${params.bookingId}`,
+          templateData: {
+            passengerName: params.passengerName,
+            resourceName: params.resourceName,
+            departure: new Date(params.departure).toLocaleString(),
+            arrival: new Date(params.arrival).toLocaleString(),
+            bookingRef: params.bookingRef,
+            price: params.price?.toString(),
+            industry: config.id,
+          },
+        },
+      });
+    } catch (e) {
+      console.error("Failed to send ticket email:", e);
+    }
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !form.resource_id) return;
@@ -263,6 +297,17 @@ const BookingManager = ({ config }: BookingManagerProps) => {
               resolution: "rescheduled",
               bookingId,
             });
+            // Send ticket email for ticket industries
+            sendTicketEmail({
+              email: form.guest_email,
+              passengerName: form.guest_name,
+              resourceName: selectedResource?.name || "",
+              departure: newStart,
+              arrival: newEnd,
+              bookingRef: bookingId.slice(0, 8).toUpperCase(),
+              price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
+              bookingId,
+            });
           }
 
           if (!hadBookingsBefore.current) {
@@ -360,6 +405,20 @@ const BookingManager = ({ config }: BookingManagerProps) => {
             resourceName: selectedResource?.name || "",
             newResourceName: validation.reassigned_resource_name,
             resolution: "reassigned",
+            bookingId,
+          });
+        }
+
+        // Send ticket confirmation email for ticket industries
+        if (form.guest_email && showTickets) {
+          sendTicketEmail({
+            email: form.guest_email,
+            passengerName: form.guest_name,
+            resourceName: selectedResource?.name || "",
+            departure: form.check_in,
+            arrival: form.check_out,
+            bookingRef: bookingId.slice(0, 8).toUpperCase(),
+            price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
             bookingId,
           });
         }

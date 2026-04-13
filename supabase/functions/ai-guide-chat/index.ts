@@ -27,6 +27,7 @@ const DASHBOARD_FEATURES: Record<string, string[]> = {
     "Crew Scheduling, Gate Assignment, Load Factor, Delay Tracker widgets",
     "Route Optimizer, Fuel Forecast, Maintenance Calendar tools",
     "AI Ticket Generator — Auto-generates downloadable boarding pass with QR code when booking is confirmed. Includes passenger name, flight details, times, and booking reference.",
+    "AI Ticket Email — Automatically emails the ticket/boarding pass to the passenger when booking is confirmed (Pro & Premium only).",
     "Industry KPIs — Load Factor, On-Time Rate, Revenue/Seat, Turnaround",
   ],
   car_rental: [
@@ -60,6 +61,7 @@ const DASHBOARD_FEATURES: Record<string, string[]> = {
     "Double Booking Guard — AI-powered real-time conflict detection for venues. Automatically detects overlapping venue bookings, tries auto-reassignment to a different venue/hall, auto-reschedules to next available slot, or auto-declines. Sends AI confirmation emails to organizers automatically.",
     "Ticket Sales, Vendor Management, Event Analytics widgets",
     "AI Ticket Generator — Auto-generates downloadable event ticket with QR code when booking is confirmed. Includes attendee name, venue, event times, and booking reference.",
+    "AI Ticket Email — Automatically emails the event ticket to the attendee when booking is confirmed (Pro & Premium only).",
     "Industry KPIs — Ticket Sales, Venue Utilization, Revenue/Event",
   ],
   healthcare: [
@@ -77,6 +79,7 @@ const DASHBOARD_FEATURES: Record<string, string[]> = {
     "Double Booking Guard — AI-powered real-time conflict detection for train schedules. Automatically detects overlapping train/coach schedules, tries auto-reassignment to a different coach/platform, auto-reschedules to next available slot, or auto-declines. Sends AI confirmation emails to passengers automatically.",
     "Route Stops, Pricing Overrides, Coach Management tools",
     "AI Ticket Generator — Auto-generates downloadable train ticket with QR code when booking is confirmed. Includes passenger name, train/coach details, route, and booking reference.",
+    "AI Ticket Email — Automatically emails the train ticket to the passenger when booking is confirmed (Pro & Premium only).",
     "Industry KPIs — Occupancy Rate, On-Time Performance, Revenue/Train",
   ],
 };
