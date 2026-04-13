@@ -1,0 +1,37 @@
+---
+name: Industry Feature Mapping
+description: Strict mapping of which features belong to which industries - no mixing
+type: feature
+---
+## Pricing/Demand Industries (5):
+Hospitality, Airlines, Car Rental, Events, Railways
+→ AI Pricing, AI Demand Forecasting, Dynamic Pricing
+
+## No Pricing Industries (3):
+Healthcare, Education, Logistics
+→ NO pricing/demand features
+
+## Industry-Specific Features:
+- Competitor Radar: ONLY Hospitality
+- Gap Night Filler: ONLY Hospitality
+- Guest Score Card: ONLY Hospitality
+- Fleet Map: ONLY Car Rental
+- Patient Flow: ONLY Healthcare
+- Class Schedule: ONLY Education
+- Crew Scheduling: Airlines, Railways
+- Ticket Capacity: ONLY Events
+- Route Optimization: Logistics, Airlines, Railways
+
+## Common to ALL 8 Industries:
+- AI Calendar/Scheduling
+- Double Booking Guard (industry-specific terminology)
+- CRM (Premium only)
+- AI Voice Assistant (ElevenLabs)
+- Analytics & Reports
+- Email notifications
+- Client/Lead Scoring
+
+## Removed (NOT BUILT):
+- White-label branding
+- Multi-team management  
+- Custom AI training
