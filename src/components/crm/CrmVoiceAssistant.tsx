@@ -202,21 +202,49 @@ function getHelpResponse(industry: IndustryType): string {
   return help;
 }
 
-// ─── Text-to-Speech with female voice + language ────────────────────────────
-function speakText(text: string, lang?: string) {
-  if (!("speechSynthesis" in window)) return;
+// ─── ElevenLabs TTS with browser fallback ───────────────────────────────────
+const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`;
 
+async function speakWithElevenLabs(text: string): Promise<boolean> {
+  try {
+    const clean = text.replace(/[📋🎫💼📊🤖✉️💰✈️🗺️🚚🚗💡📅📝\n]/g, " ").replace(/\s+/g, " ").trim();
+    if (!clean) return false;
+
+    const resp = await fetch(TTS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({ text: clean }),
+    });
+
+    if (!resp.ok) return false;
+
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    
+    return new Promise((resolve) => {
+      audio.onended = () => { URL.revokeObjectURL(url); resolve(true); };
+      audio.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
+      audio.play().catch(() => resolve(false));
+    });
+  } catch {
+    return false;
+  }
+}
+
+function speakBrowserFallback(text: string, lang?: string) {
+  if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const clean = text.replace(/[📋🎫💼📊🤖✉️💰✈️🗺️🚚🚗💡📅📝\n]/g, " ").replace(/\s+/g, " ").trim();
   const utterance = new SpeechSynthesisUtterance(clean);
-
   const speechLang = lang || getSpeechLang();
   utterance.lang = speechLang;
-
-  // Find a female voice matching the language
   const voices = window.speechSynthesis.getVoices();
   const langPrefix = speechLang.split("-")[0];
-
   const femaleVoice = voices.find(v =>
     v.lang.startsWith(langPrefix) && /female|samantha|victoria|karen|moira|fiona|tessa|zira|hazel/i.test(v.name)
   ) || voices.find(v =>
@@ -224,13 +252,19 @@ function speakText(text: string, lang?: string) {
   ) || voices.find(v =>
     v.lang.startsWith(langPrefix)
   ) || voices[0];
-
   if (femaleVoice) utterance.voice = femaleVoice;
-  utterance.rate = 0.85;   // Slower for clarity — normal human pace
-  utterance.pitch = 1.05;  // Slightly natural, not too high
+  utterance.rate = 0.85;
+  utterance.pitch = 1.05;
   utterance.volume = 1;
-
   window.speechSynthesis.speak(utterance);
+}
+
+async function speakText(text: string, lang?: string) {
+  // Try ElevenLabs first, fall back to browser
+  const success = await speakWithElevenLabs(text);
+  if (!success) {
+    speakBrowserFallback(text, lang);
+  }
 }
 
 // ─── Speech Recognition with language support ───────────────────────────────
