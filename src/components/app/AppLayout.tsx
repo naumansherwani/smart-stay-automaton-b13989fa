@@ -67,9 +67,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
             size="sm"
             className="gap-1.5 text-xs"
             onClick={togglePublicMode}
-            title="Public View (Ctrl+Shift+P)"
+            title="Customer Preview (Ctrl+Shift+P)"
           >
-            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Public View</span>
+            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Customer Preview</span>
           </Button>
           <ThemeToggle />
           <Button
@@ -89,7 +89,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               onClick={() => navigate("/profile")}
               aria-label="Open profile"
             >
-              <Avatar className="h-8 w-8 border border-border/60">
+              <Avatar className="h-10 w-10 border-2 border-primary/40 shadow-md ring-2 ring-primary/10">
                 <AvatarImage src={avatarUrl ?? undefined} alt={`${displayName} profile photo`} />
                 <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
                   {initials}
