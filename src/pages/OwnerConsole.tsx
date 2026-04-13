@@ -15,6 +15,7 @@ import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
 import OwnerUsersTab from "@/components/admin/OwnerUsersTab";
 import OwnerCrmTab from "@/components/admin/OwnerCrmTab";
 import OwnerFeaturesTab from "@/components/admin/OwnerFeaturesTab";
+import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
   const { user, loading } = useAuth();
@@ -242,6 +243,7 @@ const OwnerConsole = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <AiGuideChatbot context="dashboard" industry="hospitality" />
     </div>
   );
 };
