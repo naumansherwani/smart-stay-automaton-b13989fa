@@ -115,25 +115,14 @@ export default function AddIndustryDialog({ open, onOpenChange }: AddIndustryDia
     setIsProcessing(true);
 
     try {
-      // Call edge function to create checkout session
-      const { data, error } = await supabase.functions.invoke("add-industry-checkout", {
-        body: {
-          plan: selectedPlan,
-          industry: selectedIndustry,
-          industryNumber: currentIndustryCount + 1,
-          basePrice: info.basePrice,
-          discountPercentage: info.discountPct,
-          discountAmount: info.discountAmount,
-          finalPrice: info.finalPrice,
-        },
-      });
+      // Payments disabled — contact support for adding industries
+      toast.error("Please contact support@hostflowai.com to add a new industry.");
+      setIsProcessing(false);
+      return;
 
-      if (error) throw error;
-
-      if (data?.url) {
-        // Redirect to Stripe checkout in same window
-        window.location.href = data.url;
-      } else if (data?.workspace) {
+      // Legacy: workspace creation placeholder
+      const data: any = null;
+      if (data?.workspace) {
         // Free first workspace - already created
         toast.success("New workspace created! 🎉");
         onOpenChange(false);
