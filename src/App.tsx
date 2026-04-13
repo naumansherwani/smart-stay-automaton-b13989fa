@@ -25,6 +25,7 @@ import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import RailwayDashboard from "./pages/RailwayDashboard";
 import CRM from "./pages/CRM";
+import Unsubscribe from "./pages/Unsubscribe";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
             
             <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
             <Route path="/owner-hq-7x" element={<OwnerConsole />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
