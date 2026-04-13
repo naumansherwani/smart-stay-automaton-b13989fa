@@ -226,8 +226,8 @@ function speakText(text: string, lang?: string) {
   ) || voices[0];
 
   if (femaleVoice) utterance.voice = femaleVoice;
-  utterance.rate = 1.0;
-  utterance.pitch = 1.15;
+  utterance.rate = 0.85;   // Slower for clarity — normal human pace
+  utterance.pitch = 1.05;  // Slightly natural, not too high
   utterance.volume = 1;
 
   window.speechSynthesis.speak(utterance);
