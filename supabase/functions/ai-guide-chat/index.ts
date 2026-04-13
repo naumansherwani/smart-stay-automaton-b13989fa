@@ -187,6 +187,24 @@ const SETTINGS_FEATURES = [
 function buildSystemPrompt(context: string, industry: string): string {
   const dashboardFeatures = DASHBOARD_FEATURES[industry] || DASHBOARD_FEATURES["hospitality"];
 
+  const planInfo = `
+## Pricing Plans:
+### Basic ($25/month):
+${PLAN_FEATURES.basic.features.map((f) => `- ${f}`).join("\n")}
+
+### Pro ($55/month) — Most Popular:
+${PLAN_FEATURES.pro.features.map((f) => `- ${f}`).join("\n")}
+
+### Premium ($110/month) — Advanced AI CRM Hub:
+${PLAN_FEATURES.premium.features.map((f) => `- ${f}`).join("\n")}
+
+All plans include a 7-day free trial — no credit card required.
+AI Ticket Generator is ONLY for Airlines, Railways, Events industries.
+AI Pricing/Demand Forecasting is ONLY for Hospitality, Airlines, Car Rental, Events, Railways.
+Competitor Radar & Gap Filler are ONLY for Hospitality.
+Route Optimization is ONLY for Logistics, Airlines, Railways.
+`;
+
   let featureList = "";
   if (context === "dashboard") {
     featureList = `
@@ -196,11 +214,15 @@ ${dashboardFeatures.map((f) => `- ${f}`).join("\n")}
 ## Premium-Only Features:
 ${PREMIUM_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${planInfo}
+
 IMPORTANT: Only explain Dashboard features. Do NOT mix with CRM features.`;
   } else if (context === "crm") {
     featureList = `
 ## AI CRM Features:
 ${CRM_FEATURES.map((f) => `- ${f}`).join("\n")}
+
+${planInfo}
 
 IMPORTANT: Only explain CRM features. Do NOT mix with Dashboard features.`;
   } else if (context === "settings") {
@@ -208,7 +230,11 @@ IMPORTANT: Only explain CRM features. Do NOT mix with Dashboard features.`;
 ## Settings Features:
 ${SETTINGS_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${planInfo}
+
 IMPORTANT: Only explain Settings features.`;
+  } else {
+    featureList = planInfo;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
