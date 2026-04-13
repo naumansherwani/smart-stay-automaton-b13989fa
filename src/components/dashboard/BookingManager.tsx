@@ -409,6 +409,20 @@ const BookingManager = ({ config }: BookingManagerProps) => {
           });
         }
 
+        // Send ticket confirmation email for ticket industries
+        if (form.guest_email && showTickets) {
+          sendTicketEmail({
+            email: form.guest_email,
+            passengerName: form.guest_name,
+            resourceName: selectedResource?.name || "",
+            departure: form.check_in,
+            arrival: form.check_out,
+            bookingRef: bookingId.slice(0, 8).toUpperCase(),
+            price: isTourBooking ? rate * (Number(form.group_size) || 1) : rate * nights,
+            bookingId,
+          });
+        }
+
         if (!hadBookingsBefore.current) {
           setLastBookingName(form.guest_name);
           setSuccessPopup(true);
