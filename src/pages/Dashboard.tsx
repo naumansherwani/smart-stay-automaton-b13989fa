@@ -53,6 +53,7 @@ const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, signOut } = useAuth();
   const { createWorkspace } = useWorkspaces();
+  const { isPaid, isTrial, isExpired } = useTrialLimits();
   
   const { profile } = useProfile();
   const newIndustryHandled = useRef(false);
@@ -142,7 +143,9 @@ const Dashboard = () => {
       <div className="container py-6 md:py-8 space-y-6 md:space-y-8">
         <SmartGreetingBanner userName={displayName} />
 
-        <UpgradeNudge variant="card" feature="AI Automation" message="Automation saves time and increases revenue — unlock all features with Pro" />
+        {!isPaid && (
+          <UpgradeNudge variant="card" feature="AI Automation" message={isExpired ? "Your trial has expired — upgrade to continue using all features" : "Automation saves time and increases revenue — unlock all features with Pro"} />
+        )}
 
         <HowItWorksGuide />
 
