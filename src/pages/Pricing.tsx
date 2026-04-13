@@ -19,20 +19,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const TIERS = {
-  basic: {
-    price_id: "price_1TK6mV4yrCh8Ql75FqqZJ6M9",
-    product_id: "prod_UIiCCNXhcZdhQU",
-  },
-  standard: {
-    price_id: "price_1TK6ms4yrCh8Ql757Y9c5Rnk",
-    product_id: "prod_UIiDaFEfKRWg02",
-  },
-  premium: {
-    price_id: "price_1TK6oO4yrCh8Ql751jCdSVcs",
-    product_id: "prod_UIiElL4g0051N0",
-  },
-};
 
 const PLANS = [
   {
@@ -124,20 +110,8 @@ export default function Pricing() {
       navigate("/signup");
       return;
     }
-    setLoadingPlan(plan);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: TIERS[plan].price_id },
-      });
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally {
-      setLoadingPlan(null);
-    }
+    // Payments temporarily disabled — contact support
+    toast({ title: "Contact Us", description: "Please contact support@hostflowai.com for payment." });
   };
 
   const handlePayoneer = (plan: typeof PLANS[0]) => {
@@ -150,15 +124,7 @@ export default function Pricing() {
   };
 
   const handleManageSubscription = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    }
+    toast({ title: "Contact Us", description: "Please contact support@hostflowai.com to manage your subscription." });
   };
 
   return (
