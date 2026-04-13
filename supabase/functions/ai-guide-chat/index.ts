@@ -88,6 +88,71 @@ const PREMIUM_FEATURES = [
   "Custom AI Training — Train AI on your specific business patterns, terminology and workflows. Available for ALL 8 industries. Premium plan only.",
 ];
 
+const PLAN_FEATURES = {
+  basic: {
+    name: "Basic",
+    price: "$25/month",
+    features: [
+      "Includes 1 industry (workspace)",
+      "Up to 100 CRM contacts",
+      "Up to 50 bookings/month",
+      "AI Calendar — limited",
+      "AI Pricing — limited",
+      "Calendar sync",
+      "Double-booking protection",
+      "Email notifications",
+      "Basic analytics",
+    ],
+  },
+  pro: {
+    name: "Pro",
+    price: "$55/month",
+    features: [
+      "Includes 1 industry (workspace)",
+      "Unlimited contacts (CRM)",
+      "Unlimited bookings",
+      "All Basic features included",
+      "AI scheduling",
+      "AI follow-ups (automation)",
+      "Client/lead scoring",
+      "AI Ticket Generator (Airlines, Railways, Events)",
+      "Advanced analytics",
+      "Competitor insights",
+      "Gap-filling engine",
+      "Full AI Calendar",
+      "Full AI Pricing",
+      "Double-booking guard",
+      "Ticket email confirmation",
+      "Priority support",
+    ],
+  },
+  premium: {
+    name: "Premium",
+    price: "$110/month",
+    features: [
+      "Includes 1 industry (workspace)",
+      "Unlimited contacts (CRM)",
+      "Unlimited bookings",
+      "All Pro features included",
+      "Advanced AI CRM (full suite)",
+      "AI lead scoring & churn prediction",
+      "AI automation & smart workflows",
+      "AI Voice Assistant",
+      "AI Ticket Generator + Email (Airlines, Railways, Events)",
+      "Custom AI Training (all industries)",
+      "Double-booking guard",
+      "Smart tasks & AI planner",
+      "Deal pipeline & revenue analytics",
+      "Google Workspace integration",
+      "AI demand forecasting (Hospitality, Airlines, Car Rental, Events, Railways)",
+      "AI conflict resolution",
+      "Revenue optimization",
+      "Route optimization (Logistics, Airlines, Railways)",
+      "Dedicated account manager",
+    ],
+  },
+};
+
 const CRM_FEATURES = [
   "Contacts — Manage all your contacts with AI scoring, lifecycle stages, tags and churn prediction",
   "Tickets — Customer support tickets with AI categorization, sentiment analysis and SLA tracking",
@@ -122,6 +187,24 @@ const SETTINGS_FEATURES = [
 function buildSystemPrompt(context: string, industry: string): string {
   const dashboardFeatures = DASHBOARD_FEATURES[industry] || DASHBOARD_FEATURES["hospitality"];
 
+  const planInfo = `
+## Pricing Plans:
+### Basic ($25/month):
+${PLAN_FEATURES.basic.features.map((f) => `- ${f}`).join("\n")}
+
+### Pro ($55/month) — Most Popular:
+${PLAN_FEATURES.pro.features.map((f) => `- ${f}`).join("\n")}
+
+### Premium ($110/month) — Advanced AI CRM Hub:
+${PLAN_FEATURES.premium.features.map((f) => `- ${f}`).join("\n")}
+
+All plans include a 7-day free trial — no credit card required.
+AI Ticket Generator is ONLY for Airlines, Railways, Events industries.
+AI Pricing/Demand Forecasting is ONLY for Hospitality, Airlines, Car Rental, Events, Railways.
+Competitor Radar & Gap Filler are ONLY for Hospitality.
+Route Optimization is ONLY for Logistics, Airlines, Railways.
+`;
+
   let featureList = "";
   if (context === "dashboard") {
     featureList = `
@@ -131,11 +214,15 @@ ${dashboardFeatures.map((f) => `- ${f}`).join("\n")}
 ## Premium-Only Features:
 ${PREMIUM_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${planInfo}
+
 IMPORTANT: Only explain Dashboard features. Do NOT mix with CRM features.`;
   } else if (context === "crm") {
     featureList = `
 ## AI CRM Features:
 ${CRM_FEATURES.map((f) => `- ${f}`).join("\n")}
+
+${planInfo}
 
 IMPORTANT: Only explain CRM features. Do NOT mix with Dashboard features.`;
   } else if (context === "settings") {
@@ -143,7 +230,11 @@ IMPORTANT: Only explain CRM features. Do NOT mix with Dashboard features.`;
 ## Settings Features:
 ${SETTINGS_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${planInfo}
+
 IMPORTANT: Only explain Settings features.`;
+  } else {
+    featureList = planInfo;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
