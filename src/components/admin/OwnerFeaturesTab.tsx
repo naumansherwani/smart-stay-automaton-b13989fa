@@ -18,6 +18,7 @@ const PLATFORM_FEATURES = [
     "Sentiment Score Auto-Update",
     "Voice Commands (ElevenLabs) for Fleet",
     "AI Maintenance Prediction",
+    "AI Double Booking Guard (Auto-Reassign Gate/Aircraft, Auto-Reschedule + AI Email)",
     "Breadcrumbs Navigation",
     "Global Search (Flight/Passenger)",
     "Real-time Live Sync Indicator",
@@ -28,7 +29,7 @@ const PLATFORM_FEATURES = [
     "Smart Booking Calendar",
     "Gap Night Filler",
     "Guest Score Card",
-    "AI Double Booking Guard (Auto-Reassign, Auto-Reschedule, Auto-Decline + AI Email)",
+    "AI Double Booking Guard (Auto-Reassign Room, Auto-Reschedule + AI Email)",
     "Auto Pricing Panel",
     "Smart Pricing Card",
     "Competitor Radar",
@@ -36,22 +37,27 @@ const PLATFORM_FEATURES = [
   { industry: "Car Rental", icon: Car, color: "#0ea5e9", features: [
     "Vehicle Manager",
     "Fleet Tracking Widgets",
+    "AI Double Booking Guard (Auto-Reassign Vehicle, Auto-Reschedule + AI Email)",
   ]},
   { industry: "Healthcare", icon: Stethoscope, color: "#ef4444", features: [
     "Healthcare Manager",
     "Patient Booking Widgets",
+    "AI Double Booking Guard (Auto-Reassign Doctor/Room, Auto-Reschedule + AI Email)",
   ]},
   { industry: "Education", icon: GraduationCap, color: "#8b5cf6", features: [
     "Timetable Manager",
     "Education Widgets",
+    "AI Double Booking Guard (Auto-Reassign Classroom/Lab, Auto-Reschedule + AI Email)",
   ]},
   { industry: "Logistics", icon: Truck, color: "#f97316", features: [
     "Logistics Manager",
     "Shipment Tracking Widgets",
+    "AI Double Booking Guard (Auto-Reassign Vehicle/Driver, Auto-Reschedule + AI Email)",
   ]},
   { industry: "Events", icon: Theater, color: "#d946ef", features: [
     "Events Manager",
     "Venue & Ticket Widgets",
+    "AI Double Booking Guard (Auto-Reassign Venue/Hall, Auto-Reschedule + AI Email)",
   ]},
   { industry: "Railway", icon: Train, color: "#f59e0b", features: [
     "Train & Coach Manager",
@@ -59,6 +65,7 @@ const PLATFORM_FEATURES = [
     "AI Dynamic Pricing",
     "Booking & Passenger Management",
     "Railway Notifications System",
+    "AI Double Booking Guard (Auto-Reassign Coach/Platform, Auto-Reschedule + AI Email)",
   ]},
 ];
 
