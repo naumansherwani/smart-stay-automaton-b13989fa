@@ -1,0 +1,14 @@
+---
+name: Double Booking Guard System
+description: Real AI-powered double booking prevention with auto-reschedule, auto-reassign, and email notifications
+type: feature
+---
+- validate-booking edge function detects conflicts in real database
+- On conflict: tries auto-reassignment to different resource of same type
+- If no resource available: auto-reschedules to next available slot (up to 7 days ahead)
+- If nothing available: auto-declines with explanation
+- All conflicts logged to booking_conflicts table for DoubleBookingGuard UI
+- Confirmation/decline emails sent via booking-reschedule email template
+- DoubleBookingGuard component shows real conflict data from last 7 days
+- Feature is industry-specific (uses industry labels for resources/clients/bookings)
+- Industries with scheduling (all 8) benefit from this feature
