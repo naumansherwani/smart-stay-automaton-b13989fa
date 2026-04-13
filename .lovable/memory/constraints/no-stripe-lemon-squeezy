@@ -8,3 +8,5 @@ type: constraint
 - All payment-related edge functions deleted: create-checkout, check-subscription, customer-portal, add-industry-checkout
 - Payments handled manually via Payoneer or contact support
 - **Why:** User decision — no third-party payment processors
+- User has explicitly said "no Stripe ever" multiple times
+- Do NOT suggest Stripe in any form (manual, built-in, self-managed)
