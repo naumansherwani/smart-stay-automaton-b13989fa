@@ -1,6 +1,7 @@
 # Project Memory
 
 ## Core
+Company name: HostFlow AI Technologies. Product name: HostFlow AI.
 Teal primary, blue-purple secondary. SaaS booking/CRM platform.
 CRM is premium-only. 7-day trial for new users with feature limits.
 Lovable Cloud backend. NO Stripe/Lemon Squeezy — payments via Payoneer/manual only.
