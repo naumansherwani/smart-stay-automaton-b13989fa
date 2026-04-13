@@ -45,10 +45,10 @@ function UtilizationWidget({ config }: { config: IndustryConfig }) {
   );
 }
 
-function AIInsightsWidget({ config }: { config: IndustryConfig }) {
+function AIInsightsWidget({ config, showPricing }: { config: IndustryConfig; showPricing?: boolean }) {
   const insights = [
-    { type: "optimization", text: `AI detected 3 underutilized ${config.resourceLabelPlural.toLowerCase()} — suggest promotional pricing`, priority: "high" },
-    { type: "prediction", text: `Demand spike predicted for next week (+25%) — consider dynamic pricing`, priority: "medium" },
+    { type: "optimization", text: `AI detected 3 underutilized ${config.resourceLabelPlural.toLowerCase()} — suggest schedule adjustment`, priority: "high" },
+    ...(showPricing ? [{ type: "prediction", text: `Demand spike predicted for next week (+25%) — consider dynamic pricing`, priority: "medium" }] : []),
     { type: "conflict", text: `Potential scheduling conflict detected for ${config.resourceLabel} 2 on Friday`, priority: "high" },
     { type: "pattern", text: `${config.clientLabel} no-show pattern: Mondays 3PM have 22% higher no-show rate`, priority: "low" },
   ];
@@ -258,7 +258,7 @@ const IndustryWidgets = ({ config, features }: IndustryWidgetsProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
-        <AIInsightsWidget config={config} />
+        <AIInsightsWidget config={config} showPricing={showDemand} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {showDemand && <DemandForecastWidget config={config} />}
           <AutoSchedulerWidget config={config} />
