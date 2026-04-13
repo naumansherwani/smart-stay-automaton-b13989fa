@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const primaryNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "CRM", url: "/crm", icon: Users },
+  { title: "Advanced AI CRM", url: "/crm", icon: Users },
   { title: "Bookings", url: "/dashboard?tab=bookings", icon: ClipboardList },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Settings", url: "/settings", icon: Settings },

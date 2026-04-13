@@ -10,39 +10,39 @@ html, body {
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 28% 17%;
+    --background: 210 20% 98%;
+    --foreground: 220 20% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
+    --card-foreground: 220 20% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
+    --popover-foreground: 220 20% 25%;
 
-    --primary: 174 62% 50%;
+    --primary: 174 55% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 91% 60%;
+    --secondary: 217 70% 52%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 217 91% 60%;
+    --accent: 217 70% 52%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 55%;
+    --destructive: 0 65% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 160 60% 45%;
+    --success: 160 50% 38%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 215 28% 17%;
+    --warning: 38 80% 48%;
+    --warning-foreground: 220 20% 20%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 174 62% 50%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 174 55% 42%;
 
     --radius: 0.75rem;
 

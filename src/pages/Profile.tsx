@@ -266,9 +266,9 @@ const Profile = () => {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <div className="relative group">
-                <Avatar className="w-16 h-16 border-2 border-primary/30">
+                <Avatar className="w-28 h-28 border-4 border-primary/30 shadow-xl ring-4 ring-primary/10">
                   <AvatarImage src={avatarUrl ?? undefined} alt={`${resolvedDisplayName} profile photo`} />
-                  <AvatarFallback className="text-lg font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-3xl font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
                 </Avatar>
                 <button
                   onClick={() => fileInputRef.current?.click()}
