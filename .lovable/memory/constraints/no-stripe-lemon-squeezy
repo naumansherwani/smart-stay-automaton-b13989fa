@@ -1,0 +1,10 @@
+---
+name: No Stripe or Lemon Squeezy Payments
+description: Never implement Stripe or Lemon Squeezy payment integration in this project
+type: constraint
+---
+- Stripe integration fully removed (edge functions, frontend checkout, subscription check)
+- Lemon Squeezy also forbidden
+- All payment-related edge functions deleted: create-checkout, check-subscription, customer-portal, add-industry-checkout
+- Payments handled manually via Payoneer or contact support
+- **Why:** User decision — no third-party payment processors
