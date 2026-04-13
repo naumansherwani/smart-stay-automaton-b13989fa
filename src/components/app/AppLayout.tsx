@@ -11,7 +11,7 @@ import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/uti
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
 import PublicView from "./PublicView";
-import WorkspaceSwitcher from "@/components/dashboard/WorkspaceSwitcher";
+import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
 
 interface AppLayoutProps {
   children: React.ReactNode;
