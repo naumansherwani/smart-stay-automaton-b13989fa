@@ -37,6 +37,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import CrmRevenueChart from "@/components/crm/CrmRevenueChart";
 import { getUserDisplayName } from "@/lib/utils";
 import AppLayout from "@/components/app/AppLayout";
+import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 export default function CRM() {
   const { user } = useAuth();
@@ -222,6 +223,7 @@ export default function CRM() {
       </div>
 
       <CrmVoiceAssistant industry={industry} onNavigate={setTab} />
+      <AiGuideChatbot context="crm" industry={industry} />
     </AppLayout>
   );
 }

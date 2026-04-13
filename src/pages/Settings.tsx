@@ -19,6 +19,7 @@ import { User, Globe, Bell, Palette, Building2, CreditCard, Plus, ArrowRight, Ch
 import { toast } from "sonner";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import { useNavigate } from "react-router-dom";
+import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -382,6 +383,7 @@ const Settings = () => {
           </TabsContent>
         </Tabs>
       </div>
+      <AiGuideChatbot context="settings" industry={profile?.industry || "hospitality"} />
     </AppLayout>
   );
 };

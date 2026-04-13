@@ -39,6 +39,7 @@ import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
+import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -612,6 +613,7 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+      <AiGuideChatbot context="dashboard" industry={currentIndustry} />
     </AppLayout>
   );
 };
