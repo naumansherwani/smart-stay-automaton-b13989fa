@@ -180,7 +180,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
           aria-label="Open AI Guide"
         >
           <Sparkles className="h-6 w-6 group-hover:rotate-12 transition-transform" />
-          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 animate-pulse" />
+          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-accent animate-pulse" />
         </button>
       )}
 
