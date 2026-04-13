@@ -5,12 +5,12 @@ import {
 } from "lucide-react";
 
 const FEATURES = [
-  { icon: Brain, title: "AI Demand Forecasting", desc: "ML models predict demand from weather, events & trends to optimize your schedule.", color: "hsl(270,80%,65%)", glow: "rgba(139,92,246,0.1)" },
-  { icon: Shield, title: "Zero Double-Bookings", desc: "Cross-platform sync ensures no scheduling conflicts — ever. AI prevents them before they happen.", color: "hsl(0,72%,55%)", glow: "rgba(239,68,68,0.1)" },
-  { icon: TrendingUp, title: "Dynamic Pricing Engine", desc: "Real-time price optimization based on demand, competition, seasonality & capacity.", color: "hsl(160,60%,45%)", glow: "rgba(16,185,129,0.1)" },
-  { icon: Users, title: "Client Scoring & VIP Detection", desc: "AI scores every client — identify VIPs, repeat customers, and risk signals automatically.", color: "hsl(217,91%,60%)", glow: "rgba(59,130,246,0.1)" },
-  { icon: BarChart3, title: "Revenue Optimizer", desc: "Gap-filling, turnover analysis, and profit-per-unit calculations — all in real time.", color: "hsl(38,92%,55%)", glow: "rgba(245,158,11,0.1)" },
-  { icon: Sparkles, title: "AI-Powered Automation", desc: "Automate repetitive tasks — let AI handle scheduling, reminders & follow-ups for you.", color: "hsl(174,62%,50%)", glow: "rgba(45,212,191,0.1)" },
+  { icon: Brain, title: "AI Demand Forecasting", desc: "ML models predict demand from weather, events & trends — available for Hospitality, Airlines, Car Rental, Events & Railways.", color: "hsl(270,80%,65%)", glow: "rgba(139,92,246,0.1)" },
+  { icon: Shield, title: "Zero Double-Bookings", desc: "AI prevents scheduling conflicts across all 8 industries — auto-reassigns resources and notifies clients instantly.", color: "hsl(0,72%,55%)", glow: "rgba(239,68,68,0.1)" },
+  { icon: TrendingUp, title: "Dynamic Pricing Engine", desc: "Real-time price optimization based on demand, competition & capacity — for Hospitality, Airlines, Car Rental, Events & Railways.", color: "hsl(160,60%,45%)", glow: "rgba(16,185,129,0.1)" },
+  { icon: Users, title: "Client Scoring & VIP Detection", desc: "AI scores every client — identify VIPs, repeat customers, and risk signals automatically. Available for all industries.", color: "hsl(217,91%,60%)", glow: "rgba(59,130,246,0.1)" },
+  { icon: BarChart3, title: "Revenue & Scheduling Optimizer", desc: "Turnover analysis and profit tracking for all industries. Gap-filling available for Hospitality.", color: "hsl(38,92%,55%)", glow: "rgba(245,158,11,0.1)" },
+  { icon: Sparkles, title: "AI-Powered Automation", desc: "Automate repetitive tasks — AI handles scheduling, reminders & follow-ups across all 8 industries.", color: "hsl(174,62%,50%)", glow: "rgba(45,212,191,0.1)" },
 ];
 
 const FeaturesSection = () => (

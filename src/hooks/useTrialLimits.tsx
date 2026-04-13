@@ -174,8 +174,8 @@ export function useTrialLimits() {
       "competitor_insights", "gap_filling",
     ];
     const premiumFeatures: FeatureKey[] = [
-      "advanced_crm", "voice_assistant", "ai_voice_assistant", "white_label",
-      "multi_team", "custom_ai_training", "smart_tasks", "deal_pipeline",
+      "advanced_crm", "voice_assistant", "ai_voice_assistant",
+      "smart_tasks", "deal_pipeline",
       "google_workspace", "ai_demand_forecasting", "ai_conflict_resolution",
       "revenue_optimization", "dynamic_route_optimization",
     ];

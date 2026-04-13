@@ -5,7 +5,7 @@ const STEPS = [
     icon: UserPlus,
     step: "01",
     title: "Sign Up in 30 Seconds",
-    desc: "Create your account, pick your industry, and start your 3-day free trial — no credit card needed.",
+    desc: "Create your account, pick your industry, and start your 7-day free trial — no credit card needed.",
     color: "hsl(174,62%,50%)",
     glow: "rgba(45,212,191,0.15)",
   },
