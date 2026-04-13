@@ -21,7 +21,7 @@ const STEPS = [
     icon: Rocket,
     step: "03",
     title: "Let AI Do The Rest",
-    desc: "AI handles bookings, prevents conflicts, optimizes pricing, and grows your revenue — on autopilot.",
+    desc: "AI handles bookings, prevents conflicts, and grows your revenue — on autopilot. Pricing optimization available for select industries.",
     color: "hsl(270,80%,65%)",
     glow: "rgba(139,92,246,0.15)",
   },

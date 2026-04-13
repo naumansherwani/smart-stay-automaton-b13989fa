@@ -14,7 +14,7 @@ const CTASection = () => {
       <div className="container relative z-10 text-center space-y-10 max-w-3xl">
         <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.05] border border-white/[0.08] backdrop-blur-sm">
           <Clock className="w-4 h-4 text-[hsl(38,92%,55%)]" />
-          <span className="text-sm text-white/70 font-medium">Limited Time — 3 Days Full Access Free</span>
+          <span className="text-sm text-white/70 font-medium">Limited Time — 7 Days Full Access Free</span>
         </div>
 
         <h2 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">

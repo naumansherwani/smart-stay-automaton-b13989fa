@@ -50,6 +50,22 @@ const TESTIMONIALS = [
     industry: "Logistics",
     avatar: "ML",
   },
+  {
+    name: "Capt. R. Müller",
+    role: "Operations Director, Regional Airline",
+    text: "Crew scheduling and gate management used to be chaos. HostFlow AI resolved 98% of conflicts automatically.",
+    rating: 5,
+    industry: "Airlines",
+    avatar: "RM",
+  },
+  {
+    name: "A. Sharma",
+    role: "Station Manager, Railway Network",
+    text: "Managing 50+ daily trains with AI scheduling — platform conflicts dropped to zero. Dynamic pricing boosted revenue 28%.",
+    rating: 5,
+    industry: "Railways",
+    avatar: "AS",
+  },
 ];
 
 const AVATAR_COLORS = [
@@ -59,6 +75,8 @@ const AVATAR_COLORS = [
   "from-[hsl(300,80%,65%)] to-[hsl(270,80%,65%)]",
   "from-[hsl(270,80%,65%)] to-[hsl(217,91%,60%)]",
   "from-[hsl(38,92%,55%)] to-[hsl(25,95%,55%)]",
+  "from-[hsl(217,91%,60%)] to-[hsl(174,62%,50%)]",
+  "from-[hsl(38,92%,55%)] to-[hsl(174,62%,50%)]",
 ];
 
 const TestimonialsSection = () => (
