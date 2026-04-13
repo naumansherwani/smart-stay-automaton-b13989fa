@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Globe } from "lucide-react";
+import { Globe, Crown } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const WORLD_CLOCKS = [
   { label: "NYC", tz: "America/New_York" },
@@ -8,6 +9,12 @@ const WORLD_CLOCKS = [
   { label: "TKY", tz: "Asia/Tokyo" },
   { label: "SYD", tz: "Australia/Sydney" },
 ];
+
+// VIP badge config
+const VIP_BADGES: Record<string, { emoji: string; label: string; color: string }> = {
+  "naumansherwani@hostflowai.live": { emoji: "👑", label: "Owner", color: "from-amber-400 to-yellow-500" },
+  "raanamasood1962@gmail.com": { emoji: "👸", label: "Queen", color: "from-pink-400 to-rose-500" },
+};
 
 function getGreeting(hour: number) {
   if (hour < 12) return { text: "Good Morning", emoji: "☀️" };
