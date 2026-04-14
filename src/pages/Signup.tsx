@@ -36,6 +36,11 @@ export default function Signup() {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else {
       setSuccess(true);
+      sendOwnerNotification({
+        eventType: "new_signup",
+        eventTitle: "New User Signed Up",
+        details: `${fullName || "Unknown"} (${email}) just signed up${company ? ` from ${company}` : ""}.`,
+      });
     }
     setLoading(false);
   };
