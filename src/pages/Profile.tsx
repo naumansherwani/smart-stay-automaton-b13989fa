@@ -135,6 +135,7 @@ const Profile = () => {
         company_name: companyName,
         phone,
         industry,
+        business_subtype: industry === "hospitality" ? businessSubtype : null,
       })
       .eq("user_id", user.id);
 
