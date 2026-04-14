@@ -465,7 +465,7 @@ function DoctorsPanel({ dbDoctors, onAdd, onUpdate, onDelete, isLive }: { dbDoct
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between gap-3">
         <div className="flex gap-2 flex-wrap">
-          <Badge variant={filterSpec === "all" ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec("all")}>All ({MOCK_DOCTORS.length})</Badge>
+          <Badge variant={filterSpec === "all" ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec("all")}>All ({displayDocs.length})</Badge>
           {specs.map(s => (
             <Badge key={s} variant={filterSpec === s ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec(s)}>
               {specIcons[s]} {s}
@@ -480,7 +480,7 @@ function DoctorsPanel({ dbDoctors, onAdd, onUpdate, onDelete, isLive }: { dbDoct
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Activity className="w-4 h-4 text-primary" />Live Patient Flow</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => (
+            {displayDocs.filter(d => d.status !== "off-duty").map(d => (
               <div key={d.id} className={`p-3 rounded-lg border ${d.status === "with-patient" ? "border-primary/30 bg-primary/5" : d.status === "break" ? "border-warning/30 bg-warning/5" : "border-border"}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{d.avatar}</span>
@@ -556,8 +556,8 @@ function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; d
   const activeDoctors = dbDoctors.filter(d => d.status !== "off-duty");
 
   const getSlotStatus = (doctor: string, time: string): { status: string; patient?: string; type?: string } => {
-    const apt = MOCK_APPOINTMENTS.find(a => a.doctorName === doctor && a.time.replace(" ", "").toLowerCase().includes(time.replace(":","").toLowerCase().slice(0,4)));
-    if (apt) return { status: apt.status, patient: apt.patientName, type: apt.type };
+    const apt = dbAppointments.find(a => a.doctor_name === doctor && (typeof a.appointment_time === "string" && a.appointment_time.includes(time.replace(":", "").slice(0, 4))));
+    if (apt) return { status: apt.status, patient: apt.patient_name, type: apt.type };
     if (time === "12:00" || time === "12:30") return { status: "break" };
     return { status: "available" };
   };
