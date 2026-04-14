@@ -37,6 +37,12 @@ const PLATFORM_FEATURES = [
     "Smart Pricing Card",
     "Competitor Radar",
     "Custom AI Training (Premium)",
+    "── Team Roles ──",
+    "👑 Owner — Full access (CRM, AI Pricing, Billing, Settings, Analytics)",
+    "📋 Manager — Full access minus billing/payment settings",
+    "🏢 Floor Manager — Full operational (Bookings, Rooms, Staff, Calendar, CRM)",
+    "🖥️ Front Desk — Full operational (Bookings, Check-in/out, Guests, Housekeeping mgmt)",
+    "🧹 Housekeeping — No direct access (Front Desk assigns tasks)",
   ]},
   { industry: "Car Rental", icon: Car, color: "#0ea5e9", features: [
     "Vehicle Manager",

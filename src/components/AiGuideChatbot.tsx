@@ -18,19 +18,19 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
   dashboard: [
     { label: "📅 Calendar", question: "Smart Calendar kaise kaam karta hai?" },
     { label: "💰 Pricing", question: "AI Auto Pricing kya hai aur kaise use karein?" },
-    { label: "📊 KPIs", question: "Dashboard pe konse KPIs dikhte hain?" },
     { label: "🛡️ Guard", question: "Double Booking Guard kya hai?" },
+    { label: "👥 Team", question: "Apni team ko kaise connect karein? Team roles kya hain?" },
   ],
   crm: [
     { label: "👥 Contacts", question: "CRM Contacts kaise manage karein?" },
     { label: "🎫 Tickets", question: "Support Tickets kaise kaam karte hain?" },
     { label: "💼 Deals", question: "Deals pipeline kaise use karein?" },
-    { label: "🤖 AI", question: "AI Insights aur AI features explain karein" },
+    { label: "🔗 Team Connect", question: "Team ko CRM se kaise connect karein? Roles aur access explain karein" },
   ],
   settings: [
     { label: "👤 Profile", question: "Apna profile kaise update karein?" },
     { label: "🌐 Language", question: "App ki language kaise change karein?" },
-    { label: "🏢 Workspace", question: "Workspace kya hai aur kaise create karein?" },
+    { label: "👥 Team", question: "Team members ko kaise invite aur manage karein?" },
     { label: "💳 Plan", question: "Premium plan mein kya milta hai?" },
   ],
 };
