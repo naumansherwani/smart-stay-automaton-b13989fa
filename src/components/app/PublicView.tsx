@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Globe, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront, Mail, Wallet, Settings, LogOut, Crown } from "lucide-react";
+import { Globe, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront, Crown, Wallet, Settings, LogOut, Mail, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Logo from "@/components/Logo";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -34,7 +35,10 @@ const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: 
   { icon: TrainFront, name: "Railways", desc: "Trains & platforms", color: "#0284c7", id: "railways" },
 ];
 
-const getIndustryName = (id?: IndustryType) => INDUSTRIES.find(i => i.id === id)?.name || "Hospitality";
+const getIndustryIcon = (id?: IndustryType) => {
+  const ind = INDUSTRIES.find(i => i.id === id);
+  return ind ? { Icon: ind.icon, name: ind.name, color: ind.color } : { Icon: Globe, name: "Hospitality", color: "#0d9488" };
+};
 
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
@@ -61,39 +65,34 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
   const displayName = getUserDisplayName(user ?? null, profile?.display_name);
   const avatarUrl = getUserAvatarUrl(user ?? null, profile?.avatar_url);
   const initials = getUserInitials(displayName, user?.email);
+  const activeIndustry = getIndustryIcon(currentIndustry);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AnimatedTopBorder />
 
-      {/* Owner Header - Full featured for admin */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
+          {/* LEFT: Logo + Active Industry */}
           <div className="flex items-center gap-3">
             <Logo size="lg" showName />
-            {/* Owner Profile - Facebook style */}
-            {isAdmin && user && (
-              <button
-                onClick={() => navigate("/profile")}
-                className="flex items-center gap-2.5 ml-4 px-3 py-1.5 rounded-full hover:bg-muted/50 transition-colors"
-              >
-                <Avatar className="h-8 w-8 border-2 border-primary/40 ring-1 ring-primary/10">
-                  <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">{initials}</AvatarFallback>
-                </Avatar>
-                <div className="hidden md:flex flex-col items-start">
-                  <span className="text-sm font-semibold text-foreground leading-tight">{displayName}</span>
-                  <span className="text-[10px] text-muted-foreground leading-tight flex items-center gap-1">
-                    <Crown className="w-2.5 h-2.5 text-amber-500" /> Owner
-                  </span>
+            {isAdmin && (
+              <div className="flex items-center gap-2 ml-2 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${activeIndustry.color}15` }}>
+                  <activeIndustry.Icon className="w-4 h-4" style={{ color: activeIndustry.color }} />
                 </div>
-              </button>
+                <span className="text-sm font-medium text-foreground hidden sm:inline">{activeIndustry.name}</span>
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+              </div>
             )}
           </div>
 
           {isAdmin ? (
-            /* Admin header actions */
-            <div className="flex items-center gap-1 md:gap-2">
+            /* RIGHT: Email badge + Theme + Profile Dropdown */
+            <div className="flex items-center gap-2">
               {/* Email Badge */}
               <Button
                 variant="ghost"
@@ -108,49 +107,45 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                 </span>
               </Button>
 
-              {/* Earnings Badge */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5 text-xs"
-                onClick={() => navigate("/earnings")}
-              >
-                <Wallet className="w-4 h-4 text-emerald-500" />
-                <span className="hidden md:inline font-semibold text-emerald-500">Earnings</span>
-              </Button>
-
               <ThemeToggle />
 
-              {/* Settings */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5 text-xs"
-                onClick={() => navigate("/settings")}
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden md:inline">Settings</span>
-              </Button>
-
-              {/* Active Industry Indicator */}
-              <Button variant="outline" size="sm" onClick={onReturn} className="gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                </span>
-                {getIndustryName(currentIndustry)}
-              </Button>
-
-              {/* Logout */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1.5 text-xs hover:bg-destructive/10 hover:text-destructive"
-                onClick={() => { signOut(); navigate("/"); }}
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden md:inline">Logout</span>
-              </Button>
+              {/* Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-full hover:bg-muted/50 transition-colors outline-none">
+                    <Avatar className="h-8 w-8 border-2 border-primary/30">
+                      <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">{initials}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-semibold text-foreground hidden md:inline">{displayName}</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden md:inline" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-3 py-2.5 border-b border-border/50">
+                    <p className="text-sm font-semibold text-foreground">{displayName}</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                      <Crown className="w-3 h-3 text-amber-500" /> Platform Owner
+                    </p>
+                  </div>
+                  <DropdownMenuItem onClick={() => navigate("/earnings")} className="gap-2.5 py-2.5 cursor-pointer">
+                    <Wallet className="w-4 h-4 text-emerald-500" />
+                    <span>Earnings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2.5 py-2.5 cursor-pointer">
+                    <Settings className="w-4 h-4 text-muted-foreground" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => { signOut(); navigate("/"); }}
+                    className="gap-2.5 py-2.5 cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ) : (
             /* Non-admin header */
@@ -165,7 +160,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                 </span>
-                {getIndustryName(currentIndustry)}
+                {activeIndustry.name}
               </Button>
             </div>
           )}
@@ -184,7 +179,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                 Welcome back, <span className="text-primary">{displayName?.split(" ")[0] || "Owner"}</span>
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Your AI-powered platform is running across <strong>8 industries</strong>. Select an industry below to view its dashboard, analytics, and operations.
+                Manage <strong>8 industries</strong>, track revenue, monitor users, and control every aspect of your AI-powered platform — all from one place.
               </p>
             </>
           ) : (
