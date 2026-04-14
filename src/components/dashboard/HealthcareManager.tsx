@@ -644,7 +644,7 @@ function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; d
       <Card>
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-warning" />AI No-Show Predictor</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {MOCK_APPOINTMENTS.filter(a => a.noShowRisk > 20 && a.status === "scheduled").sort((a, b) => b.noShowRisk - a.noShowRisk).map(a => (
+          {dbAppointments.filter(a => a.no_show_risk > 20 && a.status === "scheduled").sort((a, b) => b.no_show_risk - a.no_show_risk).map(a => (
             <div key={a.id} className={`p-2.5 rounded-lg border ${a.noShowRisk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
               <div className="flex items-center justify-between">
                 <div>
