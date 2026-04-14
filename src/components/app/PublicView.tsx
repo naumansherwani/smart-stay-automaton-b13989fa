@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket } from "lucide-react";
+import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import type { IndustryType } from "@/lib/industryConfig";
 import Logo from "@/components/Logo";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 

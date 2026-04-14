@@ -148,17 +148,13 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="container py-6 md:py-8 space-y-6 md:space-y-8">
-        {isAdmin ? (
-          <IndustryChooser currentIndustry={currentIndustry} onSelect={(ind) => updateIndustry(ind)} />
-        ) : (
-          <>
-            <SmartGreetingBanner userName={displayName} />
-            {!isPaid && (
-              <UpgradeNudge variant="card" feature="AI Automation" message={isExpired ? "Your trial has expired — upgrade to continue using all features" : "Automation saves time and increases revenue — unlock all features with Pro"} />
-            )}
-            <HowItWorksGuide />
-          </>
+        <SmartGreetingBanner userName={displayName} />
+
+        {!isPaid && (
+          <UpgradeNudge variant="card" feature="AI Automation" message={isExpired ? "Your trial has expired — upgrade to continue using all features" : "Automation saves time and increases revenue — unlock all features with Pro"} />
         )}
+
+        <HowItWorksGuide />
 
         <IndustryKPIs config={config} />
 
