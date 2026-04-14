@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useProfile } from "@/hooks/useProfile";
+import { useProfile, type BusinessSubtype } from "@/hooks/useProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
@@ -39,6 +39,7 @@ const Profile = () => {
   const [companyName, setCompanyName] = useState("");
   const [phone, setPhone] = useState("");
   const [industry, setIndustry] = useState<IndustryType>("hospitality");
+  const [businessSubtype, setBusinessSubtype] = useState<BusinessSubtype>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -63,6 +64,7 @@ const Profile = () => {
       setCompanyName(profile.company_name || "");
       setPhone(profile.phone || "");
       setIndustry(profile.industry || "hospitality");
+      setBusinessSubtype(profile.business_subtype ?? null);
     }
   }, [profile]);
 
@@ -497,7 +499,7 @@ const Profile = () => {
             </div>
             <div className="space-y-2">
               <Label><Globe className="w-3.5 h-3.5 inline mr-1" />Industry</Label>
-              <Select value={industry} onValueChange={v => setIndustry(v as IndustryType)}>
+              <Select value={industry} onValueChange={v => { setIndustry(v as IndustryType); if (v !== "hospitality") setBusinessSubtype(null); }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -508,6 +510,21 @@ const Profile = () => {
                 </SelectContent>
               </Select>
             </div>
+            {industry === "hospitality" && (
+              <div className="space-y-2">
+                <Label><Building2 className="w-3.5 h-3.5 inline mr-1" />Business Type</Label>
+                <Select value={businessSubtype || ""} onValueChange={v => setBusinessSubtype(v as BusinessSubtype)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select business type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hotel_property">🏨 Hotel & Property</SelectItem>
+                    <SelectItem value="travel_tours">🌍 Travel & Tours</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-[11px] text-muted-foreground">This customizes your team roles, labels and dashboard</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
