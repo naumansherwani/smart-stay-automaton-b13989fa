@@ -11,7 +11,7 @@ interface PublicViewProps {
   currentIndustry?: IndustryType;
 }
 
-const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; id: IndustryType }[] = [
+const NAV_LINKS = ["About", "Features", "Pricing", "Contact"];
   { icon: Globe, name: "Hospitality", desc: "Hotels, vacation rentals, tours", color: "#0d9488", id: "hospitality" },
   { icon: Plane, name: "Airlines", desc: "Crew, gates, fleet", color: "#3b82f6", id: "airlines" },
   { icon: Car, name: "Car Rental", desc: "Fleet & maintenance", color: "#0ea5e9", id: "car_rental" },
