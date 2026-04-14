@@ -1664,8 +1664,42 @@ function GlobalVoiceCommandBar() {
 
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
+  const hc = useHealthcare();
+
+  // Use DB data if available, otherwise fall back to mock data for demo
+  const doctorsData = hc.doctors.length > 0 ? hc.doctors : MOCK_DOCTORS.map(d => ({
+    id: d.id, name: d.name, specialization: d.specialization, status: d.status,
+    room: d.room, patients_today: d.patientsToday, max_patients: d.maxPatients,
+    next_available: d.nextAvailable, rating: d.rating, working_hours: d.workingHours,
+    working_days: d.workingDays, slot_duration: d.slotDuration, phone: d.phone, avatar: d.avatar,
+  })) as HcDoctor[];
+
+  const appointmentsData = hc.appointments.length > 0 ? hc.appointments : MOCK_APPOINTMENTS.map(a => ({
+    id: a.id, patient_id: null, patient_name: a.patientName, patient_phone: a.patientPhone,
+    doctor_id: null, doctor_name: a.doctorName, specialization: a.specialization,
+    appointment_time: a.time, duration_minutes: parseInt(a.duration) || 30,
+    type: a.type, status: a.status, fee: a.fee, notes: a.notes, no_show_risk: a.noShowRisk,
+  })) as HcAppointment[];
+
+  const patientsData = hc.patients.length > 0 ? hc.patients : MOCK_PATIENTS.map(p => ({
+    id: p.id, name: p.name, age: p.age, gender: p.gender, phone: p.phone, email: p.email,
+    condition: p.condition, doctor_id: null, doctor_name: p.doctor,
+    total_visits: p.totalVisits, no_show_count: p.noShowCount,
+    last_visit_at: null, upcoming_appointment_at: null, status: p.status,
+  })) as HcPatient[];
+
+  const isLive = hc.doctors.length > 0 || hc.patients.length > 0 || hc.appointments.length > 0;
+
   return (
     <div className="space-y-6">
+      {/* Data source indicator */}
+      {!hc.loading && (
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${isLive ? "bg-success/10 border border-success/20 text-success" : "bg-warning/10 border border-warning/20 text-warning"}`}>
+          <div className={`w-2 h-2 rounded-full ${isLive ? "bg-success animate-pulse" : "bg-warning"}`} />
+          {isLive ? "Live — Connected to database" : "Demo mode — Add doctors/patients to activate live data"}
+        </div>
+      )}
+
       {/* Global AI Summary Ticker */}
       <GlobalAISummary />
 
@@ -1706,10 +1740,18 @@ export default function HealthcareManager({ config }: { config: IndustryConfig }
           <TabsTrigger value="patients" className="gap-1.5 text-xs md:text-sm"><Users className="w-3.5 h-3.5" />Patients</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="appointments"><AppointmentsPanel /></TabsContent>
-        <TabsContent value="doctors"><DoctorsPanel /></TabsContent>
-        <TabsContent value="schedule"><SchedulePanel /></TabsContent>
-        <TabsContent value="patients"><PatientsPanel /></TabsContent>
+        <TabsContent value="appointments">
+          <AppointmentsPanel dbDoctors={doctorsData} dbAppointments={appointmentsData} onBook={hc.addAppointment} onUpdate={hc.updateAppointment} isLive={isLive} />
+        </TabsContent>
+        <TabsContent value="doctors">
+          <DoctorsPanel dbDoctors={doctorsData} onAdd={hc.addDoctor} onUpdate={hc.updateDoctor} onDelete={hc.deleteDoctor} isLive={isLive} />
+        </TabsContent>
+        <TabsContent value="schedule">
+          <SchedulePanel dbDoctors={doctorsData} dbAppointments={appointmentsData} />
+        </TabsContent>
+        <TabsContent value="patients">
+          <PatientsPanel dbPatients={patientsData} onAdd={hc.addPatient} onUpdate={hc.updatePatient} onDelete={hc.deletePatient} isLive={isLive} />
+        </TabsContent>
       </Tabs>
 
       {/* Global Voice Command Bar */}
