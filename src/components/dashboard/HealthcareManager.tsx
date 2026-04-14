@@ -6,6 +6,7 @@ import {
   ArrowUpRight, ArrowDownRight, DollarSign, ClipboardList,
   CalendarClock, Pill, Thermometer, FileText, BadgeCheck, CircleDot, Mic, LayoutGrid, ShieldAlert, Package, Volume2
 } from "lucide-react";
+import { useHealthcare, type HcDoctor, type HcAppointment, type HcPatient } from "@/hooks/useHealthcare";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -260,10 +261,30 @@ function HealthcareKPIs() {
 }
 
 // ─── Appointments Tab ───
-function AppointmentsPanel() {
+function AppointmentsPanel({ dbDoctors, dbAppointments, onBook, onUpdate, isLive }: { dbDoctors: HcDoctor[]; dbAppointments: HcAppointment[]; onBook: (apt: Partial<HcAppointment>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcAppointment>) => Promise<void>; isLive: boolean }) {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const filtered = MOCK_APPOINTMENTS.filter(a => {
+
+  // Map DB appointments to display format
+  const displayApts: Appointment[] = dbAppointments.map(a => ({
+    id: a.id,
+    patientName: a.patient_name,
+    patientPhone: a.patient_phone || "",
+    doctorName: a.doctor_name,
+    doctorId: a.doctor_id || "",
+    specialization: a.specialization || "",
+    time: typeof a.appointment_time === "string" && a.appointment_time.includes("T")
+      ? new Date(a.appointment_time).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+      : a.appointment_time,
+    duration: `${a.duration_minutes} min`,
+    type: a.type as Appointment["type"],
+    status: a.status as Appointment["status"],
+    fee: a.fee,
+    notes: a.notes || "",
+    noShowRisk: a.no_show_risk,
+  }));
+
+  const filtered = displayApts.filter(a => {
     const matchSearch = a.patientName.toLowerCase().includes(search.toLowerCase()) || a.doctorName.toLowerCase().includes(search.toLowerCase()) || a.id.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === "all" || a.status === filterStatus;
     return matchSearch && matchStatus;
@@ -327,7 +348,7 @@ function AppointmentsPanel() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2"><Label>Doctor</Label>
                   <Select><SelectTrigger><SelectValue placeholder="Select doctor" /></SelectTrigger>
-                    <SelectContent>{MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => <SelectItem key={d.id} value={d.id}>{d.avatar} {d.name} — {d.specialization}</SelectItem>)}</SelectContent>
+                    <SelectContent>{dbDoctors.filter(d => d.status !== "off-duty").map(d => <SelectItem key={d.id} value={d.id}>{d.avatar || "🩺"} {d.name} — {d.specialization}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2"><Label>Appointment Type</Label>
@@ -428,16 +449,23 @@ function AppointmentCard({ apt }: { apt: Appointment }) {
 }
 
 // ─── Doctors Tab ───
-function DoctorsPanel() {
+function DoctorsPanel({ dbDoctors, onAdd, onUpdate, onDelete, isLive }: { dbDoctors: HcDoctor[]; onAdd: (doc: Partial<HcDoctor>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcDoctor>) => Promise<void>; onDelete: (id: string) => Promise<void>; isLive: boolean }) {
   const [filterSpec, setFilterSpec] = useState("all");
-  const filtered = MOCK_DOCTORS.filter(d => filterSpec === "all" || d.specialization === filterSpec);
-  const specs = [...new Set(MOCK_DOCTORS.map(d => d.specialization))];
+  // Map DB doctors to display format
+  const displayDocs: Doctor[] = dbDoctors.map(d => ({
+    id: d.id, name: d.name, specialization: d.specialization, status: d.status as Doctor["status"],
+    room: d.room || "", patientsToday: d.patients_today, maxPatients: d.max_patients,
+    nextAvailable: d.next_available || "—", rating: d.rating, workingHours: d.working_hours || "09:00–17:00",
+    workingDays: d.working_days || "Mon–Sat", slotDuration: d.slot_duration, phone: d.phone || "", avatar: d.avatar || "🩺",
+  }));
+  const filtered = displayDocs.filter(d => filterSpec === "all" || d.specialization === filterSpec);
+  const specs = [...new Set(displayDocs.map(d => d.specialization))];
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between gap-3">
         <div className="flex gap-2 flex-wrap">
-          <Badge variant={filterSpec === "all" ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec("all")}>All ({MOCK_DOCTORS.length})</Badge>
+          <Badge variant={filterSpec === "all" ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec("all")}>All ({displayDocs.length})</Badge>
           {specs.map(s => (
             <Badge key={s} variant={filterSpec === s ? "default" : "outline"} className="cursor-pointer" onClick={() => setFilterSpec(s)}>
               {specIcons[s]} {s}
@@ -452,7 +480,7 @@ function DoctorsPanel() {
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Activity className="w-4 h-4 text-primary" />Live Patient Flow</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => (
+            {displayDocs.filter(d => d.status !== "off-duty").map(d => (
               <div key={d.id} className={`p-3 rounded-lg border ${d.status === "with-patient" ? "border-primary/30 bg-primary/5" : d.status === "break" ? "border-warning/30 bg-warning/5" : "border-border"}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-lg">{d.avatar}</span>
@@ -523,13 +551,13 @@ function DoctorsPanel() {
 }
 
 // ─── Schedule Tab ───
-function SchedulePanel() {
+function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; dbAppointments: HcAppointment[] }) {
   const hours = ["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30"];
-  const activeDoctors = MOCK_DOCTORS.filter(d => d.status !== "off-duty");
+  const activeDoctors = dbDoctors.filter(d => d.status !== "off-duty");
 
   const getSlotStatus = (doctor: string, time: string): { status: string; patient?: string; type?: string } => {
-    const apt = MOCK_APPOINTMENTS.find(a => a.doctorName === doctor && a.time.replace(" ", "").toLowerCase().includes(time.replace(":","").toLowerCase().slice(0,4)));
-    if (apt) return { status: apt.status, patient: apt.patientName, type: apt.type };
+    const apt = dbAppointments.find(a => a.doctor_name === doctor && (typeof a.appointment_time === "string" && a.appointment_time.includes(time.replace(":", "").slice(0, 4))));
+    if (apt) return { status: apt.status, patient: apt.patient_name, type: apt.type };
     if (time === "12:00" || time === "12:30") return { status: "break" };
     return { status: "available" };
   };
@@ -616,16 +644,16 @@ function SchedulePanel() {
       <Card>
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-warning" />AI No-Show Predictor</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          {MOCK_APPOINTMENTS.filter(a => a.noShowRisk > 20 && a.status === "scheduled").sort((a, b) => b.noShowRisk - a.noShowRisk).map(a => (
-            <div key={a.id} className={`p-2.5 rounded-lg border ${a.noShowRisk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
+          {dbAppointments.filter(a => a.no_show_risk > 20 && a.status === "scheduled").sort((a, b) => b.no_show_risk - a.no_show_risk).map(a => (
+            <div key={a.id} className={`p-2.5 rounded-lg border ${a.no_show_risk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-foreground">{a.patientName}</p>
-                  <p className="text-[10px] text-muted-foreground">{a.time} · {a.doctorName} · {a.specialization}</p>
+                  <p className="text-sm font-medium text-foreground">{a.patient_name}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.appointment_time} · {a.doctor_name} · {a.specialization}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className={`text-[10px] ${a.noShowRisk > 40 ? "text-destructive border-destructive/30" : "text-warning border-warning/30"}`}>
-                    {a.noShowRisk}% risk
+                  <Badge variant="outline" className={`text-[10px] ${a.no_show_risk > 40 ? "text-destructive border-destructive/30" : "text-warning border-warning/30"}`}>
+                    {a.no_show_risk}% risk
                   </Badge>
                   <Button size="sm" variant="ghost" className="h-6 text-[10px]"><Bell className="w-3 h-3" /></Button>
                 </div>
@@ -639,9 +667,17 @@ function SchedulePanel() {
 }
 
 // ─── Patients Tab ───
-function PatientsPanel() {
+function PatientsPanel({ dbPatients, onAdd, onUpdate, onDelete, isLive }: { dbPatients: HcPatient[]; onAdd: (pat: Partial<HcPatient>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcPatient>) => Promise<void>; onDelete: (id: string) => Promise<void>; isLive: boolean }) {
   const [search, setSearch] = useState("");
-  const filtered = MOCK_PATIENTS.filter(p =>
+  // Map DB patients to display format
+  const displayPats: Patient[] = dbPatients.map(p => ({
+    id: p.id, name: p.name, age: p.age || 0, gender: p.gender || "", phone: p.phone || "",
+    email: p.email || "", lastVisit: p.last_visit_at ? new Date(p.last_visit_at).toLocaleDateString() : "—",
+    totalVisits: p.total_visits, upcomingAppt: p.upcoming_appointment_at ? new Date(p.upcoming_appointment_at).toLocaleDateString() : "—",
+    condition: p.condition || "", doctor: p.doctor_name || "", status: p.status as Patient["status"],
+    noShowCount: p.no_show_count,
+  }));
+  const filtered = displayPats.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) || p.condition.toLowerCase().includes(search.toLowerCase()) || p.doctor.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -649,10 +685,10 @@ function PatientsPanel() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Patients", value: MOCK_PATIENTS.length.toString(), icon: Users },
-          { label: "New This Month", value: "1", icon: UserCheck },
-          { label: "Active", value: MOCK_PATIENTS.filter(p => p.status === "active").length.toString(), icon: Heart },
-          { label: "High No-Show Risk", value: MOCK_PATIENTS.filter(p => p.noShowCount >= 3).length.toString(), icon: AlertTriangle },
+          { label: "Total Patients", value: displayPats.length.toString(), icon: Users },
+          { label: "New This Month", value: displayPats.filter(p => p.status === "new").length.toString(), icon: UserCheck },
+          { label: "Active", value: displayPats.filter(p => p.status === "active").length.toString(), icon: Heart },
+          { label: "High No-Show Risk", value: displayPats.filter(p => p.noShowCount >= 3).length.toString(), icon: AlertTriangle },
         ].map(s => (
           <Card key={s.label}>
             <CardContent className="p-3 flex items-center gap-3">
@@ -1663,8 +1699,42 @@ function GlobalVoiceCommandBar() {
 
 // ─── Main Component ───
 export default function HealthcareManager({ config }: { config: IndustryConfig }) {
+  const hc = useHealthcare();
+
+  // Use DB data if available, otherwise fall back to mock data for demo
+  const doctorsData = hc.doctors.length > 0 ? hc.doctors : MOCK_DOCTORS.map(d => ({
+    id: d.id, name: d.name, specialization: d.specialization, status: d.status,
+    room: d.room, patients_today: d.patientsToday, max_patients: d.maxPatients,
+    next_available: d.nextAvailable, rating: d.rating, working_hours: d.workingHours,
+    working_days: d.workingDays, slot_duration: d.slotDuration, phone: d.phone, avatar: d.avatar,
+  })) as HcDoctor[];
+
+  const appointmentsData = hc.appointments.length > 0 ? hc.appointments : MOCK_APPOINTMENTS.map(a => ({
+    id: a.id, patient_id: null, patient_name: a.patientName, patient_phone: a.patientPhone,
+    doctor_id: null, doctor_name: a.doctorName, specialization: a.specialization,
+    appointment_time: a.time, duration_minutes: parseInt(a.duration) || 30,
+    type: a.type, status: a.status, fee: a.fee, notes: a.notes, no_show_risk: a.noShowRisk,
+  })) as HcAppointment[];
+
+  const patientsData = hc.patients.length > 0 ? hc.patients : MOCK_PATIENTS.map(p => ({
+    id: p.id, name: p.name, age: p.age, gender: p.gender, phone: p.phone, email: p.email,
+    condition: p.condition, doctor_id: null, doctor_name: p.doctor,
+    total_visits: p.totalVisits, no_show_count: p.noShowCount,
+    last_visit_at: null, upcoming_appointment_at: null, status: p.status,
+  })) as HcPatient[];
+
+  const isLive = hc.doctors.length > 0 || hc.patients.length > 0 || hc.appointments.length > 0;
+
   return (
     <div className="space-y-6">
+      {/* Data source indicator */}
+      {!hc.loading && (
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs ${isLive ? "bg-success/10 border border-success/20 text-success" : "bg-warning/10 border border-warning/20 text-warning"}`}>
+          <div className={`w-2 h-2 rounded-full ${isLive ? "bg-success animate-pulse" : "bg-warning"}`} />
+          {isLive ? "Live — Connected to database" : "Demo mode — Add doctors/patients to activate live data"}
+        </div>
+      )}
+
       {/* Global AI Summary Ticker */}
       <GlobalAISummary />
 
@@ -1705,10 +1775,18 @@ export default function HealthcareManager({ config }: { config: IndustryConfig }
           <TabsTrigger value="patients" className="gap-1.5 text-xs md:text-sm"><Users className="w-3.5 h-3.5" />Patients</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="appointments"><AppointmentsPanel /></TabsContent>
-        <TabsContent value="doctors"><DoctorsPanel /></TabsContent>
-        <TabsContent value="schedule"><SchedulePanel /></TabsContent>
-        <TabsContent value="patients"><PatientsPanel /></TabsContent>
+        <TabsContent value="appointments">
+          <AppointmentsPanel dbDoctors={doctorsData} dbAppointments={appointmentsData} onBook={hc.addAppointment} onUpdate={hc.updateAppointment} isLive={isLive} />
+        </TabsContent>
+        <TabsContent value="doctors">
+          <DoctorsPanel dbDoctors={doctorsData} onAdd={hc.addDoctor} onUpdate={hc.updateDoctor} onDelete={hc.deleteDoctor} isLive={isLive} />
+        </TabsContent>
+        <TabsContent value="schedule">
+          <SchedulePanel dbDoctors={doctorsData} dbAppointments={appointmentsData} />
+        </TabsContent>
+        <TabsContent value="patients">
+          <PatientsPanel dbPatients={patientsData} onAdd={hc.addPatient} onUpdate={hc.updatePatient} onDelete={hc.deletePatient} isLive={isLive} />
+        </TabsContent>
       </Tabs>
 
       {/* Global Voice Command Bar */}
