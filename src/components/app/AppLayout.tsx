@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { IndustryType } from "@/lib/industryConfig";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,8 +24,21 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { profile } = useProfile();
   const navigate = useNavigate();
   const [publicMode, setPublicMode] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+
+  const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
+    if (!user) return;
+    await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
+    setPublicMode(false);
+    window.location.reload();
+  }, [user]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -42,7 +57,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }, [togglePublicMode]);
 
   if (publicMode) {
-    return <PublicView onReturn={() => setPublicMode(false)} />;
+    return (
+      <PublicView
+        onReturn={() => setPublicMode(false)}
+        onIndustrySelect={isAdmin ? handleIndustrySelect : undefined}
+        currentIndustry={(profile?.industry as IndustryType) || "hospitality"}
+      />
+    );
   }
 
   const displayName = getUserDisplayName(user, profile?.display_name);

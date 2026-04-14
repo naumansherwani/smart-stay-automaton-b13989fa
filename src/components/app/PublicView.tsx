@@ -1,13 +1,28 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket } from "lucide-react";
+import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/components/Logo";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
+import type { IndustryType } from "@/lib/industryConfig";
 
 interface PublicViewProps {
   onReturn: () => void;
+  onIndustrySelect?: (industry: IndustryType) => void;
+  currentIndustry?: IndustryType;
 }
 
 const NAV_LINKS = ["About", "Features", "Pricing", "Contact"];
+
+const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; id: IndustryType }[] = [
+  { icon: Globe, name: "Hospitality", desc: "Hotels, vacation rentals, tours", color: "#0d9488", id: "hospitality" },
+  { icon: Plane, name: "Airlines", desc: "Crew, gates, fleet", color: "#3b82f6", id: "airlines" },
+  { icon: Car, name: "Car Rental", desc: "Fleet & maintenance", color: "#0ea5e9", id: "car_rental" },
+  { icon: Stethoscope, name: "Healthcare", desc: "Appointments & rooms", color: "#ef4444", id: "healthcare" },
+  { icon: GraduationCap, name: "Education", desc: "Classes & timetables", color: "#8b5cf6", id: "education" },
+  { icon: Truck, name: "Logistics", desc: "Delivery & warehouse", color: "#f97316", id: "logistics" },
+  { icon: Theater, name: "Events", desc: "Venues & performers", color: "#d946ef", id: "events_entertainment" },
+  { icon: TrainFront, name: "Railways", desc: "Trains & platforms", color: "#0284c7", id: "railways" },
+];
 
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
@@ -19,7 +34,6 @@ const FEATURES = [
 ];
 
 const FOOTER_COLUMNS = [
-  { heading: "Industries", links: ["Hospitality", "Airlines", "Car Rental", "Healthcare", "Education", "Logistics", "Events", "Railways"] },
   { heading: "Product", links: ["Features", "Pricing", "AI Tools", "CRM", "Automations"] },
   { heading: "Platform", links: ["How it works", "Use cases", "Integrations", "System overview"] },
   { heading: "Company", links: ["About Us", "Mission", "Vision", "Careers"] },
@@ -28,7 +42,7 @@ const FOOTER_COLUMNS = [
   { heading: "Explore", links: ["Blog", "Updates", "Partnerships"] },
 ];
 
-export default function PublicView({ onReturn }: PublicViewProps) {
+export default function PublicView({ onReturn, onIndustrySelect, currentIndustry }: PublicViewProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AnimatedTopBorder />
@@ -66,6 +80,61 @@ export default function PublicView({ onReturn }: PublicViewProps) {
         </div>
       </section>
 
+      {/* Industry Chooser */}
+      {onIndustrySelect && (
+        <section className="py-12 bg-muted/20">
+          <div className="container space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">Choose Your Industry</h2>
+              <p className="text-sm text-muted-foreground">Select an industry to manage its dashboard</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+              {INDUSTRIES.map((ind) => {
+                const isActive = currentIndustry === ind.id;
+                return (
+                  <Card
+                    key={ind.id}
+                    onClick={() => onIndustrySelect(ind.id)}
+                    className={`group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden relative ${
+                      isActive ? "ring-2 ring-primary shadow-lg" : "border-border/50 hover:border-primary/30"
+                    }`}
+                    style={isActive ? { borderColor: ind.color, boxShadow: `0 4px 20px -4px ${ind.color}40` } : {}}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = `${ind.color}50`;
+                        e.currentTarget.style.boxShadow = `0 4px 20px -4px ${ind.color}25`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.borderColor = "";
+                        e.currentTarget.style.boxShadow = "";
+                      }
+                    }}
+                  >
+                    {isActive && (
+                      <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: ind.color }} />
+                    )}
+                    <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${isActive ? "scale-110" : "group-hover:scale-110"}`}
+                        style={{ backgroundColor: `${ind.color}15` }}
+                      >
+                        <ind.icon className="w-5 h-5" style={{ color: ind.color }} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm text-foreground leading-tight">{ind.name}</h4>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{ind.desc}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Features */}
       <section id="features" className="py-20 bg-muted/30">
         <div className="container">
@@ -93,10 +162,10 @@ export default function PublicView({ onReturn }: PublicViewProps) {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - no Industries column for admin */}
       <footer className="border-t border-border/40 bg-muted/20 pt-16 pb-8">
         <div className="container">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-8 mb-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
             {FOOTER_COLUMNS.map(col => (
               <div key={col.heading}>
                 <h4 className="text-sm font-bold mb-4 text-foreground">{col.heading}</h4>
