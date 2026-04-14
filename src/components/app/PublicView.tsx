@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Globe, Zap, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
+import { Globe, BarChart3, Users, Calendar, Brain, Shield, Rocket, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/components/Logo";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
@@ -9,6 +9,7 @@ interface PublicViewProps {
   onReturn: () => void;
   onIndustrySelect?: (industry: IndustryType) => void;
   currentIndustry?: IndustryType;
+  isAdmin?: boolean;
 }
 
 const NAV_LINKS = ["About", "Features", "Pricing", "Contact"];
@@ -44,7 +45,7 @@ const FOOTER_COLUMNS = [
   { heading: "Explore", links: ["Blog", "Updates", "Partnerships"] },
 ];
 
-export default function PublicView({ onReturn, onIndustrySelect, currentIndustry }: PublicViewProps) {
+export default function PublicView({ onReturn, onIndustrySelect, currentIndustry, isAdmin }: PublicViewProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AnimatedTopBorder />
@@ -67,22 +68,24 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
         </div>
       </header>
 
-      {/* Hero */}
+      {/* Hero - No Get Started / Learn More for admin */}
       <section className="py-24 md:py-32">
         <div className="container text-center max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4">
-            <Globe className="w-4 h-4" /> AI-Powered Business Platform
+            <Globe className="w-4 h-4" /> {isAdmin ? "Owner Dashboard — HostFlow AI" : "AI-Powered Business Platform"}
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-            Run Your Business with <span className="text-primary">Intelligent Automation</span>
+            {isAdmin
+              ? <>Manage Your <span className="text-primary">Platform</span></>
+              : <>Run Your Business with <span className="text-primary">Intelligent Automation</span></>
+            }
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            HostFlow AI is an all-in-one platform that combines smart scheduling, predictive analytics, and AI-powered CRM to help businesses across 8 industries operate efficiently and grow revenue.
+            {isAdmin
+              ? "Select an industry below to view and manage its dashboard, users, revenue, and operations."
+              : "HostFlow AI is an all-in-one platform that combines smart scheduling, predictive analytics, and AI-powered CRM to help businesses across 8 industries operate efficiently and grow revenue."
+            }
           </p>
-          <div className="flex items-center justify-center gap-4 pt-4">
-            <Button size="lg" className="gap-2"><Zap className="w-4 h-4" /> Get Started</Button>
-            <Button size="lg" variant="outline">Learn More</Button>
-          </div>
         </div>
       </section>
 
@@ -159,16 +162,18 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20">
-        <div className="container text-center max-w-2xl mx-auto space-y-6">
-          <h2 className="text-3xl font-bold">Ready to Transform Your Operations?</h2>
-          <p className="text-muted-foreground">Join thousands of businesses using HostFlow AI to automate operations and maximize revenue.</p>
-          <Button size="lg" className="gap-2"><Rocket className="w-4 h-4" /> Start Free Trial</Button>
-        </div>
-      </section>
+      {/* CTA - only for non-admin */}
+      {!isAdmin && (
+        <section className="py-20">
+          <div className="container text-center max-w-2xl mx-auto space-y-6">
+            <h2 className="text-3xl font-bold">Ready to Transform Your Operations?</h2>
+            <p className="text-muted-foreground">Join thousands of businesses using HostFlow AI to automate operations and maximize revenue.</p>
+            <Button size="lg" className="gap-2"><Rocket className="w-4 h-4" /> Start Free Trial</Button>
+          </div>
+        </section>
+      )}
 
-      {/* Footer - no Industries column for admin */}
+      {/* Footer */}
       <footer className="border-t border-border/40 bg-muted/20 pt-16 pb-8">
         <div className="container">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
