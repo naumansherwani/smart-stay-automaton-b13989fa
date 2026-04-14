@@ -6,6 +6,7 @@ import {
   ArrowUpRight, ArrowDownRight, DollarSign, ClipboardList,
   CalendarClock, Pill, Thermometer, FileText, BadgeCheck, CircleDot, Mic, LayoutGrid, ShieldAlert, Package, Volume2
 } from "lucide-react";
+import { useHealthcare, type HcDoctor, type HcAppointment, type HcPatient } from "@/hooks/useHealthcare";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
