@@ -39,7 +39,7 @@ import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
-import IndustryChooser from "@/components/dashboard/IndustryChooser";
+
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -56,18 +56,12 @@ const Dashboard = () => {
   const { createWorkspace } = useWorkspaces();
   const { isPaid, isTrial, isExpired } = useTrialLimits();
   
-  const { profile, updateIndustry } = useProfile();
+  const { profile } = useProfile();
   const newIndustryHandled = useRef(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   
   const currentIndustry: IndustryType = (profile?.industry as IndustryType) || "hospitality";
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (!user) return;
-    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
-  }, [user]);
 
   // Handle post-checkout redirect: create workspace for new industry
   useEffect(() => {
