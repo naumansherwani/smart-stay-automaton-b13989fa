@@ -4,6 +4,8 @@ import { useAuth } from "./useAuth";
 import type { IndustryType } from "@/lib/industryConfig";
 import { getUserAvatarUrl, getUserDisplayName } from "@/lib/utils";
 
+export type BusinessSubtype = "hotel_property" | "travel_tours" | null;
+
 export interface Profile {
   id: string;
   user_id: string;
@@ -12,6 +14,7 @@ export interface Profile {
   company_name: string | null;
   phone: string | null;
   industry: IndustryType;
+  business_subtype: BusinessSubtype;
 }
 
 export function useProfile() {
