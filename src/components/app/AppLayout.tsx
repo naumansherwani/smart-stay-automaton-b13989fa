@@ -42,7 +42,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   useEffect(() => {
     if (!user) return;
-    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      setIsAdmin(!!data);
+      if (!!data && !adminChecked) setPublicMode(true);
+      setAdminChecked(true);
+    });
   }, [user]);
 
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
