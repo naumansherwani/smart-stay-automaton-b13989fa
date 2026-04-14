@@ -174,6 +174,66 @@ const CRM_FEATURES = [
   "Quick Actions — One-click shortcuts for common CRM tasks",
 ];
 
+const TEAM_CONNECT_INFO: Record<string, string> = {
+  hospitality: `
+## Team Connect — Hospitality 🏨
+HostFlow AI mein aap apni poori hotel/property team ko connect kar sakte hain. Har role ko specific access milta hai:
+
+### Roles & Access:
+1. **Owner** — Full access: CRM, AI Pricing, Billing, Settings, Analytics, Competitor Radar, Gap Night Filler, Guest Score — sab kuch
+2. **Manager** — Full access minus billing/payment settings. Bookings, CRM, AI tools, analytics sab use kar sakta hai
+3. **Floor Manager** — Full operational access: Bookings, Rooms, Staff management, Calendar, Guest Score, CRM tools
+4. **Front Desk** — Full operational access: Bookings, Check-in/out, Guest profiles, Calendar + Housekeeping tasks manage karna
+
+### Housekeeping Staff:
+- Housekeeping ko direct app access NAHI milta
+- Front Desk unki tasks create aur assign karta hai system mein
+- Room status updates Front Desk handle karta hai
+
+### Kaise Connect Karein:
+1. **Owner/Manager** account create kare aur industry select kare (Hospitality)
+2. Settings → Team Management → "Invite Team Member" click kare
+3. Invite link ya email se team members ko add kare
+4. Har member ko appropriate role assign kare (Manager, Floor Manager, Front Desk)
+5. Team member invite accept kare → automatically same workspace mein connect ho jayega
+6. Sab ka data shared hota hai — bookings, guests, calendar ek hi system mein
+
+### Important:
+- Sirf Owner billing settings change kar sakta hai
+- Manager aur Floor Manager operations manage kar sakte hain
+- Front Desk sirf bookings aur guest management dekh sakta hai
+- Housekeeping ka kaam Front Desk assign karta hai
+`,
+  airlines: `
+## Team Connect — Airlines ✈️
+Coming soon: Airline Admin, Operations Manager, Crew Member, Gate Agent roles.
+`,
+  car_rental: `
+## Team Connect — Car Rental 🚗
+Coming soon: Fleet Owner, Branch Manager, Rental Agent roles.
+`,
+  healthcare: `
+## Team Connect — Healthcare 🏥
+Coming soon: Clinic Admin, Doctor, Receptionist, Nurse roles.
+`,
+  education: `
+## Team Connect — Education 🎓
+Coming soon: Institute Admin, Teacher, Student roles.
+`,
+  logistics: `
+## Team Connect — Logistics 🚚
+Coming soon: Company Owner, Dispatcher, Driver, Warehouse Staff roles.
+`,
+  events_entertainment: `
+## Team Connect — Events 🎭
+Coming soon: Event Organizer, Venue Manager, Event Staff roles.
+`,
+  railways: `
+## Team Connect — Railways 🚆
+Coming soon: Railway Admin, Station Master, Train Crew, Booking Agent roles.
+`,
+};
+
 const SETTINGS_FEATURES = [
   "Profile — Update your display name, company, phone and personal details",
   "Language — Switch between 13+ languages (English, Urdu, Hindi, Arabic, German, etc.)",
