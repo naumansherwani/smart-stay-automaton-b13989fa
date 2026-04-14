@@ -50,6 +50,11 @@ export default function Login() {
       return;
     }
 
+    // Set owner flag for persistent greeting
+    if (email.toLowerCase() === OWNER_EMAIL) {
+      localStorage.setItem("hf_owner", "true");
+    }
+
     // Check if MFA is required
     const { data: factorsData } = await supabase.auth.mfa.listFactors();
     const verifiedFactors = factorsData?.totp?.filter(f => f.status === "verified") || [];
