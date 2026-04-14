@@ -35,6 +35,7 @@ const PLATFORM_FEATURES = [
     "Guest Score Card / Traveler Score Card",
     "AI Double Booking Guard (Auto-Reassign Room/Tour, Auto-Reschedule + AI Email)",
     "🤖 AI Smart Pricing (Lovable AI) — Season + Demand + Competitor-aware",
+    "🔔 Auto Price Alerts — AI notifies when price should increase/decrease (>15% change)",
     "Auto Pricing Panel with Manual Override",
     "Smart Pricing Card — 7-day AI suggestions",
     "Competitor Radar with AI Price Comparison",
