@@ -42,7 +42,7 @@ const Logo = ({ size = "md", className, showName = false, showTagline = false }:
         </span>
         {showTagline && (
           <span className="text-[11px] font-light tracking-[0.08em] mt-0.5 bg-gradient-to-r from-[#6366F1] to-[#06B6D4] bg-clip-text text-transparent">
-            Automating the Future of AI SaaS
+            Automating The Future of AI SaaS
           </span>
         )}
       </div>
