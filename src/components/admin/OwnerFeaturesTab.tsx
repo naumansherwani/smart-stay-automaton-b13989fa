@@ -59,6 +59,7 @@ const PLATFORM_FEATURES = [
     "Fleet Tracking Widgets",
     "AI Double Booking Guard (Auto-Reassign Vehicle, Auto-Reschedule + AI Email)",
     "🤖 AI Smart Pricing (Lovable AI) — Season + Demand + Fleet-aware",
+    "🔔 Auto Price Alerts — AI notifies when price should increase/decrease",
     "Custom AI Training (Premium)",
   ]},
   { industry: "Healthcare", icon: Stethoscope, color: "#ef4444", features: [
@@ -84,6 +85,7 @@ const PLATFORM_FEATURES = [
     "Venue & Ticket Widgets",
     "AI Double Booking Guard (Auto-Reassign Venue/Hall, Auto-Reschedule + AI Email)",
     "🤖 AI Smart Pricing (Lovable AI) — Event Demand + Capacity-aware",
+    "🔔 Auto Price Alerts — AI notifies when price should increase/decrease",
     "AI Ticket Generator — Event Ticket with QR Code (Dashboard)",
     "AI Ticket Email — Auto-sends ticket to attendee on booking confirm",
     "Custom AI Training (Premium)",
@@ -92,6 +94,7 @@ const PLATFORM_FEATURES = [
     "Train & Coach Manager",
     "Route & Schedule Manager",
     "🤖 AI Smart Pricing (Lovable AI) — Route + Demand + Peak Hour-aware",
+    "🔔 Auto Price Alerts — AI notifies when price should increase/decrease",
     "Booking & Passenger Management",
     "Railway Notifications System",
     "AI Double Booking Guard (Auto-Reassign Coach/Platform, Auto-Reschedule + AI Email)",
