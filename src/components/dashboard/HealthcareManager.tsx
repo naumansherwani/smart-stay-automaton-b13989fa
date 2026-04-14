@@ -667,9 +667,17 @@ function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; d
 }
 
 // ─── Patients Tab ───
-function PatientsPanel() {
+function PatientsPanel({ dbPatients, onAdd, onUpdate, onDelete, isLive }: { dbPatients: HcPatient[]; onAdd: (pat: Partial<HcPatient>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcPatient>) => Promise<void>; onDelete: (id: string) => Promise<void>; isLive: boolean }) {
   const [search, setSearch] = useState("");
-  const filtered = MOCK_PATIENTS.filter(p =>
+  // Map DB patients to display format
+  const displayPats: Patient[] = dbPatients.map(p => ({
+    id: p.id, name: p.name, age: p.age || 0, gender: p.gender || "", phone: p.phone || "",
+    email: p.email || "", lastVisit: p.last_visit_at ? new Date(p.last_visit_at).toLocaleDateString() : "—",
+    totalVisits: p.total_visits, upcomingAppt: p.upcoming_appointment_at ? new Date(p.upcoming_appointment_at).toLocaleDateString() : "—",
+    condition: p.condition || "", doctor: p.doctor_name || "", status: p.status as Patient["status"],
+    noShowCount: p.no_show_count,
+  }));
+  const filtered = displayPats.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) || p.condition.toLowerCase().includes(search.toLowerCase()) || p.doctor.toLowerCase().includes(search.toLowerCase())
   );
 
