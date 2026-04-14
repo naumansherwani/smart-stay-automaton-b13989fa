@@ -44,7 +44,7 @@ const PLAN_CONFIG = {
 };
 
 const industryOptions: { value: IndustryType; label: string; icon: React.ReactNode; color: string }[] = [
-  { value: "hospitality", label: "Travel & Hospitality", icon: <Hotel className="w-6 h-6" />, color: "hsl(174,62%,50%)" },
+  { value: "hospitality", label: "Travel, Tourism & Hospitality", icon: <Hotel className="w-6 h-6" />, color: "hsl(174,62%,50%)" },
   { value: "airlines", label: "Airlines & Aviation", icon: <Plane className="w-6 h-6" />, color: "hsl(217,91%,60%)" },
   { value: "car_rental", label: "Car Rental", icon: <Car className="w-6 h-6" />, color: "hsl(190,80%,55%)" },
   { value: "healthcare", label: "Healthcare & Clinics", icon: <Stethoscope className="w-6 h-6" />, color: "hsl(0,72%,55%)" },

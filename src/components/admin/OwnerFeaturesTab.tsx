@@ -28,7 +28,7 @@ const PLATFORM_FEATURES = [
     "Passenger Satisfaction Gauges",
     "Custom AI Training (Premium)",
   ]},
-  { industry: "Hospitality", icon: Hotel, color: "#0d9488", features: [
+  { industry: "Travel, Tourism & Hospitality", icon: Hotel, color: "#0d9488", features: [
     "Smart Booking Calendar",
     "Gap Night Filler",
     "Guest Score Card",
