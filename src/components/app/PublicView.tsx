@@ -318,7 +318,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
             ))}
           </div>
           <div className="border-t border-border/30 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">© 2026 HostFlow AI. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">© 2026 HostFlow AI Technologies. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">AI-Powered · Multi-Industry · Built for Growth</p>
           </div>
         </div>
