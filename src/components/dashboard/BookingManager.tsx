@@ -395,7 +395,11 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         toast.error("Failed to create booking");
       } else {
         toast.success(`${config.bookingLabel} created successfully!`);
-
+        sendOwnerNotification({
+          eventType: "new_booking",
+          eventTitle: `New ${config.bookingLabel} Created`,
+          details: `${form.guest_name} booked ${selectedResource?.name || "a resource"} from ${new Date(form.check_in).toLocaleDateString()} to ${new Date(form.check_out).toLocaleDateString()}.`,
+        });
         // Send reassignment email if auto-reassigned and guest email exists
         if (validation.auto_reassigned && form.guest_email) {
           sendRescheduleEmail({
