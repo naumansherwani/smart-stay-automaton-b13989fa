@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, TrainFront } from "lucide-react";
-
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -40,6 +40,7 @@ import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
+import IndustryChooser from "@/components/dashboard/IndustryChooser";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
