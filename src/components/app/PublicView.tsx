@@ -75,13 +75,8 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
          <div className="container flex h-16 items-center relative">
              {/* LEFT: Logo + Tagline stacked */}
              <div className="flex items-center gap-2.5">
-               <Logo size="md" showName />
+               <Logo size="md" showName showTagline={isAdmin} />
              </div>
-             {isAdmin && (
-               <span className="hidden sm:block text-[10px] font-medium tracking-wide bg-clip-text text-transparent absolute left-[4.5rem] top-[2.55rem]" style={{ backgroundImage: 'linear-gradient(to right, #6366F1, #06B6D4)' }}>
-                 Automating the Future of AI SaaS
-               </span>
-             )}
 
            {/* CENTER: Active Industry Badge */}
            {isAdmin && (
