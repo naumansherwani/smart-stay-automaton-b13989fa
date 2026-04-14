@@ -186,7 +186,6 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                  <span className="bg-gradient-to-r from-[#f97316] via-[#ef4444] to-[#ec4899] bg-clip-text text-transparent">You're Powering</span> <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
                </h1>
-               </h1>
                <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
                  One platform. <strong>8 industries</strong>. Millions of decisions automated. You're not just running a business — you're orchestrating an <strong>AI Empire</strong>.
                </p>
