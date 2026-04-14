@@ -88,9 +88,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
             size="sm"
             className="gap-1.5 text-xs"
             onClick={togglePublicMode}
-            title="Customer Preview (Ctrl+Shift+P)"
+            title="Choose Your Industry (Ctrl+Shift+P)"
           >
-            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Customer Preview</span>
+            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Choose Your Industry</span>
           </Button>
           <ThemeToggle />
           <Button
