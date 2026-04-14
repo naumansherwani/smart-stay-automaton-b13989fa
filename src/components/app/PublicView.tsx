@@ -72,9 +72,12 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
       <AnimatedTopBorder />
 
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between">
-          {/* LEFT: Logo + Active Industry */}
-          <div className="flex items-center gap-3">
+        <div className="container flex h-16 items-center justify-between relative">
+          {/* Spacer for centering */}
+          <div className="w-[200px] hidden md:block" />
+
+          {/* CENTER: Logo + Active Industry */}
+          <div className="flex items-center gap-3 md:absolute md:left-1/2 md:-translate-x-1/2">
             <Logo size="lg" showName />
             {isAdmin && (
               <button
