@@ -100,7 +100,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
 
           {isAdmin ? (
             /* RIGHT: Email badge + Theme + Profile Dropdown */
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               {/* Email Badge */}
               <Button
                 variant="ghost"
