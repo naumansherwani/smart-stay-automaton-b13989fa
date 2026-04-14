@@ -1243,6 +1243,221 @@ export type Database = {
         }
         Relationships: []
       }
+      healthcare_appointments: {
+        Row: {
+          appointment_time: string
+          created_at: string
+          doctor_id: string | null
+          doctor_name: string
+          duration_minutes: number
+          fee: number | null
+          id: string
+          metadata: Json | null
+          no_show_risk: number | null
+          notes: string | null
+          patient_id: string | null
+          patient_name: string
+          patient_phone: string | null
+          specialization: string | null
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          appointment_time: string
+          created_at?: string
+          doctor_id?: string | null
+          doctor_name: string
+          duration_minutes?: number
+          fee?: number | null
+          id?: string
+          metadata?: Json | null
+          no_show_risk?: number | null
+          notes?: string | null
+          patient_id?: string | null
+          patient_name: string
+          patient_phone?: string | null
+          specialization?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          appointment_time?: string
+          created_at?: string
+          doctor_id?: string | null
+          doctor_name?: string
+          duration_minutes?: number
+          fee?: number | null
+          id?: string
+          metadata?: Json | null
+          no_show_risk?: number | null
+          notes?: string | null
+          patient_id?: string | null
+          patient_name?: string
+          patient_phone?: string | null
+          specialization?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthcare_appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "healthcare_appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      healthcare_doctors: {
+        Row: {
+          avatar: string | null
+          created_at: string
+          id: string
+          max_patients: number
+          metadata: Json | null
+          name: string
+          next_available: string | null
+          patients_today: number
+          phone: string | null
+          rating: number | null
+          room: string | null
+          slot_duration: number | null
+          specialization: string
+          status: string
+          updated_at: string
+          user_id: string
+          working_days: string | null
+          working_hours: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          max_patients?: number
+          metadata?: Json | null
+          name: string
+          next_available?: string | null
+          patients_today?: number
+          phone?: string | null
+          rating?: number | null
+          room?: string | null
+          slot_duration?: number | null
+          specialization?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          working_days?: string | null
+          working_hours?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          max_patients?: number
+          metadata?: Json | null
+          name?: string
+          next_available?: string | null
+          patients_today?: number
+          phone?: string | null
+          rating?: number | null
+          room?: string | null
+          slot_duration?: number | null
+          specialization?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          working_days?: string | null
+          working_hours?: string | null
+        }
+        Relationships: []
+      }
+      healthcare_patients: {
+        Row: {
+          age: number | null
+          condition: string | null
+          created_at: string
+          doctor_id: string | null
+          doctor_name: string | null
+          email: string | null
+          gender: string | null
+          id: string
+          last_visit_at: string | null
+          metadata: Json | null
+          name: string
+          no_show_count: number
+          notes: string | null
+          phone: string | null
+          status: string
+          total_visits: number
+          upcoming_appointment_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          condition?: string | null
+          created_at?: string
+          doctor_id?: string | null
+          doctor_name?: string | null
+          email?: string | null
+          gender?: string | null
+          id?: string
+          last_visit_at?: string | null
+          metadata?: Json | null
+          name: string
+          no_show_count?: number
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          total_visits?: number
+          upcoming_appointment_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          condition?: string | null
+          created_at?: string
+          doctor_id?: string | null
+          doctor_name?: string | null
+          email?: string | null
+          gender?: string | null
+          id?: string
+          last_visit_at?: string | null
+          metadata?: Json | null
+          name?: string
+          no_show_count?: number
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          total_visits?: number
+          upcoming_appointment_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthcare_patients_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
