@@ -116,13 +116,24 @@ export function useProfile() {
     };
   }, [user]);
 
-  const updateIndustry = async (industry: IndustryType) => {
+  const updateIndustry = async (industry: IndustryType, subtype?: BusinessSubtype) => {
+    if (!user) return;
+    const updates: any = { industry };
+    if (subtype !== undefined) updates.business_subtype = subtype;
+    await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("user_id", user.id);
+    setProfile(prev => prev ? { ...prev, industry, ...(subtype !== undefined ? { business_subtype: subtype } : {}) } : null);
+  };
+
+  const updateBusinessSubtype = async (subtype: BusinessSubtype) => {
     if (!user) return;
     await supabase
       .from("profiles")
-      .update({ industry })
+      .update({ business_subtype: subtype })
       .eq("user_id", user.id);
-    setProfile(prev => prev ? { ...prev, industry } : null);
+    setProfile(prev => prev ? { ...prev, business_subtype: subtype } : null);
   };
 
   const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string; avatar_url?: string }) => {
@@ -134,5 +145,5 @@ export function useProfile() {
     setProfile(prev => prev ? { ...prev, ...updates } : null);
   };
 
-  return { profile, loading, updateIndustry, updateProfile };
+  return { profile, loading, updateIndustry, updateBusinessSubtype, updateProfile };
 }
