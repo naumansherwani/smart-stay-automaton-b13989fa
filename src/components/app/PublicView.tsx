@@ -187,7 +187,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                  You're Powering <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
                </h1>
                <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                 One platform. <strong>8 industries</strong>. Millions of decisions automated. You're not just running a business — you're orchestrating an <strong>AI empire</strong>.
+                 One platform. <strong>8 industries</strong>. Millions of decisions automated. You're not just running a business — you're orchestrating an <strong>AI Empire</strong>.
                </p>
             </>
           ) : (
@@ -211,7 +211,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
         <section className="py-12 bg-muted/20">
           <div className="container space-y-6">
              <div className="text-center space-y-2">
-               <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">Operate Your AI Empire</h2>
+               <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground">Operate Your <span className="bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#06B6D4] bg-clip-text text-transparent">AI Empire</span></h2>
                <p className="text-sm text-muted-foreground max-w-lg mx-auto">
                  {isAdmin ? "Each industry runs on its own AI brain — select one to take full control." : "Select an industry to get started"}
                </p>
