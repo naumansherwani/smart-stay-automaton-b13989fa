@@ -22,6 +22,7 @@ const PLATFORM_FEATURES = [
     "AI Ticket Generator — Boarding Pass with QR Code (Dashboard)",
     "AI Ticket Email — Auto-sends ticket to passenger on booking confirm",
     "🤖 AI Smart Pricing (Lovable AI) — Season + Demand + Route-aware",
+    "🔔 Auto Price Alerts — AI notifies when price should increase/decrease",
     "Breadcrumbs Navigation",
     "Global Search (Flight/Passenger)",
     "Real-time Live Sync Indicator",
