@@ -24,6 +24,8 @@ const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: 
   { icon: TrainFront, name: "Railways", desc: "Trains & platforms", color: "#0284c7", id: "railways" },
 ];
 
+const getIndustryName = (id?: IndustryType) => INDUSTRIES.find(i => i.id === id)?.name || "Hospitality";
+
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
   { icon: BarChart3, title: "Predictive Analytics", desc: "Revenue forecasting, demand prediction, and real-time business insights." },
@@ -56,7 +58,11 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
             ))}
           </nav>
           <Button variant="outline" size="sm" onClick={onReturn} className="gap-2">
-            <ArrowLeft className="w-4 h-4" /> Return to Dashboard
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+            </span>
+            {getIndustryName(currentIndustry)}
           </Button>
         </div>
       </header>
