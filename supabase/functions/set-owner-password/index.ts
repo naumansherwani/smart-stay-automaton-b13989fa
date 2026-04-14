@@ -13,7 +13,6 @@ Deno.serve(async (req) => {
   try {
     const { secret_key } = await req.json();
     
-    // Only allow with the exact secret
     if (secret_key !== "hf_owner_setup_2024") {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 403,
@@ -26,20 +25,10 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Find the owner user
-    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-    if (listError) throw listError;
+    // Use the known user_id from profiles
+    const userId = "5692605f-08d9-423f-bc71-ff21eb9d78c7";
 
-    const owner = users.find((u: any) => u.email === "naumansherwani@hostflowai.live");
-    if (!owner) {
-      return new Response(JSON.stringify({ error: "Owner not found" }), {
-        status: 404,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Update password
-    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(owner.id, {
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       password: "tiger1986",
     });
     if (updateError) throw updateError;
