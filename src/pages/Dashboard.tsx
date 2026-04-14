@@ -25,6 +25,7 @@ import AIAutoSchedule from "@/components/dashboard/AIAutoSchedule";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import DoubleBookingGuard from "@/components/dashboard/DoubleBookingGuard";
 import AutoPricingPanel from "@/components/dashboard/AutoPricingPanel";
+import PriceAlertsPanel from "@/components/dashboard/PriceAlertsPanel";
 import FlightManager from "@/components/dashboard/FlightManager";
 import AirlineOperationsDashboard from "@/components/dashboard/AirlineOperationsDashboard";
 import VehicleManager from "@/components/dashboard/VehicleManager";
@@ -604,7 +605,10 @@ const Dashboard = () => {
 
           {hasPricing && (
             <TabsContent value="pricing">
-              <AutoPricingPanel config={config} industry={currentIndustry} />
+              <div className="space-y-6">
+                <PriceAlertsPanel />
+                <AutoPricingPanel config={config} industry={currentIndustry} />
+              </div>
             </TabsContent>
           )}
 

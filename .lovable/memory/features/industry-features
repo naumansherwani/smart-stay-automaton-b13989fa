@@ -7,11 +7,12 @@ type: feature
 Hospitality, Airlines, Car Rental, Events, Railways
 → AI Smart Pricing (Lovable AI edge function: ai-smart-pricing)
 → Season-based + Demand-based + Competitor-aware
+→ Auto Price Alerts (>15% change → notify owner, 48hr expiry)
 → AI Demand Forecasting, Dynamic Pricing
 
 ## No Pricing Industries (3):
 Healthcare, Education, Logistics
-→ NO pricing/demand features
+→ NO pricing/demand features, NO price alerts
 
 ## Industry-Specific Features:
 - Competitor Radar: ONLY Hospitality

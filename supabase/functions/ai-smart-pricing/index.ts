@@ -13,7 +13,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { industry, resources, days = 7, competitorData, occupancyRate, bookingVelocity } = await req.json();
+    const authHeader = req.headers.get("Authorization");
+    const { industry, resources, days = 7, competitorData, occupancyRate, bookingVelocity, generateAlerts = true } = await req.json();
 
     if (!industry || !PRICING_INDUSTRIES.includes(industry)) {
       return new Response(JSON.stringify({ error: "AI Pricing is not available for this industry" }), {
@@ -151,10 +152,61 @@ RULES:
 
     const pricingData = JSON.parse(toolCall.function.arguments);
 
+    // Auto-generate price alerts for significant changes (>15%)
+    const alertsGenerated: any[] = [];
+    if (generateAlerts && authHeader) {
+      try {
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+        const supabase = createClient(supabaseUrl, supabaseKey, {
+          global: { headers: { Authorization: authHeader } },
+        });
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && pricingData.suggestions) {
+          const significantChanges = pricingData.suggestions.filter((s: any) => {
+            const pct = Math.abs((s.suggestedPrice - s.basePrice) / s.basePrice * 100);
+            return pct >= 15;
+          });
+
+          // Group by resource, take the most significant per resource
+          const byResource = new Map<string, any>();
+          for (const s of significantChanges) {
+            const existing = byResource.get(s.resourceName);
+            const pct = (s.suggestedPrice - s.basePrice) / s.basePrice * 100;
+            if (!existing || Math.abs(pct) > Math.abs(existing.pct)) {
+              byResource.set(s.resourceName, { ...s, pct });
+            }
+          }
+
+          for (const [resourceName, s] of byResource) {
+            const alertType = s.pct > 0 ? "price_increase" : "price_decrease";
+            const alert = {
+              user_id: user.id,
+              industry,
+              resource_name: resourceName,
+              alert_type: alertType,
+              current_price: s.basePrice,
+              suggested_price: s.suggestedPrice,
+              change_percent: Math.round(s.pct),
+              reasoning: s.reasoning,
+              confidence: s.confidence || "medium",
+              expires_at: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+            };
+            const { error: insertErr } = await supabase.from("price_alerts").insert(alert);
+            if (!insertErr) alertsGenerated.push(alert);
+          }
+        }
+      } catch (alertErr) {
+        console.error("Alert generation error (non-fatal):", alertErr);
+      }
+    }
+
     return new Response(JSON.stringify({
       success: true,
       industry,
       generatedAt: new Date().toISOString(),
+      alertsGenerated: alertsGenerated.length,
       ...pricingData,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

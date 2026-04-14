@@ -1341,6 +1341,60 @@ export type Database = {
         }
         Relationships: []
       }
+      price_alerts: {
+        Row: {
+          alert_type: string
+          change_percent: number
+          confidence: string | null
+          created_at: string
+          current_price: number
+          expires_at: string | null
+          id: string
+          industry: string
+          is_applied: boolean | null
+          is_read: boolean | null
+          reasoning: string | null
+          resource_name: string
+          suggested_price: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_type?: string
+          change_percent?: number
+          confidence?: string | null
+          created_at?: string
+          current_price: number
+          expires_at?: string | null
+          id?: string
+          industry: string
+          is_applied?: boolean | null
+          is_read?: boolean | null
+          reasoning?: string | null
+          resource_name: string
+          suggested_price: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          change_percent?: number
+          confidence?: string | null
+          created_at?: string
+          current_price?: number
+          expires_at?: string | null
+          id?: string
+          industry?: string
+          is_applied?: boolean | null
+          is_read?: boolean | null
+          reasoning?: string | null
+          resource_name?: string
+          suggested_price?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
