@@ -92,7 +92,7 @@ const Footer = () => (
       </div>
 
       <div className="mt-14 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3">
-        <p className="text-xs text-white/30"><p className="text-xs text-white/30">© 2026 HostFlow AI Technologies. All rights reserved.</p></p>
+        <p className="text-xs text-white/30">© 2026 HostFlow AI Technologies. All rights reserved.</p>
         <p className="text-xs text-white/30">Powered by AI · Built for every industry · Made with ❤️</p>
       </div>
     </div>
