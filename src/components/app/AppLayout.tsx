@@ -47,8 +47,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
     if (!user) return;
     await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
-    setPublicMode(false);
-    window.location.reload();
   }, [user]);
 
   useEffect(() => {
