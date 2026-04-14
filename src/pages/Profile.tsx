@@ -19,7 +19,7 @@ import { type IndustryType } from "@/lib/industryConfig";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 
 const industries: { value: IndustryType; label: string }[] = [
-  { value: "hospitality", label: "Hospitality" },
+  { value: "hospitality", label: "Travel, Tourism & Hospitality" },
   { value: "airlines", label: "Airlines" },
   { value: "car_rental", label: "Car Rental" },
   { value: "healthcare", label: "Healthcare" },

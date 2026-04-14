@@ -10,7 +10,7 @@ import { type IndustryType } from "@/lib/industryConfig";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 
 const industryOptions: { value: IndustryType; label: string; icon: React.ReactNode; desc: string; color: string }[] = [
-  { value: "hospitality", label: "Travel & Hospitality", icon: <Hotel className="w-7 h-7" />, desc: "Hotels, vacation rentals, B&Bs, tours", color: "hsl(174,62%,50%)" },
+  { value: "hospitality", label: "Travel, Tourism & Hospitality", icon: <Hotel className="w-7 h-7" />, desc: "Hotels, vacation rentals, B&Bs, tours, travel agencies", color: "hsl(174,62%,50%)" },
   { value: "airlines", label: "Airlines & Aviation", icon: <Plane className="w-7 h-7" />, desc: "Flights, seat management, crew scheduling", color: "hsl(217,91%,60%)" },
   { value: "car_rental", label: "Car Rental", icon: <Car className="w-7 h-7" />, desc: "Fleet management, vehicle bookings", color: "hsl(190,80%,55%)" },
   { value: "healthcare", label: "Healthcare & Clinics", icon: <Stethoscope className="w-7 h-7" />, desc: "Appointments, doctors, patients", color: "hsl(0,72%,55%)" },

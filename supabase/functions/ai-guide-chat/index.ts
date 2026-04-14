@@ -176,8 +176,8 @@ const CRM_FEATURES = [
 
 const TEAM_CONNECT_INFO: Record<string, string> = {
   hospitality: `
-## Team Connect — Hospitality 🏨
-HostFlow AI mein aap apni poori hotel/property team ko connect kar sakte hain. Har role ko specific access milta hai:
+## Team Connect — Travel, Tourism & Hospitality 🏨🌍
+HostFlow AI mein aap apni poori hotel/property/travel agency team ko connect kar sakte hain. Har role ko specific access milta hai:
 
 ### Roles & Access:
 1. **Owner** — Full access: CRM, AI Pricing, Billing, Settings, Analytics, Competitor Radar, Gap Night Filler, Guest Score — sab kuch

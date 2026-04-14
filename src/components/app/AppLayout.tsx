@@ -15,7 +15,7 @@ import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
-  hospitality: "Hospitality",
+  hospitality: "Travel, Tourism & Hospitality",
   airlines: "Airlines",
   car_rental: "Car Rental",
   healthcare: "Healthcare",
