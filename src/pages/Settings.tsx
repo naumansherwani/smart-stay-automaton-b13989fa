@@ -17,8 +17,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Users, Shield, Bell, Palette, CreditCard, Globe, Crown,
   BarChart3, Mail, Activity, Lock, Eye, Server, Zap,
-  UserCheck, UserX, AlertTriangle, TrendingUp, Settings as SettingsIcon
+  UserCheck, UserX, AlertTriangle, TrendingUp, Settings as SettingsIcon,
+  Coins
 } from "lucide-react";
+import { useCurrency, CURRENCIES } from "@/hooks/useCurrency";
 import { toast } from "sonner";
 import { LANGUAGES } from "@/i18n";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
@@ -454,6 +456,18 @@ const Settings = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-sm flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-emerald-500" /> Currency Preference
+                  </CardTitle>
+                  <CardDescription>Choose your preferred currency for earnings display</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CurrencySelector />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm flex items-center gap-2">
                     <Palette className="w-4 h-4" /> Theme
                   </CardTitle>
                 </CardHeader>
@@ -499,5 +513,33 @@ const Settings = () => {
     </AppLayout>
   );
 };
+
+function CurrencySelector() {
+  const { currency, setCurrency, selectedCurrency } = useCurrency();
+
+  return (
+    <div className="space-y-3">
+      <Select value={currency} onValueChange={setCurrency}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select currency" />
+        </SelectTrigger>
+        <SelectContent>
+          {CURRENCIES.map((c) => (
+            <SelectItem key={c.code} value={c.code}>
+              <span className="flex items-center gap-2">
+                <span className="font-mono font-bold text-primary">{c.symbol}</span>
+                <span>{c.name}</span>
+                <span className="text-muted-foreground text-xs">({c.code})</span>
+              </span>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground">
+        All earnings and financial data will be displayed in <strong>{selectedCurrency.name} ({selectedCurrency.symbol})</strong>.
+      </p>
+    </div>
+  );
+}
 
 export default Settings;
