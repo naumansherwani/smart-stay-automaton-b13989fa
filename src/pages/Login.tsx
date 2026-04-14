@@ -19,11 +19,17 @@ export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Check if owner is already logged in (returning visit)
+  // Check if owner: via session, localStorage flag, or email input
   useEffect(() => {
+    // Check localStorage first (persists after logout)
+    if (localStorage.getItem("hf_owner") === "true") {
+      setIsOwner(true);
+    }
+    // Also check active session
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user?.email === OWNER_EMAIL) {
         setIsOwner(true);
+        localStorage.setItem("hf_owner", "true");
       }
     });
   }, []);
