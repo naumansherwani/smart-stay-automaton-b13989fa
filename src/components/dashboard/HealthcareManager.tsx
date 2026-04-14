@@ -685,10 +685,10 @@ function PatientsPanel({ dbPatients, onAdd, onUpdate, onDelete, isLive }: { dbPa
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Patients", value: MOCK_PATIENTS.length.toString(), icon: Users },
-          { label: "New This Month", value: "1", icon: UserCheck },
-          { label: "Active", value: MOCK_PATIENTS.filter(p => p.status === "active").length.toString(), icon: Heart },
-          { label: "High No-Show Risk", value: MOCK_PATIENTS.filter(p => p.noShowCount >= 3).length.toString(), icon: AlertTriangle },
+          { label: "Total Patients", value: displayPats.length.toString(), icon: Users },
+          { label: "New This Month", value: displayPats.filter(p => p.status === "new").length.toString(), icon: UserCheck },
+          { label: "Active", value: displayPats.filter(p => p.status === "active").length.toString(), icon: Heart },
+          { label: "High No-Show Risk", value: displayPats.filter(p => p.noShowCount >= 3).length.toString(), icon: AlertTriangle },
         ].map(s => (
           <Card key={s.label}>
             <CardContent className="p-3 flex items-center gap-3">
