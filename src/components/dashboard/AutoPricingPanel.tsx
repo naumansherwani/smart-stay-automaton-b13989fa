@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, TrendingDown, Minus, Zap, DollarSign, BarChart3, Pencil, Check, X, Brain, Hand, RotateCcw, Info } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Zap, DollarSign, BarChart3, Pencil, Check, X, Brain, Hand, RotateCcw, Info, RefreshCw, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import type { IndustryConfig } from "@/lib/industryConfig";
 import { supportsAutoPricing } from "@/lib/industryFeatures";
 import { calculateSmartPrice } from "@/lib/bookingStore";
+import { useAiPricing, type AiPriceSuggestion } from "@/hooks/useAiPricing";
 import type { IndustryType } from "@/lib/industryConfig";
 
 interface AutoPricingPanelProps {
@@ -42,11 +43,18 @@ export function getDayPrice(
   date: Date,
   mode: PricingMode,
   overrides: PriceOverrides,
-  aiSupported: boolean
-): { price: number; isOverride: boolean; isAI: boolean; reasoning: string } {
+  aiSupported: boolean,
+  aiSuggestions?: AiPriceSuggestion[]
+): { price: number; isOverride: boolean; isAI: boolean; reasoning: string; confidence?: string } {
   const key = date.toISOString().split("T")[0];
   if (key in overrides) {
     return { price: overrides[key], isOverride: true, isAI: false, reasoning: "Manual override" };
+  }
+  if (mode === "ai" && aiSupported && aiSuggestions?.length) {
+    const match = aiSuggestions.find(s => s.date === key);
+    if (match) {
+      return { price: match.suggestedPrice, isOverride: false, isAI: true, reasoning: match.reasoning, confidence: match.confidence };
+    }
   }
   if (mode === "ai" && aiSupported) {
     const suggestion = calculateSmartPrice(basePrice, date);
@@ -64,6 +72,8 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
   const [overrides, setOverrides] = useState<PriceOverrides>({});
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+
+  const { data: aiData, loading: aiLoading, fetchPricing } = useAiPricing({ industry });
 
   useEffect(() => {
     if (!aiSupported) setMode("manual");
@@ -87,6 +97,23 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
   const resource = resources.find(r => r.id === selectedResource);
   const basePrice = resource?.base_price || 100;
 
+  // Fetch AI pricing when resource or mode changes
+  const handleFetchAiPricing = () => {
+    if (!aiSupported || mode !== "ai" || !resource) return;
+    fetchPricing(
+      [{ name: resource.name, basePrice }],
+      { days: 14 }
+    );
+  };
+
+  useEffect(() => {
+    if (mode === "ai" && aiSupported && resource) {
+      handleFetchAiPricing();
+    }
+  }, [mode, selectedResource]);
+
+  const aiSuggestions = aiData?.suggestions?.filter(s => s.resourceName === resource?.name) || [];
+
   const nextDays = Array.from({ length: 14 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
@@ -94,7 +121,7 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
   });
 
   const priceSuggestions = nextDays.map(date => {
-    const dayPrice = getDayPrice(basePrice, date, mode, overrides, aiSupported);
+    const dayPrice = getDayPrice(basePrice, date, mode, overrides, aiSupported, aiSuggestions);
     const key = date.toISOString().split("T")[0];
     const diff = dayPrice.price - basePrice;
     const pct = basePrice > 0 ? Math.round((diff / basePrice) * 100) : 0;
@@ -140,9 +167,9 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
               <DollarSign className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Pricing Manager</h2>
+              <h2 className="text-lg font-bold text-foreground">AI Pricing Manager</h2>
               <p className="text-sm text-muted-foreground">
-                Set prices for your {config.resourceLabelPlural.toLowerCase()}
+                AI-powered dynamic pricing for your {config.resourceLabelPlural.toLowerCase()}
               </p>
             </div>
           </div>
@@ -178,18 +205,42 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[220px]">
-                  <p className="text-xs">AI pricing is not available for this industry. It's designed for demand-driven industries like Hospitality, Car Rental, and Events.</p>
+                  <p className="text-xs">AI pricing is not available for this industry.</p>
                 </TooltipContent>
               </Tooltip>
             )}
           </div>
         </div>
         {mode === "ai" && aiSupported && (
-          <p className="text-xs text-muted-foreground mt-3 bg-success/5 rounded-lg px-3 py-2 border border-success/10">
-            🤖 AI is actively adjusting prices based on demand, seasonality, and availability. Manual overrides always take priority.
-          </p>
+          <div className="flex items-center justify-between mt-3 bg-success/5 rounded-lg px-3 py-2 border border-success/10">
+            <p className="text-xs text-muted-foreground">
+              🤖 AI is analyzing demand, seasonality & competitor data. Manual overrides always take priority.
+            </p>
+            <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" onClick={handleFetchAiPricing} disabled={aiLoading}>
+              <RefreshCw className={`w-3 h-3 ${aiLoading ? "animate-spin" : ""}`} />
+              {aiLoading ? "Analyzing..." : "Refresh AI"}
+            </Button>
+          </div>
         )}
       </div>
+
+      {/* AI Market Insight */}
+      {mode === "ai" && aiData?.marketInsight && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="pt-4 pb-3">
+            <div className="flex items-start gap-3">
+              <Sparkles className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">AI Market Insight</p>
+                <p className="text-xs text-muted-foreground">{aiData.marketInsight}</p>
+                {aiData.recommendedAction && (
+                  <p className="text-xs text-primary mt-2 font-medium">💡 {aiData.recommendedAction}</p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -286,13 +337,18 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          {resources.length === 0 ? (
+          {aiLoading && mode === "ai" ? (
+            <div className="flex items-center justify-center py-8 gap-3">
+              <RefreshCw className="w-5 h-5 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">AI is analyzing market data and generating pricing...</p>
+            </div>
+          ) : resources.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
               Add a {config.resourceLabel.toLowerCase()} with a base price to see pricing.
             </p>
           ) : (
             <div className="space-y-2">
-              {priceSuggestions.map(({ date, key, price, isOverride, isAI, reasoning, diff, pct }) => (
+              {priceSuggestions.map(({ date, key, price, isOverride, isAI, reasoning, diff, pct, confidence }) => (
                 <div
                   key={key}
                   className={`flex items-center justify-between py-2.5 px-4 rounded-lg transition-colors ${
@@ -315,7 +371,7 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
                       )}
                       {isAI && !isOverride && (
                         <Badge variant="outline" className="text-[9px] h-4 border-primary/40 text-primary bg-primary/5">
-                          AI
+                          AI {confidence ? `· ${confidence}` : ""}
                         </Badge>
                       )}
                     </div>
@@ -403,41 +459,44 @@ const AutoPricingPanel = ({ config, industry }: AutoPricingPanelProps) => {
       {mode === "ai" && aiSupported && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">How AI Pricing Works</CardTitle>
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" />
+              How AI Pricing Works
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               <div className="flex gap-2 items-start">
                 <div className="w-2 h-2 rounded-full bg-success mt-1.5 shrink-0" />
                 <div>
-                  <p className="font-medium text-foreground">Demand-Based</p>
-                  <p className="text-xs text-muted-foreground">Prices increase when booking volume is high</p>
+                  <p className="font-medium text-foreground">Season & Demand</p>
+                  <p className="text-xs text-muted-foreground">AI analyzes seasonal trends and booking velocity to adjust prices</p>
                 </div>
               </div>
               <div className="flex gap-2 items-start">
                 <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
                 <div>
-                  <p className="font-medium text-foreground">Time-Based</p>
-                  <p className="text-xs text-muted-foreground">Weekend premiums, weekday discounts</p>
+                  <p className="font-medium text-foreground">Competitor Analysis</p>
+                  <p className="text-xs text-muted-foreground">Factors in competitor pricing to keep you competitive</p>
                 </div>
               </div>
               <div className="flex gap-2 items-start">
                 <div className="w-2 h-2 rounded-full bg-warning mt-1.5 shrink-0" />
                 <div>
-                  <p className="font-medium text-foreground">Seasonality</p>
-                  <p className="text-xs text-muted-foreground">Peak, high, shoulder & low season rates</p>
+                  <p className="font-medium text-foreground">Day & Time Patterns</p>
+                  <p className="text-xs text-muted-foreground">Weekend premiums, weekday discounts, holiday surges</p>
                 </div>
               </div>
               <div className="flex gap-2 items-start">
                 <div className="w-2 h-2 rounded-full bg-destructive mt-1.5 shrink-0" />
                 <div>
-                  <p className="font-medium text-foreground">Availability</p>
-                  <p className="text-xs text-muted-foreground">Lowers prices to fill empty slots</p>
+                  <p className="font-medium text-foreground">Occupancy Optimization</p>
+                  <p className="text-xs text-muted-foreground">Lowers prices to fill empty slots, raises for high-demand</p>
                 </div>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-              💡 Manual overrides always take priority. AI will never overwrite your manual prices. Remove an override to let AI resume.
+              💡 Manual overrides always take priority. AI will never overwrite your manual prices.
             </p>
           </CardContent>
         </Card>

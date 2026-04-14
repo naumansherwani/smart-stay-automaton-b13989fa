@@ -5,7 +5,9 @@ type: feature
 ---
 ## Pricing/Demand Industries (5):
 Hospitality, Airlines, Car Rental, Events, Railways
-→ AI Pricing, AI Demand Forecasting, Dynamic Pricing
+→ AI Smart Pricing (Lovable AI edge function: ai-smart-pricing)
+→ Season-based + Demand-based + Competitor-aware
+→ AI Demand Forecasting, Dynamic Pricing
 
 ## No Pricing Industries (3):
 Healthcare, Education, Logistics
