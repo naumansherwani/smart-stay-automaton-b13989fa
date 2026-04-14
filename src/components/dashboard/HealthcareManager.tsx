@@ -348,7 +348,7 @@ function AppointmentsPanel({ dbDoctors, dbAppointments, onBook, onUpdate, isLive
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2"><Label>Doctor</Label>
                   <Select><SelectTrigger><SelectValue placeholder="Select doctor" /></SelectTrigger>
-                    <SelectContent>{MOCK_DOCTORS.filter(d => d.status !== "off-duty").map(d => <SelectItem key={d.id} value={d.id}>{d.avatar} {d.name} — {d.specialization}</SelectItem>)}</SelectContent>
+                    <SelectContent>{dbDoctors.filter(d => d.status !== "off-duty").map(d => <SelectItem key={d.id} value={d.id}>{d.avatar || "🩺"} {d.name} — {d.specialization}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2"><Label>Appointment Type</Label>
