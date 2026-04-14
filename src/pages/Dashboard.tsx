@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { LogOut, BarChart3, Shield, Sparkles, Bell, HelpCircle, Zap, Brain, TrendingUp, Calendar, Settings as SettingsIcon, Users, ClipboardList, DollarSign, Plane, Car, GraduationCap, Truck, Theater, Stethoscope, TrainFront } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -40,6 +39,7 @@ import UpgradeNudge from "@/components/conversion/UpgradeNudge";
 import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
+import IndustryChooser from "@/components/dashboard/IndustryChooser";
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
 const isCarRental = (industry: IndustryType) => industry === "car_rental";
@@ -56,12 +56,18 @@ const Dashboard = () => {
   const { createWorkspace } = useWorkspaces();
   const { isPaid, isTrial, isExpired } = useTrialLimits();
   
-  const { profile } = useProfile();
+  const { profile, updateIndustry } = useProfile();
   const newIndustryHandled = useRef(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const currentIndustry: IndustryType = (profile?.industry as IndustryType) || "hospitality";
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
 
   // Handle post-checkout redirect: create workspace for new industry
   useEffect(() => {
@@ -142,13 +148,17 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="container py-6 md:py-8 space-y-6 md:space-y-8">
-        <SmartGreetingBanner userName={displayName} />
-
-        {!isPaid && (
-          <UpgradeNudge variant="card" feature="AI Automation" message={isExpired ? "Your trial has expired — upgrade to continue using all features" : "Automation saves time and increases revenue — unlock all features with Pro"} />
+        {isAdmin ? (
+          <IndustryChooser currentIndustry={currentIndustry} onSelect={(ind) => updateIndustry(ind)} />
+        ) : (
+          <>
+            <SmartGreetingBanner userName={displayName} />
+            {!isPaid && (
+              <UpgradeNudge variant="card" feature="AI Automation" message={isExpired ? "Your trial has expired — upgrade to continue using all features" : "Automation saves time and increases revenue — unlock all features with Pro"} />
+            )}
+            <HowItWorksGuide />
+          </>
         )}
-
-        <HowItWorksGuide />
 
         <IndustryKPIs config={config} />
 
