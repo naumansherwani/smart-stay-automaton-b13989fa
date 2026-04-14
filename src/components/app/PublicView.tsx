@@ -72,30 +72,31 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
       <AnimatedTopBorder />
 
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between relative">
-          {/* Spacer for centering */}
-          <div className="w-[200px] hidden md:block" />
+         <div className="container flex h-16 items-center relative">
+           {/* LEFT: Logo */}
+           <div className="flex items-center">
+             <Logo size="lg" showName />
+           </div>
 
-          {/* CENTER: Logo + Active Industry */}
-          <div className="flex items-center gap-3 md:absolute md:left-1/2 md:-translate-x-1/2">
-            <Logo size="lg" showName />
-            {isAdmin && (
-              <button
-                onClick={onReturn}
-                className="flex items-center gap-2 ml-2 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all cursor-pointer"
-                title={`Go to ${activeIndustry.name} Dashboard`}
-              >
-                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${activeIndustry.color}15` }}>
-                  <activeIndustry.Icon className="w-4 h-4" style={{ color: activeIndustry.color }} />
-                </div>
-                <span className="text-sm font-medium text-foreground hidden sm:inline">{activeIndustry.name}</span>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-              </button>
-            )}
-          </div>
+           {/* CENTER: Active Industry Badge */}
+           {isAdmin && (
+             <div className="absolute left-1/2 -translate-x-1/2">
+               <button
+                 onClick={onReturn}
+                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all cursor-pointer"
+                 title={`Go to ${activeIndustry.name} Dashboard`}
+               >
+                 <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${activeIndustry.color}15` }}>
+                   <activeIndustry.Icon className="w-4 h-4" style={{ color: activeIndustry.color }} />
+                 </div>
+                 <span className="text-sm font-medium text-foreground hidden sm:inline">{activeIndustry.name}</span>
+                 <span className="relative flex h-2 w-2">
+                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                 </span>
+               </button>
+             </div>
+           )}
 
           {isAdmin ? (
             /* RIGHT: Email badge + Theme + Profile Dropdown */
