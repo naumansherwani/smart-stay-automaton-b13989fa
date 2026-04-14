@@ -1,0 +1,22 @@
+---
+name: Hospitality Sub-types
+description: Travel, Tourism & Hospitality has two sub-types with different roles and labels
+type: feature
+---
+## Sub-types (stored in profiles.business_subtype):
+- **hotel_property**: Hotels, resorts, vacation rentals, B&Bs, serviced apartments
+- **travel_tours**: Travel agencies, tour operators, adventure tours, day trips, packages
+
+## Hotel & Property Roles:
+Owner → Manager → Floor Manager → Front Desk → (Housekeeping via Front Desk)
+
+## Travel & Tours Roles:
+Owner/Tour Operator → Manager → Travel Agent → Tour Guide → (Transport Coordinator via Manager)
+
+## Key Label Differences:
+- Hotel: Resources=Rooms, KPIs=Occupancy/RevPAR, Gap Filler=empty rooms
+- Travel: Resources=Tour Packages, KPIs=Booking Rate/Revenue per Tour, Gap Filler=low-booking tours
+
+## Sub-type selector appears:
+- Onboarding (step 2 after selecting hospitality)
+- Profile page (under Industry selector)
