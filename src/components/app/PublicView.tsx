@@ -183,7 +183,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium">
                  <Crown className="w-4 h-4" /> Command Center
                </div>
-               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight whitespace-nowrap">
                  <span className="bg-gradient-to-r from-[#f97316] via-[#ef4444] to-[#ec4899] bg-clip-text text-transparent">You're Powering</span> <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
                </h1>
                <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
