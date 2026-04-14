@@ -73,10 +73,15 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
 
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
          <div className="container flex h-16 items-center relative">
-           {/* LEFT: Logo */}
-           <div className="flex items-center">
-             <Logo size="lg" showName />
-           </div>
+            {/* LEFT: Logo + Tagline */}
+            <div className="flex items-center gap-3">
+              <Logo size="lg" showName />
+              {isAdmin && (
+                <span className="hidden sm:inline text-[11px] font-medium bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to right, #6366F1, #06B6D4)' }}>
+                  Automating the Future of AI SaaS
+                </span>
+              )}
+            </div>
 
            {/* CENTER: Active Industry Badge */}
            {isAdmin && (
