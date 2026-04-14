@@ -433,16 +433,6 @@ ${planInfo}
 IMPORTANT: Dashboard features are for day-to-day operations (available to all plans). CRM features are for customer relationship management (Premium plan only). Always clarify which section a feature belongs to.`;
   } else if (context === "settings") {
     featureList = `
-## AI CRM Features:
-${CRM_FEATURES.map((f) => `- ${f}`).join("\n")}
-
-${teamInfo}
-
-${planInfo}
-
-IMPORTANT: Only explain CRM features. When asked about team/connect, explain team roles and how they connect to CRM.`;
-  } else if (context === "settings") {
-    featureList = `
 ## Settings Features:
 ${SETTINGS_FEATURES.map((f) => `- ${f}`).join("\n")}
 - Team Management — Invite team members, assign roles, manage access levels
