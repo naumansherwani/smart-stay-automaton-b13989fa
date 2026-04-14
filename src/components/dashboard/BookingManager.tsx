@@ -11,6 +11,7 @@ import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Load
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { sendOwnerNotification } from "@/lib/ownerNotifications";
 import type { IndustryConfig, IndustryType } from "@/lib/industryConfig";
 import SmartEmptyState from "@/components/conversion/SmartEmptyState";
 import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
