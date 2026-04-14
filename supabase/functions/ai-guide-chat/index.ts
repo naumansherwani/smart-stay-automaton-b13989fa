@@ -418,10 +418,10 @@ Route Optimization is ONLY for Logistics, Airlines, Railways.
   const teamInfo = TEAM_CONNECT_INFO[industry] || TEAM_CONNECT_INFO["hospitality"];
 
   let featureList = "";
-  if (context === "dashboard") {
+  if (context === "dashboard" || context === "crm") {
     featureList = `
-## Dashboard Features (${industry}):
-${dashboardFeatures.map((f) => `- ${f}`).join("\n")}
+## ${industry.replace(/_/g, " ").toUpperCase()} — All Features (Dashboard + CRM):
+${industryFeatures.map((f) => `- ${f}`).join("\n")}
 
 ## Premium-Only Features:
 ${PREMIUM_FEATURES.map((f) => `- ${f}`).join("\n")}
@@ -430,8 +430,8 @@ ${teamInfo}
 
 ${planInfo}
 
-IMPORTANT: Only explain Dashboard features. When asked about team/connect, explain team roles and invite process.`;
-  } else if (context === "crm") {
+IMPORTANT: Dashboard features are for day-to-day operations (available to all plans). CRM features are for customer relationship management (Premium plan only). Always clarify which section a feature belongs to.`;
+  } else if (context === "settings") {
     featureList = `
 ## AI CRM Features:
 ${CRM_FEATURES.map((f) => `- ${f}`).join("\n")}
