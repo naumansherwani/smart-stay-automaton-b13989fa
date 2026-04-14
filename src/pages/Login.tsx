@@ -9,13 +9,24 @@ import { Loader2, ShieldCheck } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
 
+const OWNER_EMAIL = "naumansherwani@hostflowai.live";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if owner is already logged in (returning visit)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.email === OWNER_EMAIL) {
+        setIsOwner(true);
+      }
+    });
+  }, []);
   // MFA State
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
