@@ -57,7 +57,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }, [togglePublicMode]);
 
   if (publicMode) {
-    return <PublicView onReturn={() => setPublicMode(false)} />;
+    return (
+      <PublicView
+        onReturn={() => setPublicMode(false)}
+        onIndustrySelect={isAdmin ? handleIndustrySelect : undefined}
+        currentIndustry={(profile?.industry as IndustryType) || "hospitality"}
+      />
+    );
   }
 
   const displayName = getUserDisplayName(user, profile?.display_name);
