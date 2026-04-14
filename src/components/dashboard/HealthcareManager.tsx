@@ -449,10 +449,17 @@ function AppointmentCard({ apt }: { apt: Appointment }) {
 }
 
 // ─── Doctors Tab ───
-function DoctorsPanel() {
+function DoctorsPanel({ dbDoctors, onAdd, onUpdate, onDelete, isLive }: { dbDoctors: HcDoctor[]; onAdd: (doc: Partial<HcDoctor>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcDoctor>) => Promise<void>; onDelete: (id: string) => Promise<void>; isLive: boolean }) {
   const [filterSpec, setFilterSpec] = useState("all");
-  const filtered = MOCK_DOCTORS.filter(d => filterSpec === "all" || d.specialization === filterSpec);
-  const specs = [...new Set(MOCK_DOCTORS.map(d => d.specialization))];
+  // Map DB doctors to display format
+  const displayDocs: Doctor[] = dbDoctors.map(d => ({
+    id: d.id, name: d.name, specialization: d.specialization, status: d.status as Doctor["status"],
+    room: d.room || "", patientsToday: d.patients_today, maxPatients: d.max_patients,
+    nextAvailable: d.next_available || "—", rating: d.rating, workingHours: d.working_hours || "09:00–17:00",
+    workingDays: d.working_days || "Mon–Sat", slotDuration: d.slot_duration, phone: d.phone || "", avatar: d.avatar || "🩺",
+  }));
+  const filtered = displayDocs.filter(d => filterSpec === "all" || d.specialization === filterSpec);
+  const specs = [...new Set(displayDocs.map(d => d.specialization))];
 
   return (
     <div className="space-y-4">
