@@ -7,9 +7,20 @@ import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 
 interface PublicViewProps {
   onReturn: () => void;
+  onIndustrySelect?: (industry: IndustryType) => void;
+  currentIndustry?: IndustryType;
 }
 
-const NAV_LINKS = ["About", "Features", "Pricing", "Contact"];
+const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; id: IndustryType }[] = [
+  { icon: Globe, name: "Hospitality", desc: "Hotels, vacation rentals, tours", color: "#0d9488", id: "hospitality" },
+  { icon: Plane, name: "Airlines", desc: "Crew, gates, fleet", color: "#3b82f6", id: "airlines" },
+  { icon: Car, name: "Car Rental", desc: "Fleet & maintenance", color: "#0ea5e9", id: "car_rental" },
+  { icon: Stethoscope, name: "Healthcare", desc: "Appointments & rooms", color: "#ef4444", id: "healthcare" },
+  { icon: GraduationCap, name: "Education", desc: "Classes & timetables", color: "#8b5cf6", id: "education" },
+  { icon: Truck, name: "Logistics", desc: "Delivery & warehouse", color: "#f97316", id: "logistics" },
+  { icon: Theater, name: "Events", desc: "Venues & performers", color: "#d946ef", id: "events_entertainment" },
+  { icon: TrainFront, name: "Railways", desc: "Trains & platforms", color: "#0284c7", id: "railways" },
+];
 
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
