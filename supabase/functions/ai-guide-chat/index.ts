@@ -395,7 +395,7 @@ const SETTINGS_FEATURES = [
 ];
 
 function buildSystemPrompt(context: string, industry: string): string {
-  const dashboardFeatures = DASHBOARD_FEATURES[industry] || DASHBOARD_FEATURES["hospitality"];
+  const industryFeatures = INDUSTRY_FEATURES[industry] || INDUSTRY_FEATURES["hospitality"];
 
   const planInfo = `
 ## Pricing Plans:
