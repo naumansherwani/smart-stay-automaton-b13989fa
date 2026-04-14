@@ -25,11 +25,10 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    // Use the known user_id from profiles
     const userId = "5692605f-08d9-423f-bc71-ff21eb9d78c7";
 
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-      password: "tiger1986",
+      password: "Tiger@1986",
     });
     if (updateError) throw updateError;
 
