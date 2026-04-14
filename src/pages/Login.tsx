@@ -220,7 +220,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
+              <Input id="email" type="email" value={email} onChange={e => { setEmail(e.target.value); setIsOwner(e.target.value.toLowerCase() === OWNER_EMAIL); }} required placeholder="you@example.com" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
