@@ -33,15 +33,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
-  const [publicMode, setPublicMode] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [publicMode, setPublicMode] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false);
 
   const currentIndustry = (profile?.industry as IndustryType) || "hospitality";
   const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
 
   useEffect(() => {
     if (!user) return;
-    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      setIsAdmin(!!data);
+      if (!!data && !adminChecked) setPublicMode(true);
+      setAdminChecked(true);
+    });
   }, [user]);
 
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
