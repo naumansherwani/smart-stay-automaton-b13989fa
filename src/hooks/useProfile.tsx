@@ -55,6 +55,7 @@ export function useProfile() {
           company_name: data?.company_name ?? null,
           phone: data?.phone ?? null,
           industry,
+          business_subtype: (data?.business_subtype as BusinessSubtype) ?? null,
         };
 
         if (!cancelled) {
@@ -98,6 +99,7 @@ export function useProfile() {
             company_name: null,
             phone: null,
             industry: "hospitality",
+            business_subtype: null,
           });
         }
       } finally {
