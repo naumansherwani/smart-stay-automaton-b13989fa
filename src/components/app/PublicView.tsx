@@ -41,12 +41,12 @@ const getIndustryIcon = (id?: IndustryType) => {
 };
 
 const FEATURES = [
-  { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
-  { icon: BarChart3, title: "Predictive Analytics", desc: "Revenue forecasting, demand prediction, and real-time business insights." },
-  { icon: Users, title: "Smart CRM", desc: "Lead scoring, customer behavior analysis, and automated follow-ups." },
-  { icon: Calendar, title: "Smart Scheduling", desc: "Conflict-free scheduling with AI optimization across all resources." },
-  { icon: Shield, title: "Enterprise Security", desc: "Bank-grade encryption, RLS policies, and complete data isolation." },
-  { icon: Rocket, title: "Multi-Industry", desc: "8 dedicated industry workspaces, each with tailored workflows." },
+  { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems.", gradient: "from-[#6366F1] to-[#8B5CF6]" },
+  { icon: BarChart3, title: "Predictive Analytics", desc: "Revenue forecasting, demand prediction, and real-time business insights.", gradient: "from-[#06B6D4] to-[#3B82F6]" },
+  { icon: Users, title: "Smart CRM", desc: "Lead scoring, customer behavior analysis, and automated follow-ups.", gradient: "from-[#f97316] to-[#ef4444]" },
+  { icon: Calendar, title: "Smart Scheduling", desc: "Conflict-free scheduling with AI optimization across all resources.", gradient: "from-[#10B981] to-[#06B6D4]" },
+  { icon: Shield, title: "Enterprise Security", desc: "Bank-grade encryption, RLS policies, and complete data isolation.", gradient: "from-[#8B5CF6] to-[#ec4899]" },
+  { icon: Rocket, title: "Multi-Industry", desc: "8 dedicated industry workspaces, each with tailored workflows.", gradient: "from-[#f97316] to-[#facc15]" },
 ];
 
 const FOOTER_COLUMNS = [
@@ -264,16 +264,24 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
       )}
 
       {/* Features */}
-      <section id="features" className="py-20 bg-muted/30">
-        <div className="container">
-          <h2 className="text-3xl font-bold text-center mb-12">Everything You Need to Scale</h2>
+      <section id="features" className="py-20 bg-muted/30 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#6366F1]/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#06B6D4]/5 rounded-full blur-3xl" />
+        </div>
+        <div className="container relative">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-4">
+            <span className="bg-gradient-to-r from-[#6366F1] via-[#8B5CF6] to-[#06B6D4] bg-clip-text text-transparent">Built to Dominate</span> at Scale
+          </h2>
+          <p className="text-center text-muted-foreground text-sm max-w-lg mx-auto mb-12">Every tool you need to automate, analyze, and accelerate — engineered for the top 1%.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map(f => (
-              <div key={f.title} className="rounded-xl border border-border/50 bg-card p-6 space-y-3 hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <f.icon className="w-5 h-5 text-primary" />
+              <div key={f.title} className="group relative rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 space-y-3 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-500`} />
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center shadow-lg`}>
+                  <f.icon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-semibold text-lg">{f.title}</h3>
+                <h3 className="font-bold text-lg text-foreground">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
