@@ -212,7 +212,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                 {isAdmin ? "Click any industry to open its management dashboard" : "Select an industry to get started"}
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {INDUSTRIES.map((ind) => {
                 const isActive = currentIndustry === ind.id;
                 return (
