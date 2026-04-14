@@ -177,32 +177,42 @@ const CRM_FEATURES = [
 const TEAM_CONNECT_INFO: Record<string, string> = {
   hospitality: `
 ## Team Connect — Travel, Tourism & Hospitality 🏨🌍
-HostFlow AI mein aap apni poori hotel/property/travel agency team ko connect kar sakte hain. Har role ko specific access milta hai:
 
-### Roles & Access:
+This industry has TWO sub-types. When a user selects "Travel, Tourism & Hospitality" during onboarding, they choose:
+
+### Sub-type 1: Hotel & Property 🏨
+Roles & Access:
 1. **Owner** — Full access: CRM, AI Pricing, Billing, Settings, Analytics, Competitor Radar, Gap Night Filler, Guest Score — sab kuch
-2. **Manager** — Full access minus billing/payment settings. Bookings, CRM, AI tools, analytics sab use kar sakta hai
-3. **Floor Manager** — Full operational access: Bookings, Rooms, Staff management, Calendar, Guest Score, CRM tools
-4. **Front Desk** — Full operational access: Bookings, Check-in/out, Guest profiles, Calendar + Housekeeping tasks manage karna
+2. **Manager** — Full access minus billing/payment settings
+3. **Floor Manager** — Full operational: Bookings, Rooms, Staff, Calendar, Guest Score, CRM
+4. **Front Desk** — Full operational: Bookings, Check-in/out, Guests, Calendar + Housekeeping tasks manage karna
+- **Housekeeping** — No direct access. Front Desk assigns & manages their tasks
 
-### Housekeeping Staff:
-- Housekeeping ko direct app access NAHI milta
-- Front Desk unki tasks create aur assign karta hai system mein
-- Room status updates Front Desk handle karta hai
+### Sub-type 2: Travel & Tours 🌍
+Roles & Access:
+1. **Owner/Tour Operator** — Full access: CRM, AI Pricing, Tour Packages, Billing, Settings, Analytics — sab kuch
+2. **Manager** — Full access minus billing/payment settings
+3. **Travel Agent** — Tour bookings, customer management, itineraries, CRM contacts — full operational
+4. **Tour Guide** — Assigned tours only: schedule, traveler info, route details
+- **Transport Coordinator** — No direct access. Manager assigns transport tasks
+
+### Key Differences (Hotel vs Travel):
+- Hotel: Resources = Rooms/Suites, Bookings = Check-in/out, KPIs = Occupancy/RevPAR
+- Travel: Resources = Tour Packages/Destinations, Bookings = Tour Date/Travelers, KPIs = Booking Rate/Revenue per Tour
+- Hotel: Gap Night Filler fills empty rooms | Travel: Low-booking tour suggestions
+- Hotel: Guest Score Card | Travel: Traveler Score Card
 
 ### Kaise Connect Karein:
-1. **Owner/Manager** account create kare aur industry select kare (Hospitality)
-2. Settings → Team Management → "Invite Team Member" click kare
-3. Invite link ya email se team members ko add kare
-4. Har member ko appropriate role assign kare (Manager, Floor Manager, Front Desk)
-5. Team member invite accept kare → automatically same workspace mein connect ho jayega
-6. Sab ka data shared hota hai — bookings, guests, calendar ek hi system mein
+1. Owner account create kare → "Travel, Tourism & Hospitality" select kare
+2. Sub-type choose kare: "Hotel & Property" ya "Travel & Tours"
+3. Settings → Team Management → "Invite Team Member"
+4. Har member ko appropriate role assign kare
+5. Sab ka data shared hota hai — ek hi workspace mein
 
 ### Important:
 - Sirf Owner billing settings change kar sakta hai
-- Manager aur Floor Manager operations manage kar sakte hain
-- Front Desk sirf bookings aur guest management dekh sakta hai
-- Housekeeping ka kaam Front Desk assign karta hai
+- Hotel: Housekeeping ka kaam Front Desk assign karta hai
+- Travel: Transport coordination Manager handle karta hai
 `,
   airlines: `
 ## Team Connect — Airlines ✈️
