@@ -14,6 +14,7 @@ Hospitality has 2 sub-types: hotel_property and travel_tours (profiles.business_
 - [Trial system](mem://features/trial-system) — 7-day free trial details
 - [CRM Architecture](mem://features/crm-architecture) — CRM is premium-only, industry-specific tools
 - [Double Booking Guard](mem://features/double-booking-guard) — Real AI auto-reschedule/reassign with email notifications
-- [Industry Features](mem://features/industry-features) — Which features belong to which industry
+- [Industry Features](mem://features/industry-features) — Which features belong to which industry + AI Pricing + Auto Price Alerts
+- [Dashboard vs CRM](mem://features/dashboard-vs-crm) — Clear separation: Dashboard=Operations, CRM=Customer Relations (Premium)
 - [Hospitality Sub-types](mem://features/hospitality-subtypes) — Hotel & Property vs Travel & Tours roles and labels
 - [Owner credentials](mem://features/owner-credentials) — Owner account login details
