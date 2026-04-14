@@ -50,12 +50,40 @@ const FEATURES = [
 ];
 
 const FOOTER_COLUMNS = [
-  { heading: "Product", links: ["Features", "Pricing", "AI Tools", "CRM", "Automations"] },
-  { heading: "Platform", links: ["How it works", "Use cases", "Integrations", "System overview"] },
-  { heading: "Company", links: ["About Us", "Mission", "Vision", "Careers"] },
-  { heading: "Support", links: ["Help Center", "Contact Support", "FAQs"] },
-  { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Security"] },
-  { heading: "Explore", links: ["Blog", "Updates", "Partnerships"] },
+  { heading: "Product", links: [
+    { label: "Features", href: "/#features" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "AI Tools", href: "/dashboard" },
+    { label: "CRM", href: "/crm" },
+    { label: "Automations", href: "/dashboard" },
+  ]},
+  { heading: "Platform", links: [
+    { label: "How it works", href: "/#how-it-works" },
+    { label: "Use cases", href: "/#industries" },
+    { label: "Integrations", href: "/dashboard" },
+    { label: "System overview", href: "/analytics" },
+  ]},
+  { heading: "Company", links: [
+    { label: "About Us", href: "/about" },
+    { label: "Mission", href: "/about" },
+    { label: "Vision", href: "/about" },
+    { label: "Careers", href: "/contact" },
+  ]},
+  { heading: "Support", links: [
+    { label: "Help Center", href: "/contact" },
+    { label: "Contact Support", href: "/contact" },
+    { label: "FAQs", href: "/#faq" },
+  ]},
+  { heading: "Legal", links: [
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Security", href: "/privacy" },
+  ]},
+  { heading: "Explore", links: [
+    { label: "Blog", href: "/about" },
+    { label: "Updates", href: "/about" },
+    { label: "Partnerships", href: "/contact" },
+  ]},
 ];
 
 export default function PublicView({ onReturn, onIndustrySelect, currentIndustry, isAdmin, user, profile }: PublicViewProps) {
@@ -309,8 +337,8 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                 <h4 className="text-sm font-bold mb-4 text-foreground">{col.heading}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map(link => (
-                    <li key={link}>
-                      <a href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">{link}</a>
+                    <li key={link.label}>
+                      <a href={link.href} className="text-xs text-muted-foreground hover:text-primary transition-colors">{link.label}</a>
                     </li>
                   ))}
                 </ul>
