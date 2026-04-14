@@ -180,15 +180,15 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
         <div className="container text-center max-w-3xl mx-auto space-y-6">
           {isAdmin ? (
             <>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium">
-                <Crown className="w-4 h-4" /> Owner Dashboard
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Welcome back, <span className="text-primary">{displayName?.split(" ")[0] || "Owner"}</span>
-              </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Manage <strong>8 industries</strong>, track revenue, monitor users, and control every aspect of your AI-powered platform — all from one place.
-              </p>
+               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium">
+                 <Crown className="w-4 h-4" /> Command Center
+               </div>
+               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                 You're Powering <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
+               </h1>
+               <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                 One platform. <strong>8 industries</strong>. Millions of decisions automated. You're not just running a business — you're orchestrating an <strong>AI empire</strong>.
+               </p>
             </>
           ) : (
             <>
@@ -210,12 +210,12 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
       {onIndustrySelect && (
         <section className="py-12 bg-muted/20">
           <div className="container space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">Choose Your Industry</h2>
-              <p className="text-sm text-muted-foreground">
-                {isAdmin ? "Click any industry to open its management dashboard" : "Select an industry to get started"}
-              </p>
-            </div>
+             <div className="text-center space-y-2">
+               <h2 className="text-2xl md:text-3xl font-extrabold text-foreground">Operate Your AI Empire</h2>
+               <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+                 {isAdmin ? "Each industry runs on its own AI brain — select one to take full control." : "Select an industry to get started"}
+               </p>
+             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {INDUSTRIES.map((ind) => {
                 const isActive = currentIndustry === ind.id;
