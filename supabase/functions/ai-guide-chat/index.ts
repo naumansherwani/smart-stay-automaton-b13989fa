@@ -265,6 +265,8 @@ Competitor Radar & Gap Filler are ONLY for Hospitality.
 Route Optimization is ONLY for Logistics, Airlines, Railways.
 `;
 
+  const teamInfo = TEAM_CONNECT_INFO[industry] || TEAM_CONNECT_INFO["hospitality"];
+
   let featureList = "";
   if (context === "dashboard") {
     featureList = `
@@ -274,27 +276,34 @@ ${dashboardFeatures.map((f) => `- ${f}`).join("\n")}
 ## Premium-Only Features:
 ${PREMIUM_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${teamInfo}
+
 ${planInfo}
 
-IMPORTANT: Only explain Dashboard features. Do NOT mix with CRM features.`;
+IMPORTANT: Only explain Dashboard features. When asked about team/connect, explain team roles and invite process.`;
   } else if (context === "crm") {
     featureList = `
 ## AI CRM Features:
 ${CRM_FEATURES.map((f) => `- ${f}`).join("\n")}
 
+${teamInfo}
+
 ${planInfo}
 
-IMPORTANT: Only explain CRM features. Do NOT mix with Dashboard features.`;
+IMPORTANT: Only explain CRM features. When asked about team/connect, explain team roles and how they connect to CRM.`;
   } else if (context === "settings") {
     featureList = `
 ## Settings Features:
 ${SETTINGS_FEATURES.map((f) => `- ${f}`).join("\n")}
+- Team Management — Invite team members, assign roles, manage access levels
+
+${teamInfo}
 
 ${planInfo}
 
-IMPORTANT: Only explain Settings features.`;
+IMPORTANT: Only explain Settings features. When asked about team, explain team management and invite process.`;
   } else {
-    featureList = planInfo;
+    featureList = planInfo + "\n" + teamInfo;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
