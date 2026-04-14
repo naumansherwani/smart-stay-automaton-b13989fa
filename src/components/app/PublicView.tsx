@@ -24,6 +24,8 @@ const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: 
   { icon: TrainFront, name: "Railways", desc: "Trains & platforms", color: "#0284c7", id: "railways" },
 ];
 
+const getIndustryName = (id?: IndustryType) => INDUSTRIES.find(i => i.id === id)?.name || "Hospitality";
+
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems." },
   { icon: BarChart3, title: "Predictive Analytics", desc: "Revenue forecasting, demand prediction, and real-time business insights." },
