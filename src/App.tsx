@@ -4,31 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Analytics from "./pages/Analytics";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Pricing from "./pages/Pricing";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
-import Contact from "./pages/Contact";
-import Profile from "./pages/Profile";
-import Onboarding from "./pages/Onboarding";
-import OwnerConsole from "./pages/OwnerConsole";
-import Settings from "./pages/Settings";
-import About from "./pages/About";
-import Messages from "./pages/Messages";
-import NotFound from "./pages/NotFound";
-import RailwayDashboard from "./pages/RailwayDashboard";
-import CRM from "./pages/CRM";
-import Unsubscribe from "./pages/Unsubscribe";
+import Maintenance from "./pages/Maintenance";
 
 const queryClient = new QueryClient();
 
+// MAINTENANCE MODE: Temporarily showing maintenance page on all routes.
+// To restore, revert this file to the previous version.
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -37,29 +18,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About />} />
-            
-            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
-            <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
-            
-            <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
-            <Route path="/owner-hq-7x" element={<OwnerConsole />} />
-            <Route path="/unsubscribe" element={<Unsubscribe />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<Maintenance />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
