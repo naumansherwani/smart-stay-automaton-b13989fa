@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrainFront, Route, Calendar, LayoutGrid, Ticket, DollarSign, Bell, Brain } from "lucide-react";
+import PriceAlertsPanel from "@/components/dashboard/PriceAlertsPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import RailwayTrainsTab from "@/components/railway/RailwayTrainsTab";
@@ -76,7 +77,12 @@ const RailwayDashboard = () => {
           <TabsContent value="schedule"><RailwayScheduleTab /></TabsContent>
           <TabsContent value="coaches"><RailwayCoachesTab /></TabsContent>
           <TabsContent value="bookings"><RailwayBookingsTab /></TabsContent>
-          <TabsContent value="pricing"><RailwayPricingTab /></TabsContent>
+          <TabsContent value="pricing">
+            <div className="space-y-6">
+              <PriceAlertsPanel />
+              <RailwayPricingTab />
+            </div>
+          </TabsContent>
           <TabsContent value="notifications"><RailwayNotificationsTab /></TabsContent>
         </Tabs>
       </div>

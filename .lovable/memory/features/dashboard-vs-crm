@@ -1,0 +1,83 @@
+---
+name: Dashboard vs CRM Feature Separation
+description: Clear mapping of which features are Dashboard (operations) vs CRM (customer relations) per industry
+type: feature
+---
+
+## RULE: Dashboard = Operations, CRM = Customer Relations (Premium only)
+
+### Dashboard Features (ALL industries get these):
+- AI Calendar/Smart Scheduling
+- Booking/Resource Manager
+- AI Auto-Schedule
+- Double Booking Guard (industry terms)
+- Alerts Panel
+- Industry KPIs
+- Settings
+
+### Dashboard Features (PRICING industries only — 5):
+Hospitality, Airlines, Car Rental, Events, Railways
+- AI Smart Pricing (edge function)
+- Auto Price Alerts (>15% change notifications)
+- Price Override (manual control)
+
+### Dashboard — Industry-Specific:
+| Feature | Industry | Dashboard/CRM |
+|---|---|---|
+| Gap Night Filler | Hospitality ONLY | Dashboard |
+| Smart Pricing Card | Hospitality ONLY | Dashboard |
+| Competitor Radar | Hospitality ONLY | Dashboard |
+| Guest Score Card | Hospitality ONLY | Dashboard |
+| AI Ticket Generator | Airlines, Railways, Events | Dashboard |
+| AI Ticket Email | Airlines, Railways, Events | Dashboard |
+| Flight Manager | Airlines | Dashboard |
+| Airline Ops Dashboard | Airlines | Dashboard |
+| Fleet Intelligence | Airlines | Dashboard |
+| Vehicle Manager | Car Rental | Dashboard |
+| Timetable Manager | Education | Dashboard |
+| Healthcare Manager | Healthcare | Dashboard |
+| Logistics Manager | Logistics | Dashboard |
+| Events Manager | Events | Dashboard |
+| Train Manager | Railways | Dashboard |
+| Route/Schedule Manager | Railways | Dashboard |
+| Coach/Seat Manager | Railways | Dashboard |
+| Railway Bookings | Railways | Dashboard |
+| Railway Pricing Overrides | Railways | Dashboard |
+| Railway Notifications | Railways | Dashboard |
+
+---
+
+### CRM Features (Premium only, ALL 8 industries):
+- Contacts (industry-specific labels: Guest/Passenger/Patient/Student/Client/Organizer)
+- Tickets (industry-specific: Request/Complaint/Case/Support/Issue)
+- Deals (industry-specific: Booking Deal/Route Deal/Fleet Deal/Treatment Plan/Enrollment/Contract/Sponsorship)
+- Activities Log
+- AI Insights
+- AI Email Composer
+- AI Predictive Revenue
+- Competitor Intelligence
+- Sentiment Dashboard
+- Smart Meeting Scheduler
+- Work Timer + Break Games
+- Daily Planner (AI)
+- Google Sync (Gmail, Calendar, Chat)
+- Security Panel
+- Performance Reports
+- Live KPIs
+- Quick Actions
+- Voice Assistant (ElevenLabs)
+
+### CRM — Industry-Specific Tools:
+| Industry | CRM Tools |
+|---|---|
+| Hospitality | Smart Tasks, Daily Planner, Google Sync, AI Calendar, AI Pricing, Manual Booking, Resource Manager |
+| Airlines | Smart Tasks, Daily Planner, Google Sync, AI Scheduling, AI Pricing, Capacity Planner, Route Optimizer |
+| Car Rental | Smart Tasks, Daily Planner, Google Sync, AI Pricing, Fleet Manager, Manual Booking, Capacity |
+| Healthcare | Smart Tasks, Daily Planner, Google Sync, AI Scheduling, Manual Booking, Resource Manager |
+| Education | Smart Tasks, Daily Planner, Google Sync, AI Scheduling, Manual Booking, Capacity, Resource Manager |
+| Logistics | Smart Tasks, Daily Planner, Google Sync, Route Optimizer, Capacity, Fleet Manager, AI Scheduling |
+| Events | Smart Tasks, Daily Planner, Google Sync, AI Calendar, AI Pricing, Manual Booking, Capacity |
+| Railways | Smart Tasks, Daily Planner, Google Sync, AI Scheduling, AI Pricing, Route Optimizer, Capacity |
+
+### KEY RULE: AI Pricing tool appears in CRM ONLY for 5 pricing industries
+Healthcare, Education, Logistics → NO AI Pricing in CRM tools
