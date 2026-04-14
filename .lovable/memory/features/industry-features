@@ -37,6 +37,16 @@ Healthcare, Education, Logistics
 - Client/Lead Scoring
 - Custom AI Training (Premium only)
 
+## Backend Database Tables by Industry:
+- Hospitality: bookings, resources, booking_conflicts (shared tables)
+- Railways: railway_trains, railway_coaches, railway_seats, railway_stations, railway_routes, railway_route_stops, railway_schedules, railway_bookings, railway_booking_passengers, railway_notifications, railway_pricing_overrides
+- Healthcare: healthcare_doctors, healthcare_patients, healthcare_appointments
+- Airlines: NO dedicated tables yet (uses shared bookings/resources)
+- Car Rental: NO dedicated tables yet
+- Education: NO dedicated tables yet
+- Logistics: NO dedicated tables yet
+- Events: NO dedicated tables yet
+
 ## Removed (NOT BUILT):
 - White-label branding
 - Multi-team management
