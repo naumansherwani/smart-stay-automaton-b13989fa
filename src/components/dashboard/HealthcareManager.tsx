@@ -645,15 +645,15 @@ function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; d
         <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-warning" />AI No-Show Predictor</CardTitle></CardHeader>
         <CardContent className="space-y-2">
           {dbAppointments.filter(a => a.no_show_risk > 20 && a.status === "scheduled").sort((a, b) => b.no_show_risk - a.no_show_risk).map(a => (
-            <div key={a.id} className={`p-2.5 rounded-lg border ${a.noShowRisk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
+            <div key={a.id} className={`p-2.5 rounded-lg border ${a.no_show_risk > 40 ? "border-destructive/20 bg-destructive/5" : "border-warning/20 bg-warning/5"}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-foreground">{a.patientName}</p>
-                  <p className="text-[10px] text-muted-foreground">{a.time} · {a.doctorName} · {a.specialization}</p>
+                  <p className="text-sm font-medium text-foreground">{a.patient_name}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.appointment_time} · {a.doctor_name} · {a.specialization}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className={`text-[10px] ${a.noShowRisk > 40 ? "text-destructive border-destructive/30" : "text-warning border-warning/30"}`}>
-                    {a.noShowRisk}% risk
+                  <Badge variant="outline" className={`text-[10px] ${a.no_show_risk > 40 ? "text-destructive border-destructive/30" : "text-warning border-warning/30"}`}>
+                    {a.no_show_risk}% risk
                   </Badge>
                   <Button size="sm" variant="ghost" className="h-6 text-[10px]"><Bell className="w-3 h-3" /></Button>
                 </div>
