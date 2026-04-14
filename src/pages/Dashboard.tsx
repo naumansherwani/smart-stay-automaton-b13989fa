@@ -604,7 +604,10 @@ const Dashboard = () => {
 
           {hasPricing && (
             <TabsContent value="pricing">
-              <AutoPricingPanel config={config} industry={currentIndustry} />
+              <div className="space-y-6">
+                <PriceAlertsPanel />
+                <AutoPricingPanel config={config} industry={currentIndustry} />
+              </div>
             </TabsContent>
           )}
 
