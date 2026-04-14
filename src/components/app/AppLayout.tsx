@@ -6,12 +6,24 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
 import PublicView from "./PublicView";
 import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
+import IndustryIcon from "@/components/dashboard/IndustryIcon";
+
+const INDUSTRY_LABELS: Record<IndustryType, string> = {
+  hospitality: "Hospitality",
+  airlines: "Airlines",
+  car_rental: "Car Rental",
+  healthcare: "Healthcare",
+  education: "Education",
+  logistics: "Logistics",
+  events_entertainment: "Events",
+  railways: "Railways",
+};
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -24,6 +36,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [publicMode, setPublicMode] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const currentIndustry = (profile?.industry as IndustryType) || "hospitality";
   const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
 
   useEffect(() => {
@@ -59,7 +72,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <PublicView
         onReturn={() => setPublicMode(false)}
         onIndustrySelect={isAdmin ? handleIndustrySelect : undefined}
-        currentIndustry={(profile?.industry as IndustryType) || "hospitality"}
+        currentIndustry={currentIndustry}
         isAdmin={isAdmin}
         user={user}
         profile={profile}
@@ -79,37 +92,22 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 md:gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-xs"
-            onClick={togglePublicMode}
-            title="Choose Your Industry (Ctrl+Shift+P)"
-          >
-            <Globe className="w-4 h-4" /> <span className="hidden md:inline">Choose Your Industry</span>
-          </Button>
+        <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1.5 text-xs"
-            onClick={() => navigate("/settings")}
+            className="gap-2 text-xs font-medium hover:bg-primary/10 transition-all"
+            onClick={togglePublicMode}
+            title="Choose Your Industry (Ctrl+Shift+P)"
           >
-            <Settings className="w-4 h-4" />
-            <span className="hidden md:inline">Settings</span>
+            <IndustryIcon industry={currentIndustry} size={16} />
+            <span className="hidden md:inline font-semibold">{INDUSTRY_LABELS[currentIndustry]}</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="hidden lg:inline text-muted-foreground">·</span>
+            <Globe className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="hidden lg:inline text-muted-foreground">Switch</span>
           </Button>
-          {user && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-1.5 text-xs hover:bg-destructive/10 hover:text-destructive"
-              onClick={() => { signOut(); navigate("/"); }}
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline">Logout</span>
-            </Button>
-          )}
         </div>
       </header>
 
