@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -9,13 +9,24 @@ import { Loader2, ShieldCheck } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
 
+const OWNER_EMAIL = "naumansherwani@hostflowai.live";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if owner is already logged in (returning visit)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.email === OWNER_EMAIL) {
+        setIsOwner(true);
+      }
+    });
+  }, []);
   // MFA State
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
@@ -177,7 +188,16 @@ export default function Login() {
             <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
-          <p className="text-xs text-muted-foreground">Sign in to your account</p>
+          {isOwner ? (
+            <p className="text-sm font-semibold bg-gradient-to-r from-[hsl(174,62%,55%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent">
+              👑 Welcome Back, Mr. Nauman Sherwani
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">Sign in to your account</p>
+          )}
+          {isOwner && (
+            <p className="text-[10px] text-muted-foreground">Owner Protocol Active</p>
+          )}
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
@@ -200,7 +220,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
+              <Input id="email" type="email" value={email} onChange={e => { setEmail(e.target.value); setIsOwner(e.target.value.toLowerCase() === OWNER_EMAIL); }} required placeholder="you@example.com" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
