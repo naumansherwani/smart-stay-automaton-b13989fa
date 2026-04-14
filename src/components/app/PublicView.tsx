@@ -77,7 +77,11 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
           <div className="flex items-center gap-3">
             <Logo size="lg" showName />
             {isAdmin && (
-              <div className="flex items-center gap-2 ml-2 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50">
+              <button
+                onClick={onReturn}
+                className="flex items-center gap-2 ml-2 px-3 py-1.5 rounded-lg bg-muted/40 border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-all cursor-pointer"
+                title={`Go to ${activeIndustry.name} Dashboard`}
+              >
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${activeIndustry.color}15` }}>
                   <activeIndustry.Icon className="w-4 h-4" style={{ color: activeIndustry.color }} />
                 </div>
@@ -86,7 +90,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
-              </div>
+              </button>
             )}
           </div>
 
