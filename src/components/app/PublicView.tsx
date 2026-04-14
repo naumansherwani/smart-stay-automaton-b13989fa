@@ -337,8 +337,8 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                 <h4 className="text-sm font-bold mb-4 text-foreground">{col.heading}</h4>
                 <ul className="space-y-2.5">
                   {col.links.map(link => (
-                    <li key={link}>
-                      <a href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">{link}</a>
+                    <li key={link.label}>
+                      <a href={link.href} className="text-xs text-muted-foreground hover:text-primary transition-colors">{link.label}</a>
                     </li>
                   ))}
                 </ul>
