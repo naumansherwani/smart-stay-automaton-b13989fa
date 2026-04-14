@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { sendOwnerNotification } from "@/lib/ownerNotifications";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,11 @@ export default function Signup() {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else {
       setSuccess(true);
+      sendOwnerNotification({
+        eventType: "new_signup",
+        eventTitle: "New User Signed Up",
+        details: `${fullName || "Unknown"} (${email}) just signed up${company ? ` from ${company}` : ""}.`,
+      });
     }
     setLoading(false);
   };

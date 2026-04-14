@@ -11,6 +11,7 @@ import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Load
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { sendOwnerNotification } from "@/lib/ownerNotifications";
 import type { IndustryConfig, IndustryType } from "@/lib/industryConfig";
 import SmartEmptyState from "@/components/conversion/SmartEmptyState";
 import FirstSuccessMessage from "@/components/conversion/FirstSuccessMessage";
@@ -394,7 +395,11 @@ const BookingManager = ({ config }: BookingManagerProps) => {
         toast.error("Failed to create booking");
       } else {
         toast.success(`${config.bookingLabel} created successfully!`);
-
+        sendOwnerNotification({
+          eventType: "new_booking",
+          eventTitle: `New ${config.bookingLabel} Created`,
+          details: `${form.guest_name} booked ${selectedResource?.name || "a resource"} from ${new Date(form.check_in).toLocaleDateString()} to ${new Date(form.check_out).toLocaleDateString()}.`,
+        });
         // Send reassignment email if auto-reassigned and guest email exists
         if (validation.auto_reassigned && form.guest_email) {
           sendRescheduleEmail({

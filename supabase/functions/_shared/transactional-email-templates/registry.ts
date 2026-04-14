@@ -12,9 +12,11 @@ export interface TemplateEntry {
 import { template as paymentLink } from './payment-link.tsx'
 import { template as bookingReschedule } from './booking-reschedule.tsx'
 import { template as ticketConfirmation } from './ticket-confirmation.tsx'
+import { template as adminNotification } from './admin-notification.tsx'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'payment-link': paymentLink,
   'booking-reschedule': bookingReschedule,
   'ticket-confirmation': ticketConfirmation,
+  'admin-notification': adminNotification,
 }
