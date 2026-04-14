@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Wallet, TrendingUp, Clock, CheckCircle, ArrowDownToLine, DollarSign, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface Earning {
   id: string;
@@ -36,6 +37,7 @@ interface Withdrawal {
 const Earnings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { format, selectedCurrency } = useCurrency();
   const [earnings, setEarnings] = useState<Earning[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,7 +137,7 @@ const Earnings = () => {
                 <Wallet className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Available</span>
               </div>
-              <p className="text-2xl font-extrabold text-foreground">${availableBalance.toFixed(2)}</p>
+              <p className="text-2xl font-extrabold text-foreground">{format(availableBalance)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -144,7 +146,7 @@ const Earnings = () => {
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Total Earned</span>
               </div>
-              <p className="text-2xl font-extrabold text-foreground">${totalEarnings.toFixed(2)}</p>
+              <p className="text-2xl font-extrabold text-foreground">{format(totalEarnings)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -153,7 +155,7 @@ const Earnings = () => {
                 <Clock className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Pending</span>
               </div>
-              <p className="text-2xl font-extrabold text-foreground">${pendingEarnings.toFixed(2)}</p>
+              <p className="text-2xl font-extrabold text-foreground">{format(pendingEarnings)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -162,7 +164,7 @@ const Earnings = () => {
                 <CheckCircle className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Withdrawn</span>
               </div>
-              <p className="text-2xl font-extrabold text-foreground">${totalWithdrawn.toFixed(2)}</p>
+              <p className="text-2xl font-extrabold text-foreground">{format(totalWithdrawn)}</p>
             </CardContent>
           </Card>
         </div>
@@ -181,12 +183,12 @@ const Earnings = () => {
                   <DollarSign className="w-5 h-5 text-primary" /> Request Withdrawal
                 </DialogTitle>
                 <DialogDescription>
-                  Available balance: <strong>${availableBalance.toFixed(2)}</strong>. Withdrawals are processed within 3-5 business days.
+                  Available balance: <strong>{format(availableBalance)}</strong>. Withdrawals are processed within 3-5 business days.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-2">
                 <div>
-                  <Label>Amount ($)</Label>
+                  <Label>Amount ({selectedCurrency.symbol})</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -276,7 +278,7 @@ const Earnings = () => {
                         </div>
                         <div className="flex items-center gap-3">
                           <Badge variant="outline" className={statusColor(e.status)}>{e.status}</Badge>
-                          <span className="text-sm font-bold text-emerald-400">+${Number(e.amount).toFixed(2)}</span>
+                          <span className="text-sm font-bold text-emerald-400">+{format(Number(e.amount))}</span>
                         </div>
                       </div>
                     ))}
@@ -309,7 +311,7 @@ const Earnings = () => {
                         </div>
                         <div className="flex items-center gap-3">
                           <Badge variant="outline" className={statusColor(w.status)}>{w.status}</Badge>
-                          <span className="text-sm font-bold text-foreground">-${Number(w.amount).toFixed(2)}</span>
+                          <span className="text-sm font-bold text-foreground">-{format(Number(w.amount))}</span>
                         </div>
                       </div>
                     ))}
