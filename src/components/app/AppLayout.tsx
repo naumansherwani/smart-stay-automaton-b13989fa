@@ -33,8 +33,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
-  const [publicMode, setPublicMode] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [publicMode, setPublicMode] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false);
 
   const currentIndustry = (profile?.industry as IndustryType) || "hospitality";
   const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
