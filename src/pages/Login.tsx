@@ -188,7 +188,16 @@ export default function Login() {
             <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
             <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
           </div>
-          <p className="text-xs text-muted-foreground">Sign in to your account</p>
+          {isOwner ? (
+            <p className="text-sm font-semibold bg-gradient-to-r from-[hsl(174,62%,55%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent">
+              👑 Welcome Back, Mr. Nauman Sherwani
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">Sign in to your account</p>
+          )}
+          {isOwner && (
+            <p className="text-[10px] text-muted-foreground">Owner Protocol Active</p>
+          )}
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
