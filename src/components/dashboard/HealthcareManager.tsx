@@ -551,9 +551,9 @@ function DoctorsPanel({ dbDoctors, onAdd, onUpdate, onDelete, isLive }: { dbDoct
 }
 
 // ─── Schedule Tab ───
-function SchedulePanel() {
+function SchedulePanel({ dbDoctors, dbAppointments }: { dbDoctors: HcDoctor[]; dbAppointments: HcAppointment[] }) {
   const hours = ["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","01:00","01:30","02:00","02:30","03:00","03:30","04:00","04:30"];
-  const activeDoctors = MOCK_DOCTORS.filter(d => d.status !== "off-duty");
+  const activeDoctors = dbDoctors.filter(d => d.status !== "off-duty");
 
   const getSlotStatus = (doctor: string, time: string): { status: string; patient?: string; type?: string } => {
     const apt = MOCK_APPOINTMENTS.find(a => a.doctorName === doctor && a.time.replace(" ", "").toLowerCase().includes(time.replace(":","").toLowerCase().slice(0,4)));
