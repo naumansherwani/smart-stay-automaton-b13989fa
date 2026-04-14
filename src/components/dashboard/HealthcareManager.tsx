@@ -261,10 +261,30 @@ function HealthcareKPIs() {
 }
 
 // ─── Appointments Tab ───
-function AppointmentsPanel() {
+function AppointmentsPanel({ dbDoctors, dbAppointments, onBook, onUpdate, isLive }: { dbDoctors: HcDoctor[]; dbAppointments: HcAppointment[]; onBook: (apt: Partial<HcAppointment>) => Promise<void>; onUpdate: (id: string, updates: Partial<HcAppointment>) => Promise<void>; isLive: boolean }) {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const filtered = MOCK_APPOINTMENTS.filter(a => {
+
+  // Map DB appointments to display format
+  const displayApts: Appointment[] = dbAppointments.map(a => ({
+    id: a.id,
+    patientName: a.patient_name,
+    patientPhone: a.patient_phone || "",
+    doctorName: a.doctor_name,
+    doctorId: a.doctor_id || "",
+    specialization: a.specialization || "",
+    time: typeof a.appointment_time === "string" && a.appointment_time.includes("T")
+      ? new Date(a.appointment_time).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+      : a.appointment_time,
+    duration: `${a.duration_minutes} min`,
+    type: a.type as Appointment["type"],
+    status: a.status as Appointment["status"],
+    fee: a.fee,
+    notes: a.notes || "",
+    noShowRisk: a.no_show_risk,
+  }));
+
+  const filtered = displayApts.filter(a => {
     const matchSearch = a.patientName.toLowerCase().includes(search.toLowerCase()) || a.doctorName.toLowerCase().includes(search.toLowerCase()) || a.id.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === "all" || a.status === filterStatus;
     return matchSearch && matchStatus;
