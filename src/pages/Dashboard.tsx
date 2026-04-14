@@ -56,12 +56,18 @@ const Dashboard = () => {
   const { createWorkspace } = useWorkspaces();
   const { isPaid, isTrial, isExpired } = useTrialLimits();
   
-  const { profile } = useProfile();
+  const { profile, updateIndustry } = useProfile();
   const newIndustryHandled = useRef(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const currentIndustry: IndustryType = (profile?.industry as IndustryType) || "hospitality";
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
 
   // Handle post-checkout redirect: create workspace for new industry
   useEffect(() => {
