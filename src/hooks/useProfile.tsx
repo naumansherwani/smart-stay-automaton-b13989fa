@@ -4,6 +4,8 @@ import { useAuth } from "./useAuth";
 import type { IndustryType } from "@/lib/industryConfig";
 import { getUserAvatarUrl, getUserDisplayName } from "@/lib/utils";
 
+export type BusinessSubtype = "hotel_property" | "travel_tours" | null;
+
 export interface Profile {
   id: string;
   user_id: string;
@@ -12,6 +14,7 @@ export interface Profile {
   company_name: string | null;
   phone: string | null;
   industry: IndustryType;
+  business_subtype: BusinessSubtype;
 }
 
 export function useProfile() {
@@ -52,6 +55,7 @@ export function useProfile() {
           company_name: data?.company_name ?? null,
           phone: data?.phone ?? null,
           industry,
+          business_subtype: (data?.business_subtype as BusinessSubtype) ?? null,
         };
 
         if (!cancelled) {
@@ -95,6 +99,7 @@ export function useProfile() {
             company_name: null,
             phone: null,
             industry: "hospitality",
+            business_subtype: null,
           });
         }
       } finally {
@@ -111,13 +116,24 @@ export function useProfile() {
     };
   }, [user]);
 
-  const updateIndustry = async (industry: IndustryType) => {
+  const updateIndustry = async (industry: IndustryType, subtype?: BusinessSubtype) => {
+    if (!user) return;
+    const updates: any = { industry };
+    if (subtype !== undefined) updates.business_subtype = subtype;
+    await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("user_id", user.id);
+    setProfile(prev => prev ? { ...prev, industry, ...(subtype !== undefined ? { business_subtype: subtype } : {}) } : null);
+  };
+
+  const updateBusinessSubtype = async (subtype: BusinessSubtype) => {
     if (!user) return;
     await supabase
       .from("profiles")
-      .update({ industry })
+      .update({ business_subtype: subtype })
       .eq("user_id", user.id);
-    setProfile(prev => prev ? { ...prev, industry } : null);
+    setProfile(prev => prev ? { ...prev, business_subtype: subtype } : null);
   };
 
   const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string; avatar_url?: string }) => {
@@ -129,5 +145,5 @@ export function useProfile() {
     setProfile(prev => prev ? { ...prev, ...updates } : null);
   };
 
-  return { profile, loading, updateIndustry, updateProfile };
+  return { profile, loading, updateIndustry, updateBusinessSubtype, updateProfile };
 }

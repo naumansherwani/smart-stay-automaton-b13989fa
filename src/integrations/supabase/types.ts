@@ -1347,6 +1347,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           business_hours: Json | null
+          business_subtype: string | null
           certifications: string[] | null
           company_name: string | null
           created_at: string
@@ -1366,6 +1367,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           business_hours?: Json | null
+          business_subtype?: string | null
           certifications?: string[] | null
           company_name?: string | null
           created_at?: string
@@ -1385,6 +1387,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           business_hours?: Json | null
+          business_subtype?: string | null
           certifications?: string[] | null
           company_name?: string | null
           created_at?: string
