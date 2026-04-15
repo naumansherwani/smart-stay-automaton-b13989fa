@@ -15,6 +15,7 @@ import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
 import OwnerUsersTab from "@/components/admin/OwnerUsersTab";
 import OwnerCrmTab from "@/components/admin/OwnerCrmTab";
 import OwnerFeaturesTab from "@/components/admin/OwnerFeaturesTab";
+import OwnerSubscriptionsTab from "@/components/admin/OwnerSubscriptionsTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -36,6 +37,7 @@ const OwnerConsole = () => {
   const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [featureUsage, setFeatureUsage] = useState<any[]>([]);
   const [workspaces, setWorkspaces] = useState<any[]>([]);
+  const [subscriptionsList, setSubscriptionsList] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -89,6 +91,7 @@ const OwnerConsole = () => {
     setActivityLogs(logs.data || []);
     setFeatureUsage(usage.data || []);
     setWorkspaces(ws.data || []);
+    setSubscriptionsList(subscriptions.data || []);
     setLastRefresh(new Date());
   };
 
@@ -154,6 +157,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="features" className="gap-1.5 text-xs">
               <Layers className="w-3 h-3" /> Features
             </TabsTrigger>
+            <TabsTrigger value="subscriptions" className="gap-1.5 text-xs">
+              <Crown className="w-3 h-3" /> Subscriptions
+            </TabsTrigger>
             <TabsTrigger value="revenue" className="gap-1.5 text-xs">
               <BarChart3 className="w-3 h-3" /> Revenue
             </TabsTrigger>
@@ -210,6 +216,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="features">
             <OwnerFeaturesTab featureUsage={featureUsage} workspaces={workspaces} showSecret={showSecret} />
+          </TabsContent>
+
+          <TabsContent value="subscriptions">
+            <OwnerSubscriptionsTab subscriptions={subscriptionsList} showSecret={showSecret} />
           </TabsContent>
 
           <TabsContent value="revenue">
