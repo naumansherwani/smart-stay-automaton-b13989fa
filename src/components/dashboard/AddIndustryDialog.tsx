@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, ArrowRight, Loader2, Sparkles, Crown, Flame, Hotel, Plane, Car, Stethoscope, GraduationCap, Truck, Theater, TrainFront, Lock } from "lucide-react";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
-import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { type IndustryType } from "@/lib/industryConfig";
@@ -63,7 +61,6 @@ interface AddIndustryDialogProps {
 
 export default function AddIndustryDialog({ open, onOpenChange }: AddIndustryDialogProps) {
   const { workspaces, createWorkspace } = useWorkspaces();
-  const { subscription } = useSubscription();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -115,20 +112,17 @@ export default function AddIndustryDialog({ open, onOpenChange }: AddIndustryDia
     setIsProcessing(true);
 
     try {
-      // Payments disabled — contact support for adding industries
-      toast.error("Please contact support@hostflowai.com to add a new industry.");
-      setIsProcessing(false);
-      return;
+      const workspaceLabel = INDUSTRY_CONFIGS[selectedIndustry]?.label || selectedIndustry;
+      const workspace = await createWorkspace(workspaceLabel, selectedIndustry);
 
-      // Legacy: workspace creation placeholder
-      const data: any = null;
-      if (data?.workspace) {
-        // Free first workspace - already created
-        toast.success("New workspace created! 🎉");
-        onOpenChange(false);
-        resetDialog();
-        navigate("/dashboard");
+      if (!workspace) {
+        throw new Error("Failed to create workspace. Please try again.");
       }
+
+      toast.success(`${workspaceLabel} workspace created! 🎉`);
+      onOpenChange(false);
+      resetDialog();
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Failed to process. Please try again.");
     } finally {
