@@ -30,6 +30,7 @@ const OwnerConsole = lazy(() => import("./pages/OwnerConsole"));
 const RailwayDashboard = lazy(() => import("./pages/RailwayDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
