@@ -20,6 +20,19 @@ Deno.serve(async (req) => {
   try {
     const { action } = await req.json()
 
+    if (action === 'debug_key') {
+      const trimmed = PADDLE_API_KEY.trim()
+      return new Response(JSON.stringify({
+        length: trimmed.length,
+        starts: trimmed.substring(0, 20),
+        ends: trimmed.substring(trimmed.length - 5),
+        has_newlines: PADDLE_API_KEY.includes('\n'),
+        has_spaces: PADDLE_API_KEY !== trimmed,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     if (action === 'create_products') {
       const products = [
         {
