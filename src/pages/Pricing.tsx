@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -7,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Mail } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const PLANS = [
   {
@@ -87,14 +90,40 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
+  const [submittingPlan, setSubmittingPlan] = useState<string | null>(null);
 
-  const handleSelect = (plan: typeof PLANS[number]) => {
+  const handleSelect = async (plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    // Payment will be handled by Paddle once enabled
-    window.location.href = `mailto:support@hostflowai.com?subject=Upgrade to ${plan.name} Plan&body=Hi, I'd like to upgrade to the ${plan.name} plan ($${plan.price}/mo). My email: ${user.email}`;
+
+    setSubmittingPlan(plan.plan);
+
+    const fullName =
+      typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name.trim().length > 0
+        ? user.user_metadata.full_name.trim()
+        : user.email?.split("@")[0] || "Customer";
+
+    try {
+      const { error } = await supabase.from("payment_requests").insert({
+        user_id: user.id,
+        full_name: fullName,
+        email: user.email || "",
+        plan_name: plan.name,
+        plan_price: plan.price,
+        status: "pending",
+      });
+
+      if (error) throw error;
+
+      toast.success(`${plan.name} plan request submitted successfully.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to submit plan request.";
+      toast.error(message);
+    } finally {
+      setSubmittingPlan(null);
+    }
   };
 
   return (
@@ -155,11 +184,11 @@ export default function Pricing() {
                   </ul>
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                    disabled={!!isCurrent}
-                    onClick={() => handleSelect(p)}
+                    disabled={!!isCurrent || submittingPlan === p.plan}
+                    onClick={() => void handleSelect(p)}
                   >
                     {isCurrent ? "Current Plan" : user ? (
-                      <><Mail className="w-4 h-4 mr-2" /> Contact to Upgrade</>
+                      <>{submittingPlan === p.plan ? "Submitting..." : <><Mail className="w-4 h-4 mr-2" /> Submit Upgrade Request</>}</>
                     ) : "Start Free Trial"}
                   </Button>
                 </CardContent>
