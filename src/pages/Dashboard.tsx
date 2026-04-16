@@ -64,6 +64,17 @@ const Dashboard = () => {
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
 
+  // Handle post-checkout success toast and clean URL
+  const checkoutHandled = useRef(false);
+  useEffect(() => {
+    if (searchParams.get("checkout") === "success" && !checkoutHandled.current) {
+      checkoutHandled.current = true;
+      sonnerToast.success("Payment successful! 🎉 Your subscription is now active.");
+      searchParams.delete("checkout");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   // Handle post-checkout redirect: create workspace for new industry
   useEffect(() => {
     const newIndustry = searchParams.get("new_industry") as IndustryType | null;
