@@ -100,6 +100,28 @@ export default function Pricing() {
       navigate("/signup");
       return;
     }
+
+    // If user already has a paid subscription, update it (upgrade/downgrade)
+    if (subscription?.paddle_subscription_id && subscription?.plan !== plan.plan) {
+      try {
+        const { data, error } = await (await import("@/integrations/supabase/client")).supabase.functions.invoke("update-subscription", {
+          body: {
+            newPriceId: plan.priceId,
+            environment: subscription.environment || "sandbox",
+          },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        const { toast } = await import("sonner");
+        toast.success(`Switching to ${plan.name} plan...`);
+        return;
+      } catch (err: any) {
+        const { toast } = await import("sonner");
+        toast.error(err?.message || "Failed to update subscription");
+        return;
+      }
+    }
+
     openCheckout({
       priceId: plan.priceId,
       customerEmail: user.email || undefined,
@@ -166,7 +188,7 @@ export default function Pricing() {
                     disabled={!!isCurrent || checkoutLoading}
                     onClick={() => void handleSelect(p)}
                   >
-                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
+                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user && subscription?.paddle_subscription_id ? "Switch Plan" : user ? "Subscribe Now" : "Start Free Trial"}
                   </Button>
                 </CardContent>
               </Card>

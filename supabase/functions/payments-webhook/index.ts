@@ -28,6 +28,15 @@ Deno.serve(async (req) => {
       case EventName.SubscriptionCanceled:
         await handleSubscriptionCanceled(event.data, env);
         break;
+      case EventName.SubscriptionActivated:
+        await handleSubscriptionActivated(event.data, env);
+        break;
+      case EventName.SubscriptionPaused:
+        await handleSubscriptionPaused(event.data, env);
+        break;
+      case EventName.SubscriptionResumed:
+        await handleSubscriptionResumed(event.data, env);
+        break;
       case EventName.TransactionCompleted:
         console.log('Transaction completed:', event.data.id, 'env:', env);
         break;
@@ -89,16 +98,33 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
 }
 
 async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
-  const { id, status, currentBillingPeriod, scheduledChange } = data;
+  const { id, status, items, currentBillingPeriod, scheduledChange } = data;
+
+  // Build update payload
+  const updateData: Record<string, any> = {
+    status: status,
+    current_period_start: currentBillingPeriod?.startsAt,
+    current_period_end: currentBillingPeriod?.endsAt,
+    cancel_at_period_end: scheduledChange?.action === 'cancel',
+    updated_at: new Date().toISOString(),
+  };
+
+  // If items changed (upgrade/downgrade), update plan info
+  if (items?.length) {
+    const item = items[0];
+    const productId = item.product?.importMeta?.externalId || item.product?.id;
+    const priceId = item.price?.importMeta?.externalId || item.price?.id;
+    if (productId) {
+      updateData.product_id = productId;
+      updateData.plan = mapProductToPlan(productId);
+    }
+    if (priceId) {
+      updateData.price_id = priceId;
+    }
+  }
 
   await supabase.from('subscriptions')
-    .update({
-      status: status,
-      current_period_start: currentBillingPeriod?.startsAt,
-      current_period_end: currentBillingPeriod?.endsAt,
-      cancel_at_period_end: scheduledChange?.action === 'cancel',
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq('paddle_subscription_id', id)
     .eq('environment', env);
 }
@@ -107,6 +133,41 @@ async function handleSubscriptionCanceled(data: any, env: PaddleEnv) {
   await supabase.from('subscriptions')
     .update({
       status: 'canceled',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('paddle_subscription_id', data.id)
+    .eq('environment', env);
+}
+
+async function handleSubscriptionActivated(data: any, env: PaddleEnv) {
+  // Trial ended → now active
+  await supabase.from('subscriptions')
+    .update({
+      status: 'active',
+      current_period_start: data.currentBillingPeriod?.startsAt,
+      current_period_end: data.currentBillingPeriod?.endsAt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('paddle_subscription_id', data.id)
+    .eq('environment', env);
+}
+
+async function handleSubscriptionPaused(data: any, env: PaddleEnv) {
+  await supabase.from('subscriptions')
+    .update({
+      status: 'paused',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('paddle_subscription_id', data.id)
+    .eq('environment', env);
+}
+
+async function handleSubscriptionResumed(data: any, env: PaddleEnv) {
+  await supabase.from('subscriptions')
+    .update({
+      status: 'active',
+      current_period_start: data.currentBillingPeriod?.startsAt,
+      current_period_end: data.currentBillingPeriod?.endsAt,
       updated_at: new Date().toISOString(),
     })
     .eq('paddle_subscription_id', data.id)
