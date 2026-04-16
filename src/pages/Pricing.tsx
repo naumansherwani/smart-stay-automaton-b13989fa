@@ -2,20 +2,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Mail } from "lucide-react";
+import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 const PLANS = [
   {
     name: "Basic",
     price: 25,
     plan: "basic" as const,
+    priceId: "basic_monthly",
     starter: true,
     features: [
       "Includes 1 industry (workspace)",
@@ -33,6 +34,7 @@ const PLANS = [
     name: "Pro",
     price: 55,
     plan: "standard" as const,
+    priceId: "pro_monthly",
     popular: true,
     features: [
       "Includes 1 industry (workspace)",
@@ -59,6 +61,7 @@ const PLANS = [
     name: "Premium",
     price: 110,
     plan: "premium" as const,
+    priceId: "premium_monthly",
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
       "Includes 1 industry (workspace)",
@@ -90,54 +93,30 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const [submittingPlan, setSubmittingPlan] = useState<string | null>(null);
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
 
   const handleSelect = async (plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-
-    setSubmittingPlan(plan.plan);
-
-    const fullName =
-      typeof user.user_metadata?.full_name === "string" && user.user_metadata.full_name.trim().length > 0
-        ? user.user_metadata.full_name.trim()
-        : user.email?.split("@")[0] || "Customer";
-
-    try {
-      const { error } = await supabase.from("payment_requests").insert({
-        user_id: user.id,
-        full_name: fullName,
-        email: user.email || "",
-        plan_name: plan.name,
-        plan_price: plan.price,
-        status: "pending",
-      });
-
-      if (error) throw error;
-
-      toast.success(`${plan.name} plan request submitted successfully.`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to submit plan request.";
-      toast.error(message);
-    } finally {
-      setSubmittingPlan(null);
-    }
+    openCheckout({
+      priceId: plan.priceId,
+      customerEmail: user.email || undefined,
+      customData: { userId: user.id },
+    });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PaymentTestModeBanner />
 
       <main className="container pt-24 pb-16 space-y-12">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">Choose Your Plan</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered scheduling for every industry. 1 industry per plan.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Payment system coming soon — contact us to upgrade your plan.
           </p>
         </div>
 
@@ -184,12 +163,10 @@ export default function Pricing() {
                   </ul>
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                    disabled={!!isCurrent || submittingPlan === p.plan}
+                    disabled={!!isCurrent || checkoutLoading}
                     onClick={() => void handleSelect(p)}
                   >
-                    {isCurrent ? "Current Plan" : user ? (
-                      <>{submittingPlan === p.plan ? "Submitting..." : <><Mail className="w-4 h-4 mr-2" /> Submit Upgrade Request</>}</>
-                    ) : "Start Free Trial"}
+                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
                   </Button>
                 </CardContent>
               </Card>

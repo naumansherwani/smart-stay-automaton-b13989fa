@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { isTestMode } from "@/lib/paddle";
 
 export interface Subscription {
   id: string;
@@ -8,12 +9,22 @@ export interface Subscription {
   status: "active" | "trialing" | "past_due" | "canceled" | "expired";
   trial_ends_at: string;
   is_lifetime?: boolean;
+  paddle_subscription_id?: string;
+  paddle_customer_id?: string;
+  product_id?: string;
+  price_id?: string;
+  current_period_start?: string;
+  current_period_end?: string;
+  cancel_at_period_end?: boolean;
+  environment?: string;
 }
 
 export function useSubscription() {
   const { user, loading: authLoading } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const env = isTestMode() ? "sandbox" : "live";
 
   const checkSubscription = useCallback(async () => {
     if (!user) return;
@@ -23,6 +34,7 @@ export function useSubscription() {
         .from("subscriptions")
         .select("*")
         .eq("user_id", user.id)
+        .eq("environment", env)
         .single();
 
       if (data) {
@@ -32,14 +44,12 @@ export function useSubscription() {
           return;
         }
 
-        const trialEnd = new Date(data.trial_ends_at);
-        if (data.status === "trialing" && trialEnd < new Date()) {
+        const trialEnd = data.trial_ends_at ? new Date(data.trial_ends_at) : null;
+        if (data.status === "trialing" && trialEnd && trialEnd < new Date()) {
           setSubscription({ ...data, status: "expired" } as Subscription);
         } else {
           setSubscription(data as Subscription);
         }
-
-        // Set loading false — subscription data comes from DB only
         setLoading(false);
       }
     } catch {
@@ -47,7 +57,7 @@ export function useSubscription() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, env]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -61,8 +71,23 @@ export function useSubscription() {
     setLoading(true);
     checkSubscription();
 
+    const channel = supabase
+      .channel("subscription-changes")
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "subscriptions",
+        filter: `user_id=eq.${user.id}`,
+      }, () => {
+        checkSubscription();
+      })
+      .subscribe();
+
     const interval = setInterval(checkSubscription, 60000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
   }, [user, authLoading, checkSubscription]);
 
   const isActive = subscription?.is_lifetime || subscription?.status === "active" || subscription?.status === "trialing";
