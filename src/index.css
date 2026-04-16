@@ -8,6 +8,27 @@ html, body {
   overflow-x: hidden;
 }
 
+html {
+  color-scheme: light dark;
+  scrollbar-color: hsl(var(--muted-foreground) / 0.4) hsl(var(--background));
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.35);
+  border-radius: 8px;
+  border: 2px solid hsl(var(--background));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
 @layer base {
   :root {
     --background: 210 20% 98%;
