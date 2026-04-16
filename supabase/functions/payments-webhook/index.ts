@@ -48,10 +48,10 @@ Deno.serve(async (req) => {
   }
 });
 
-function mapProductToplan(productId: string): string {
+function mapProductToPlan(productId: string): string {
   const map: Record<string, string> = {
     basic_plan: 'basic',
-    pro_plan: 'standard',
+    pro_plan: 'pro',
     premium_plan: 'premium',
   };
   return map[productId] || productId;
@@ -69,7 +69,7 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
   const item = items[0];
   const priceId = item.price.importMeta?.externalId || item.price.id;
   const productId = item.product.importMeta?.externalId || item.product.id;
-  const plan = mapProductToplan(productId);
+  const plan = mapProductToPlan(productId);
 
   await supabase.from('subscriptions').upsert({
     user_id: userId,

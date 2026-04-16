@@ -33,7 +33,7 @@ const PLANS = [
   {
     name: "Pro",
     price: 55,
-    plan: "standard" as const,
+    plan: "pro" as const,
     priceId: "pro_monthly",
     popular: true,
     features: [
