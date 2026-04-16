@@ -117,7 +117,21 @@ export default function CrmFlightOpsCalendar() {
     return addDays(startOfWeek(today, { weekStartsOn: 1 }), weekOffset * 7);
   }, [weekOffset]);
 
-  const flights = useMemo(() => generateFlightSchedule(weekStart), [weekStart]);
+  const { user } = useAuth();
+  const [bookingsData, setBookingsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const load = async () => {
+      const ws = weekStart.toISOString();
+      const we = addDays(weekStart, 7).toISOString();
+      const { data } = await supabase.from("bookings").select("*").gte("check_in", ws).lt("check_in", we);
+      setBookingsData(data || []);
+    };
+    load();
+  }, [user, weekStart]);
+
+  const flights = useMemo(() => generateFlightSchedule(weekStart, bookingsData), [weekStart, bookingsData]);
   const conflicts = useMemo(() => detectConflicts(flights), [flights]);
   const conflictFlightIds = new Set(conflicts.flatMap(c => c.flights));
 
