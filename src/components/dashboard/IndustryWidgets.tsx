@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react";
 import { 
   Shield, Zap, Brain, Users, Activity,
   AlertTriangle, BarChart3, 
   Target, Gauge
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
