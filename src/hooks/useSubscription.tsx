@@ -5,7 +5,7 @@ import { isTestMode } from "@/lib/paddle";
 
 export interface Subscription {
   id: string;
-  plan: "trial" | "basic" | "standard" | "premium";
+  plan: "trial" | "basic" | "pro" | "premium";
   status: "active" | "trialing" | "past_due" | "canceled" | "expired";
   trial_ends_at: string;
   is_lifetime?: boolean;

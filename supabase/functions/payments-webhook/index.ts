@@ -37,6 +37,12 @@ Deno.serve(async (req) => {
       case EventName.SubscriptionResumed:
         await handleSubscriptionResumed(event.data, env);
         break;
+      case EventName.SubscriptionTrialing:
+        await handleSubscriptionTrialing(event.data, env);
+        break;
+      case EventName.SubscriptionPastDue:
+        await handleSubscriptionPastDue(event.data, env);
+        break;
       case EventName.TransactionCompleted:
         console.log('Transaction completed:', event.data.id, 'env:', env);
         break;
