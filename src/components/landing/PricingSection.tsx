@@ -5,6 +5,13 @@ import { Check, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+
+const PRICE_IDS: Record<string, string> = {
+  basic: "basic_monthly",
+  standard: "pro_monthly",
+  premium: "premium_monthly",
+};
 
 const PLANS = [
   {
@@ -92,13 +99,18 @@ const PricingSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
 
   const handleClick = (plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    navigate("/pricing");
+    openCheckout({
+      priceId: PRICE_IDS[plan.plan] || "basic_monthly",
+      customerEmail: user.email || undefined,
+      customData: { userId: user.id },
+    });
   };
 
   return (
@@ -168,10 +180,10 @@ const PricingSection = () => {
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
                     variant="default"
-                    disabled={!!isCurrent}
+                    disabled={!!isCurrent || checkoutLoading}
                     onClick={() => handleClick(p)}
                   >
-                    {isCurrent ? "Current Plan" : user ? "Choose Plan" : "Start Free Trial"}
+                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
                     7-day free trial included — no credit card required
