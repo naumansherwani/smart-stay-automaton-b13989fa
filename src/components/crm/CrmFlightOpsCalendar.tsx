@@ -9,45 +9,39 @@ import {
 } from "lucide-react";
 import { format, addDays, startOfWeek, isSameDay } from "date-fns";
 
-// Mock flight schedule data for the calendar
-const generateFlightSchedule = (weekStart: Date) => {
-  const flights = [];
-  const routes = [
-    { code: "AI-101", from: "JFK", to: "LAX", aircraft: "B737-800", pilot: "Capt. Ahmed" },
-    { code: "AI-202", from: "LAX", to: "ORD", aircraft: "A320neo", pilot: "Capt. Sarah" },
-    { code: "AI-305", from: "LHR", to: "DXB", aircraft: "B777-300", pilot: "Capt. Khan" },
-    { code: "AI-410", from: "SIN", to: "HKG", aircraft: "A350-900", pilot: "Capt. Li" },
-    { code: "AI-512", from: "CDG", to: "JFK", aircraft: "B787-9", pilot: "Capt. Pierre" },
-    { code: "AI-618", from: "DXB", to: "BOM", aircraft: "A321neo", pilot: "Capt. Raj" },
-  ];
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
-  for (let d = 0; d < 7; d++) {
-    const day = addDays(weekStart, d);
-    routes.forEach((route, i) => {
-      if ((d + i) % 3 !== 2) { // not all flights every day
-        const hour = 6 + (i * 3) % 18;
-        const seatsTotal = route.aircraft.includes("777") ? 350 : route.aircraft.includes("787") ? 280 : 180;
-        const seatsSold = Math.floor(seatsTotal * (0.5 + Math.random() * 0.45));
-        const basePrice = 150 + Math.floor(Math.random() * 400);
-        const aiPrice = Math.round(basePrice * (seatsSold / seatsTotal > 0.8 ? 1.3 : seatsSold / seatsTotal < 0.5 ? 0.85 : 1.0));
+// Generate flight schedule from real bookings data
+const generateFlightSchedule = (weekStart: Date, bookingsData: any[]) => {
+  if (bookingsData.length === 0) return [];
 
-        flights.push({
-          id: `${route.code}-${d}`,
-          ...route,
-          date: day,
-          departureTime: `${hour.toString().padStart(2, "0")}:00`,
-          arrivalTime: `${((hour + 3 + i) % 24).toString().padStart(2, "0")}:30`,
-          seatsTotal,
-          seatsSold,
-          basePrice,
-          aiPrice,
-          status: seatsSold / seatsTotal > 0.9 ? "full" : seatsSold / seatsTotal > 0.7 ? "filling" : "available",
-        });
-      }
-    });
-  }
+  return bookingsData.map((b, i) => {
+    const checkIn = new Date(b.check_in);
+    const meta = (b.metadata as any) || {};
+    const seatsTotal = meta.seats_total || 180;
+    const seatsSold = meta.seats_sold || 0;
+    const basePrice = Number(b.nightly_rate) || 150;
+    const fillRatio = seatsTotal > 0 ? seatsSold / seatsTotal : 0;
+    const aiPrice = Math.round(basePrice * (fillRatio > 0.8 ? 1.3 : fillRatio < 0.5 ? 0.85 : 1.0));
 
-  return flights;
+    return {
+      id: b.id,
+      code: meta.flight_code || `FL-${String(i + 1).padStart(3, "0")}`,
+      from: meta.origin || "—",
+      to: meta.destination || "—",
+      aircraft: meta.aircraft || "—",
+      pilot: meta.pilot || b.guest_name || "—",
+      date: checkIn,
+      departureTime: format(checkIn, "HH:mm"),
+      arrivalTime: meta.arrival_time || "—",
+      seatsTotal,
+      seatsSold,
+      basePrice,
+      aiPrice,
+      status: fillRatio > 0.9 ? "full" : fillRatio > 0.7 ? "filling" : "available",
+    };
+  });
 };
 
 // Detect double-booking conflicts
