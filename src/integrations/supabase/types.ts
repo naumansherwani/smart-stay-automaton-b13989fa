@@ -1126,6 +1126,81 @@ export type Database = {
         }
         Relationships: []
       }
+      deliveries: {
+        Row: {
+          created_at: string
+          customer: string
+          destination: string
+          driver_id: string | null
+          driver_name: string | null
+          eta: string | null
+          id: string
+          metadata: Json | null
+          origin: string
+          priority: string
+          status: string
+          time_slot: string | null
+          tracking: string
+          updated_at: string
+          user_id: string
+          vehicle_id: string | null
+          weight: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer?: string
+          destination?: string
+          driver_id?: string | null
+          driver_name?: string | null
+          eta?: string | null
+          id?: string
+          metadata?: Json | null
+          origin?: string
+          priority?: string
+          status?: string
+          time_slot?: string | null
+          tracking?: string
+          updated_at?: string
+          user_id: string
+          vehicle_id?: string | null
+          weight?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer?: string
+          destination?: string
+          driver_id?: string | null
+          driver_name?: string | null
+          eta?: string | null
+          id?: string
+          metadata?: Json | null
+          origin?: string
+          priority?: string
+          status?: string
+          time_slot?: string | null
+          tracking?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string | null
+          weight?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "logistics_drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "logistics_vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -1212,6 +1287,148 @@ export type Database = {
           used_at?: string | null
         }
         Relationships: []
+      }
+      event_bookings: {
+        Row: {
+          booked_at: string
+          created_at: string
+          customer_name: string
+          email: string | null
+          event_id: string | null
+          event_name: string
+          id: string
+          metadata: Json | null
+          status: string
+          ticket_type: string
+          tickets: number
+          total_paid: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booked_at?: string
+          created_at?: string
+          customer_name: string
+          email?: string | null
+          event_id?: string | null
+          event_name?: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          ticket_type?: string
+          tickets?: number
+          total_paid?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booked_at?: string
+          created_at?: string
+          customer_name?: string
+          email?: string | null
+          event_id?: string | null
+          event_name?: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          ticket_type?: string
+          tickets?: number
+          total_paid?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_bookings_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          base_price: number
+          capacity: number
+          category: string
+          created_at: string
+          current_price: number
+          demand: string
+          duration: string | null
+          event_date: string
+          event_time: string
+          id: string
+          image: string | null
+          metadata: Json | null
+          name: string
+          performers: string[] | null
+          price_overridden: boolean
+          revenue: number
+          sold: number
+          status: string
+          updated_at: string
+          user_id: string
+          venue_id: string | null
+          venue_name: string
+        }
+        Insert: {
+          base_price?: number
+          capacity?: number
+          category?: string
+          created_at?: string
+          current_price?: number
+          demand?: string
+          duration?: string | null
+          event_date: string
+          event_time?: string
+          id?: string
+          image?: string | null
+          metadata?: Json | null
+          name: string
+          performers?: string[] | null
+          price_overridden?: boolean
+          revenue?: number
+          sold?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          venue_id?: string | null
+          venue_name?: string
+        }
+        Update: {
+          base_price?: number
+          capacity?: number
+          category?: string
+          created_at?: string
+          current_price?: number
+          demand?: string
+          duration?: string | null
+          event_date?: string
+          event_time?: string
+          id?: string
+          image?: string | null
+          metadata?: Json | null
+          name?: string
+          performers?: string[] | null
+          price_overridden?: boolean
+          revenue?: number
+          sold?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          venue_id?: string | null
+          venue_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venues"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       feature_usage: {
         Row: {
@@ -1457,6 +1674,99 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      logistics_drivers: {
+        Row: {
+          avatar: string | null
+          created_at: string
+          deliveries_today: number
+          id: string
+          license: string | null
+          metadata: Json | null
+          name: string
+          phone: string | null
+          rating: number
+          status: string
+          updated_at: string
+          user_id: string
+          zone: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          created_at?: string
+          deliveries_today?: number
+          id?: string
+          license?: string | null
+          metadata?: Json | null
+          name: string
+          phone?: string | null
+          rating?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+          zone?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          created_at?: string
+          deliveries_today?: number
+          id?: string
+          license?: string | null
+          metadata?: Json | null
+          name?: string
+          phone?: string | null
+          rating?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+          zone?: string | null
+        }
+        Relationships: []
+      }
+      logistics_vehicles: {
+        Row: {
+          capacity: string | null
+          created_at: string
+          fuel: number
+          id: string
+          last_service: string | null
+          metadata: Json | null
+          name: string
+          plate: string | null
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capacity?: string | null
+          created_at?: string
+          fuel?: number
+          id?: string
+          last_service?: string | null
+          metadata?: Json | null
+          name: string
+          plate?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          capacity?: string | null
+          created_at?: string
+          fuel?: number
+          id?: string
+          last_service?: string | null
+          metadata?: Json | null
+          name?: string
+          plate?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -2593,6 +2903,51 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      venues: {
+        Row: {
+          amenities: string[] | null
+          capacity: number
+          created_at: string
+          events_this_month: number
+          id: string
+          metadata: Json | null
+          name: string
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+          utilization: number
+        }
+        Insert: {
+          amenities?: string[] | null
+          capacity?: number
+          created_at?: string
+          events_this_month?: number
+          id?: string
+          metadata?: Json | null
+          name: string
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id: string
+          utilization?: number
+        }
+        Update: {
+          amenities?: string[] | null
+          capacity?: number
+          created_at?: string
+          events_this_month?: number
+          id?: string
+          metadata?: Json | null
+          name?: string
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+          utilization?: number
         }
         Relationships: []
       }
