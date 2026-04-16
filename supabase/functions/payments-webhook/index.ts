@@ -37,6 +37,12 @@ Deno.serve(async (req) => {
       case EventName.SubscriptionResumed:
         await handleSubscriptionResumed(event.data, env);
         break;
+      case EventName.SubscriptionTrialing:
+        await handleSubscriptionTrialing(event.data, env);
+        break;
+      case EventName.SubscriptionPastDue:
+        await handleSubscriptionPastDue(event.data, env);
+        break;
       case EventName.TransactionCompleted:
         console.log('Transaction completed:', event.data.id, 'env:', env);
         break;
@@ -168,6 +174,46 @@ async function handleSubscriptionResumed(data: any, env: PaddleEnv) {
       status: 'active',
       current_period_start: data.currentBillingPeriod?.startsAt,
       current_period_end: data.currentBillingPeriod?.endsAt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('paddle_subscription_id', data.id)
+    .eq('environment', env);
+}
+
+async function handleSubscriptionTrialing(data: any, env: PaddleEnv) {
+  const { id, customerId, items, currentBillingPeriod, customData } = data;
+  const userId = customData?.userId;
+  if (!userId) {
+    console.log('Subscription trialing (no userId):', id);
+    return;
+  }
+
+  const item = items?.[0];
+  const priceId = item?.price?.importMeta?.externalId || item?.price?.id;
+  const productId = item?.product?.importMeta?.externalId || item?.product?.id;
+  const plan = mapProductToPlan(productId);
+
+  await supabase.from('subscriptions').upsert({
+    user_id: userId,
+    paddle_subscription_id: id,
+    paddle_customer_id: customerId,
+    product_id: productId,
+    price_id: priceId,
+    plan: plan,
+    status: 'trialing',
+    current_period_start: currentBillingPeriod?.startsAt,
+    current_period_end: currentBillingPeriod?.endsAt,
+    environment: env,
+    updated_at: new Date().toISOString(),
+  }, {
+    onConflict: 'user_id,environment',
+  });
+}
+
+async function handleSubscriptionPastDue(data: any, env: PaddleEnv) {
+  await supabase.from('subscriptions')
+    .update({
+      status: 'past_due',
       updated_at: new Date().toISOString(),
     })
     .eq('paddle_subscription_id', data.id)

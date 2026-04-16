@@ -5,7 +5,7 @@ import { isTestMode } from "@/lib/paddle";
 
 export interface Subscription {
   id: string;
-  plan: "trial" | "basic" | "standard" | "premium";
+  plan: "trial" | "basic" | "pro" | "premium";
   status: "active" | "trialing" | "past_due" | "canceled" | "expired";
   trial_ends_at: string;
   is_lifetime?: boolean;
@@ -86,22 +86,10 @@ export function useSubscription() {
     setLoading(true);
     checkSubscription();
 
-    const channel = supabase
-      .channel("subscription-changes")
-      .on("postgres_changes", {
-        event: "*",
-        schema: "public",
-        table: "subscriptions",
-        filter: `user_id=eq.${user.id}`,
-      }, () => {
-        checkSubscription();
-      })
-      .subscribe();
-
-    const interval = setInterval(checkSubscription, 60000);
+    // Poll for changes (realtime removed for security)
+    const interval = setInterval(checkSubscription, 30000);
     return () => {
       clearInterval(interval);
-      supabase.removeChannel(channel);
     };
   }, [user, authLoading, checkSubscription]);
 
