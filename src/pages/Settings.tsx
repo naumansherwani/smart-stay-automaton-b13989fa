@@ -72,12 +72,54 @@ const Settings = () => {
   const avatarUrl = getUserAvatarUrl(user, profile?.avatar_url);
   const initials = getUserInitials(displayName, user?.email);
 
+  const handleManageSubscription = async () => {
+    try {
+      const env = subscription?.environment || (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN?.startsWith("test_") ? "sandbox" : "live");
+      const { data, error } = await supabase.functions.invoke("customer-portal", {
+        body: { environment: env },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Could not open subscription portal");
+    }
+  };
+
   if (!isAdmin) {
     // Non-admin: simple preferences only
     return (
       <AppLayout>
         <div className="container py-8 max-w-3xl space-y-6">
           <h1 className="text-2xl font-bold text-foreground">{t("settings.title")}</h1>
+
+          {/* Subscription Management */}
+          {subscription?.paddle_subscription_id && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm flex items-center gap-2"><CreditCard className="w-4 h-4" /> Subscription</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium capitalize">{subscription.plan} Plan</p>
+                    <p className="text-xs text-muted-foreground">
+                      {subscription.status === "active" ? "Active" : subscription.status === "canceled" ? "Canceled" : subscription.status}
+                      {subscription.cancel_at_period_end && subscription.current_period_end && (
+                        <> · Access until {new Date(subscription.current_period_end).toLocaleDateString()}</>
+                      )}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleManageSubscription}>
+                    Manage
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2"><Palette className="w-4 h-4" /> Preferences</CardTitle>
