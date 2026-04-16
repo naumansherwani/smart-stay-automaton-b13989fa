@@ -30,27 +30,42 @@ export function useSubscription() {
     if (!user) return;
 
     try {
-      const { data } = await supabase
+      // First try to find a paid subscription for this environment
+      const { data: paidSub } = await supabase
         .from("subscriptions")
         .select("*")
         .eq("user_id", user.id)
         .eq("environment", env)
+        .not("paddle_subscription_id", "is", null)
         .single();
 
-      if (data) {
-        if ((data as any).is_lifetime) {
-          setSubscription({ ...data, status: "active", is_lifetime: true } as Subscription);
+      if (paidSub) {
+        setSubscription(paidSub as Subscription);
+        setLoading(false);
+        return;
+      }
+
+      // Fall back to trial/lifetime (no environment filter — these aren't env-specific)
+      const { data: trialSub } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .is("paddle_subscription_id", null)
+        .single();
+
+      if (trialSub) {
+        if ((trialSub as any).is_lifetime) {
+          setSubscription({ ...trialSub, status: "active", is_lifetime: true } as Subscription);
           setLoading(false);
           return;
         }
 
-        const trialEnd = data.trial_ends_at ? new Date(data.trial_ends_at) : null;
-        if (data.status === "trialing" && trialEnd && trialEnd < new Date()) {
-          setSubscription({ ...data, status: "expired" } as Subscription);
+        const trialEnd = trialSub.trial_ends_at ? new Date(trialSub.trial_ends_at) : null;
+        if (trialSub.status === "trialing" && trialEnd && trialEnd < new Date()) {
+          setSubscription({ ...trialSub, status: "expired" } as Subscription);
         } else {
-          setSubscription(data as Subscription);
+          setSubscription(trialSub as Subscription);
         }
-        setLoading(false);
       }
     } catch {
       // DB fetch failed

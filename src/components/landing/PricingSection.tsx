@@ -9,7 +9,7 @@ import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
 const PRICE_IDS: Record<string, string> = {
   basic: "basic_monthly",
-  standard: "pro_monthly",
+  pro: "pro_monthly",
   premium: "premium_monthly",
 };
 
@@ -36,7 +36,7 @@ const PLANS = [
   {
     name: "Pro",
     price: 55,
-    plan: "standard" as const,
+    plan: "pro" as const,
     popular: true,
     desc: "Best for growing businesses",
     features: [
