@@ -77,13 +77,7 @@ function getPassengerPreferences(contact: CrmContact) {
   };
 }
 
-const MOCK_FLIGHT_HISTORY = [
-  { flight: "AI-101", route: "JFK → LAX", date: "2026-03-28", status: "Arrived", delay: 0 },
-  { flight: "AI-305", route: "LHR → DXB", date: "2026-03-15", status: "Arrived", delay: 25 },
-  { flight: "AI-202", route: "LAX → ORD", date: "2026-02-20", status: "Delayed", delay: 90 },
-  { flight: "AI-618", route: "DXB → BOM", date: "2026-01-10", status: "Arrived", delay: 0 },
-  { flight: "AI-410", route: "SIN → HKG", date: "2025-12-22", status: "Cancelled", delay: 0 },
-];
+const MOCK_FLIGHT_HISTORY: { flight: string; route: string; date: string; status: string; delay: number }[] = [];
 
 // ─── Healthcare helpers ────────────────────────────────────────────────────
 function getPatientVitals() {
@@ -106,22 +100,9 @@ function getPatientSentimentLabel(contact: CrmContact, openTickets: number) {
   return { label: "Calm & Cooperative", emoji: "😊", color: "hsl(152,60%,42%)" };
 }
 
-const MOCK_TREATMENT_TIMELINE = [
-  { date: "2026-03-28", event: "Routine Checkup", type: "visit", detail: "BP elevated, adjusted Amlodipine dosage" },
-  { date: "2026-02-15", event: "Blood Panel (HbA1c)", type: "lab", detail: "HbA1c: 7.1% — improved from 8.3%" },
-  { date: "2025-12-10", event: "Kidney Function Test", type: "lab", detail: "eGFR: 72 mL/min — stable, no decline" },
-  { date: "2025-10-05", event: "Cardiology Consult", type: "visit", detail: "ECG normal, mild LVH noted" },
-  { date: "2025-07-22", event: "Emergency Visit", type: "emergency", detail: "Hypoglycemic episode, stabilized with IV glucose" },
-  { date: "2024-11-30", event: "Annual Eye Exam", type: "visit", detail: "Mild diabetic retinopathy detected" },
-  { date: "2024-06-15", event: "Minor Surgery", type: "surgery", detail: "Ingrown toenail removal under local anesthesia" },
-];
+const MOCK_TREATMENT_TIMELINE: { date: string; event: string; type: string; detail: string }[] = [];
 
-const MOCK_CURRENT_MEDICATIONS = [
-  { name: "Metformin 1000mg", frequency: "2x daily", since: "2018" },
-  { name: "Amlodipine 5mg", frequency: "1x daily", since: "2024" },
-  { name: "Atorvastatin 20mg", frequency: "1x night", since: "2023" },
-  { name: "Aspirin 75mg", frequency: "1x daily", since: "2025" },
-];
+const MOCK_CURRENT_MEDICATIONS: { name: string; frequency: string; since: string }[] = [];
 
 export default function CrmContactDetailPanel({ contact, industry, onBack, onUpdate }: Props) {
   const config = getCrmConfig(industry);
