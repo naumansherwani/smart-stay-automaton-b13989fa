@@ -16,11 +16,31 @@ interface IndustryWidgetsProps {
 }
 
 function UtilizationWidget({ config }: { config: IndustryConfig }) {
-  const slots = Array.from({ length: 8 }, (_, i) => ({
-    name: `${config.resourceLabel} ${i + 1}`,
-    utilization: Math.floor(Math.random() * 40 + 55),
-    status: Math.random() > 0.3 ? "active" : "available",
-  }));
+  const [slots, setSlots] = useState<{ name: string; utilization: number; status: string }[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const { data: resources } = await supabase.from("resources").select("id, name, industry");
+      const { data: bookings } = await supabase.from("bookings").select("id, resource_id, status")
+        .in("status", ["confirmed", "checked_in"]);
+      
+      if (resources && resources.length > 0) {
+        const mapped = resources.slice(0, 8).map(r => {
+          const activeBookings = (bookings || []).filter(b => b.resource_id === r.id).length;
+          const util = Math.min(100, activeBookings * 15 + 10);
+          return {
+            name: r.name,
+            utilization: util,
+            status: activeBookings > 0 ? "active" : "available",
+          };
+        });
+        setSlots(mapped);
+      } else {
+        setSlots([]);
+      }
+    };
+    loadData();
+  }, [config]);
 
   return (
     <Card>
@@ -31,7 +51,9 @@ function UtilizationWidget({ config }: { config: IndustryConfig }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {slots.slice(0, 5).map(s => (
+        {slots.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No {config.resourceLabelPlural.toLowerCase()} added yet</p>
+        ) : slots.slice(0, 5).map(s => (
           <div key={s.name} className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-foreground">{s.name}</span>
