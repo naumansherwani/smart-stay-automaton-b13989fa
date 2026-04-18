@@ -1,6 +1,7 @@
 import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import IndustriesSection from "@/components/landing/IndustriesSection";
+import WhyDifferentSection from "@/components/landing/WhyDifferentSection";
 import StatsSection from "@/components/landing/StatsSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
@@ -26,6 +27,7 @@ const Index = () => (
     </div>
     <HeroSection />
     <VoiceAISection />
+    <WhyDifferentSection />
     <IndustriesSection />
     <PricingSection />
     <StatsSection />
