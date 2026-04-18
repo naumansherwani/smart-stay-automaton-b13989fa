@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown } from "lucide-react";
+import { Check, Sparkles, Crown, ShieldCheck, Globe2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -128,6 +128,21 @@ const PricingSection = () => {
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Choose your plan. Every plan includes a 7-day free trial — no credit card required.
           </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(160,84%,45%,0.15)]">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-sm font-semibold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+                Secure payments powered by Paddle
+              </span>
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-violet-500/10 border border-blue-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(217,91%,60%,0.15)]">
+              <Globe2 className="w-4 h-4 text-blue-400" />
+              <span className="text-sm font-semibold bg-gradient-to-r from-blue-300 to-violet-300 bg-clip-text text-transparent">
+                🌍 Trusted global billing platform
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
