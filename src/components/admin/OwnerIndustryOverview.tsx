@@ -39,7 +39,7 @@ const OwnerIndustryOverview = ({ industries, showSecret }: OwnerIndustryOverview
             >
               <Icon className="w-4 h-4" style={{ color: INDUSTRY_COLORS[key] }} />
             </div>
-            <p className="text-[10px] font-semibold text-foreground capitalize">{key.replace(/_/g, " ")}</p>
+            <p className="text-[10px] font-semibold text-foreground capitalize">{key === "hospitality" ? "Travel, Tourism & Hospitality" : key.replace(/_/g, " ")}</p>
             <p className="text-lg font-bold" style={{ color: INDUSTRY_COLORS[key] }}>
               {showSecret ? (industries[key] || 0) : "•"}
             </p>
