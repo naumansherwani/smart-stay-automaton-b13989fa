@@ -22,8 +22,8 @@ const ITEMS = [
   {
     icon: Star,
     title: "Reviews",
-    tagline: "AI-filtered. Trust-building.",
-    body: "Genuine reviews, AI-moderated for spam and bias, embedded across your booking funnel — turning every happy guest into a measurable conversion lever.",
+    tagline: "Real voices. Real impact.",
+    body: "Showcase authentic feedback from your customers right inside your booking flow — building instant trust and turning every great experience into your strongest sales asset.",
   },
   {
     icon: Building2,

@@ -41,7 +41,7 @@ const ReviewsSection = () => {
             Say
           </h2>
           <p className="text-white/40 max-w-xl mx-auto text-lg">
-            Authentic reviews from real users. Every review is verified and admin-approved.
+            Honest experiences from people who use HostFlow AI every day to run their business.
           </p>
         </div>
 
