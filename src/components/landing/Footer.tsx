@@ -36,29 +36,12 @@ const Footer = () => (
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(174,62%,50%,0.03),transparent_60%)]" />
     
     <div className="container relative z-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         <div className="space-y-4">
           <Logo size="md" showName />
           <p className="text-sm text-white/40 leading-relaxed">
             AI-powered scheduling & booking platform built for 8 industries. Smarter calendars, zero conflicts, maximum revenue.
           </p>
-        </div>
-
-        <div className="space-y-4">
-          <h4 className="text-sm font-bold uppercase tracking-wider text-white/80">Product</h4>
-          <ul className="space-y-2.5">
-            {[
-              { href: "#features", label: "Features" },
-              { href: "#pricing", label: "Pricing" },
-              { href: "/crm", label: "AI CRM" },
-              { href: "/reviews", label: "Reviews" },
-              { href: "#industries", label: "Industries" },
-            ].map(link => (
-              <li key={link.label}>
-                <a href={link.href} className="text-sm text-white/40 hover:text-[hsl(174,62%,50%)] transition-colors duration-300">{link.label}</a>
-              </li>
-            ))}
-          </ul>
         </div>
 
         <div className="space-y-4">
