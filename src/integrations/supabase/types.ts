@@ -2657,9 +2657,14 @@ export type Database = {
       }
       reviews: {
         Row: {
+          ai_decision: string | null
+          ai_reason: string | null
+          country_code: string | null
           created_at: string
           id: string
+          is_auto_rejected: boolean
           rating: number
+          region: string | null
           review_text: string
           reviewer_name: string
           status: string
@@ -2667,9 +2672,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_decision?: string | null
+          ai_reason?: string | null
+          country_code?: string | null
           created_at?: string
           id?: string
+          is_auto_rejected?: boolean
           rating: number
+          region?: string | null
           review_text: string
           reviewer_name: string
           status?: string
@@ -2677,9 +2687,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_decision?: string | null
+          ai_reason?: string | null
+          country_code?: string | null
           created_at?: string
           id?: string
+          is_auto_rejected?: boolean
           rating?: number
+          region?: string | null
           review_text?: string
           reviewer_name?: string
           status?: string
