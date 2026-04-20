@@ -87,7 +87,7 @@ const PLANS = [
       "AI conflict resolution",
       "Revenue optimization",
       "Route optimization (Logistics, Airlines, Railways)",
-      "Dedicated account manager",
+      "Priority email support",
     ],
   },
 ];

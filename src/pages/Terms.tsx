@@ -16,7 +16,8 @@ const Terms = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">2. Service Description</h2>
-          <p>HostFlow AI is an AI-powered scheduling, booking management, CRM, and dynamic pricing SaaS platform. It serves multiple industries including hospitality, airlines, car rental, healthcare, education, logistics, events & entertainment, travel agencies, and railways. The Platform provides AI-driven tools for scheduling optimization, revenue management, customer relationship management, and operational analytics.</p>
+          <p>HostFlow AI is a <strong>software-only, self-service SaaS platform</strong> providing AI-powered scheduling, booking management, CRM, and dynamic pricing tools. It serves multiple industries including hospitality, airlines, car rental, healthcare, education, logistics, events & entertainment, travel agencies, and railways.</p>
+          <p><strong>This is a software product only.</strong> All features are fully automated and AI-powered. No human-driven services, manual work, consulting, done-for-you setup, or agency-style services are included in any plan. Customers access and use the platform on a self-service basis.</p>
         </section>
 
         <section className="space-y-3">
@@ -37,7 +38,7 @@ const Terms = () => (
           <ul className="list-disc pl-6 space-y-2">
             <li><strong>Basic Plan — $25/month:</strong> 1 industry workspace, up to 100 CRM contacts, up to 50 bookings/month, limited AI features, basic analytics</li>
             <li><strong>Pro Plan — $55/month:</strong> 1 industry workspace, unlimited contacts and bookings, AI scheduling, AI follow-ups, client scoring, advanced analytics, priority support</li>
-            <li><strong>Premium Plan — $110/month:</strong> 1 industry workspace, full AI CRM suite, AI Voice Assistant, deal pipeline, Google Workspace integration, dedicated account manager</li>
+            <li><strong>Premium Plan — $110/month:</strong> 1 industry workspace, full AI CRM suite, AI Voice Assistant, deal pipeline, Google Workspace integration, priority email support</li>
           </ul>
           <p>Additional industry workspaces can be purchased as add-ons. All plans include a 7-day free trial. Prices are in USD and exclude applicable taxes, which are calculated and collected by our payment provider.</p>
         </section>

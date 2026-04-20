@@ -92,7 +92,7 @@ const PLANS = [
       "AI conflict resolution",
       "Revenue optimization",
       "Route optimization (Logistics, Airlines, Railways)",
-      "Dedicated account manager",
+      "Priority email support",
     ],
     style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
