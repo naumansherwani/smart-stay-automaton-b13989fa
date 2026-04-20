@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
+
+const PAYMENTS_PAUSED = true;
 
 const PRICE_IDS: Record<string, string> = {
   basic: "basic_monthly",
@@ -192,17 +195,28 @@ const PricingSection = () => {
                   {p.upgradeNote && (
                     <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
                   )}
-                  <Button
-                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                    variant="default"
-                    disabled={!!isCurrent || checkoutLoading}
-                    onClick={() => handleClick(p)}
-                  >
-                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
-                  </Button>
-                  <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                    7-day free trial included — no credit card required
-                  </p>
+                  {PAYMENTS_PAUSED ? (
+                    <>
+                      <PaymentsResumingBanner variant="inline" plan={p.plan} />
+                      <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                        Checkout temporarily paused — get notified + launch discount
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                        variant="default"
+                        disabled={!!isCurrent || checkoutLoading}
+                        onClick={() => handleClick(p)}
+                      >
+                        {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
+                      </Button>
+                      <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                        7-day free trial included — no credit card required
+                      </p>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             );
