@@ -17,10 +17,12 @@ import CookieConsent from "@/components/CookieConsent";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
 const Index = () => (
   <div className="min-h-screen">
     <AnimatedTopBorder />
     <PaymentTestModeBanner />
+    <PaymentsResumingBanner />
     <Navbar />
     <div className="pt-[68px] border-b border-white/[0.06]">
       <SmartGreetingBanner compact />
