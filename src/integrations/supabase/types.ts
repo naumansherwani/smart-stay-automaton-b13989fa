@@ -1839,6 +1839,33 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_waitlist: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          notified: boolean | null
+          plan: string | null
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          notified?: boolean | null
+          plan?: string | null
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          notified?: boolean | null
+          plan?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       plan_feature_limits: {
         Row: {
           created_at: string
