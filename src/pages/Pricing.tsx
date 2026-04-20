@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
+
+const PAYMENTS_PAUSED = true;
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -133,6 +136,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <PaymentTestModeBanner />
+      <PaymentsResumingBanner />
 
       <main className="container pt-24 pb-16 space-y-12">
         <div className="text-center space-y-4">
@@ -183,13 +187,22 @@ export default function Pricing() {
                       )
                     )}
                   </ul>
-                  <Button
-                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                    disabled={!!isCurrent || checkoutLoading}
-                    onClick={() => void handleSelect(p)}
-                  >
-                    {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user && subscription?.paddle_subscription_id ? "Switch Plan" : user ? "Subscribe Now" : "Start Free Trial"}
-                  </Button>
+                  {PAYMENTS_PAUSED ? (
+                    <div className="space-y-2">
+                      <PaymentsResumingBanner variant="inline" plan={p.plan ?? undefined} />
+                      <p className="text-[11px] text-muted-foreground text-center">
+                        Checkout paused for 24–48h • Get notified + launch discount
+                      </p>
+                    </div>
+                  ) : (
+                    <Button
+                      className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                      disabled={!!isCurrent || checkoutLoading}
+                      onClick={() => void handleSelect(p)}
+                    >
+                      {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user && subscription?.paddle_subscription_id ? "Switch Plan" : user ? "Subscribe Now" : "Start Free Trial"}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             );
