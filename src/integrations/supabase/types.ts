@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_alerts: {
+        Row: {
+          alert_type: string
+          amount: number | null
+          created_at: string
+          id: string
+          is_read: boolean | null
+          is_resolved: boolean | null
+          message: string
+          metadata: Json | null
+          related_entity_id: string | null
+          related_entity_type: string | null
+          related_user_id: string | null
+          resolved_at: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          alert_type: string
+          amount?: number | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          message: string
+          metadata?: Json | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          related_user_id?: string | null
+          resolved_at?: string | null
+          severity?: string
+          title: string
+        }
+        Update: {
+          alert_type?: string
+          amount?: number | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          is_resolved?: boolean | null
+          message?: string
+          metadata?: Json | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          related_user_id?: string | null
+          resolved_at?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           created_at: string
@@ -2000,6 +2051,57 @@ export type Database = {
           industry?: string
           updated_at?: string
           welcome_video_url?: string | null
+        }
+        Relationships: []
+      }
+      payment_refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          environment: string | null
+          id: string
+          metadata: Json | null
+          paddle_adjustment_id: string | null
+          paddle_subscription_id: string | null
+          paddle_transaction_id: string | null
+          plan: string | null
+          reason: string | null
+          reason_details: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          environment?: string | null
+          id?: string
+          metadata?: Json | null
+          paddle_adjustment_id?: string | null
+          paddle_subscription_id?: string | null
+          paddle_transaction_id?: string | null
+          plan?: string | null
+          reason?: string | null
+          reason_details?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          environment?: string | null
+          id?: string
+          metadata?: Json | null
+          paddle_adjustment_id?: string | null
+          paddle_subscription_id?: string | null
+          paddle_transaction_id?: string | null
+          plan?: string | null
+          reason?: string | null
+          reason_details?: string | null
+          status?: string
+          user_id?: string | null
         }
         Relationships: []
       }
