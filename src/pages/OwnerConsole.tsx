@@ -311,6 +311,10 @@ const OwnerConsole = () => {
           <TabsContent value="winback">
             <OwnerWinBackTab />
           </TabsContent>
+
+          <TabsContent value="conflicts">
+            <OwnerConflictPolicyTab />
+          </TabsContent>
         </Tabs>
       </main>
       <AiGuideChatbot context="dashboard" industry="hospitality" />
