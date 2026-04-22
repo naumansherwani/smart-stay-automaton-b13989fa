@@ -13,6 +13,7 @@ import {
   DollarSign, TrendingUp, Users, UserPlus, UserMinus, Activity, Target,
   Zap, RefreshCw, AlertTriangle, Sparkles, Download, Crown, ArrowUpRight,
   ArrowDownRight, Globe, Briefcase, Heart, Rocket, PauseCircle, BarChart3,
+  Inbox, BellRing, CheckCheck, X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,7 +23,7 @@ const PLAN_PRICE: Record<string, number> = { basic: 25, pro: 55, premium: 110, t
 // LTV assumption: avg life ~ 18 months (industry standard SaaS)
 const AVG_LIFETIME_MONTHS = 18;
 
-type Section = "overview" | "revenue" | "customers" | "funnel" | "retention" | "insights" | "forecast" | "alerts" | "actions";
+type Section = "overview" | "revenue" | "customers" | "funnel" | "retention" | "insights" | "forecast" | "alerts" | "inbox" | "actions";
 
 const formatMoney = (n: number) =>
   n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(0)}`;
@@ -68,26 +69,51 @@ const OwnerMrrCommandCenter = () => {
   const [cancellations, setCancellations] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [refunds, setRefunds] = useState<any[]>([]);
+  const [inboxAlerts, setInboxAlerts] = useState<any[]>([]);
 
   const fetchData = async () => {
     setRefreshing(true);
-    const [s, p, c, o, b] = await Promise.all([
+    const [s, p, c, o, b, r, ia] = await Promise.all([
       supabase.from("subscriptions").select("*"),
       supabase.from("profiles").select("id, user_id, industry, company_name, created_at"),
       supabase.from("cancellation_requests").select("*"),
       supabase.from("retention_offers").select("*"),
       supabase.from("bookings").select("id, total_price, created_at"),
+      supabase.from("payment_refunds").select("*").order("created_at", { ascending: false }),
+      supabase.from("admin_alerts").select("*").order("created_at", { ascending: false }).limit(100),
     ]);
     setSubs(s.data || []);
     setProfiles(p.data || []);
     setCancellations(c.data || []);
     setOffers(o.data || []);
     setBookings(b.data || []);
+    setRefunds(r.data || []);
+    setInboxAlerts(ia.data || []);
     setLoading(false);
     setRefreshing(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    // Real-time admin alert inbox
+    const ch = supabase
+      .channel("admin-alerts-inbox")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "admin_alerts" }, (payload) => {
+        const a: any = payload.new;
+        setInboxAlerts(prev => [a, ...prev].slice(0, 100));
+        const emoji = a.severity === "critical" ? "🚨" : a.severity === "high" ? "⚠️" : "🔔";
+        toast(`${emoji} ${a.title}`, { description: a.message, duration: 8000 });
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "admin_alerts" }, (payload) => {
+        setInboxAlerts(prev => prev.map(a => a.id === (payload.new as any).id ? payload.new : a));
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "payment_refunds" }, (payload) => {
+        setRefunds(prev => [payload.new as any, ...prev]);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, []);
 
   // ============ COMPUTED METRICS ============
   const metrics = useMemo(() => {
