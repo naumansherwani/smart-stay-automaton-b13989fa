@@ -14,6 +14,8 @@ import deCH from "./locales/de-CH.json";
 import ja from "./locales/ja.json";
 import ko from "./locales/ko.json";
 import tr from "./locales/tr.json";
+import it from "./locales/it.json";
+import ro from "./locales/ro.json";
 
 export const LANGUAGES = [
   { code: "en", name: "English", flag: "🇬🇧" },
@@ -29,13 +31,15 @@ export const LANGUAGES = [
   { code: "ja", name: "日本語", flag: "🇯🇵" },
   { code: "ko", name: "한국어", flag: "🇰🇷" },
   { code: "tr", name: "Türkçe", flag: "🇹🇷" },
+  { code: "it", name: "Italiano", flag: "🇮🇹" },
+  { code: "ro", name: "Română", flag: "🇷🇴" },
 ];
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: en }, hi: { translation: hi }, ur: { translation: ur }, es: { translation: es }, fr: { translation: fr }, ar: { translation: ar }, zh: { translation: zh }, pt: { translation: pt }, de: { translation: de }, "de-CH": { translation: deCH }, ja: { translation: ja }, ko: { translation: ko }, tr: { translation: tr } },
+    resources: { en: { translation: en }, hi: { translation: hi }, ur: { translation: ur }, es: { translation: es }, fr: { translation: fr }, ar: { translation: ar }, zh: { translation: zh }, pt: { translation: pt }, de: { translation: de }, "de-CH": { translation: deCH }, ja: { translation: ja }, ko: { translation: ko }, tr: { translation: tr }, it: { translation: it }, ro: { translation: ro } },
     fallbackLng: "en",
     interpolation: { escapeValue: false },
     detection: { order: ["localStorage", "navigator"], caches: ["localStorage"] },
