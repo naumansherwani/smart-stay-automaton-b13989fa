@@ -263,6 +263,10 @@ const OwnerConsole = () => {
           <TabsContent value="voice">
             <OwnerVoiceAssistantTab />
           </TabsContent>
+
+          <TabsContent value="onboarding">
+            <OwnerOnboardingTab />
+          </TabsContent>
         </Tabs>
       </main>
       <AiGuideChatbot context="dashboard" industry="hospitality" />
