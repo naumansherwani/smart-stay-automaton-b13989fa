@@ -157,5 +157,16 @@
     "claim": "Teklifimi al",
     "later": "Belki sonra",
     "claimed": "Teklif alındı! İndirimi uygulamak için destek ile iletişime geçin."
+  },
+  "adminInbox": {
+    "title": "Canlı Yönetici Gelen Kutusu",
+    "subtitle": "Anlık uyarılar: yüksek değerli kayıp, iadeler, ödeme hataları",
+    "empty": "Gelen kutusu boş 🎉",
+    "emptyHint": "Henüz kritik olay yok. Yeni uyarılar burada anlık olarak görünecek.",
+    "markAllRead": "Tümünü okundu",
+    "unread": "okunmamış",
+    "refundRate": "İade Oranı (30g)",
+    "refunds": "iadeler",
+    "newAlert": "Yeni yönetici uyarısı"
   }
 }

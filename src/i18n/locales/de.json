@@ -157,5 +157,16 @@
     "claim": "Mein Angebot einlösen",
     "later": "Vielleicht später",
     "claimed": "Angebot eingelöst! Kontaktieren Sie den Support für den Rabatt."
+  },
+  "adminInbox": {
+    "title": "Live Admin-Posteingang",
+    "subtitle": "Echtzeit-Alarme: hochwertige Abwanderung, Erstattungen, Zahlungsausfälle",
+    "empty": "Posteingang leer 🎉",
+    "emptyHint": "Noch keine kritischen Ereignisse. Neue Alarme erscheinen hier in Echtzeit.",
+    "markAllRead": "Alle als gelesen",
+    "unread": "ungelesen",
+    "refundRate": "Erstattungsrate (30T)",
+    "refunds": "Erstattungen",
+    "newAlert": "Neuer Admin-Alarm"
   }
 }

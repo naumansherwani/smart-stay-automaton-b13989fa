@@ -157,5 +157,16 @@
     "claim": "Réclamer mon offre",
     "later": "Peut-être plus tard",
     "claimed": "Offre réclamée ! Contactez le support pour appliquer votre remise."
+  },
+  "adminInbox": {
+    "title": "Boîte de Réception Admin en Direct",
+    "subtitle": "Alertes en temps réel : churn à haute valeur, remboursements, échecs de paiement",
+    "empty": "Boîte vide 🎉",
+    "emptyHint": "Aucun événement critique. Les nouvelles alertes apparaîtront ici en temps réel.",
+    "markAllRead": "Tout marquer lu",
+    "unread": "non lu",
+    "refundRate": "Taux de Remboursement (30j)",
+    "refunds": "remboursements",
+    "newAlert": "Nouvelle alerte admin"
   }
 }

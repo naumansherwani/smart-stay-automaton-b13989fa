@@ -157,5 +157,16 @@
     "claim": "Reivindicar minha oferta",
     "later": "Talvez depois",
     "claimed": "Oferta reivindicada! Contate o suporte para aplicar."
+  },
+  "adminInbox": {
+    "title": "Caixa de Entrada Admin ao Vivo",
+    "subtitle": "Alertas em tempo real: churn de alto valor, reembolsos, falhas de pagamento",
+    "empty": "Caixa vazia 🎉",
+    "emptyHint": "Sem eventos críticos. Novos alertas aparecerão aqui em tempo real.",
+    "markAllRead": "Marcar todos lidos",
+    "unread": "não lidos",
+    "refundRate": "Taxa de Reembolso (30d)",
+    "refunds": "reembolsos",
+    "newAlert": "Novo alerta admin"
   }
 }
