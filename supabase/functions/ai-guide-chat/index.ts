@@ -395,6 +395,19 @@ const SETTINGS_FEATURES = [
   "Industry — View and change your industry type (Hospitality, Airlines, etc.)",
   "Workspaces — Create and switch between multiple workspaces for different businesses",
   "Subscription — View your current plan, upgrade to Premium for full features",
+  "── RETENTION & CHURN PREVENTION ──",
+  "Smart Cancel Wizard — When you click Cancel, a 4-step retention wizard opens: pick reason → see personalized save offers (discount, pause, downgrade, priority support) → see your personal value summary (logins, AI tasks, hours saved, revenue opportunities) → final action (Stay, Pause 7/30/60 days, Downgrade, Export data, or Cancel).",
+  "Pause Subscription — Pause your account for 7, 30, or 60 days with no charges. Resume anytime from Settings.",
+  "Downgrade Plan — Move from Premium → Pro or Pro → Basic instead of canceling.",
+  "Export My Data — Download all your bookings, contacts, deals, and feature usage as JSON before leaving.",
+  "Win-Back Offers — If you cancel, the platform may email you a custom comeback discount.",
+  "── ADMIN-ONLY: RETENTION COMMAND CENTER (Owner Console → Retention tab) ──",
+  "Live churn metrics: Monthly Churn %, Net Revenue Retention, Lost MRR, Saved MRR, At-Risk Users, Pause accounts, Downgrades.",
+  "Cancellation Reasons chart, Cohort Retention graph, Cancellation Heatmap (day-of-week), Country Churn map, Industry Churn report, Plan Churn leaderboard.",
+  "AI Churn Prediction Engine — Each user gets a 0-100 risk score, cancel probability, and suggested retention action. Re-score on demand or via daily 3am UTC cron.",
+  "Revenue Recovery Center — list of recently canceled users with reactivation probability.",
+  "Win-Back Campaign builder — create discount/upgrade-return/seasonal campaigns targeting all canceled users, high-value users, or by reason.",
+  "AI Exit Survey Summary — Lovable AI reads all exit surveys + cancellation reasons and returns a summary, top reasons, product recommendations, and sentiment.",
 ];
 
 function buildSystemPrompt(context: string, industry: string): string {

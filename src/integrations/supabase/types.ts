@@ -227,6 +227,90 @@ export type Database = {
           },
         ]
       }
+      cancellation_requests: {
+        Row: {
+          competitor_name: string | null
+          country: string | null
+          created_at: string
+          feature_requested: string | null
+          final_action: string
+          id: string
+          industry: string | null
+          offer_shown: string | null
+          plan: string | null
+          reason: string
+          reason_details: string | null
+          subscription_id: string | null
+          updated_at: string
+          user_id: string
+          value_summary: Json | null
+        }
+        Insert: {
+          competitor_name?: string | null
+          country?: string | null
+          created_at?: string
+          feature_requested?: string | null
+          final_action?: string
+          id?: string
+          industry?: string | null
+          offer_shown?: string | null
+          plan?: string | null
+          reason: string
+          reason_details?: string | null
+          subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+          value_summary?: Json | null
+        }
+        Update: {
+          competitor_name?: string | null
+          country?: string | null
+          created_at?: string
+          feature_requested?: string | null
+          final_action?: string
+          id?: string
+          industry?: string | null
+          offer_shown?: string | null
+          plan?: string | null
+          reason?: string
+          reason_details?: string | null
+          subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+          value_summary?: Json | null
+        }
+        Relationships: []
+      }
+      churn_risk_scores: {
+        Row: {
+          cancel_probability: number
+          computed_at: string
+          id: string
+          risk_score: number
+          signals: Json | null
+          suggested_action: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_probability?: number
+          computed_at?: string
+          id?: string
+          risk_score: number
+          signals?: Json | null
+          suggested_action?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_probability?: number
+          computed_at?: string
+          id?: string
+          risk_score?: number
+          signals?: Json | null
+          suggested_action?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -1426,6 +1510,50 @@ export type Database = {
             columns: ["venue_id"]
             isOneToOne: false
             referencedRelation: "venues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exit_surveys: {
+        Row: {
+          ai_recommendations: Json | null
+          ai_summary: string | null
+          cancellation_request_id: string | null
+          created_at: string
+          free_text: string | null
+          id: string
+          satisfaction_score: number | null
+          user_id: string
+          would_recommend: boolean | null
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          free_text?: string | null
+          id?: string
+          satisfaction_score?: number | null
+          user_id: string
+          would_recommend?: boolean | null
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          ai_summary?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          free_text?: string | null
+          id?: string
+          satisfaction_score?: number | null
+          user_id?: string
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exit_surveys_cancellation_request_id_fkey"
+            columns: ["cancellation_request_id"]
+            isOneToOne: false
+            referencedRelation: "cancellation_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -2715,6 +2843,53 @@ export type Database = {
         }
         Relationships: []
       }
+      retention_offers: {
+        Row: {
+          accepted_at: string | null
+          cancellation_request_id: string | null
+          created_at: string
+          discount_percent: number | null
+          duration_days: number | null
+          expires_at: string | null
+          id: string
+          offer_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          discount_percent?: number | null
+          duration_days?: number | null
+          expires_at?: string | null
+          id?: string
+          offer_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          discount_percent?: number | null
+          duration_days?: number | null
+          expires_at?: string | null
+          id?: string
+          offer_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "retention_offers_cancellation_request_id_fkey"
+            columns: ["cancellation_request_id"]
+            isOneToOne: false
+            referencedRelation: "cancellation_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           ai_decision: string | null
@@ -2827,6 +3002,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_pauses: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          pause_days: number
+          starts_at: string
+          status: string
+          subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          pause_days: number
+          starts_at?: string
+          status?: string
+          subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          pause_days?: number
+          starts_at?: string
+          status?: string
+          subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -3110,6 +3318,60 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           voice_id?: string | null
+        }
+        Relationships: []
+      }
+      win_back_campaigns: {
+        Row: {
+          campaign_type: string
+          created_at: string
+          created_by: string
+          discount_percent: number | null
+          ends_at: string | null
+          id: string
+          message: string | null
+          name: string
+          reactivated_count: number
+          sent_count: number
+          starts_at: string | null
+          status: string
+          target_audience: string
+          target_reason: string | null
+          updated_at: string
+        }
+        Insert: {
+          campaign_type?: string
+          created_at?: string
+          created_by: string
+          discount_percent?: number | null
+          ends_at?: string | null
+          id?: string
+          message?: string | null
+          name: string
+          reactivated_count?: number
+          sent_count?: number
+          starts_at?: string | null
+          status?: string
+          target_audience?: string
+          target_reason?: string | null
+          updated_at?: string
+        }
+        Update: {
+          campaign_type?: string
+          created_at?: string
+          created_by?: string
+          discount_percent?: number | null
+          ends_at?: string | null
+          id?: string
+          message?: string | null
+          name?: string
+          reactivated_count?: number
+          sent_count?: number
+          starts_at?: string | null
+          status?: string
+          target_audience?: string
+          target_reason?: string | null
+          updated_at?: string
         }
         Relationships: []
       }

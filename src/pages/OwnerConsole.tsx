@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -18,6 +18,7 @@ import OwnerFeaturesTab from "@/components/admin/OwnerFeaturesTab";
 import OwnerSubscriptionsTab from "@/components/admin/OwnerSubscriptionsTab";
 import OwnerVoiceAssistantTab from "@/components/admin/OwnerVoiceAssistantTab";
 import OwnerOnboardingTab from "@/components/admin/OwnerOnboardingTab";
+import OwnerRetentionTab from "@/components/admin/OwnerRetentionTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -171,6 +172,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="onboarding" className="gap-1.5 text-xs">
               <Rocket className="w-3 h-3" /> Onboarding
             </TabsTrigger>
+            <TabsTrigger value="retention" className="gap-1.5 text-xs">
+              <Heart className="w-3 h-3" /> Retention
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
@@ -266,6 +270,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="onboarding">
             <OwnerOnboardingTab />
+          </TabsContent>
+
+          <TabsContent value="retention">
+            <OwnerRetentionTab />
           </TabsContent>
         </Tabs>
       </main>
