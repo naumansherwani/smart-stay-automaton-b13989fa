@@ -1803,6 +1803,39 @@ export type Database = {
           },
         ]
       }
+      onboarding_settings: {
+        Row: {
+          ai_tips_enabled: boolean
+          created_at: string
+          default_steps: Json
+          enabled: boolean
+          id: string
+          industry: string
+          updated_at: string
+          welcome_video_url: string | null
+        }
+        Insert: {
+          ai_tips_enabled?: boolean
+          created_at?: string
+          default_steps?: Json
+          enabled?: boolean
+          id?: string
+          industry: string
+          updated_at?: string
+          welcome_video_url?: string | null
+        }
+        Update: {
+          ai_tips_enabled?: boolean
+          created_at?: string
+          default_steps?: Json
+          enabled?: boolean
+          id?: string
+          industry?: string
+          updated_at?: string
+          welcome_video_url?: string | null
+        }
+        Relationships: []
+      }
       payment_requests: {
         Row: {
           created_at: string
@@ -2943,6 +2976,45 @@ export type Database = {
           reference_id?: string | null
           source?: string
           status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_onboarding_progress: {
+        Row: {
+          completed_steps: Json
+          created_at: string
+          current_step: number
+          finished: boolean
+          finished_at: string | null
+          id: string
+          industry: string
+          language: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_steps?: Json
+          created_at?: string
+          current_step?: number
+          finished?: boolean
+          finished_at?: string | null
+          id?: string
+          industry: string
+          language?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_steps?: Json
+          created_at?: string
+          current_step?: number
+          finished?: boolean
+          finished_at?: string | null
+          id?: string
+          industry?: string
+          language?: string
           updated_at?: string
           user_id?: string
         }
