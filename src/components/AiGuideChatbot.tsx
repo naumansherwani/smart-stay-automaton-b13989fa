@@ -22,6 +22,7 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
     { label: "🚀 Onboarding", question: "AI Onboarding Wizard kya hai aur 14 languages mein kaise kaam karta hai?" },
     { label: "🛡️ AI Safety", question: "HostFlow AI ke AI Guardrails kya hain? AI kya nahi karega?" },
     { label: "📊 Growth Center", question: "Industry Growth Command Center kya hai aur kaunsi metrics dikhata hai?" },
+    { label: "🛒 Sales Funnel", question: "Sales Conversion Funnel kaise kaam karta hai aur Smart Checkout Rescue kya hai?" },
   ],
   crm: [
     { label: "👥 Contacts", question: "CRM Contacts kaise manage karein?" },
