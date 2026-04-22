@@ -147,8 +147,11 @@ const OwnerConsole = () => {
         <OwnerStatsCards stats={stats} totalRevenue={totalRevenue} showSecret={showSecret} />
         <OwnerIndustryOverview industries={stats.industries} showSecret={showSecret} />
 
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="mrr" className="space-y-4">
           <TabsList className="flex-wrap">
+            <TabsTrigger value="mrr" className="gap-1.5 text-xs">
+              <TrendingUp className="w-3 h-3" /> MRR Command
+            </TabsTrigger>
             <TabsTrigger value="users" className="gap-1.5 text-xs">
               <Users className="w-3 h-3" /> Users
             </TabsTrigger>
@@ -177,6 +180,10 @@ const OwnerConsole = () => {
               <Heart className="w-3 h-3" /> Retention
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="mrr">
+            <OwnerMrrCommandCenter />
+          </TabsContent>
 
           <TabsContent value="users">
             <OwnerUsersTab recentUsers={recentUsers} showSecret={showSecret} />
