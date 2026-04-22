@@ -163,7 +163,20 @@ const OwnerMrrCommandCenter = () => {
     // expansion = upgrades (premium count > 0 here treated as expansion proxy)
     const expansionMrr = activeSubs.filter(s => s.plan === "premium").reduce((sum, s) => sum + 55, 0); // delta vs pro
 
-    const refundRate = 0; // tracked via Paddle webhooks; placeholder until refund event table added
+    // Live refund rate: refunds in last 30 days / total transactions in last 30 days
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+    const recentRefunds = refunds.filter(r => new Date(r.created_at) >= thirtyDaysAgo);
+    const recentRefundCount = recentRefunds.length;
+    const recentRefundAmount = recentRefunds.reduce((s, r) => s + Number(r.amount || 0), 0);
+    const recentNewSubs = subs.filter(s => new Date(s.created_at) >= thirtyDaysAgo && (s.status === 'active' || s.is_lifetime || s.status === 'canceled')).length;
+    const refundRate = recentNewSubs > 0 ? (recentRefundCount / recentNewSubs) * 100 : 0;
+
+    // Refund reason breakdown (for AI insights query)
+    const refundReasons: Record<string, number> = {};
+    refunds.forEach(r => {
+      const k = (r.reason || 'unspecified').toString();
+      refundReasons[k] = (refundReasons[k] || 0) + 1;
+    });
 
     // Plan revenue breakdown
     const planRevenue: Record<string, { count: number; mrr: number }> = {};
@@ -238,8 +251,9 @@ const OwnerMrrCommandCenter = () => {
       savedRevenue, expansionMrr, refundRate, netGrowth, churnedMrr, newMrr,
       activeSubs: activeSubs.length, trialing: trialingSubs.length,
       planRevenue, industryRevenue, mrrTimeline, funnel, churnReasons, saveRate,
+      refundCount: recentRefundCount, refundAmount: recentRefundAmount, refundReasons,
     };
-  }, [subs, profiles, cancellations, offers]);
+  }, [subs, profiles, cancellations, offers, refunds]);
 
   // Forecasting (simple linear regression on last 6 mo MRR)
   const forecast = useMemo(() => {
@@ -280,6 +294,8 @@ const OwnerMrrCommandCenter = () => {
           planRevenue: metrics.planRevenue, industryRevenue: metrics.industryRevenue,
           churnReasons: metrics.churnReasons, saveRate: metrics.saveRate,
           activeSubs: metrics.activeSubs, trialing: metrics.trialing,
+          refundRate: metrics.refundRate, refundCount: metrics.refundCount,
+          refundAmount: metrics.refundAmount, refundReasons: metrics.refundReasons,
         },
       });
       if (error) throw error;
@@ -331,6 +347,7 @@ const OwnerMrrCommandCenter = () => {
     { id: "insights", label: "AI Insights", icon: Sparkles },
     { id: "forecast", label: "Forecast", icon: TrendingUp },
     { id: "alerts", label: "Alerts", icon: AlertTriangle },
+    { id: "inbox", label: "Live Inbox", icon: Inbox },
     { id: "actions", label: "Actions", icon: Rocket },
   ];
 
