@@ -137,6 +137,18 @@ export default function Pricing() {
       <Navbar />
       <PaymentTestModeBanner />
       <PaymentsResumingBanner />
+      <CheckoutRescuePopup
+        onAccept={(code) => {
+          const popular = PLANS.find((p) => p.popular) || PLANS[0];
+          if (!user) return;
+          openCheckout({
+            priceId: popular.priceId,
+            customerEmail: user.email || undefined,
+            customData: { userId: user.id },
+            discountCode: code,
+          });
+        }}
+      />
 
       <main className="container pt-24 pb-16 space-y-12">
         <div className="text-center space-y-4">
