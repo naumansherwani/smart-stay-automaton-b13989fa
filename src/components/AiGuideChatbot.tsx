@@ -25,6 +25,7 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
     { label: "🛒 Sales Funnel", question: "Sales Conversion Funnel kaise kaam karta hai aur Smart Checkout Rescue kya hai?" },
     { label: "🌐 Languages", question: "HostFlow AI kin 15 languages mein available hai? Har language ke liye kaunsi voice use hoti hai aur Language Switcher kahan hai?" },
     { label: "💜 Win-Back", question: "Win-Back Offer kya hai? Cancel karne ke baad kya hota hai aur AI voice message kaise milta hai user ki apni language mein?" },
+    { label: "📬 Live Inbox", question: "MRR Command Center mein Live Inbox aur Refund Rate metric kaise kaam karte hain? High-value churn alert kab trigger hota hai aur sab data live Supabase se kaise pull hota hai?" },
   ],
   crm: [
     { label: "👥 Contacts", question: "CRM Contacts kaise manage karein?" },
