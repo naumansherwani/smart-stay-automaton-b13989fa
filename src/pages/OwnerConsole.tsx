@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -21,6 +21,7 @@ import OwnerOnboardingTab from "@/components/admin/OwnerOnboardingTab";
 import OwnerRetentionTab from "@/components/admin/OwnerRetentionTab";
 import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import OwnerGrowthCommandCenter from "@/components/admin/OwnerGrowthCommandCenter";
+import OwnerSalesFunnelTab from "@/components/admin/OwnerSalesFunnelTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -156,6 +157,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="growth" className="gap-1.5 text-xs">
               <Globe className="w-3 h-3" /> Growth
             </TabsTrigger>
+            <TabsTrigger value="sales" className="gap-1.5 text-xs">
+              <ShoppingCart className="w-3 h-3" /> Sales Funnel
+            </TabsTrigger>
             <TabsTrigger value="users" className="gap-1.5 text-xs">
               <Users className="w-3 h-3" /> Users
             </TabsTrigger>
@@ -191,6 +195,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="growth">
             <OwnerGrowthCommandCenter />
+          </TabsContent>
+
+          <TabsContent value="sales">
+            <OwnerSalesFunnelTab />
           </TabsContent>
 
           <TabsContent value="users">

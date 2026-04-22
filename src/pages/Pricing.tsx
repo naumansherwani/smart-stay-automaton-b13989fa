@@ -13,6 +13,7 @@ import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
 
 const PLANS = [
   {
@@ -137,6 +138,18 @@ export default function Pricing() {
       <Navbar />
       <PaymentTestModeBanner />
       <PaymentsResumingBanner />
+      <CheckoutRescuePopup
+        onAccept={(code) => {
+          const popular = PLANS.find((p) => p.popular) || PLANS[0];
+          if (!user) return;
+          openCheckout({
+            priceId: popular.priceId,
+            customerEmail: user.email || undefined,
+            customData: { userId: user.id },
+            discountCode: code,
+          });
+        }}
+      />
 
       <main className="container pt-24 pb-16 space-y-12">
         <div className="text-center space-y-4">

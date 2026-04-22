@@ -281,6 +281,45 @@ export type Database = {
         }
         Relationships: []
       }
+      checkout_events: {
+        Row: {
+          created_at: string
+          discount_code: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          plan: string | null
+          price_id: string | null
+          session_id: string
+          source_page: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          discount_code?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          plan?: string | null
+          price_id?: string | null
+          session_id: string
+          source_page?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          discount_code?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          plan?: string | null
+          price_id?: string | null
+          session_id?: string
+          source_page?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       churn_risk_scores: {
         Row: {
           cancel_probability: number
