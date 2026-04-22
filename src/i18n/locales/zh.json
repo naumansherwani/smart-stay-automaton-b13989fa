@@ -251,5 +251,17 @@
     "trends": "趋势",
     "performance": "绩效",
     "export": "导出数据"
+  },
+  "winback": {
+    "title": "我们想念您! 💜",
+    "subtitle": "您语言的个性化优惠",
+    "listen": "用您的语言收听",
+    "playAgain": "再次播放",
+    "discount": "您的特别折扣",
+    "forMonths": "重新激活时{{months}}个月",
+    "expires": "{{date}}过期",
+    "claim": "领取我的优惠",
+    "later": "稍后再说",
+    "claimed": "优惠已领取！联系支持以应用折扣。"
   }
 }

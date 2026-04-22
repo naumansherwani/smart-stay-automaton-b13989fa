@@ -164,5 +164,17 @@
     "back": "Back",
     "next": "Next",
     "search": "Search"
+  },
+  "winback": {
+    "title": "We miss you! 💜",
+    "subtitle": "Personalized offer in your language",
+    "listen": "Listen in your language",
+    "playAgain": "Play again",
+    "discount": "Your special discount",
+    "forMonths": "For {{months}} months when you reactivate",
+    "expires": "Expires {{date}}",
+    "claim": "Claim my offer",
+    "later": "Maybe later",
+    "claimed": "Offer claimed! Contact support to apply your discount."
   }
 }
