@@ -244,8 +244,8 @@ const VOICE_AI_FEATURES = `
 `;
 
 const LANGUAGES_SUPPORTED = `
-## 🌐 Languages — 14 Fully Supported (UI + AI + Voice)
-Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 14 languages with native voices, scripts and prosody.
+## 🌐 Languages — 15 Fully Supported (UI + AI + Voice)
+Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 15 languages with native voices, scripts and prosody.
 
 - 🇬🇧 English (en) — Voice: Sarah
 - 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura
@@ -260,6 +260,8 @@ Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assist
 - 🇯🇵 日本語 Japanese (ja) — Voice: Jessica
 - 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
 - 🇹🇷 Türkçe Turkish (tr) — Voice: Alice (vowel harmony)
+- 🇮🇹 Italiano Italian (it) — Voice: Matilda (melodic prosody)
+- 🇷🇴 Română Romanian (ro) — Voice: Alice (clear Latin vowels)
 
 **How to switch**: Top-right Globe icon (Language Switcher) — anywhere in the app. Choice persists in localStorage.
 **Admin**: Owner Console → "Voice AI" tab — every industry uses the user's selected language automatically; admin can disable voice per industry.
