@@ -506,9 +506,11 @@ ${VOICE_AI_FEATURES}
 
 ${ONBOARDING_FEATURES}
 
+${MRR_COMMAND_CENTER}
+
 IMPORTANT: Only explain Settings features. When asked about team, explain team management and invite process.`;
   } else {
-    featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES;
+    featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES + "\n" + MRR_COMMAND_CENTER;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
