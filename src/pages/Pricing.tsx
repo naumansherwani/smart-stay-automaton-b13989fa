@@ -13,6 +13,7 @@ import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
 
 const PLANS = [
   {
