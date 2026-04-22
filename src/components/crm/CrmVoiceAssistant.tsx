@@ -11,6 +11,7 @@ import type { IndustryType } from "@/lib/industryConfig";
 import { getIndustryConfig } from "@/lib/industryConfig";
 import { getCrmConfig } from "@/lib/crmConfig";
 import { supportsAutoPricing } from "@/lib/industryFeatures";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   industry: IndustryType;
