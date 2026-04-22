@@ -255,6 +255,10 @@ const OwnerConsole = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="voice">
+            <OwnerVoiceAssistantTab />
+          </TabsContent>
         </Tabs>
       </main>
       <AiGuideChatbot context="dashboard" industry="hospitality" />
