@@ -537,6 +537,9 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
     }
   }, [industry]);
 
+  // Voice disabled for this industry by admin → render nothing
+  if (!voiceEnabled) return null;
+
   // Floating mic button
   if (!showPanel) {
     return (
