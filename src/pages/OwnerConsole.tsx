@@ -157,6 +157,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="growth" className="gap-1.5 text-xs">
               <Globe className="w-3 h-3" /> Growth
             </TabsTrigger>
+            <TabsTrigger value="sales" className="gap-1.5 text-xs">
+              <ShoppingCart className="w-3 h-3" /> Sales Funnel
+            </TabsTrigger>
             <TabsTrigger value="users" className="gap-1.5 text-xs">
               <Users className="w-3 h-3" /> Users
             </TabsTrigger>
@@ -192,6 +195,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="growth">
             <OwnerGrowthCommandCenter />
+          </TabsContent>
+
+          <TabsContent value="sales">
+            <OwnerSalesFunnelTab />
           </TabsContent>
 
           <TabsContent value="users">

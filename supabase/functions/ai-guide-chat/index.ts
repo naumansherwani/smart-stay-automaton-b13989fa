@@ -565,6 +565,8 @@ ${GUARDRAILS}
 
 ${GROWTH_COMMAND_CENTER}
 
+${SALES_FUNNEL_AND_RESCUE}
+
 Your role:
 - Explain features in simple, easy-to-understand language
 - Give step-by-step guidance when asked "how to" do something
