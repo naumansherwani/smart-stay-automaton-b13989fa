@@ -251,5 +251,17 @@
     "trends": "Tendencias",
     "performance": "Rendimiento",
     "export": "Exportar Datos"
+  },
+  "winback": {
+    "title": "¡Te extrañamos! 💜",
+    "subtitle": "Oferta personalizada en tu idioma",
+    "listen": "Escucha en tu idioma",
+    "playAgain": "Reproducir de nuevo",
+    "discount": "Tu descuento especial",
+    "forMonths": "Por {{months}} meses al reactivar",
+    "expires": "Expira el {{date}}",
+    "claim": "Reclamar mi oferta",
+    "later": "Quizás después",
+    "claimed": "¡Oferta reclamada! Contacta soporte para aplicar tu descuento."
   }
 }

@@ -77,6 +77,37 @@ Deno.serve(async (req) => {
           satisfaction_score: satisfactionScore ?? null,
         });
       }
+
+      // 🎯 Auto-generate Win-Back Offer in user's preferred language
+      try {
+        const { data: prefLang } = await supabase
+          .from('profiles').select('preferred_language').eq('user_id', user.id).maybeSingle();
+        const language = (prefLang as any)?.preferred_language || 'en';
+
+        const { data: campaign } = await supabase
+          .from('win_back_campaigns')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (campaign) {
+          const expiresAt = new Date(Date.now() + (campaign.expiry_days || 7) * 86400000).toISOString();
+          const discountCode = `WB${campaign.discount_percent}-${user.id.slice(0, 6).toUpperCase()}`;
+          await supabase.from('win_back_offers').insert({
+            user_id: user.id,
+            campaign_id: campaign.id,
+            cancellation_request_id: cr.id,
+            language,
+            discount_code: discountCode,
+            expires_at: expiresAt,
+            status: 'pending', // admin will approve, then script generated
+          });
+        }
+      } catch (wbErr) {
+        console.warn('win-back offer queue failed (non-fatal):', wbErr);
+      }
     } else if (action === 'downgraded' && downgradeTo) {
       if (sub?.id) {
         await supabase.from('subscriptions').update({ plan: downgradeTo }).eq('id', sub.id);

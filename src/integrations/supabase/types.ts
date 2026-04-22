@@ -3365,9 +3365,13 @@ export type Database = {
           campaign_type: string
           created_at: string
           created_by: string
+          description: string | null
           discount_percent: number | null
+          duration_months: number
           ends_at: string | null
+          expiry_days: number
           id: string
+          is_active: boolean
           message: string | null
           name: string
           reactivated_count: number
@@ -3375,6 +3379,7 @@ export type Database = {
           starts_at: string | null
           status: string
           target_audience: string
+          target_plan: string | null
           target_reason: string | null
           updated_at: string
         }
@@ -3382,9 +3387,13 @@ export type Database = {
           campaign_type?: string
           created_at?: string
           created_by: string
+          description?: string | null
           discount_percent?: number | null
+          duration_months?: number
           ends_at?: string | null
+          expiry_days?: number
           id?: string
+          is_active?: boolean
           message?: string | null
           name: string
           reactivated_count?: number
@@ -3392,6 +3401,7 @@ export type Database = {
           starts_at?: string | null
           status?: string
           target_audience?: string
+          target_plan?: string | null
           target_reason?: string | null
           updated_at?: string
         }
@@ -3399,9 +3409,13 @@ export type Database = {
           campaign_type?: string
           created_at?: string
           created_by?: string
+          description?: string | null
           discount_percent?: number | null
+          duration_months?: number
           ends_at?: string | null
+          expiry_days?: number
           id?: string
+          is_active?: boolean
           message?: string | null
           name?: string
           reactivated_count?: number
@@ -3409,10 +3423,124 @@ export type Database = {
           starts_at?: string | null
           status?: string
           target_audience?: string
+          target_plan?: string | null
           target_reason?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      win_back_offers: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          campaign_id: string | null
+          cancellation_request_id: string | null
+          created_at: string
+          discount_code: string | null
+          expires_at: string | null
+          id: string
+          language: string
+          redeemed_at: string | null
+          sent_at: string | null
+          status: string
+          text_message: string | null
+          updated_at: string
+          user_id: string
+          viewed_at: string | null
+          voice_script: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          campaign_id?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          discount_code?: string | null
+          expires_at?: string | null
+          id?: string
+          language?: string
+          redeemed_at?: string | null
+          sent_at?: string | null
+          status?: string
+          text_message?: string | null
+          updated_at?: string
+          user_id: string
+          viewed_at?: string | null
+          voice_script?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          campaign_id?: string | null
+          cancellation_request_id?: string | null
+          created_at?: string
+          discount_code?: string | null
+          expires_at?: string | null
+          id?: string
+          language?: string
+          redeemed_at?: string | null
+          sent_at?: string | null
+          status?: string
+          text_message?: string | null
+          updated_at?: string
+          user_id?: string
+          viewed_at?: string | null
+          voice_script?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "win_back_offers_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "win_back_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "win_back_offers_cancellation_request_id_fkey"
+            columns: ["cancellation_request_id"]
+            isOneToOne: false
+            referencedRelation: "cancellation_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      win_back_voice_log: {
+        Row: {
+          completed: boolean | null
+          duration_seconds: number | null
+          id: string
+          language: string
+          offer_id: string
+          played_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          duration_seconds?: number | null
+          id?: string
+          language: string
+          offer_id: string
+          played_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          duration_seconds?: number | null
+          id?: string
+          language?: string
+          offer_id?: string
+          played_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "win_back_voice_log_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "win_back_offers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       withdrawal_admin_notes: {
         Row: {

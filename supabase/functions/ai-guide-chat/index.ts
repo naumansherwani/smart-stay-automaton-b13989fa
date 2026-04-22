@@ -511,7 +511,7 @@ const SETTINGS_FEATURES = [
   "Pause Subscription — Pause your account for 7, 30, or 60 days with no charges. Resume anytime from Settings.",
   "Downgrade Plan — Move from Premium → Pro or Pro → Basic instead of canceling.",
   "Export My Data — Download all your bookings, contacts, deals, and feature usage as JSON before leaving.",
-  "Win-Back Offers — If you cancel, the platform may email you a custom comeback discount.",
+  "Win-Back Offers — If you cancel, an AI-generated personalized win-back offer is created in your preferred language (15 languages supported). Admin reviews & approves it from the Owner Console → Win-Back tab. When approved, you see a personalized modal on your next dashboard visit with: (1) AI-written warm comeback message in your language, (2) ElevenLabs voice playback button so you can LISTEN to the message in your native voice, (3) personalized discount code (e.g. WB30-XXXXXX), (4) percentage off (campaign-specific, default 30%) for several months. No phone calls — works entirely in-app + email. Available on ALL plans (Trial, Basic, Pro, Premium).",
   "── ADMIN-ONLY: RETENTION COMMAND CENTER (Owner Console → Retention tab) ──",
   "Live churn metrics: Monthly Churn %, Net Revenue Retention, Lost MRR, Saved MRR, At-Risk Users, Pause accounts, Downgrades.",
   "Cancellation Reasons chart, Cohort Retention graph, Cancellation Heatmap (day-of-week), Country Churn map, Industry Churn report, Plan Churn leaderboard.",

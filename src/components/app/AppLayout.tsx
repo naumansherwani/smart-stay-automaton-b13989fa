@@ -14,6 +14,7 @@ import TrialBanner from "@/components/TrialBanner";
 import PublicView from "./PublicView";
 import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
+import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
   hospitality: "Travel, Tourism & Hospitality",
@@ -121,6 +122,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <main className="flex-1">
         {children}
       </main>
+
+      {/* Win-Back personalized offer for canceled users */}
+      <WinBackOfferModal />
     </div>
   );
 }
