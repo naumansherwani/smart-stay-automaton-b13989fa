@@ -504,8 +504,12 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
     }]);
 
     // Only speak when responding to a command (not auto)
-    speakText(aiResponse);
-  }, [commands, industry, onNavigate, onCommand, messages]);
+    speakText(aiResponse, {
+      lang: (i18n.language || "en").split("-")[0],
+      mode: latencyMode,
+      industry,
+    });
+  }, [commands, industry, onNavigate, onCommand, messages, latencyMode]);
 
   const { isListening, start: startListening, stop: stopListening } = useSpeechRecognition(processCommand);
 
