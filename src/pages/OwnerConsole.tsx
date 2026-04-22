@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift, Lock
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -20,6 +20,7 @@ import OwnerVoiceAssistantTab from "@/components/admin/OwnerVoiceAssistantTab";
 import OwnerOnboardingTab from "@/components/admin/OwnerOnboardingTab";
 import OwnerRetentionTab from "@/components/admin/OwnerRetentionTab";
 import OwnerWinBackTab from "@/components/admin/OwnerWinBackTab";
+import OwnerConflictPolicyTab from "@/components/admin/OwnerConflictPolicyTab";
 import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import OwnerGrowthCommandCenter from "@/components/admin/OwnerGrowthCommandCenter";
 import OwnerSalesFunnelTab from "@/components/admin/OwnerSalesFunnelTab";
@@ -191,6 +192,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="winback" className="gap-1.5 text-xs">
               <Gift className="w-3 h-3" /> Win-Back
             </TabsTrigger>
+            <TabsTrigger value="conflicts" className="gap-1.5 text-xs">
+              <Lock className="w-3 h-3" /> Conflict Policy
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="mrr">
@@ -306,6 +310,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="winback">
             <OwnerWinBackTab />
+          </TabsContent>
+
+          <TabsContent value="conflicts">
+            <OwnerConflictPolicyTab />
           </TabsContent>
         </Tabs>
       </main>

@@ -520,6 +520,14 @@ const SETTINGS_FEATURES = [
   "Revenue Recovery Center — list of recently canceled users with reactivation probability.",
   "Win-Back Campaign builder — create discount/upgrade-return/seasonal campaigns targeting all canceled users, high-value users, or by reason.",
   "AI Exit Survey Summary — Lovable AI reads all exit surveys + cancellation reasons and returns a summary, top reasons, product recommendations, and sentiment.",
+  "── SCHEDULING CONFLICT RESOLUTION POLICY (BACKEND-LOCKED) ──",
+  "When two scheduling sources conflict (e.g. Google Calendar event vs AI auto-suggestion), the resolve-schedule-conflict edge function applies a DETERMINISTIC, server-locked priority order — no AI guessing, no client override:",
+  "  Tier 1 (highest): Manual Override — explicit admin/user lock. Always wins.",
+  "  Tier 2: Confirmed Booking — paid/confirmed in DB. Beats every AI source.",
+  "  Tier 3: Google Calendar — real external meeting from Gmail invite. Wins over both AI tiers by default.",
+  "  Tier 4: AI Confirmed Schedule — already validated by validate-booking.",
+  "  Tier 5 (lowest): AI Suggestion — output of ai-auto-schedule. Always yields and auto-reschedules.",
+  "Admin can flip 'Google Calendar wins over AI' OFF in Owner Console → Conflict Policy tab (then AI tiers win over Google). Auto-reschedule and notification toggles are also there. Every resolution is logged to scheduling_conflict_resolutions with winner, reason, and action — viewable in the same tab. Buffer minutes (default 15) prevent back-to-back collisions.",
 ];
 
 function buildSystemPrompt(context: string, industry: string): string {

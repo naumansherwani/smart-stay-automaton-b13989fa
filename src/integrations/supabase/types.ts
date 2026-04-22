@@ -3144,6 +3144,84 @@ export type Database = {
           },
         ]
       }
+      scheduling_conflict_policy: {
+        Row: {
+          auto_reschedule_ai_on_conflict: boolean
+          buffer_minutes: number
+          created_at: string
+          google_calendar_wins_over_ai: boolean
+          id: string
+          notify_on_resolution: boolean
+          priority_order: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_reschedule_ai_on_conflict?: boolean
+          buffer_minutes?: number
+          created_at?: string
+          google_calendar_wins_over_ai?: boolean
+          id?: string
+          notify_on_resolution?: boolean
+          priority_order?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_reschedule_ai_on_conflict?: boolean
+          buffer_minutes?: number
+          created_at?: string
+          google_calendar_wins_over_ai?: boolean
+          id?: string
+          notify_on_resolution?: boolean
+          priority_order?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scheduling_conflict_resolutions: {
+        Row: {
+          conflict_end: string
+          conflict_start: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          reason: string
+          resolution_action: string
+          source_a: string
+          source_b: string
+          user_id: string
+          winner: string
+        }
+        Insert: {
+          conflict_end: string
+          conflict_start: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reason: string
+          resolution_action: string
+          source_a: string
+          source_b: string
+          user_id: string
+          winner: string
+        }
+        Update: {
+          conflict_end?: string
+          conflict_start?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          resolution_action?: string
+          source_a?: string
+          source_b?: string
+          user_id?: string
+          winner?: string
+        }
+        Relationships: []
+      }
       subscription_pauses: {
         Row: {
           created_at: string
