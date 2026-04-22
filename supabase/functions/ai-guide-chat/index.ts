@@ -471,6 +471,10 @@ ${teamInfo}
 
 ${planInfo}
 
+${VOICE_AI_FEATURES}
+
+${ONBOARDING_FEATURES}
+
 IMPORTANT: Dashboard features are for day-to-day operations (available to all plans). CRM features are for customer relationship management (Premium plan only). Always clarify which section a feature belongs to.`;
   } else if (context === "settings") {
     featureList = `
@@ -482,9 +486,13 @@ ${teamInfo}
 
 ${planInfo}
 
+${VOICE_AI_FEATURES}
+
+${ONBOARDING_FEATURES}
+
 IMPORTANT: Only explain Settings features. When asked about team, explain team management and invite process.`;
   } else {
-    featureList = planInfo + "\n" + teamInfo;
+    featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
