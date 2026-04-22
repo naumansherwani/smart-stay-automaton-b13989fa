@@ -164,6 +164,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="revenue" className="gap-1.5 text-xs">
               <BarChart3 className="w-3 h-3" /> Revenue
             </TabsTrigger>
+            <TabsTrigger value="voice" className="gap-1.5 text-xs">
+              <Mic className="w-3 h-3" /> Voice AI
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
