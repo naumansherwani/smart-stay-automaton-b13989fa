@@ -561,6 +561,8 @@ ${ONBOARDING_FEATURES}
 
 ${MRR_COMMAND_CENTER}
 
+${LANGUAGES_SUPPORTED}
+
 IMPORTANT: Dashboard features are for day-to-day operations (available to all plans). CRM features are for customer relationship management (Premium plan only). Always clarify which section a feature belongs to.`;
   } else if (context === "settings") {
     featureList = `
