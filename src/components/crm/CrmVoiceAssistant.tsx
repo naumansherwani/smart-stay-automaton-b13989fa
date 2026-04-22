@@ -391,11 +391,31 @@ export default function CrmVoiceAssistant({ industry, onCommand, onNavigate }: P
   const [showPanel, setShowPanel] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [latencyMode, setLatencyMode] = useState<"streaming" | "standard">("streaming");
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasGreeted = useRef(false);
   const conversationMemory = useRef<string[]>([]); // Contextual memory - last 5 exchanges
 
   const commands = getIndustryCommands(industry);
+
+  // Load per-industry voice settings (admin-controlled)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("voice_assistant_settings")
+        .select("enabled, latency_mode")
+        .eq("industry", industry)
+        .maybeSingle();
+      if (cancelled) return;
+      if (data) {
+        setVoiceEnabled(data.enabled !== false);
+        setLatencyMode(data.latency_mode === "standard" ? "standard" : "streaming");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [industry]);
 
   // Load voices (some browsers load async)
   useEffect(() => {
