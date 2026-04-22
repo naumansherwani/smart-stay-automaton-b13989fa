@@ -283,6 +283,24 @@ Global cross-industry growth dashboard. ALL data is real (live from \`profiles\`
 - **Admin-only** via \`has_role('admin')\`.
 `;
 
+const SALES_FUNNEL_AND_RESCUE = `
+## 🛒 Sales Conversion Funnel + Smart Checkout Rescue (Owner Console → "Sales Funnel" tab)
+Real-data conversion funnel for the last 30 days, sourced from \`profiles\`, \`subscriptions\`, and the new \`checkout_events\` table.
+- **Funnel stages (visualized as horizontal bars with drop counts)**:
+  1. Visitors (estimated until external web analytics is connected — clearly labeled "est.")
+  2. Signups (real, from profiles)
+  3. Trial Started (real, from subscriptions.status='trialing' + active)
+  4. Checkout Opened (real, logged when Paddle overlay opens)
+  5. Checkout Completed (real, from Paddle's \`checkout.completed\` event)
+  6. Paid (real, from subscriptions.status='active' in last 30d)
+- **Leak detection**: Any stage-to-stage drop greater than 50% is auto-flagged in an amber "Leaks Detected" card.
+- **Smart Checkout Rescue popup** (\`CheckoutRescuePopup\`): Exit-intent (mouse leaves top of viewport) shows a one-time-per-session offer of code STAY20 (20% off). Tracked as \`rescue_shown\`, \`rescued\` (accepted), or \`rescue_dismissed\`.
+- **Rescue analytics card**: Popup Shown / Accepted / Dismissed / Recovered MRR (counts only sessions where user accepted the rescue AND completed checkout in the same day, applying the 20% discount).
+- **Checkout Health card**: Abandon rate, Acceptance rate, with healthy benchmarks (abandon < 30%, rescue acceptance > 15%).
+- **Tracking integrity**: \`checkout_events\` is RLS-protected — users see only their own events, admins see all. Anonymous (logged-out) inserts are allowed only when \`user_id\` is null.
+- **No fake data anywhere**: every metric ties back to a real DB row. The only estimated value is "Visitors" — flagged in the UI.
+`;
+
 const GUARDRAILS = `
 ## 🛡️ AI Guardrails (Safety Rules — applied to EVERY answer)
 These rules are non-negotiable. Admin can review them in Owner Console → AI Chatbot context.
