@@ -205,7 +205,10 @@ function getHelpResponse(industry: IndustryType): string {
 // ─── ElevenLabs TTS with browser fallback ───────────────────────────────────
 const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`;
 
-async function speakWithElevenLabs(text: string): Promise<boolean> {
+async function speakWithElevenLabs(
+  text: string,
+  opts?: { lang?: string; mode?: "streaming" | "standard"; industry?: string }
+): Promise<boolean> {
   try {
     const clean = text.replace(/[📋🎫💼📊🤖✉️💰✈️🗺️🚚🚗💡📅📝\n]/g, " ").replace(/\s+/g, " ").trim();
     if (!clean) return false;
@@ -217,19 +220,84 @@ async function speakWithElevenLabs(text: string): Promise<boolean> {
         apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
-      body: JSON.stringify({ text: clean }),
+      body: JSON.stringify({
+        text: clean,
+        lang: opts?.lang || (i18n.language || "en").split("-")[0],
+        mode: opts?.mode || "streaming",
+        industry: opts?.industry,
+      }),
     });
 
     if (!resp.ok) return false;
 
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
+    // Streaming playback: feed bytes into <audio> as they arrive via MediaSource.
+    // This makes audio start within ~300-500ms of clicking, instead of waiting
+    // for the full file. Falls back to blob if MediaSource isn't supported.
+    const isStreaming = (resp.headers.get("X-TTS-Mode") || "streaming") === "streaming";
+    const canStream =
+      isStreaming &&
+      typeof window !== "undefined" &&
+      "MediaSource" in window &&
+      window.MediaSource.isTypeSupported("audio/mpeg") &&
+      resp.body;
+
+    if (!canStream) {
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      return new Promise((resolve) => {
+        audio.onended = () => { URL.revokeObjectURL(url); resolve(true); };
+        audio.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
+        audio.play().catch(() => resolve(false));
+      });
+    }
+
+    const mediaSource = new MediaSource();
+    const url = URL.createObjectURL(mediaSource);
     const audio = new Audio(url);
-    
-    return new Promise((resolve) => {
-      audio.onended = () => { URL.revokeObjectURL(url); resolve(true); };
-      audio.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
-      audio.play().catch(() => resolve(false));
+
+    return new Promise<boolean>((resolve) => {
+      let resolved = false;
+      const finish = (ok: boolean) => {
+        if (resolved) return;
+        resolved = true;
+        URL.revokeObjectURL(url);
+        resolve(ok);
+      };
+
+      mediaSource.addEventListener("sourceopen", async () => {
+        try {
+          const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
+          const reader = resp.body!.getReader();
+          const queue: Uint8Array[] = [];
+          let done = false;
+
+          const pump = () => {
+            if (sourceBuffer.updating) return;
+            if (queue.length > 0) {
+              sourceBuffer.appendBuffer(queue.shift()!);
+            } else if (done) {
+              try { mediaSource.endOfStream(); } catch {}
+            }
+          };
+
+          sourceBuffer.addEventListener("updateend", pump);
+
+          // Start playback as soon as we have first chunk
+          audio.play().catch(() => {});
+
+          while (true) {
+            const { value, done: d } = await reader.read();
+            if (d) { done = true; pump(); break; }
+            if (value) { queue.push(value); pump(); }
+          }
+        } catch {
+          finish(false);
+        }
+      });
+
+      audio.onended = () => finish(true);
+      audio.onerror = () => finish(false);
     });
   } catch {
     return false;
@@ -259,11 +327,14 @@ function speakBrowserFallback(text: string, lang?: string) {
   window.speechSynthesis.speak(utterance);
 }
 
-async function speakText(text: string, lang?: string) {
+async function speakText(
+  text: string,
+  opts?: { lang?: string; mode?: "streaming" | "standard"; industry?: string }
+) {
   // Try ElevenLabs first, fall back to browser
-  const success = await speakWithElevenLabs(text);
+  const success = await speakWithElevenLabs(text, opts);
   if (!success) {
-    speakBrowserFallback(text, lang);
+    speakBrowserFallback(text, opts?.lang);
   }
 }
 
