@@ -243,6 +243,30 @@ const VOICE_AI_FEATURES = `
 - **Admin Control**: Owner Console → "Voice AI" tab → per-industry ON/OFF + Streaming/Standard mode toggle.
 `;
 
+const LANGUAGES_SUPPORTED = `
+## 🌐 Languages — 14 Fully Supported (UI + AI + Voice)
+Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 14 languages with native voices, scripts and prosody.
+
+- 🇬🇧 English (en) — Voice: Sarah
+- 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura
+- 🇵🇰 اردو Urdu (ur, RTL) — Voice: Laura
+- 🇸🇦 العربية Arabic (ar, RTL) — Voice: Alice (strong Arabic phoneme support)
+- 🇪🇸 Español Spanish (es) — Voice: Sarah
+- 🇫🇷 Français French (fr) — Voice: Matilda
+- 🇩🇪 Deutsch German (de) — Voice: Matilda
+- 🇨🇭 Schweizerdeutsch Swiss German (de-CH) — Voice: Matilda
+- 🇧🇷 Português Portuguese (pt) — Voice: Sarah
+- 🇨🇳 中文 Chinese Simplified (zh) — Voice: Jessica (tonal)
+- 🇯🇵 日本語 Japanese (ja) — Voice: Jessica
+- 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
+- 🇹🇷 Türkçe Turkish (tr) — Voice: Alice (vowel harmony)
+
+**How to switch**: Top-right Globe icon (Language Switcher) — anywhere in the app. Choice persists in localStorage.
+**Admin**: Owner Console → "Voice AI" tab — every industry uses the user's selected language automatically; admin can disable voice per industry.
+**AI Onboarding**: User picks language during signup → AI re-translates the entire 4–5 step plan + tips on the fly.
+**RTL**: Arabic and Urdu auto-flip layout to right-to-left.
+`;
+
 const ONBOARDING_FEATURES = `
 ## 🚀 AI-Powered Onboarding Wizard (14 Languages, All 8 Industries)
 - **Auto-launches** after a new user picks their industry during signup.
@@ -537,6 +561,8 @@ ${ONBOARDING_FEATURES}
 
 ${MRR_COMMAND_CENTER}
 
+${LANGUAGES_SUPPORTED}
+
 IMPORTANT: Dashboard features are for day-to-day operations (available to all plans). CRM features are for customer relationship management (Premium plan only). Always clarify which section a feature belongs to.`;
   } else if (context === "settings") {
     featureList = `
@@ -554,9 +580,11 @@ ${ONBOARDING_FEATURES}
 
 ${MRR_COMMAND_CENTER}
 
+${LANGUAGES_SUPPORTED}
+
 IMPORTANT: Only explain Settings features. When asked about team, explain team management and invite process.`;
   } else {
-    featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES + "\n" + MRR_COMMAND_CENTER;
+    featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES + "\n" + MRR_COMMAND_CENTER + "\n" + LANGUAGES_SUPPORTED;
   }
 
   return `You are the HostFlow AI Guide — a friendly, knowledgeable assistant that helps users understand the features of HostFlow AI platform.
@@ -571,7 +599,14 @@ Your role:
 - Explain features in simple, easy-to-understand language
 - Give step-by-step guidance when asked "how to" do something
 - Be concise but thorough — a normal person should easily understand
-- Use the user's language (if they write in Urdu/Hindi, reply in that language)
+- ALWAYS reply in the user's language. Detect from their message and match it exactly.
+  Fully supported languages (reply natively, never translate to English):
+  English, Urdu (اردو), Hindi (हिन्दी), Arabic (العربية, RTL),
+  Spanish, French, German, Swiss German, Portuguese, Chinese (中文),
+  Japanese (日本語), Korean (한국어), Turkish (Türkçe).
+  For Arabic: use proper RTL formatting and natural Modern Standard Arabic.
+  For Korean: use natural 한국어 with appropriate honorifics.
+  For Turkish: use natural Türkçe with correct vowel harmony.
 - Be warm, encouraging, and professional
 - Use emojis sparingly to keep it friendly
 - If asked about a feature not in your current page context, politely guide them to the right page

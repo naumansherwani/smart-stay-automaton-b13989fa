@@ -5,22 +5,23 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Voice per language — natural female voices that handle each language well.
-// Multilingual v2 + Turbo v2.5 both support 29+ languages on the same voice,
-// but we map to voices known to perform best for each locale.
+// Voice per language — Multilingual v2 + Turbo v2.5 both support 29+ languages
+// on any voice, but we map each locale to the voice that performs best for it.
+// Arabic, Turkish, Korean use voices with strong tonal range for those phonemes.
 const VOICE_BY_LANG: Record<string, string> = {
-  en: "EXAVITQu4vr4xnSDxMaL", // Sarah
-  hi: "EXAVITQu4vr4xnSDxMaL",
-  ur: "EXAVITQu4vr4xnSDxMaL",
-  ar: "EXAVITQu4vr4xnSDxMaL",
-  es: "EXAVITQu4vr4xnSDxMaL",
-  fr: "EXAVITQu4vr4xnSDxMaL",
-  de: "EXAVITQu4vr4xnSDxMaL",
+  en: "EXAVITQu4vr4xnSDxMaL",    // Sarah — clear English
+  hi: "FGY2WhTYpPnrIDTdsKH5",    // Laura — Hindi prosody
+  ur: "FGY2WhTYpPnrIDTdsKH5",    // Laura — Urdu (close to Hindi)
+  ar: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — strong Arabic phonemes
+  es: "EXAVITQu4vr4xnSDxMaL",    // Sarah
+  fr: "XrExE9yKIg1WjnnlVkGX",    // Matilda — French
+  de: "XrExE9yKIg1WjnnlVkGX",    // Matilda — German
+  "de-CH": "XrExE9yKIg1WjnnlVkGX",
   pt: "EXAVITQu4vr4xnSDxMaL",
-  zh: "EXAVITQu4vr4xnSDxMaL",
-  ja: "EXAVITQu4vr4xnSDxMaL",
-  ko: "EXAVITQu4vr4xnSDxMaL",
-  tr: "EXAVITQu4vr4xnSDxMaL",
+  zh: "cgSgspJ2msm6clMCkdW9",    // Jessica — Mandarin tones
+  ja: "cgSgspJ2msm6clMCkdW9",    // Jessica — Japanese
+  ko: "cgSgspJ2msm6clMCkdW9",    // Jessica — Korean tonal range
+  tr: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — Turkish vowel harmony
 };
 
 Deno.serve(async (req) => {
