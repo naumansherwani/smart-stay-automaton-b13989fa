@@ -169,5 +169,19 @@
     "refundRate": "ریفنڈ ریٹ (30 دن)",
     "refunds": "ریفنڈز",
     "newAlert": "نیا ایڈمن الرٹ"
+  },
+  "conflictPolicy": {
+    "title": "Conflict Policy",
+    "lockedOrder": "Locked Priority Order (Backend-Enforced)",
+    "description": "When two scheduling sources conflict, the higher-tier source always wins. This order is enforced server-side and cannot be bypassed.",
+    "manualOverride": "Manual Override (Admin/User Lock)",
+    "confirmedBooking": "Confirmed Paid Booking",
+    "googleCalendar": "Google Calendar (External Meeting)",
+    "aiConfirmed": "AI Confirmed Schedule",
+    "aiSuggestion": "AI Suggestion (Auto-yields)",
+    "googleWinsLabel": "Google Calendar wins over AI",
+    "autoRescheduleLabel": "Auto-reschedule AI on conflict",
+    "recentResolutions": "Recent Resolutions",
+    "noConflicts": "No conflicts resolved yet — the system is clean."
   }
 }
