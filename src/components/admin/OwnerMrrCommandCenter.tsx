@@ -13,6 +13,7 @@ import {
   DollarSign, TrendingUp, Users, UserPlus, UserMinus, Activity, Target,
   Zap, RefreshCw, AlertTriangle, Sparkles, Download, Crown, ArrowUpRight,
   ArrowDownRight, Globe, Briefcase, Heart, Rocket, PauseCircle, BarChart3,
+  Inbox, BellRing, CheckCheck, X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,7 +23,7 @@ const PLAN_PRICE: Record<string, number> = { basic: 25, pro: 55, premium: 110, t
 // LTV assumption: avg life ~ 18 months (industry standard SaaS)
 const AVG_LIFETIME_MONTHS = 18;
 
-type Section = "overview" | "revenue" | "customers" | "funnel" | "retention" | "insights" | "forecast" | "alerts" | "actions";
+type Section = "overview" | "revenue" | "customers" | "funnel" | "retention" | "insights" | "forecast" | "alerts" | "inbox" | "actions";
 
 const formatMoney = (n: number) =>
   n >= 1000 ? `$${(n / 1000).toFixed(1)}k` : `$${n.toFixed(0)}`;
@@ -68,26 +69,51 @@ const OwnerMrrCommandCenter = () => {
   const [cancellations, setCancellations] = useState<any[]>([]);
   const [offers, setOffers] = useState<any[]>([]);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [refunds, setRefunds] = useState<any[]>([]);
+  const [inboxAlerts, setInboxAlerts] = useState<any[]>([]);
 
   const fetchData = async () => {
     setRefreshing(true);
-    const [s, p, c, o, b] = await Promise.all([
+    const [s, p, c, o, b, r, ia] = await Promise.all([
       supabase.from("subscriptions").select("*"),
       supabase.from("profiles").select("id, user_id, industry, company_name, created_at"),
       supabase.from("cancellation_requests").select("*"),
       supabase.from("retention_offers").select("*"),
       supabase.from("bookings").select("id, total_price, created_at"),
+      supabase.from("payment_refunds").select("*").order("created_at", { ascending: false }),
+      supabase.from("admin_alerts").select("*").order("created_at", { ascending: false }).limit(100),
     ]);
     setSubs(s.data || []);
     setProfiles(p.data || []);
     setCancellations(c.data || []);
     setOffers(o.data || []);
     setBookings(b.data || []);
+    setRefunds(r.data || []);
+    setInboxAlerts(ia.data || []);
     setLoading(false);
     setRefreshing(false);
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+    // Real-time admin alert inbox
+    const ch = supabase
+      .channel("admin-alerts-inbox")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "admin_alerts" }, (payload) => {
+        const a: any = payload.new;
+        setInboxAlerts(prev => [a, ...prev].slice(0, 100));
+        const emoji = a.severity === "critical" ? "🚨" : a.severity === "high" ? "⚠️" : "🔔";
+        toast(`${emoji} ${a.title}`, { description: a.message, duration: 8000 });
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "admin_alerts" }, (payload) => {
+        setInboxAlerts(prev => prev.map(a => a.id === (payload.new as any).id ? payload.new : a));
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "payment_refunds" }, (payload) => {
+        setRefunds(prev => [payload.new as any, ...prev]);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, []);
 
   // ============ COMPUTED METRICS ============
   const metrics = useMemo(() => {
@@ -137,7 +163,20 @@ const OwnerMrrCommandCenter = () => {
     // expansion = upgrades (premium count > 0 here treated as expansion proxy)
     const expansionMrr = activeSubs.filter(s => s.plan === "premium").reduce((sum, s) => sum + 55, 0); // delta vs pro
 
-    const refundRate = 0; // tracked via Paddle webhooks; placeholder until refund event table added
+    // Live refund rate: refunds in last 30 days / total transactions in last 30 days
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+    const recentRefunds = refunds.filter(r => new Date(r.created_at) >= thirtyDaysAgo);
+    const recentRefundCount = recentRefunds.length;
+    const recentRefundAmount = recentRefunds.reduce((s, r) => s + Number(r.amount || 0), 0);
+    const recentNewSubs = subs.filter(s => new Date(s.created_at) >= thirtyDaysAgo && (s.status === 'active' || s.is_lifetime || s.status === 'canceled')).length;
+    const refundRate = recentNewSubs > 0 ? (recentRefundCount / recentNewSubs) * 100 : 0;
+
+    // Refund reason breakdown (for AI insights query)
+    const refundReasons: Record<string, number> = {};
+    refunds.forEach(r => {
+      const k = (r.reason || 'unspecified').toString();
+      refundReasons[k] = (refundReasons[k] || 0) + 1;
+    });
 
     // Plan revenue breakdown
     const planRevenue: Record<string, { count: number; mrr: number }> = {};
@@ -212,8 +251,9 @@ const OwnerMrrCommandCenter = () => {
       savedRevenue, expansionMrr, refundRate, netGrowth, churnedMrr, newMrr,
       activeSubs: activeSubs.length, trialing: trialingSubs.length,
       planRevenue, industryRevenue, mrrTimeline, funnel, churnReasons, saveRate,
+      refundCount: recentRefundCount, refundAmount: recentRefundAmount, refundReasons,
     };
-  }, [subs, profiles, cancellations, offers]);
+  }, [subs, profiles, cancellations, offers, refunds]);
 
   // Forecasting (simple linear regression on last 6 mo MRR)
   const forecast = useMemo(() => {
@@ -254,6 +294,8 @@ const OwnerMrrCommandCenter = () => {
           planRevenue: metrics.planRevenue, industryRevenue: metrics.industryRevenue,
           churnReasons: metrics.churnReasons, saveRate: metrics.saveRate,
           activeSubs: metrics.activeSubs, trialing: metrics.trialing,
+          refundRate: metrics.refundRate, refundCount: metrics.refundCount,
+          refundAmount: metrics.refundAmount, refundReasons: metrics.refundReasons,
         },
       });
       if (error) throw error;
@@ -305,6 +347,7 @@ const OwnerMrrCommandCenter = () => {
     { id: "insights", label: "AI Insights", icon: Sparkles },
     { id: "forecast", label: "Forecast", icon: TrendingUp },
     { id: "alerts", label: "Alerts", icon: AlertTriangle },
+    { id: "inbox", label: "Live Inbox", icon: Inbox },
     { id: "actions", label: "Actions", icon: Rocket },
   ];
 
@@ -330,7 +373,12 @@ const OwnerMrrCommandCenter = () => {
             }`}
           >
             <s.icon className="w-3.5 h-3.5" />
-            {s.label}
+            <span className="flex-1 text-left">{s.label}</span>
+            {s.id === "inbox" && inboxAlerts.filter(a => !a.is_read).length > 0 && (
+              <span className="ml-auto text-[10px] font-bold bg-destructive text-destructive-foreground rounded-full px-1.5 py-0.5 min-w-[18px] text-center animate-pulse">
+                {inboxAlerts.filter(a => !a.is_read).length}
+              </span>
+            )}
           </button>
         ))}
         <div className="pt-2 mt-2 border-t border-border/60 space-y-1">
@@ -360,7 +408,13 @@ const OwnerMrrCommandCenter = () => {
               <MetricCard icon={Zap} label="Net Growth" value={formatPct(metrics.netGrowth)} sub="MoM" trend={metrics.netGrowth} color="text-primary" />
               <MetricCard icon={Heart} label="Saved Revenue" value={formatMoney(metrics.savedRevenue)} sub="Churn recovery" color="text-[hsl(160,60%,45%)]" />
               <MetricCard icon={ArrowUpRight} label="Expansion MRR" value={formatMoney(metrics.expansionMrr)} color="text-[hsl(217,91%,60%)]" />
-              <MetricCard icon={ArrowDownRight} label="Refund Rate" value={formatPct(metrics.refundRate)} color="text-muted-foreground" />
+              <MetricCard
+                icon={ArrowDownRight}
+                label="Refund Rate (30d)"
+                value={formatPct(metrics.refundRate)}
+                sub={`${metrics.refundCount} refund${metrics.refundCount === 1 ? '' : 's'} · ${formatMoney(metrics.refundAmount)}`}
+                color={metrics.refundRate > 5 ? "text-destructive" : metrics.refundRate > 2 ? "text-[hsl(38,92%,60%)]" : "text-[hsl(160,60%,45%)]"}
+              />
             </div>
 
             <Card>
@@ -629,6 +683,95 @@ const OwnerMrrCommandCenter = () => {
                     <div>
                       <p className="text-sm font-bold">{a.title}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{a.msg}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* LIVE INBOX — real-time admin alerts */}
+        {section === "inbox" && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BellRing className="w-4 h-4 text-primary" /> Live Admin Inbox
+                  {inboxAlerts.filter(a => !a.is_read).length > 0 && (
+                    <Badge variant="destructive" className="text-[10px]">
+                      {inboxAlerts.filter(a => !a.is_read).length} unread
+                    </Badge>
+                  )}
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Real-time alerts: high-value churn, refunds, payment failures. Updates instantly via realtime.
+                </CardDescription>
+              </div>
+              {inboxAlerts.some(a => !a.is_read) && (
+                <Button size="sm" variant="outline" onClick={async () => {
+                  const ids = inboxAlerts.filter(a => !a.is_read).map(a => a.id);
+                  await supabase.from("admin_alerts").update({ is_read: true }).in("id", ids);
+                  setInboxAlerts(prev => prev.map(a => ({ ...a, is_read: true })));
+                  toast.success("All marked as read");
+                }}>
+                  <CheckCheck className="w-3.5 h-3.5 mr-1" /> Mark all read
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
+              {inboxAlerts.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Inbox className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-medium">Inbox zero 🎉</p>
+                  <p className="text-xs mt-1">No critical events yet. New alerts will appear here in real time.</p>
+                </div>
+              ) : inboxAlerts.map(a => (
+                <div key={a.id} className={`p-3 rounded-lg border transition-all ${
+                  !a.is_read ? "bg-primary/5 border-primary/30 shadow-sm" : "bg-muted/20 border-border/40 opacity-70"
+                }`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                      <span className="text-base shrink-0">
+                        {a.severity === "critical" ? "🚨" : a.severity === "high" ? "⚠️" : a.severity === "good" ? "✅" : "🔔"}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-bold truncate">{a.title}</p>
+                          <Badge variant="outline" className={`text-[10px] capitalize ${
+                            a.severity === "critical" ? "border-destructive text-destructive" :
+                            a.severity === "high" ? "border-[hsl(38,92%,60%)] text-[hsl(38,92%,60%)]" :
+                            "border-border"
+                          }`}>
+                            {a.severity}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{a.message}</p>
+                        <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground/70">
+                          <span>{new Date(a.created_at).toLocaleString()}</span>
+                          <span>·</span>
+                          <span className="capitalize">{a.alert_type.replace(/_/g, ' ')}</span>
+                          {a.amount && <><span>·</span><span className="font-semibold">${Number(a.amount).toFixed(2)}</span></>}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 shrink-0">
+                      {!a.is_read && (
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0" title="Mark read"
+                          onClick={async () => {
+                            await supabase.from("admin_alerts").update({ is_read: true }).eq("id", a.id);
+                            setInboxAlerts(prev => prev.map(x => x.id === a.id ? { ...x, is_read: true } : x));
+                          }}>
+                          <CheckCheck className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <Button size="sm" variant="ghost" className="h-6 w-6 p-0 hover:text-destructive" title="Dismiss"
+                        onClick={async () => {
+                          await supabase.from("admin_alerts").delete().eq("id", a.id);
+                          setInboxAlerts(prev => prev.filter(x => x.id !== a.id));
+                        }}>
+                        <X className="w-3 h-3" />
+                      </Button>
                     </div>
                   </div>
                 </div>

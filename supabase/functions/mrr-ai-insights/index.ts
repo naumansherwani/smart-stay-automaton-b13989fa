@@ -28,8 +28,10 @@ Current snapshot:
 - Plan revenue: ${JSON.stringify(m.planRevenue)}
 - Industry revenue: ${JSON.stringify(m.industryRevenue)}
 - Top churn reasons: ${JSON.stringify(m.churnReasons)}
+- Refund rate (30d): ${m.refundRate?.toFixed(2) ?? 0}% (${m.refundCount ?? 0} refunds, $${(m.refundAmount ?? 0).toFixed(2)})
+- Refund reasons: ${JSON.stringify(m.refundReasons || {})}
 
-Provide 5 sharp founder insights and 3 concrete recommendations. Be specific, use numbers. Format as markdown with bullet points. Keep it under 350 words.`;
+Provide 5 sharp founder insights and 3 concrete recommendations. **Always include a dedicated section called "Refund Diagnosis"** that answers: Why are users requesting refunds? Look at refund reasons + churn reasons together and pinpoint the root cause (UX, pricing, expectations, billing surprises). Be specific, use numbers. Format as markdown with bullet points. Keep it under 400 words.`;
 
     const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

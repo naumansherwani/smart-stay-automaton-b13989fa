@@ -263,5 +263,16 @@
     "claim": "领取我的优惠",
     "later": "稍后再说",
     "claimed": "优惠已领取！联系支持以应用折扣。"
+  },
+  "adminInbox": {
+    "title": "实时管理员收件箱",
+    "subtitle": "实时警报：高价值客户流失、退款、付款失败",
+    "empty": "收件箱已清空 🎉",
+    "emptyHint": "暂无关键事件。新警报将实时显示在此。",
+    "markAllRead": "全部标为已读",
+    "unread": "未读",
+    "refundRate": "退款率（30天）",
+    "refunds": "退款",
+    "newAlert": "新管理员警报"
   }
 }

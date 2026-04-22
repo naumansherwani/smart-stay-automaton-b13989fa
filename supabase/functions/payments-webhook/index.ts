@@ -48,6 +48,11 @@ Deno.serve(async (req) => {
         break;
       case EventName.TransactionPaymentFailed:
         console.log('Payment failed:', event.data.id, 'env:', env);
+        await handlePaymentFailed(event.data, env);
+        break;
+      case 'adjustment.created' as any:
+      case 'adjustment.updated' as any:
+        await handleAdjustment(event.data, env);
         break;
       default:
         console.log('Unhandled event:', event.eventType);
@@ -218,4 +223,69 @@ async function handleSubscriptionPastDue(data: any, env: PaddleEnv) {
     })
     .eq('paddle_subscription_id', data.id)
     .eq('environment', env);
+}
+
+// ============= REFUND HANDLER (drives live Refund Rate metric) =============
+async function handleAdjustment(data: any, env: PaddleEnv) {
+  // Only record refunds (not chargebacks/credits unless they affect revenue)
+  const action = data.action; // 'refund' | 'credit' | 'chargeback' | 'chargeback_warning' | 'chargeback_reverse'
+  if (action !== 'refund' && action !== 'chargeback') return;
+
+  const subscriptionId = data.subscriptionId || null;
+  const transactionId = data.transactionId || null;
+  const adjustmentId = data.id;
+  const reason = data.reason || action;
+  const totalAmount = parseFloat(data.totals?.total || data.totals?.fee || '0') / 100; // Paddle cents → dollars
+  const currency = data.currencyCode || 'USD';
+
+  // Find user_id + plan via subscription
+  let userId: string | null = null;
+  let plan: string | null = null;
+  if (subscriptionId) {
+    const { data: sub } = await supabase
+      .from('subscriptions')
+      .select('user_id, plan')
+      .eq('paddle_subscription_id', subscriptionId)
+      .eq('environment', env)
+      .maybeSingle();
+    if (sub) { userId = sub.user_id; plan = sub.plan; }
+  }
+
+  await supabase.from('payment_refunds').upsert({
+    paddle_adjustment_id: adjustmentId,
+    paddle_subscription_id: subscriptionId,
+    paddle_transaction_id: transactionId,
+    user_id: userId,
+    plan,
+    amount: totalAmount,
+    currency,
+    reason,
+    status: data.status || 'completed',
+    environment: env,
+    metadata: { raw_action: action },
+  }, { onConflict: 'paddle_adjustment_id' });
+
+  console.log('Refund recorded:', adjustmentId, totalAmount, currency);
+}
+
+async function handlePaymentFailed(data: any, env: PaddleEnv) {
+  const subscriptionId = data.subscriptionId;
+  if (!subscriptionId) return;
+  const { data: sub } = await supabase
+    .from('subscriptions')
+    .select('user_id, plan')
+    .eq('paddle_subscription_id', subscriptionId)
+    .eq('environment', env)
+    .maybeSingle();
+  if (!sub?.user_id) return;
+
+  await supabase.from('admin_alerts').insert({
+    alert_type: 'payment_failed',
+    severity: 'high',
+    title: '⚠️ Payment Failed',
+    message: `Payment failed on ${sub.plan} subscription. User may churn — recovery flow recommended.`,
+    related_user_id: sub.user_id,
+    related_entity_type: 'subscription',
+    metadata: { plan: sub.plan, transaction_id: data.id },
+  });
 }

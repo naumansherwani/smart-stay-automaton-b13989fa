@@ -263,5 +263,16 @@
     "claim": "Reclamar mi oferta",
     "later": "Quizás después",
     "claimed": "¡Oferta reclamada! Contacta soporte para aplicar tu descuento."
+  },
+  "adminInbox": {
+    "title": "Bandeja Admin en Vivo",
+    "subtitle": "Alertas en tiempo real: churn de alto valor, reembolsos, fallos de pago",
+    "empty": "Bandeja vacía 🎉",
+    "emptyHint": "Aún no hay eventos críticos. Las nuevas alertas aparecerán aquí en tiempo real.",
+    "markAllRead": "Marcar todo leído",
+    "unread": "sin leer",
+    "refundRate": "Tasa de Reembolso (30d)",
+    "refunds": "reembolsos",
+    "newAlert": "Nueva alerta admin"
   }
 }

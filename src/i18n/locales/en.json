@@ -176,5 +176,16 @@
     "claim": "Claim my offer",
     "later": "Maybe later",
     "claimed": "Offer claimed! Contact support to apply your discount."
+  },
+  "adminInbox": {
+    "title": "Live Admin Inbox",
+    "subtitle": "Real-time alerts: high-value churn, refunds, payment failures",
+    "empty": "Inbox zero 🎉",
+    "emptyHint": "No critical events yet. New alerts will appear here in real time.",
+    "markAllRead": "Mark all read",
+    "unread": "unread",
+    "refundRate": "Refund Rate (30d)",
+    "refunds": "refunds",
+    "newAlert": "New admin alert"
   }
 }

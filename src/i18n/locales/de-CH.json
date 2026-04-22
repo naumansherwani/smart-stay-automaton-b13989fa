@@ -157,5 +157,16 @@
     "claim": "Mis Aagebot iilöse",
     "later": "Villicht spöter",
     "claimed": "Aagebot iglöst! Kontaktiered Support für d Rabatt."
+  },
+  "adminInbox": {
+    "title": "Live Admin-Iigang",
+    "subtitle": "Echtzyt-Alarm: hochwärtigi Abwanderig, Rückzahlige, Zahligs-Usfäll",
+    "empty": "Iigang leer 🎉",
+    "emptyHint": "Nonig kritischi Ereigniss. Nöji Alarm erschiine da in Echtzyt.",
+    "markAllRead": "Alli als gläse",
+    "unread": "unggläse",
+    "refundRate": "Rückzahligsrate (30T)",
+    "refunds": "Rückzahlige",
+    "newAlert": "Nöje Admin-Alarm"
   }
 }

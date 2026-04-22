@@ -157,5 +157,16 @@
     "claim": "Revendică oferta mea",
     "later": "Poate mai târziu",
     "claimed": "Ofertă revendicată! Contactează suportul pentru a aplica reducerea."
+  },
+  "adminInbox": {
+    "title": "Inbox Admin Live",
+    "subtitle": "Alerte în timp real: churn de mare valoare, rambursări, plăți eșuate",
+    "empty": "Inbox gol 🎉",
+    "emptyHint": "Niciun eveniment critic încă. Alertele noi vor apărea aici în timp real.",
+    "markAllRead": "Marchează toate citite",
+    "unread": "necitite",
+    "refundRate": "Rată Rambursare (30z)",
+    "refunds": "rambursări",
+    "newAlert": "Alertă admin nouă"
   }
 }

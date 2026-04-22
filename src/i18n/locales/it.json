@@ -157,5 +157,16 @@
     "claim": "Riscatta la mia offerta",
     "later": "Forse più tardi",
     "claimed": "Offerta riscattata! Contatta il supporto per applicare lo sconto."
+  },
+  "adminInbox": {
+    "title": "Casella Admin Live",
+    "subtitle": "Avvisi in tempo reale: churn di alto valore, rimborsi, pagamenti falliti",
+    "empty": "Casella vuota 🎉",
+    "emptyHint": "Nessun evento critico. I nuovi avvisi appariranno qui in tempo reale.",
+    "markAllRead": "Segna tutti letti",
+    "unread": "non letti",
+    "refundRate": "Tasso Rimborso (30g)",
+    "refunds": "rimborsi",
+    "newAlert": "Nuovo avviso admin"
   }
 }
