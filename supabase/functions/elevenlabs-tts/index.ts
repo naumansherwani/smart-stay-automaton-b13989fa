@@ -22,6 +22,8 @@ const VOICE_BY_LANG: Record<string, string> = {
   ja: "cgSgspJ2msm6clMCkdW9",    // Jessica — Japanese
   ko: "cgSgspJ2msm6clMCkdW9",    // Jessica — Korean tonal range
   tr: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — Turkish vowel harmony
+  it: "XrExE9yKIg1WjnnlVkGX",    // Matilda — Italian melodic prosody
+  ro: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — Romanian (Latin, clear vowels)
 };
 
 Deno.serve(async (req) => {

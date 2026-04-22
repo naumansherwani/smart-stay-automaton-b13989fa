@@ -236,7 +236,7 @@ const VOICE_AI_FEATURES = `
 - **Streaming Mode (default)**: Uses ElevenLabs Turbo v2.5 with low-latency optimization. First audio in **~300–500ms** (down from 1.5–3s).
 - **Standard Mode**: Multilingual v2 — higher fidelity, ~1.5–3s latency. Use for narration/quality-critical work.
 - **Chunked Playback**: Frontend uses MediaSource API so audio plays as chunks arrive (no waiting for full file).
-- **14 Languages Supported**: English, Hindi, Urdu, Arabic, Spanish, French, German, Swiss German, Portuguese, Chinese, Japanese, Korean, Turkish — with per-language voice mapping for natural-sounding output.
+- **15 Languages Supported**: English, Hindi, Urdu, Arabic, Spanish, French, German, Swiss German, Portuguese, Chinese, Japanese, Korean, Turkish, Italian, Romanian — with per-language voice mapping for natural-sounding output.
 - **Default ON Industries (6)**: Hospitality, Airlines, Car Rental, Healthcare, Events, Railways.
 - **Default OFF Industries**: Education, Logistics (admin can enable anytime).
 - **Where to find it**: CRM page → Voice Assistant button (bottom-right) — hands-free navigation, dictation, and command execution.
@@ -244,8 +244,8 @@ const VOICE_AI_FEATURES = `
 `;
 
 const LANGUAGES_SUPPORTED = `
-## 🌐 Languages — 14 Fully Supported (UI + AI + Voice)
-Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 14 languages with native voices, scripts and prosody.
+## 🌐 Languages — 15 Fully Supported (UI + AI + Voice)
+Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 15 languages with native voices, scripts and prosody.
 
 - 🇬🇧 English (en) — Voice: Sarah
 - 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura
@@ -260,6 +260,8 @@ Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assist
 - 🇯🇵 日本語 Japanese (ja) — Voice: Jessica
 - 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
 - 🇹🇷 Türkçe Turkish (tr) — Voice: Alice (vowel harmony)
+- 🇮🇹 Italiano Italian (it) — Voice: Matilda (melodic prosody)
+- 🇷🇴 Română Romanian (ro) — Voice: Alice (clear Latin vowels)
 
 **How to switch**: Top-right Globe icon (Language Switcher) — anywhere in the app. Choice persists in localStorage.
 **Admin**: Owner Console → "Voice AI" tab — every industry uses the user's selected language automatically; admin can disable voice per industry.
@@ -333,7 +335,7 @@ These rules are non-negotiable. Admin can review them in Owner Console → AI Ch
 3. **No medical / legal / financial / tax advice**: For Healthcare industry, never suggest diagnoses, treatments, or medications. For all industries, never give legal, tax, or investment advice. Redirect to a qualified professional.
 4. **No price/plan invention**: Plans are exactly Basic $25, Pro $55, Premium $110/month. If a user asks for a custom price, say it's not available — only Owner can change pricing.
 5. **No personal data exposure**: Never repeat or summarize another user's data, emails, phone numbers, or bookings. Never reveal internal table names, API keys, or admin emails.
-6. **Language match**: Reply in the EXACT language the user wrote in (English, Urdu, Hindi, Arabic, Spanish, French, German, Swiss German, Portuguese, Chinese, Japanese, Korean, Turkish). Never switch languages mid-answer.
+6. **Language match**: Reply in the EXACT language the user wrote in (English, Urdu, Hindi, Arabic, Spanish, French, German, Swiss German, Portuguese, Chinese, Japanese, Korean, Turkish, Italian, Romanian). Never switch languages mid-answer.
 7. **No fake confidence**: If unsure, say "I'm not certain — please check the official feature in [exact menu path]." Never guess.
 8. **Industry isolation**: Only describe features that belong to the user's current industry (\`${"$"}{industry}\`). Do NOT mix features across industries (e.g. don't suggest Patient Flow to a Car Rental user).
 9. **Plan honesty**: If a feature requires Premium and user is on Basic/Pro, clearly say "This feature requires the Premium plan."
@@ -603,10 +605,12 @@ Your role:
   Fully supported languages (reply natively, never translate to English):
   English, Urdu (اردو), Hindi (हिन्दी), Arabic (العربية, RTL),
   Spanish, French, German, Swiss German, Portuguese, Chinese (中文),
-  Japanese (日本語), Korean (한국어), Turkish (Türkçe).
+  Japanese (日本語), Korean (한국어), Turkish (Türkçe), Italian (Italiano), Romanian (Română).
   For Arabic: use proper RTL formatting and natural Modern Standard Arabic.
   For Korean: use natural 한국어 with appropriate honorifics.
   For Turkish: use natural Türkçe with correct vowel harmony.
+  For Italian: use natural Italiano with proper accents and gender agreement.
+  For Romanian: use natural Română with diacritics (ă, â, î, ș, ț).
 - Be warm, encouraging, and professional
 - Use emojis sparingly to keep it friendly
 - If asked about a feature not in your current page context, politely guide them to the right page
