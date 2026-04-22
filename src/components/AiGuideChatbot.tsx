@@ -20,6 +20,8 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
     { label: "💰 Pricing", question: "AI Auto Pricing kya hai aur kaise use karein?" },
     { label: "🎙️ Voice AI", question: "Voice Assistant kaise kaam karta hai? Latency kitni hai aur kin languages mein available hai?" },
     { label: "🚀 Onboarding", question: "AI Onboarding Wizard kya hai aur 14 languages mein kaise kaam karta hai?" },
+    { label: "🛡️ AI Safety", question: "HostFlow AI ke AI Guardrails kya hain? AI kya nahi karega?" },
+    { label: "📊 Growth Center", question: "Industry Growth Command Center kya hai aur kaunsi metrics dikhata hai?" },
   ],
   crm: [
     { label: "👥 Contacts", question: "CRM Contacts kaise manage karein?" },
