@@ -12,7 +12,7 @@ import zh from "../i18n/locales/zh.json";
 import ja from "../i18n/locales/ja.json";
 import ko from "../i18n/locales/ko.json";
 import tr from "../i18n/locales/tr.json";
-import it from "../i18n/locales/it.json";
+import itLocale from "../i18n/locales/it.json";
 import ro from "../i18n/locales/ro.json";
 
 const flatten = (obj: any, prefix = ""): string[] => {
@@ -29,7 +29,7 @@ const flatten = (obj: any, prefix = ""): string[] => {
 };
 
 const LOCALES: Record<string, any> = {
-  hi, ur, ar, es, fr, de, "de-CH": deCH, pt, zh, ja, ko, tr, it, ro,
+  hi, ur, ar, es, fr, de, "de-CH": deCH, pt, zh, ja, ko, tr, it: itLocale, ro,
 };
 
 describe("i18n locale coverage", () => {
