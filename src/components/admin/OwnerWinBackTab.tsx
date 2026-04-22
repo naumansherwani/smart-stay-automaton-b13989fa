@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,7 @@ interface Offer {
 }
 
 export default function OwnerWinBackTab() {
+  const { user } = useAuth();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,8 +63,9 @@ export default function OwnerWinBackTab() {
 
   const createCampaign = async () => {
     if (!newName.trim()) return toast.error("Name required");
+    if (!user) return;
     const { error } = await supabase.from("win_back_campaigns").insert({
-      name: newName, discount_percent: newDiscount,
+      name: newName, created_by: user.id, discount_percent: newDiscount,
       duration_months: newMonths, expiry_days: newExpiry, is_active: true,
     });
     if (error) return toast.error(error.message);
