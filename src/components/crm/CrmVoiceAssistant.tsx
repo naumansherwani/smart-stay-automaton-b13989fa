@@ -269,7 +269,7 @@ async function speakWithElevenLabs(
         try {
           const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
           const reader = resp.body!.getReader();
-          const queue: Uint8Array[] = [];
+          const queue: ArrayBuffer[] = [];
           let done = false;
 
           const pump = () => {
@@ -289,7 +289,11 @@ async function speakWithElevenLabs(
           while (true) {
             const { value, done: d } = await reader.read();
             if (d) { done = true; pump(); break; }
-            if (value) { queue.push(value); pump(); }
+            if (value) {
+              const ab = value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength) as ArrayBuffer;
+              queue.push(ab);
+              pump();
+            }
           }
         } catch {
           finish(false);
