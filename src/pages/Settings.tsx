@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { LANGUAGES } from "@/i18n";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
+import RetentionWizard from "@/components/retention/RetentionWizard";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -35,6 +36,7 @@ const Settings = () => {
   const [theme, setTheme] = useState<string>(localStorage.getItem("theme") || "dark");
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [pushNotifs, setPushNotifs] = useState(true);
+  const [retentionOpen, setRetentionOpen] = useState(false);
 
   // Admin stats
   const [totalUsers, setTotalUsers] = useState(0);
@@ -112,13 +114,21 @@ const Settings = () => {
                       )}
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                    Manage
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={handleManageSubscription}>
+                      Manage
+                    </Button>
+                    {!subscription.cancel_at_period_end && (
+                      <Button variant="ghost" size="sm" onClick={() => setRetentionOpen(true)} className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10">
+                        Cancel
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
           )}
+          <RetentionWizard open={retentionOpen} onOpenChange={setRetentionOpen} />
 
           <Card>
             <CardHeader>
