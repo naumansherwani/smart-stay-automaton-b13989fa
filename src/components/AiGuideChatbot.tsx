@@ -18,19 +18,19 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
   dashboard: [
     { label: "📅 Calendar", question: "Smart Calendar kaise kaam karta hai?" },
     { label: "💰 Pricing", question: "AI Auto Pricing kya hai aur kaise use karein?" },
-    { label: "🛡️ Guard", question: "Double Booking Guard kya hai?" },
-    { label: "👥 Team", question: "Apni team ko kaise connect karein? Team roles kya hain?" },
+    { label: "🎙️ Voice AI", question: "Voice Assistant kaise kaam karta hai? Latency kitni hai aur kin languages mein available hai?" },
+    { label: "🚀 Onboarding", question: "AI Onboarding Wizard kya hai aur 14 languages mein kaise kaam karta hai?" },
   ],
   crm: [
     { label: "👥 Contacts", question: "CRM Contacts kaise manage karein?" },
-    { label: "🎫 Tickets", question: "Support Tickets kaise kaam karte hain?" },
+    { label: "🎙️ Voice AI", question: "CRM mein Voice Assistant kaise use karein? Streaming aur Standard mode mein kya farq hai?" },
     { label: "💼 Deals", question: "Deals pipeline kaise use karein?" },
-    { label: "🔗 Team Connect", question: "Team ko CRM se kaise connect karein? Roles aur access explain karein" },
+    { label: "🚀 Onboarding", question: "Naye user ke liye AI Onboarding kya offer karta hai?" },
   ],
   settings: [
     { label: "👤 Profile", question: "Apna profile kaise update karein?" },
-    { label: "🌐 Language", question: "App ki language kaise change karein?" },
-    { label: "👥 Team", question: "Team members ko kaise invite aur manage karein?" },
+    { label: "🎙️ Voice AI", question: "Voice Assistant ki settings kahan hain aur kaise enable karein?" },
+    { label: "🚀 Onboarding", question: "AI Onboarding ko dobara kaise launch karein?" },
     { label: "💳 Plan", question: "Premium plan mein kya milta hai?" },
   ],
 };
