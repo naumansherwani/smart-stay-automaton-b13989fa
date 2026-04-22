@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -19,6 +19,7 @@ import OwnerSubscriptionsTab from "@/components/admin/OwnerSubscriptionsTab";
 import OwnerVoiceAssistantTab from "@/components/admin/OwnerVoiceAssistantTab";
 import OwnerOnboardingTab from "@/components/admin/OwnerOnboardingTab";
 import OwnerRetentionTab from "@/components/admin/OwnerRetentionTab";
+import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -146,8 +147,11 @@ const OwnerConsole = () => {
         <OwnerStatsCards stats={stats} totalRevenue={totalRevenue} showSecret={showSecret} />
         <OwnerIndustryOverview industries={stats.industries} showSecret={showSecret} />
 
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="mrr" className="space-y-4">
           <TabsList className="flex-wrap">
+            <TabsTrigger value="mrr" className="gap-1.5 text-xs">
+              <TrendingUp className="w-3 h-3" /> MRR Command
+            </TabsTrigger>
             <TabsTrigger value="users" className="gap-1.5 text-xs">
               <Users className="w-3 h-3" /> Users
             </TabsTrigger>
@@ -176,6 +180,10 @@ const OwnerConsole = () => {
               <Heart className="w-3 h-3" /> Retention
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="mrr">
+            <OwnerMrrCommandCenter />
+          </TabsContent>
 
           <TabsContent value="users">
             <OwnerUsersTab recentUsers={recentUsers} showSecret={showSecret} />
