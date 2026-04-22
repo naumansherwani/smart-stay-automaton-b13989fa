@@ -691,6 +691,95 @@ const OwnerMrrCommandCenter = () => {
           </Card>
         )}
 
+        {/* LIVE INBOX — real-time admin alerts */}
+        {section === "inbox" && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <BellRing className="w-4 h-4 text-primary" /> Live Admin Inbox
+                  {inboxAlerts.filter(a => !a.is_read).length > 0 && (
+                    <Badge variant="destructive" className="text-[10px]">
+                      {inboxAlerts.filter(a => !a.is_read).length} unread
+                    </Badge>
+                  )}
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Real-time alerts: high-value churn, refunds, payment failures. Updates instantly via realtime.
+                </CardDescription>
+              </div>
+              {inboxAlerts.some(a => !a.is_read) && (
+                <Button size="sm" variant="outline" onClick={async () => {
+                  const ids = inboxAlerts.filter(a => !a.is_read).map(a => a.id);
+                  await supabase.from("admin_alerts").update({ is_read: true }).in("id", ids);
+                  setInboxAlerts(prev => prev.map(a => ({ ...a, is_read: true })));
+                  toast.success("All marked as read");
+                }}>
+                  <CheckCheck className="w-3.5 h-3.5 mr-1" /> Mark all read
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2 max-h-[600px] overflow-y-auto">
+              {inboxAlerts.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Inbox className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-medium">Inbox zero 🎉</p>
+                  <p className="text-xs mt-1">No critical events yet. New alerts will appear here in real time.</p>
+                </div>
+              ) : inboxAlerts.map(a => (
+                <div key={a.id} className={`p-3 rounded-lg border transition-all ${
+                  !a.is_read ? "bg-primary/5 border-primary/30 shadow-sm" : "bg-muted/20 border-border/40 opacity-70"
+                }`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                      <span className="text-base shrink-0">
+                        {a.severity === "critical" ? "🚨" : a.severity === "high" ? "⚠️" : a.severity === "good" ? "✅" : "🔔"}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-bold truncate">{a.title}</p>
+                          <Badge variant="outline" className={`text-[10px] capitalize ${
+                            a.severity === "critical" ? "border-destructive text-destructive" :
+                            a.severity === "high" ? "border-[hsl(38,92%,60%)] text-[hsl(38,92%,60%)]" :
+                            "border-border"
+                          }`}>
+                            {a.severity}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">{a.message}</p>
+                        <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground/70">
+                          <span>{new Date(a.created_at).toLocaleString()}</span>
+                          <span>·</span>
+                          <span className="capitalize">{a.alert_type.replace(/_/g, ' ')}</span>
+                          {a.amount && <><span>·</span><span className="font-semibold">${Number(a.amount).toFixed(2)}</span></>}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 shrink-0">
+                      {!a.is_read && (
+                        <Button size="sm" variant="ghost" className="h-6 w-6 p-0" title="Mark read"
+                          onClick={async () => {
+                            await supabase.from("admin_alerts").update({ is_read: true }).eq("id", a.id);
+                            setInboxAlerts(prev => prev.map(x => x.id === a.id ? { ...x, is_read: true } : x));
+                          }}>
+                          <CheckCheck className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <Button size="sm" variant="ghost" className="h-6 w-6 p-0 hover:text-destructive" title="Dismiss"
+                        onClick={async () => {
+                          await supabase.from("admin_alerts").delete().eq("id", a.id);
+                          setInboxAlerts(prev => prev.filter(x => x.id !== a.id));
+                        }}>
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
         {/* ACTIONS */}
         {section === "actions" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
