@@ -373,7 +373,12 @@ const OwnerMrrCommandCenter = () => {
             }`}
           >
             <s.icon className="w-3.5 h-3.5" />
-            {s.label}
+            <span className="flex-1 text-left">{s.label}</span>
+            {s.id === "inbox" && inboxAlerts.filter(a => !a.is_read).length > 0 && (
+              <span className="ml-auto text-[10px] font-bold bg-destructive text-destructive-foreground rounded-full px-1.5 py-0.5 min-w-[18px] text-center animate-pulse">
+                {inboxAlerts.filter(a => !a.is_read).length}
+              </span>
+            )}
           </button>
         ))}
         <div className="pt-2 mt-2 border-t border-border/60 space-y-1">
@@ -403,7 +408,13 @@ const OwnerMrrCommandCenter = () => {
               <MetricCard icon={Zap} label="Net Growth" value={formatPct(metrics.netGrowth)} sub="MoM" trend={metrics.netGrowth} color="text-primary" />
               <MetricCard icon={Heart} label="Saved Revenue" value={formatMoney(metrics.savedRevenue)} sub="Churn recovery" color="text-[hsl(160,60%,45%)]" />
               <MetricCard icon={ArrowUpRight} label="Expansion MRR" value={formatMoney(metrics.expansionMrr)} color="text-[hsl(217,91%,60%)]" />
-              <MetricCard icon={ArrowDownRight} label="Refund Rate" value={formatPct(metrics.refundRate)} color="text-muted-foreground" />
+              <MetricCard
+                icon={ArrowDownRight}
+                label="Refund Rate (30d)"
+                value={formatPct(metrics.refundRate)}
+                sub={`${metrics.refundCount} refund${metrics.refundCount === 1 ? '' : 's'} · ${formatMoney(metrics.refundAmount)}`}
+                color={metrics.refundRate > 5 ? "text-destructive" : metrics.refundRate > 2 ? "text-[hsl(38,92%,60%)]" : "text-[hsl(160,60%,45%)]"}
+              />
             </div>
 
             <Card>
