@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw
+  Briefcase, Layers, RefreshCw, Mic
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -16,6 +16,7 @@ import OwnerUsersTab from "@/components/admin/OwnerUsersTab";
 import OwnerCrmTab from "@/components/admin/OwnerCrmTab";
 import OwnerFeaturesTab from "@/components/admin/OwnerFeaturesTab";
 import OwnerSubscriptionsTab from "@/components/admin/OwnerSubscriptionsTab";
+import OwnerVoiceAssistantTab from "@/components/admin/OwnerVoiceAssistantTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -163,6 +164,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="revenue" className="gap-1.5 text-xs">
               <BarChart3 className="w-3 h-3" /> Revenue
             </TabsTrigger>
+            <TabsTrigger value="voice" className="gap-1.5 text-xs">
+              <Mic className="w-3 h-3" /> Voice AI
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
@@ -250,6 +254,10 @@ const OwnerConsole = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="voice">
+            <OwnerVoiceAssistantTab />
           </TabsContent>
         </Tabs>
       </main>
