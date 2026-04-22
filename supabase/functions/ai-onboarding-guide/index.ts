@@ -9,7 +9,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
   en: "English", hi: "Hindi", ur: "Urdu", ar: "Arabic",
   es: "Spanish", fr: "French", de: "German", "de-CH": "Swiss German",
   pt: "Portuguese", zh: "Chinese (Simplified)", ja: "Japanese",
-  ko: "Korean", tr: "Turkish",
+  ko: "Korean", tr: "Turkish", it: "Italian", ro: "Romanian",
 };
 
 const INDUSTRY_LABELS: Record<string, string> = {
