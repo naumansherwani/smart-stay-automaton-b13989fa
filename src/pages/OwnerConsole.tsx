@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -19,6 +19,7 @@ import OwnerSubscriptionsTab from "@/components/admin/OwnerSubscriptionsTab";
 import OwnerVoiceAssistantTab from "@/components/admin/OwnerVoiceAssistantTab";
 import OwnerOnboardingTab from "@/components/admin/OwnerOnboardingTab";
 import OwnerRetentionTab from "@/components/admin/OwnerRetentionTab";
+import OwnerWinBackTab from "@/components/admin/OwnerWinBackTab";
 import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import OwnerGrowthCommandCenter from "@/components/admin/OwnerGrowthCommandCenter";
 import OwnerSalesFunnelTab from "@/components/admin/OwnerSalesFunnelTab";
@@ -187,6 +188,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="retention" className="gap-1.5 text-xs">
               <Heart className="w-3 h-3" /> Retention
             </TabsTrigger>
+            <TabsTrigger value="winback" className="gap-1.5 text-xs">
+              <Gift className="w-3 h-3" /> Win-Back
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="mrr">
@@ -298,6 +302,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="retention">
             <OwnerRetentionTab />
+          </TabsContent>
+
+          <TabsContent value="winback">
+            <OwnerWinBackTab />
           </TabsContent>
         </Tabs>
       </main>
