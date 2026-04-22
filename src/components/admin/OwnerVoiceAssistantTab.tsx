@@ -69,7 +69,7 @@ const OwnerVoiceAssistantTab = () => {
             Toggle the voice assistant on/off and pick latency mode for each industry.
             <span className="font-medium text-foreground"> Streaming</span> uses ElevenLabs Turbo v2.5 with low-latency optimization (~300–500ms first audio).
             <span className="font-medium text-foreground"> Standard</span> uses Multilingual v2 (higher fidelity, ~1.5–3s).
-            Both support all 14 languages.
+            Both support all 15 languages (incl. Italian & Romanian).
           </p>
         </CardHeader>
         <CardContent>
