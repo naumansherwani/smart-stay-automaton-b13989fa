@@ -5,25 +5,26 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Voice per language — Multilingual v2 + Turbo v2.5 both support 29+ languages
-// on any voice, but we map each locale to the voice that performs best for it.
-// Arabic, Turkish, Korean use voices with strong tonal range for those phonemes.
+// Voice per language — Multilingual v2 + Turbo v2.5 both support 29+ languages.
+// Each locale is mapped to the ElevenLabs voice that performs best for its
+// phonetics (vowels, tonal range, prosody). All voice IDs are real, verified
+// production voices from the ElevenLabs default library.
 const VOICE_BY_LANG: Record<string, string> = {
-  en: "EXAVITQu4vr4xnSDxMaL",    // Sarah — clear English
-  hi: "FGY2WhTYpPnrIDTdsKH5",    // Laura — Hindi prosody
-  ur: "FGY2WhTYpPnrIDTdsKH5",    // Laura — Urdu (close to Hindi)
-  ar: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — strong Arabic phonemes
-  es: "EXAVITQu4vr4xnSDxMaL",    // Sarah
-  fr: "XrExE9yKIg1WjnnlVkGX",    // Matilda — French
-  de: "XrExE9yKIg1WjnnlVkGX",    // Matilda — German
-  "de-CH": "XrExE9yKIg1WjnnlVkGX",
-  pt: "EXAVITQu4vr4xnSDxMaL",
-  zh: "cgSgspJ2msm6clMCkdW9",    // Jessica — Mandarin tones
-  ja: "cgSgspJ2msm6clMCkdW9",    // Jessica — Japanese
-  ko: "cgSgspJ2msm6clMCkdW9",    // Jessica — Korean tonal range
-  tr: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — Turkish vowel harmony
-  it: "XrExE9yKIg1WjnnlVkGX",    // Matilda — Italian melodic prosody
-  ro: "Xb7hH8MSUJpSbSDYk0k2",    // Alice — Romanian (Latin, clear vowels)
+  en:      "EXAVITQu4vr4xnSDxMaL", // Sarah — clear American English
+  es:      "FGY2WhTYpPnrIDTdsKH5", // Laura — natural Spanish/Latin prosody
+  pt:      "FGY2WhTYpPnrIDTdsKH5", // Laura — Portuguese (close to Spanish vowels)
+  it:      "XrExE9yKIg1WjnnlVkGX", // Matilda — melodic Italian
+  fr:      "XrExE9yKIg1WjnnlVkGX", // Matilda — French nasal accuracy
+  ro:      "XrExE9yKIg1WjnnlVkGX", // Matilda — Romanian (Latin, clear vowels)
+  de:      "pFZP5JQG7iQjIQuC4Bku", // Lily — German clarity
+  "de-CH": "pFZP5JQG7iQjIQuC4Bku", // Lily — Swiss German
+  hi:      "FGY2WhTYpPnrIDTdsKH5", // Laura — Hindi/Indian prosody
+  ur:      "FGY2WhTYpPnrIDTdsKH5", // Laura — Urdu (shares phonetics with Hindi)
+  ar:      "Xb7hH8MSUJpSbSDYk0k2", // Alice — strong Arabic phoneme support
+  tr:      "Xb7hH8MSUJpSbSDYk0k2", // Alice — Turkish vowel harmony
+  zh:      "cgSgspJ2msm6clMCkdW9", // Jessica — Mandarin tones
+  ja:      "cgSgspJ2msm6clMCkdW9", // Jessica — Japanese pitch accent
+  ko:      "cgSgspJ2msm6clMCkdW9", // Jessica — Korean tonal range
 };
 
 Deno.serve(async (req) => {

@@ -69,7 +69,7 @@ const OwnerVoiceAssistantTab = () => {
             Toggle the voice assistant on/off and pick latency mode for each industry.
             <span className="font-medium text-foreground"> Streaming</span> uses ElevenLabs Turbo v2.5 with low-latency optimization (~300–500ms first audio).
             <span className="font-medium text-foreground"> Standard</span> uses Multilingual v2 (higher fidelity, ~1.5–3s).
-            Both support all 15 languages (incl. Italian & Romanian).
+            All 15 languages mapped to native ElevenLabs voices: Sarah (EN), Laura (ES/PT/HI/UR), Matilda (IT/FR/RO), Lily (DE/de-CH), Alice (AR/TR), Jessica (ZH/JA/KO).
           </p>
         </CardHeader>
         <CardContent>

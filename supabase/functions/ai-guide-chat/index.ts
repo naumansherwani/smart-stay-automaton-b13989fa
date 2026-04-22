@@ -248,20 +248,20 @@ const LANGUAGES_SUPPORTED = `
 Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 15 languages with native voices, scripts and prosody.
 
 - 🇬🇧 English (en) — Voice: Sarah
-- 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura
+- 🇪🇸 Español Spanish (es) — Voice: Laura (native Latin prosody)
+- 🇧🇷 Português Portuguese (pt) — Voice: Laura
+- 🇮🇹 Italiano Italian (it) — Voice: Matilda (melodic Italian)
+- 🇫🇷 Français French (fr) — Voice: Matilda (French nasal accuracy)
+- 🇷🇴 Română Romanian (ro) — Voice: Matilda (clear Latin vowels)
+- 🇩🇪 Deutsch German (de) — Voice: Lily (German clarity)
+- 🇨🇭 Schweizerdeutsch Swiss German (de-CH) — Voice: Lily
+- 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura (Indian prosody)
 - 🇵🇰 اردو Urdu (ur, RTL) — Voice: Laura
-- 🇸🇦 العربية Arabic (ar, RTL) — Voice: Alice (strong Arabic phoneme support)
-- 🇪🇸 Español Spanish (es) — Voice: Sarah
-- 🇫🇷 Français French (fr) — Voice: Matilda
-- 🇩🇪 Deutsch German (de) — Voice: Matilda
-- 🇨🇭 Schweizerdeutsch Swiss German (de-CH) — Voice: Matilda
-- 🇧🇷 Português Portuguese (pt) — Voice: Sarah
-- 🇨🇳 中文 Chinese Simplified (zh) — Voice: Jessica (tonal)
-- 🇯🇵 日本語 Japanese (ja) — Voice: Jessica
-- 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
+- 🇸🇦 العربية Arabic (ar, RTL) — Voice: Alice (Arabic phoneme support)
 - 🇹🇷 Türkçe Turkish (tr) — Voice: Alice (vowel harmony)
-- 🇮🇹 Italiano Italian (it) — Voice: Matilda (melodic prosody)
-- 🇷🇴 Română Romanian (ro) — Voice: Alice (clear Latin vowels)
+- 🇨🇳 中文 Chinese Simplified (zh) — Voice: Jessica (Mandarin tones)
+- 🇯🇵 日本語 Japanese (ja) — Voice: Jessica (Japanese pitch accent)
+- 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
 
 **How to switch**: Top-right Globe icon (Language Switcher) — anywhere in the app. Choice persists in localStorage.
 **Admin**: Owner Console → "Voice AI" tab — every industry uses the user's selected language automatically; admin can disable voice per industry.
