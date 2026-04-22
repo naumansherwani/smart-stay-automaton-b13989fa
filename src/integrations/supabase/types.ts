@@ -3011,6 +3011,36 @@ export type Database = {
         }
         Relationships: []
       }
+      voice_assistant_settings: {
+        Row: {
+          enabled: boolean
+          id: string
+          industry: string
+          latency_mode: string
+          updated_at: string
+          updated_by: string | null
+          voice_id: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          id?: string
+          industry: string
+          latency_mode?: string
+          updated_at?: string
+          updated_by?: string | null
+          voice_id?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          id?: string
+          industry?: string
+          latency_mode?: string
+          updated_at?: string
+          updated_by?: string | null
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
       withdrawal_admin_notes: {
         Row: {
           admin_id: string
