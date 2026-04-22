@@ -231,6 +231,31 @@ const PREMIUM_FEATURES = [
   "Custom AI Training — Train AI on your specific business patterns, terminology and workflows. Available for ALL 8 industries. Premium plan only.",
 ];
 
+const VOICE_AI_FEATURES = `
+## 🎙️ AI Voice Assistant (ElevenLabs — Low Latency)
+- **Streaming Mode (default)**: Uses ElevenLabs Turbo v2.5 with low-latency optimization. First audio in **~300–500ms** (down from 1.5–3s).
+- **Standard Mode**: Multilingual v2 — higher fidelity, ~1.5–3s latency. Use for narration/quality-critical work.
+- **Chunked Playback**: Frontend uses MediaSource API so audio plays as chunks arrive (no waiting for full file).
+- **14 Languages Supported**: English, Hindi, Urdu, Arabic, Spanish, French, German, Swiss German, Portuguese, Chinese, Japanese, Korean, Turkish — with per-language voice mapping for natural-sounding output.
+- **Default ON Industries (6)**: Hospitality, Airlines, Car Rental, Healthcare, Events, Railways.
+- **Default OFF Industries**: Education, Logistics (admin can enable anytime).
+- **Where to find it**: CRM page → Voice Assistant button (bottom-right) — hands-free navigation, dictation, and command execution.
+- **Admin Control**: Owner Console → "Voice AI" tab → per-industry ON/OFF + Streaming/Standard mode toggle.
+`;
+
+const ONBOARDING_FEATURES = `
+## 🚀 AI-Powered Onboarding Wizard (14 Languages, All 8 Industries)
+- **Auto-launches** after a new user picks their industry during signup.
+- **Personalized Welcome**: Lovable AI (Gemini 2.5 Flash) generates a warm greeting using user name + company + industry.
+- **Translated Steps**: Default 4–5 step checklist (industry-specific) is rewritten on the fly into the user's chosen language.
+- **AI Tips**: Each step has an amber-callout AI tip — real industry-specific advice (e.g. "For hotels, pre-load weekend rates first to capture high-demand bookings").
+- **Live Language Switcher**: User flips between any of the 14 languages — AI regenerates the entire plan instantly.
+- **Progress Persistence**: Tracked in DB (\`user_onboarding_progress\`), survives logout. Animated progress bar in industry color.
+- **Skips Automatically** if admin has disabled onboarding for that industry.
+- **Admin Control**: Owner Console → "Onboarding" tab → Started vs Completed stats, per-industry ON/OFF toggle, AI Tips toggle, expandable view of default checklist.
+- **All 8 industries seeded ON by default**: Hospitality, Airlines, Car Rental, Healthcare, Education, Logistics, Events, Railways.
+`;
+
 const PLAN_FEATURES = {
   basic: {
     name: "Basic",
