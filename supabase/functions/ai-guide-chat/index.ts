@@ -578,6 +578,8 @@ ${ONBOARDING_FEATURES}
 
 ${MRR_COMMAND_CENTER}
 
+${LANGUAGES_SUPPORTED}
+
 IMPORTANT: Only explain Settings features. When asked about team, explain team management and invite process.`;
   } else {
     featureList = planInfo + "\n" + teamInfo + "\n" + VOICE_AI_FEATURES + "\n" + ONBOARDING_FEATURES + "\n" + MRR_COMMAND_CENTER + "\n" + LANGUAGES_SUPPORTED;
