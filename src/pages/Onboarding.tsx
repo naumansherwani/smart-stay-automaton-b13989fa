@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { type IndustryType } from "@/lib/industryConfig";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import type { BusinessSubtype } from "@/hooks/useProfile";
+import AiOnboardingWizard from "@/components/onboarding/AiOnboardingWizard";
 
 const industryOptions: { value: IndustryType; label: string; icon: React.ReactNode; desc: string; color: string }[] = [
   { value: "hospitality", label: "Travel, Tourism & Hospitality", icon: <Hotel className="w-7 h-7" />, desc: "Hotels, vacation rentals, B&Bs, tours, travel agencies", color: "hsl(174,62%,50%)" },
@@ -49,6 +50,9 @@ const Onboarding = () => {
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [setupProgress, setSetupProgress] = useState(0);
   const [autoTriggered, setAutoTriggered] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardIndustry, setWizardIndustry] = useState<IndustryType | null>(null);
+  const [profileMeta, setProfileMeta] = useState<{ name?: string; company?: string }>({});
 
   // Auto-continue if industry was pre-selected from landing page
   useEffect(() => {
@@ -109,8 +113,34 @@ const Onboarding = () => {
 
     await new Promise(resolve => setTimeout(resolve, 400));
     toast.success("Your personalized dashboard is ready! 🎉");
-    navigate("/dashboard");
+
+    // Fetch profile name/company for personalized AI greeting
+    const { data: prof } = await supabase
+      .from("profiles")
+      .select("display_name, company_name")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    setProfileMeta({
+      name: prof?.display_name || user.email?.split("@")[0],
+      company: prof?.company_name || undefined,
+    });
+
+    setWizardIndustry(industry);
+    setIsSettingUp(false);
+    setShowWizard(true);
   };
+
+  // After AI onboarding wizard completes
+  if (showWizard && wizardIndustry) {
+    return (
+      <AiOnboardingWizard
+        industry={wizardIndustry}
+        userName={profileMeta.name}
+        companyName={profileMeta.company}
+        onFinished={() => navigate("/dashboard")}
+      />
+    );
+  }
 
   // Setup loading screen
   if (isSettingUp) {
