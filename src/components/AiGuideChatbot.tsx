@@ -176,10 +176,13 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center group"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 pl-3 pr-4 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
           aria-label="Open AI Guide"
         >
-          <Sparkles className="h-6 w-6 group-hover:rotate-12 transition-transform" />
+          <span className="h-9 w-9 rounded-full bg-primary-foreground/15 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+          </span>
+          <span className="hidden sm:inline text-sm font-semibold pr-1">AI Guide</span>
           <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-accent animate-pulse" />
         </button>
       )}
