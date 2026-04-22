@@ -243,6 +243,30 @@ const VOICE_AI_FEATURES = `
 - **Admin Control**: Owner Console → "Voice AI" tab → per-industry ON/OFF + Streaming/Standard mode toggle.
 `;
 
+const LANGUAGES_SUPPORTED = `
+## 🌐 Languages — 14 Fully Supported (UI + AI + Voice)
+Every part of HostFlow AI — UI, AI Chatbot, AI Onboarding Wizard, Voice Assistant (ElevenLabs), and AI Guide — works in all 14 languages with native voices, scripts and prosody.
+
+- 🇬🇧 English (en) — Voice: Sarah
+- 🇮🇳 हिन्दी Hindi (hi) — Voice: Laura
+- 🇵🇰 اردو Urdu (ur, RTL) — Voice: Laura
+- 🇸🇦 العربية Arabic (ar, RTL) — Voice: Alice (strong Arabic phoneme support)
+- 🇪🇸 Español Spanish (es) — Voice: Sarah
+- 🇫🇷 Français French (fr) — Voice: Matilda
+- 🇩🇪 Deutsch German (de) — Voice: Matilda
+- 🇨🇭 Schweizerdeutsch Swiss German (de-CH) — Voice: Matilda
+- 🇧🇷 Português Portuguese (pt) — Voice: Sarah
+- 🇨🇳 中文 Chinese Simplified (zh) — Voice: Jessica (tonal)
+- 🇯🇵 日本語 Japanese (ja) — Voice: Jessica
+- 🇰🇷 한국어 Korean (ko) — Voice: Jessica (Korean tonal range)
+- 🇹🇷 Türkçe Turkish (tr) — Voice: Alice (vowel harmony)
+
+**How to switch**: Top-right Globe icon (Language Switcher) — anywhere in the app. Choice persists in localStorage.
+**Admin**: Owner Console → "Voice AI" tab — every industry uses the user's selected language automatically; admin can disable voice per industry.
+**AI Onboarding**: User picks language during signup → AI re-translates the entire 4–5 step plan + tips on the fly.
+**RTL**: Arabic and Urdu auto-flip layout to right-to-left.
+`;
+
 const ONBOARDING_FEATURES = `
 ## 🚀 AI-Powered Onboarding Wizard (14 Languages, All 8 Industries)
 - **Auto-launches** after a new user picks their industry during signup.
