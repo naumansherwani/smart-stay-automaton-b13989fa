@@ -195,11 +195,11 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
           {isAdmin ? (
             <>
                <button
-                 type="button"
-                 onClick={() => window.open("/founder", "_blank", "noopener,noreferrer")}
-                 className="group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-500 text-sm font-semibold shadow-lg shadow-amber-500/10 hover:shadow-amber-500/30 hover:border-amber-400/60 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
-                 title="Open Owner Command Center in a new tab"
-               >
+                  type="button"
+                  onClick={() => navigate("/founder")}
+                  className="group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-500 text-sm font-semibold shadow-lg shadow-amber-500/10 hover:shadow-amber-500/30 hover:border-amber-400/60 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
+                  title="Open Owner Command Center"
+                >
                  <span className="relative flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow">
                    <Crown className="w-3 h-3 text-white" />
                  </span>
