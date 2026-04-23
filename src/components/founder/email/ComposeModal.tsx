@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Send, Sparkles, FileText, Loader2, Wand2 } from "lucide-react";
+import { X, Send, Sparkles, FileText, Loader2, Wand2, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -56,6 +56,8 @@ export default function ComposeModal({
   const [body, setBody] = useState(initial?.body || "");
   const [aiBusy, setAiBusy] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [scheduleAt, setScheduleAt] = useState<string>("");
+  const [scheduling, setScheduling] = useState(false);
 
   if (!open) return null;
 
@@ -92,6 +94,31 @@ export default function ComposeModal({
       onClose();
     } catch (e: any) { toast.error(e.message); }
     finally { setSending(false); }
+  };
+
+  const handleSchedule = async () => {
+    if (!to.trim() || !subject.trim() || !body.trim() || !scheduleAt) {
+      toast.error("Need recipient, subject, body and a future date/time"); return;
+    }
+    const when = new Date(scheduleAt);
+    if (isNaN(when.getTime()) || when.getTime() < Date.now() + 30_000) {
+      toast.error("Pick a time at least 1 minute in the future"); return;
+    }
+    setScheduling(true);
+    try {
+      const html = `<div style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.6;color:#0F172A;white-space:pre-wrap">${body.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error("Not signed in");
+      const { error } = await supabase.from("owner_scheduled_emails").insert({
+        user_id: user.id, to_addr: to, cc: cc || null, bcc: bcc || null,
+        subject, html, in_reply_to: initial?.inReplyTo || null, ref_headers: initial?.references || null,
+        send_at: when.toISOString(), status: "pending",
+      });
+      if (error) throw error;
+      toast.success(`Scheduled for ${when.toLocaleString()}`);
+      onClose();
+    } catch (e: any) { toast.error(e.message); }
+    finally { setScheduling(false); }
   };
 
   return (
@@ -169,10 +196,24 @@ export default function ComposeModal({
 
         <div className="px-5 py-3 border-t border-[var(--fos-border)] flex items-center justify-between gap-3 bg-[var(--fos-card)]">
           <span className="text-[10px] text-[var(--fos-muted)]">From naumansherwani@hostflowai.live · via HostFlow AI</span>
-          <button onClick={handleSend} disabled={sending} className="px-4 py-1.5 rounded-lg bg-[var(--fos-accent)] text-[#0B1120] font-semibold text-xs flex items-center gap-2 hover:opacity-90 disabled:opacity-50">
-            {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-            Send
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--fos-bg)] border border-[var(--fos-border)]">
+              <Clock className="w-3 h-3 text-[var(--fos-muted)]" />
+              <input
+                type="datetime-local"
+                value={scheduleAt}
+                onChange={(e) => setScheduleAt(e.target.value)}
+                className="bg-transparent text-[10px] text-[var(--fos-text)] outline-none"
+              />
+              <button onClick={handleSchedule} disabled={scheduling || !scheduleAt} className="text-[10px] text-[var(--fos-accent)] font-semibold disabled:opacity-40">
+                {scheduling ? <Loader2 className="w-3 h-3 animate-spin" /> : "Schedule"}
+              </button>
+            </div>
+            <button onClick={handleSend} disabled={sending} className="px-4 py-1.5 rounded-lg bg-[var(--fos-accent)] text-[#0B1120] font-semibold text-xs flex items-center gap-2 hover:opacity-90 disabled:opacity-50">
+              {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+              Send
+            </button>
+          </div>
         </div>
       </div>
     </div>
