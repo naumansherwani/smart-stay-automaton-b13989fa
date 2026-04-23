@@ -2059,12 +2059,8 @@ export type Database = {
           amount: number
           created_at: string
           currency: string | null
-          environment: string | null
           id: string
           metadata: Json | null
-          paddle_adjustment_id: string | null
-          paddle_subscription_id: string | null
-          paddle_transaction_id: string | null
           plan: string | null
           reason: string | null
           reason_details: string | null
@@ -2075,12 +2071,8 @@ export type Database = {
           amount?: number
           created_at?: string
           currency?: string | null
-          environment?: string | null
           id?: string
           metadata?: Json | null
-          paddle_adjustment_id?: string | null
-          paddle_subscription_id?: string | null
-          paddle_transaction_id?: string | null
           plan?: string | null
           reason?: string | null
           reason_details?: string | null
@@ -2091,12 +2083,8 @@ export type Database = {
           amount?: number
           created_at?: string
           currency?: string | null
-          environment?: string | null
           id?: string
           metadata?: Json | null
-          paddle_adjustment_id?: string | null
-          paddle_subscription_id?: string | null
-          paddle_transaction_id?: string | null
           plan?: string | null
           reason?: string | null
           reason_details?: string | null
@@ -3257,18 +3245,12 @@ export type Database = {
       }
       subscriptions: {
         Row: {
-          cancel_at_period_end: boolean | null
           created_at: string
           current_period_end: string | null
           current_period_start: string | null
-          environment: string
           id: string
           is_lifetime: boolean
-          paddle_customer_id: string | null
-          paddle_subscription_id: string | null
           plan: Database["public"]["Enums"]["subscription_plan"]
-          price_id: string | null
-          product_id: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at: string
           trial_starts_at: string
@@ -3276,18 +3258,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          cancel_at_period_end?: boolean | null
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
-          environment?: string
           id?: string
           is_lifetime?: boolean
-          paddle_customer_id?: string | null
-          paddle_subscription_id?: string | null
           plan?: Database["public"]["Enums"]["subscription_plan"]
-          price_id?: string | null
-          product_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string
           trial_starts_at?: string
@@ -3295,18 +3271,12 @@ export type Database = {
           user_id: string
         }
         Update: {
-          cancel_at_period_end?: boolean | null
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
-          environment?: string
           id?: string
           is_lifetime?: boolean
-          paddle_customer_id?: string | null
-          paddle_subscription_id?: string | null
           plan?: Database["public"]["Enums"]["subscription_plan"]
-          price_id?: string | null
-          product_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string
           trial_starts_at?: string
@@ -3897,10 +3867,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
-      has_active_subscription: {
-        Args: { _user_id: string; check_env?: string }
-        Returns: boolean
-      }
+      has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_lifetime_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
