@@ -29,6 +29,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const OwnerConsole = lazy(() => import("./pages/OwnerConsole"));
 const EnterpriseConsole = lazy(() => import("./pages/EnterpriseConsole"));
+const FounderOS = lazy(() => import("./pages/FounderOS"));
 const RailwayDashboard = lazy(() => import("./pages/RailwayDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/owner-crm" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
               <Route path="/admin/enterprise" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
               <Route path="/enterprise-console" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
+              <Route path="/founder" element={<AdminRoute><FounderOS /></AdminRoute>} />
               <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
