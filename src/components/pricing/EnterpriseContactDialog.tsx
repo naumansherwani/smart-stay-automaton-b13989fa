@@ -138,7 +138,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
           <DialogDescription className="text-center">
             {success
               ? "Our Enterprise Team will email you a tailored proposal shortly."
-              : "Tell us your needs and receive a tailored business proposal — no meeting required."}
+              : "Built for multinational teams. Tell us your needs — we'll send a tailored proposal in GBP, USD, EUR or AED. No meeting required."}
           </DialogDescription>
         </DialogHeader>
 
