@@ -1462,6 +1462,66 @@ export type Database = {
         }
         Relationships: []
       }
+      enterprise_leads: {
+        Row: {
+          company_name: string
+          country: string | null
+          created_at: string
+          currency_context: string
+          current_challenges: string | null
+          features_needed: string | null
+          full_name: string
+          id: string
+          industry: string | null
+          notes: string | null
+          phone: string | null
+          preferred_contact_method: string | null
+          source: string
+          status: string
+          team_size: string | null
+          updated_at: string
+          work_email: string
+        }
+        Insert: {
+          company_name: string
+          country?: string | null
+          created_at?: string
+          currency_context?: string
+          current_challenges?: string | null
+          features_needed?: string | null
+          full_name: string
+          id?: string
+          industry?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_contact_method?: string | null
+          source?: string
+          status?: string
+          team_size?: string | null
+          updated_at?: string
+          work_email: string
+        }
+        Update: {
+          company_name?: string
+          country?: string | null
+          created_at?: string
+          currency_context?: string
+          current_challenges?: string | null
+          features_needed?: string | null
+          full_name?: string
+          id?: string
+          industry?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_contact_method?: string | null
+          source?: string
+          status?: string
+          team_size?: string | null
+          updated_at?: string
+          work_email?: string
+        }
+        Relationships: []
+      }
       event_bookings: {
         Row: {
           booked_at: string
