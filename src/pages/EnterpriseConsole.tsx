@@ -28,7 +28,7 @@ export default function EnterpriseConsole() {
             </div>
             <div className="min-w-0">
               <h1 className="text-base font-bold truncate">Enterprise Sales CRM</h1>
-              <p className="text-[11px] text-muted-foreground truncate">Multinational pipeline · async sales · GBP / USD / EUR / AED</p>
+              <p className="text-[11px] text-muted-foreground truncate">Multinational pipeline · async sales · Default GBP (£) · USD/EUR/AED on request</p>
             </div>
           </div>
           <Badge variant="outline" className="text-[10px] gap-1 shrink-0 hidden sm:flex">
