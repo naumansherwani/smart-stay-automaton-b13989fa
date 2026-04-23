@@ -208,9 +208,19 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
         <div className="container text-center max-w-3xl mx-auto space-y-6">
           {isAdmin ? (
             <>
-               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium">
-                 <Crown className="w-4 h-4" /> Command Center
-               </div>
+               <button
+                 type="button"
+                 onClick={() => window.open("/founder", "_blank", "noopener,noreferrer")}
+                 className="group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-500 text-sm font-semibold shadow-lg shadow-amber-500/10 hover:shadow-amber-500/30 hover:border-amber-400/60 hover:scale-[1.03] transition-all duration-300 cursor-pointer"
+                 title="Open Owner Command Center in a new tab"
+               >
+                 <span className="relative flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow">
+                   <Crown className="w-3 h-3 text-white" />
+                   <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ring-1 ring-background" />
+                 </span>
+                 Command Center
+                 <span className="ml-1 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/30">Owner</span>
+               </button>
                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight whitespace-nowrap">
                  <span className="bg-gradient-to-r from-[#f97316] via-[#ef4444] to-[#ec4899] bg-clip-text text-transparent">You're Powering</span> <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
                </h1>

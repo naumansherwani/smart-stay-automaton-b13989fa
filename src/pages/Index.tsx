@@ -17,7 +17,6 @@ import CookieConsent from "@/components/CookieConsent";
 import SmartGreetingBanner from "@/components/SmartGreetingBanner";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
-import FounderHQBadge from "@/components/founder/FounderHQBadge";
 const Index = () => (
   <div className="min-h-screen">
     <AnimatedTopBorder />
@@ -40,7 +39,6 @@ const Index = () => (
     <FAQSection />
     <Footer />
     <CookieConsent />
-    <FounderHQBadge />
   </div>
 );
 
