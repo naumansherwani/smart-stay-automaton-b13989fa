@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Bell, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import FounderNotifications from "./FounderNotifications";
 
 const TZ = [
   { city: "London", tz: "Europe/London" },
@@ -42,10 +43,7 @@ export default function FounderHeader({ title }: { title: string }) {
           ))}
         </div>
 
-        <button className="relative w-9 h-9 rounded-lg bg-[var(--fos-card)] border border-[var(--fos-border)] hover:border-[var(--fos-accent)]/40 flex items-center justify-center text-[var(--fos-muted)] hover:text-[var(--fos-text)] transition-colors">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[var(--fos-danger)]" />
-        </button>
+        <FounderNotifications />
 
         <button className="h-9 px-3 rounded-lg bg-[var(--fos-accent)] hover:bg-[var(--fos-accent)]/90 text-white text-[12px] font-semibold flex items-center gap-1.5 shadow-lg shadow-[var(--fos-accent)]/20 transition-all">
           <Plus className="w-3.5 h-3.5" />
