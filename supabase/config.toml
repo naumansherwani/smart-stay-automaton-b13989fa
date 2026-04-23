@@ -16,3 +16,9 @@ verify_jwt = false
 verify_jwt = false
 [functions.founder-adviser]
 verify_jwt = false
+
+[functions.owner-mailbox]
+verify_jwt = false
+
+[functions.owner-email-ai]
+verify_jwt = false
