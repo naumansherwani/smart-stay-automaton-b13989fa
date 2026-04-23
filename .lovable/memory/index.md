@@ -2,13 +2,14 @@
 
 ## Core
 CalendarAI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
-7-day free trial, then Basic $25/Pro $55/Premium $110 monthly.
+7-day free trial. GBP master currency: Basic £25 / Pro £52 / Premium £108 monthly. Switcher: GBP/USD/EUR/CHF/KWD/PKR.
 8 industries: hospitality, airlines, car rental, healthcare, education, logistics, events, railways.
 Auth: Email + Google + Apple. No anonymous signups. Email verification required.
 Hospitality has 2 sub-types: hotel_property and travel_tours (profiles.business_subtype).
 
 ## Memories
 - [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Pro/Premium
+- [Pricing currency](mem://features/pricing-currency) — GBP base £25/£52/£108, multi-currency switcher rates relative to GBP
 - [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette - teal primary, blue-purple secondary
 - [No Stripe/Lemon Squeezy](mem://constraints/no-stripe-lemon-squeezy) — NEVER use Stripe or Lemon Squeezy for payments
 - [Trial system](mem://features/trial-system) — 7-day free trial details

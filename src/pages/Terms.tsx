@@ -36,11 +36,11 @@ const Terms = () => (
           <h2 className="text-xl font-semibold text-white">4. Subscription Plans & Pricing</h2>
           <p>HostFlow AI offers the following subscription plans:</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Basic Plan — $25/month:</strong> 1 industry workspace, up to 100 CRM contacts, up to 50 bookings/month, limited AI features, basic analytics</li>
-            <li><strong>Pro Plan — $55/month:</strong> 1 industry workspace, unlimited contacts and bookings, AI scheduling, AI follow-ups, client scoring, advanced analytics, priority support</li>
-            <li><strong>Premium Plan — $110/month:</strong> 1 industry workspace, full AI CRM suite, AI Voice Assistant, deal pipeline, Google Workspace integration, priority email support</li>
+            <li><strong>Basic Plan — £25/month:</strong> 1 industry workspace, up to 100 CRM contacts, up to 50 bookings/month, limited AI features, basic analytics</li>
+            <li><strong>Pro Plan — £52/month:</strong> 1 industry workspace, unlimited contacts and bookings, AI scheduling, AI follow-ups, client scoring, advanced analytics, priority support</li>
+            <li><strong>Premium Plan — £108/month:</strong> 1 industry workspace, full AI CRM suite, AI Voice Assistant, deal pipeline, Google Workspace integration, priority email support</li>
           </ul>
-          <p>Additional industry workspaces can be purchased as add-ons. All plans include a 7-day free trial. Prices are in USD and exclude applicable taxes, which are calculated and collected by our payment provider.</p>
+          <p>Additional industry workspaces can be purchased as add-ons. All plans include a 7-day free trial. Prices are in GBP (£) — our master currency — and exclude applicable taxes, which are calculated and collected by our payment provider. Customers may view equivalent pricing in USD, EUR, CHF, KWD, or PKR via the on-site currency switcher; billing is processed in GBP.</p>
         </section>
 
         <section className="space-y-3">
