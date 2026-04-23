@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
 
 const Login = lazy(() => import("./pages/Login"));
@@ -28,7 +29,6 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const OwnerConsole = lazy(() => import("./pages/OwnerConsole"));
 const EnterpriseConsole = lazy(() => import("./pages/EnterpriseConsole"));
-const AdminRoute = lazy(() => import("./components/auth/AdminRoute"));
 const RailwayDashboard = lazy(() => import("./pages/RailwayDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
