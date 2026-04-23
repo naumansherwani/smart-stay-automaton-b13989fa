@@ -24,18 +24,17 @@ type IdentityFilter = "all" | MailIdentity;
 
 const IDENTITY_TABS: { id: IdentityFilter; label: string; icon: any; color: string; address?: string }[] = [
   { id: "all",        label: "All",        icon: InboxIcon, color: "var(--fos-muted)" },
-  { id: "enterprise", label: "Enterprise", icon: Building2, color: "#F59E0B", address: "enterprise@hostflowai.live" },
+  { id: "enterprise", label: "Enterprise", icon: Building2, color: "#F59E0B", address: "connectai@hostflowai.live" },
   { id: "support",    label: "Support",    icon: LifeBuoy,  color: "#10B981", address: "support@hostflowai.live" },
   { id: "billing",    label: "Billing",    icon: Receipt,   color: "#3B82F6", address: "billing@hostflowai.live" },
-  { id: "connectai",  label: "General",    icon: Sparkles,  color: "#8B5CF6", address: "connectai@hostflowai.live" },
+  { id: "general",    label: "General",    icon: Sparkles,  color: "#8B5CF6", address: "connectai@hostflowai.live" },
 ];
 
 const IDENTITY_META: Record<MailIdentity, { label: string; color: string }> = {
   enterprise: { label: "Enterprise", color: "#F59E0B" },
   support:    { label: "Support",    color: "#10B981" },
   billing:    { label: "Billing",    color: "#3B82F6" },
-  connectai:  { label: "General",    color: "#8B5CF6" },
-  general:    { label: "Other",      color: "#64748B" },
+  general:    { label: "General",    color: "#8B5CF6" },
 };
 
 function relTime(d: string | Date) {
@@ -75,7 +74,7 @@ export default function Emails() {
 
   const identityCounts = useMemo(() => {
     const counts: Record<string, number> = { all: mb.messages.length };
-    for (const id of ["enterprise","support","billing","connectai"]) counts[id] = 0;
+    for (const id of ["enterprise","support","billing","general"]) counts[id] = 0;
     for (const m of mb.messages) {
       const k = m.identity || "general";
       counts[k] = (counts[k] || 0) + 1;

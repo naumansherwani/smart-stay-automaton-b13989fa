@@ -4,13 +4,13 @@ import { toast } from "sonner";
 
 export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "scheduled" | "starred" | "archive" | "spam" | "trash";
 
-export type MailIdentity = "enterprise" | "support" | "billing" | "connectai" | "general";
+export type MailIdentity = "enterprise" | "support" | "billing" | "general";
 
 export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string }[] = [
-  { id: "enterprise", address: "enterprise@hostflowai.live", label: "Enterprise" },
-  { id: "support",    address: "support@hostflowai.live",    label: "Support" },
-  { id: "billing",    address: "billing@hostflowai.live",    label: "Billing" },
-  { id: "connectai",  address: "connectai@hostflowai.live",  label: "General" },
+  { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise" },
+  { id: "support",    address: "support@hostflowai.live",   label: "Support" },
+  { id: "billing",    address: "billing@hostflowai.live",   label: "Billing" },
+  { id: "general",    address: "connectai@hostflowai.live", label: "General" },
 ];
 
 export interface MailListItem {
