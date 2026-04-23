@@ -187,6 +187,7 @@ async function getMessage(folderKey: string, uid: number) {
         html: parsed.html || null,
         text: parsed.text || "",
         attachments: (parsed.attachments || []).map((a: any) => ({ filename: a.filename, size: a.size, contentType: a.contentType })),
+        identity: identityFromRecipients([...(parsed.to?.value || []), ...(parsed.cc?.value || [])]),
       };
     } finally {
       lock.release();
