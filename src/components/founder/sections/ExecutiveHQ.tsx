@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFounderMetrics } from "@/hooks/useFounderMetrics";
 import { supabase } from "@/integrations/supabase/client";
-import { Crown, TrendingUp, TrendingDown, Users, Target, Briefcase, Mail, AlertTriangle, Sparkles, Activity, Globe2, Zap, FileText, RotateCcw, UserPlus, Plus, Loader2 } from "lucide-react";
+import { Crown, TrendingUp, TrendingDown, Users, Target, Briefcase, Mail, AlertTriangle, Sparkles, Activity, Globe2, Zap, FileText, RotateCcw, UserPlus, Plus, Loader2, Flame, Trophy, CalendarCheck } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
 
