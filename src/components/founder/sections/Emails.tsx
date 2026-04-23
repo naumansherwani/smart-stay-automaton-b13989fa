@@ -102,19 +102,24 @@ export default function Emails() {
 
   const handleReply = () => {
     if (!detail) return;
+    // Use the identity the original mail was addressed to as the From identity
+    const replyFromIdentity = (detail.identity && detail.identity !== "general") ? detail.identity : undefined;
     openCompose({
       to: detail.from?.address || "",
       subject: detail.subject?.startsWith("Re:") ? detail.subject : `Re: ${detail.subject}`,
       body: `\n\n--- On ${new Date(detail.date).toLocaleString()} ${detail.from?.name || detail.from?.address} wrote ---\n${detail.text || ""}`,
       replyContext: detail.text || "",
+      fromIdentity: replyFromIdentity,
     });
   };
 
   const handleForward = () => {
     if (!detail) return;
+    const replyFromIdentity = (detail.identity && detail.identity !== "general") ? detail.identity : undefined;
     openCompose({
       subject: detail.subject?.startsWith("Fwd:") ? detail.subject : `Fwd: ${detail.subject}`,
       body: `\n\n--- Forwarded message ---\nFrom: ${detail.from?.name || ""} <${detail.from?.address}>\nDate: ${new Date(detail.date).toLocaleString()}\nSubject: ${detail.subject}\n\n${detail.text || ""}`,
+      fromIdentity: replyFromIdentity,
     });
   };
 
@@ -153,9 +158,18 @@ export default function Emails() {
               );
             })}
           </nav>
-          <div className="p-3 border-t border-[var(--fos-border)] text-[10px] text-[var(--fos-muted)]">
-            <div className="truncate">naumansherwani@hostflowai.live</div>
-            <div className="text-[var(--fos-success)] mt-1">● Zoho · Connected</div>
+          <div className="p-3 border-t border-[var(--fos-border)] space-y-1.5">
+            <div className="text-[9px] uppercase tracking-wider text-[var(--fos-muted)] mb-1">Identities</div>
+            {MAIL_IDENTITIES.map((id) => {
+              const meta = IDENTITY_META[id.id as MailIdentity];
+              return (
+                <div key={id.id} className="flex items-center gap-2 text-[10px]">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: meta.color }} />
+                  <span className="truncate text-[var(--fos-muted)]">{id.address}</span>
+                </div>
+              );
+            })}
+            <div className="text-[var(--fos-success)] mt-1.5 text-[10px]">● Zoho · Connected</div>
           </div>
         </div>
 
