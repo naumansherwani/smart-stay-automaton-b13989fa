@@ -7,6 +7,7 @@ import Customers from "@/components/founder/sections/Customers";
 import Leads from "@/components/founder/sections/Leads";
 import CRM from "@/components/founder/sections/CRM";
 import Inbox from "@/components/founder/sections/Inbox";
+import Emails from "@/components/founder/sections/Emails";
 import ActionCenter from "@/components/founder/sections/ActionCenter";
 import ExecutionBoard from "@/components/founder/sections/ExecutionBoard";
 import Security from "@/components/founder/sections/Security";
@@ -26,6 +27,7 @@ export default function FounderOS() {
       {active === "leads" && <Leads />}
       {active === "crm" && <CRM />}
       {active === "inbox" && <Inbox />}
+      {active === "emails" && <Emails />}
       {active === "actions" && <ActionCenter />}
       {active === "execution" && <ExecutionBoard />}
       {active === "security" && <Security />}
