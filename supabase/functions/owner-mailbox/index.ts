@@ -14,6 +14,30 @@ const ZOHO_EMAIL = Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live
 const ZOHO_APP_PASSWORD = Deno.env.get("ZOHO_APP_PASSWORD") || "";
 const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 
+// ---------------------------------------------------------------------------
+// Identity routing (Enterprise / Support / Billing / General)
+// All aliases land in the same Zoho mailbox via IMAP. We tag each message
+// based on the `To:` recipient so the Founder OS UI can filter by identity.
+// ---------------------------------------------------------------------------
+const IDENTITIES = [
+  { id: "enterprise", address: "enterprise@hostflowai.live", label: "Enterprise", displayName: "HostFlow AI · Enterprise Sales" },
+  { id: "support",    address: "support@hostflowai.live",    label: "Support",    displayName: "HostFlow AI · Customer Support" },
+  { id: "billing",    address: "billing@hostflowai.live",    label: "Billing",    displayName: "HostFlow AI · Billing" },
+  { id: "connectai",  address: "connectai@hostflowai.live",  label: "General",    displayName: "HostFlow AI · ConnectAI" },
+] as const;
+
+function identityFromRecipients(recipients: { address?: string }[] = []): string {
+  const addrs = recipients.map((r) => (r?.address || "").toLowerCase());
+  for (const id of IDENTITIES) {
+    if (addrs.some((a) => a === id.address)) return id.id;
+  }
+  return "general";
+}
+
+function identityById(id?: string) {
+  return IDENTITIES.find((i) => i.id === id);
+}
+
 const REGION_HOSTS: Record<string, { imap: string; smtp: string }> = {
   com: { imap: "imap.zoho.com", smtp: "smtp.zoho.com" },
   eu:  { imap: "imap.zoho.eu",  smtp: "smtp.zoho.eu" },
@@ -88,16 +112,19 @@ async function listMessages(folderKey: string, limit = 50, search?: string) {
       } else {
         const seq = `${Math.max(1, total - limit + 1)}:*`;
         for await (const msg of client.fetch(seq, { uid: true, envelope: true, flags: true, bodyStructure: true, internalDate: true })) {
+          const toList = (msg.envelope?.to || []).map((a: any) => ({ name: a.name || "", address: a.address || "" }));
+          const ccList = (msg.envelope?.cc || []).map((a: any) => ({ name: a.name || "", address: a.address || "" }));
           out.push({
             uid: msg.uid,
             subject: msg.envelope?.subject || "(no subject)",
             from: msg.envelope?.from?.[0] ? { name: msg.envelope.from[0].name || "", address: msg.envelope.from[0].address || "" } : { name: "", address: "" },
-            to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name || "", address: a.address || "" })),
+            to: toList,
             date: msg.envelope?.date || msg.internalDate,
             unread: !msg.flags?.has?.("\\Seen"),
             starred: msg.flags?.has?.("\\Flagged") || false,
             hasAttachment: msg.bodyStructure ? hasAttachments(msg.bodyStructure) : false,
             preview: "",
+            identity: identityFromRecipients([...toList, ...ccList]),
           });
         }
         out.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -108,16 +135,19 @@ async function listMessages(folderKey: string, limit = 50, search?: string) {
       for (const uid of uids) {
         const msg: any = await client.fetchOne(uid, { uid: true, envelope: true, flags: true, internalDate: true }, { uid: true });
         if (!msg) continue;
+        const toList = (msg.envelope?.to || []).map((a: any) => ({ name: a.name || "", address: a.address || "" }));
+        const ccList = (msg.envelope?.cc || []).map((a: any) => ({ name: a.name || "", address: a.address || "" }));
         out.push({
           uid: msg.uid,
           subject: msg.envelope?.subject || "(no subject)",
           from: msg.envelope?.from?.[0] ? { name: msg.envelope.from[0].name || "", address: msg.envelope.from[0].address || "" } : { name: "", address: "" },
-          to: (msg.envelope?.to || []).map((a: any) => ({ name: a.name || "", address: a.address || "" })),
+          to: toList,
           date: msg.envelope?.date || msg.internalDate,
           unread: !msg.flags?.has?.("\\Seen"),
           starred: msg.flags?.has?.("\\Flagged") || false,
           hasAttachment: false,
           preview: "",
+          identity: identityFromRecipients([...toList, ...ccList]),
         });
       }
       return { messages: out, unread: status.unseen || 0, total };
@@ -192,13 +222,22 @@ async function moveMessage(fromFolderKey: string, toFolderKey: string, uid: numb
   return { ok: true };
 }
 
-async function sendMail(payload: { to: string; cc?: string; bcc?: string; subject: string; html: string; text?: string; replyTo?: string; inReplyTo?: string; references?: string }) {
+async function sendMail(payload: { to: string; cc?: string; bcc?: string; subject: string; html: string; text?: string; replyTo?: string; inReplyTo?: string; references?: string; fromIdentity?: string }) {
   let lastErr: any = null;
+  const identity = identityById(payload.fromIdentity);
+  const fromName = identity?.displayName || "HostFlow AI · Nauman Sherwani";
+  // Note: Zoho only allows sending from aliases configured on the mailbox.
+  // The auth user (ZOHO_EMAIL) remains the SMTP login; the From: header uses
+  // the chosen identity address if the alias is verified — otherwise Zoho
+  // will fall back to the primary mailbox automatically.
+  const fromAddress = identity?.address || ZOHO_EMAIL;
+  const replyTo = payload.replyTo || identity?.address;
   for (const h of pickHosts()) {
     try {
       const transporter = smtpTransport(h.smtp);
       const info = await transporter.sendMail({
-    from: { name: "HostFlow AI · Nauman Sherwani", address: ZOHO_EMAIL },
+    from: { name: fromName, address: fromAddress },
+    sender: ZOHO_EMAIL,
     to: payload.to,
     cc: payload.cc,
     bcc: payload.bcc,
@@ -207,13 +246,13 @@ async function sendMail(payload: { to: string; cc?: string; bcc?: string; subjec
     text: payload.text,
     inReplyTo: payload.inReplyTo,
     references: payload.references,
-    replyTo: payload.replyTo,
+    replyTo,
       });
       // Try to append to Sent folder
       try {
         const { client } = await connectImap();
         try {
-          const raw = await buildRaw(payload);
+          const raw = await buildRaw({ ...payload, fromName, fromAddress });
           await client.append("Sent", raw, ["\\Seen"]);
         } finally { await client.logout().catch(() => {}); }
       } catch (e) { console.warn("append-to-sent failed", (e as any)?.message); }
@@ -223,9 +262,9 @@ async function sendMail(payload: { to: string; cc?: string; bcc?: string; subjec
   throw new Error(`Send failed across regions. Verify App Password + IMAP/SMTP enabled in Zoho. Last error: ${lastErr?.message || lastErr}`);
 }
 
-async function buildRaw(p: { to: string; cc?: string; subject: string; html: string }) {
+async function buildRaw(p: { to: string; cc?: string; subject: string; html: string; fromName?: string; fromAddress?: string }) {
   const headers = [
-    `From: HostFlow AI · Nauman Sherwani <${ZOHO_EMAIL}>`,
+    `From: ${p.fromName || "HostFlow AI · Nauman Sherwani"} <${p.fromAddress || ZOHO_EMAIL}>`,
     `To: ${p.to}`,
     p.cc ? `Cc: ${p.cc}` : "",
     `Subject: ${p.subject}`,
@@ -266,6 +305,7 @@ Deno.serve(async (req) => {
       case "flag": data = await modifyFlags(body.folder, body.uid, body.add, body.remove); break;
       case "move": data = await moveMessage(body.from, body.to, body.uid); break;
       case "counts": data = await counts(); break;
+      case "identities": data = { identities: IDENTITIES }; break;
       default: return new Response(JSON.stringify({ error: "unknown action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     return new Response(JSON.stringify({ ok: true, data }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
