@@ -4,6 +4,15 @@ import { toast } from "sonner";
 
 export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "scheduled" | "starred" | "archive" | "spam" | "trash";
 
+export type MailIdentity = "enterprise" | "support" | "billing" | "connectai" | "general";
+
+export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string }[] = [
+  { id: "enterprise", address: "enterprise@hostflowai.live", label: "Enterprise" },
+  { id: "support",    address: "support@hostflowai.live",    label: "Support" },
+  { id: "billing",    address: "billing@hostflowai.live",    label: "Billing" },
+  { id: "connectai",  address: "connectai@hostflowai.live",  label: "General" },
+];
+
 export interface MailListItem {
   uid: number;
   subject: string;
@@ -14,6 +23,7 @@ export interface MailListItem {
   starred: boolean;
   hasAttachment: boolean;
   preview: string;
+  identity?: MailIdentity;
 }
 
 export interface MailDetail extends MailListItem {
@@ -21,6 +31,7 @@ export interface MailDetail extends MailListItem {
   text: string;
   cc: { name: string; address: string }[];
   attachments: { filename: string; size: number; contentType: string }[];
+  identity?: MailIdentity;
 }
 
 const REMOTE_FOLDERS: MailFolder[] = ["inbox", "sent", "drafts", "spam", "trash", "archive"];

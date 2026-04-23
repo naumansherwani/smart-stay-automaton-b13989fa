@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { X, Send, Sparkles, FileText, Loader2, Wand2, Clock } from "lucide-react";
+import { X, Send, Sparkles, FileText, Loader2, Wand2, Clock, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+const SEND_IDENTITIES = [
+  { id: "enterprise", address: "enterprise@hostflowai.live", label: "Enterprise Sales", color: "#F59E0B" },
+  { id: "support",    address: "support@hostflowai.live",    label: "Support",          color: "#10B981" },
+  { id: "billing",    address: "billing@hostflowai.live",    label: "Billing",          color: "#3B82F6" },
+  { id: "connectai",  address: "connectai@hostflowai.live",  label: "General",          color: "#8B5CF6" },
+] as const;
+type SendIdentityId = typeof SEND_IDENTITIES[number]["id"];
 
 const TEMPLATES: Record<string, { subject: string; body: string }> = {
   welcome: {
@@ -43,6 +51,7 @@ const AI_MODES = [
 
 export interface ComposeInitial {
   to?: string; cc?: string; bcc?: string; subject?: string; body?: string; inReplyTo?: string; references?: string; replyContext?: string;
+  fromIdentity?: SendIdentityId;
 }
 
 export default function ComposeModal({
@@ -58,6 +67,8 @@ export default function ComposeModal({
   const [sending, setSending] = useState(false);
   const [scheduleAt, setScheduleAt] = useState<string>("");
   const [scheduling, setScheduling] = useState(false);
+  const [fromIdentity, setFromIdentity] = useState<SendIdentityId>(initial?.fromIdentity || "enterprise");
+  const activeIdentity = SEND_IDENTITIES.find((i) => i.id === fromIdentity)!;
 
   if (!open) return null;
 
@@ -89,7 +100,7 @@ export default function ComposeModal({
     setSending(true);
     try {
       const html = `<div style="font-family:Inter,Arial,sans-serif;font-size:14px;line-height:1.6;color:#0F172A;white-space:pre-wrap">${body.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>`;
-      await onSend({ to, cc: cc || undefined, bcc: bcc || undefined, subject, html, inReplyTo: initial?.inReplyTo, references: initial?.references });
+      await onSend({ to, cc: cc || undefined, bcc: bcc || undefined, subject, html, inReplyTo: initial?.inReplyTo, references: initial?.references, fromIdentity });
       toast.success("Email sent");
       onClose();
     } catch (e: any) { toast.error(e.message); }
@@ -195,7 +206,23 @@ export default function ComposeModal({
         </div>
 
         <div className="px-5 py-3 border-t border-[var(--fos-border)] flex items-center justify-between gap-3 bg-[var(--fos-card)]">
-          <span className="text-[10px] text-[var(--fos-muted)]">From naumansherwani@hostflowai.live · via HostFlow AI</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-[var(--fos-muted)]">From</span>
+            <div className="relative">
+              <select
+                value={fromIdentity}
+                onChange={(e) => setFromIdentity(e.target.value as SendIdentityId)}
+                className="appearance-none bg-[var(--fos-bg)] border border-[var(--fos-border)] rounded-md text-[11px] text-[var(--fos-text)] pl-5 pr-6 py-1 outline-none focus:border-[var(--fos-accent)] cursor-pointer"
+                style={{ borderColor: activeIdentity.color + "55" }}
+              >
+                {SEND_IDENTITIES.map((i) => (
+                  <option key={i.id} value={i.id}>{i.label} — {i.address}</option>
+                ))}
+              </select>
+              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full" style={{ background: activeIdentity.color }} />
+              <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--fos-muted)] pointer-events-none" />
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[var(--fos-bg)] border border-[var(--fos-border)]">
               <Clock className="w-3 h-3 text-[var(--fos-muted)]" />
