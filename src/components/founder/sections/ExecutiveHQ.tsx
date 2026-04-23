@@ -42,6 +42,8 @@ export default function ExecutiveHQ({ onNavigate }: { onNavigate?: (s: string) =
   const [vipLeads, setVipLeads] = useState<any[]>([]);
   const [contracts, setContracts] = useState<any[]>([]);
   const [tasksDue, setTasksDue] = useState<any[]>([]);
+  const [streak, setStreak] = useState<number>(1);
+  const [winsThisMonth, setWinsThisMonth] = useState<{ deals: number; revenue: number; leads: number }>({ deals: 0, revenue: 0, leads: 0 });
 
   const loadBrief = async () => {
     setBriefLoading(true);
@@ -74,6 +76,40 @@ export default function ExecutiveHQ({ onNavigate }: { onNavigate?: (s: string) =
       supabase.from("crm_tasks").select("id,title,due_at,priority").lte("due_at", new Date(Date.now() + 24 * 3600 * 1000).toISOString()).limit(5),
     ]).then(([r, l, d, t]) => {
       setRefunds(r.data || []); setVipLeads(l.data || []); setContracts(d.data || []); setTasksDue(t.data || []);
+    });
+  }, []);
+
+  // Founder login streak (localStorage, per-user)
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `fos_streak_${user.id}`;
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) {
+        localStorage.setItem(key, JSON.stringify({ last: today, count: 1 }));
+        setStreak(1);
+        return;
+      }
+      const { last, count } = JSON.parse(raw);
+      if (last === today) { setStreak(count); return; }
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      const next = last === yesterday ? count + 1 : 1;
+      localStorage.setItem(key, JSON.stringify({ last: today, count: next }));
+      setStreak(next);
+    } catch { setStreak(1); }
+  }, [user?.id]);
+
+  // Wins this month (deals won + new MRR + new leads)
+  useEffect(() => {
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    Promise.all([
+      supabase.from("ent_deals").select("id,value_gbp,stage,updated_at").eq("stage", "won").gte("updated_at", monthStart),
+      supabase.from("enterprise_leads").select("id").gte("created_at", monthStart),
+    ]).then(([dealsRes, leadsRes]) => {
+      const deals = dealsRes.data || [];
+      const revenue = deals.reduce((s: number, d: any) => s + (d.value_gbp || 0), 0);
+      setWinsThisMonth({ deals: deals.length, revenue, leads: (leadsRes.data || []).length });
     });
   }, []);
 
@@ -112,6 +148,40 @@ export default function ExecutiveHQ({ onNavigate }: { onNavigate?: (s: string) =
           <Kpi icon={Briefcase} label="Pipeline value" value={fmt(contracts.reduce((s, c) => s + (c.value_gbp || 0), 0))} />
           <Kpi icon={Target} label="Open ent. deals" value={m.openDeals} tone="gold" />
           <Kpi icon={Mail} label="Priority emails" value={m.emailsAwaitingReply} tone="danger" />
+        </div>
+      </div>
+
+      {/* Founder Prestige Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="founder-luxe-card p-4 flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#F59E0B] to-[#EF4444] flex items-center justify-center shrink-0 shadow-lg shadow-[#F59E0B]/20">
+            <Flame className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-[var(--fos-muted)] font-semibold">Founder Streak</div>
+            <div className="text-[var(--fos-text)] text-xl font-bold tabular-nums leading-tight">{streak} day{streak === 1 ? "" : "s"}</div>
+            <div className="text-[10px] text-[var(--fos-muted)]">{streak >= 7 ? "On fire — keep going." : "Log in daily to grow."}</div>
+          </div>
+        </div>
+        <div className="founder-luxe-card p-4 flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#22D3EE] to-[#0EA5E9] flex items-center justify-center shrink-0 shadow-lg shadow-[#22D3EE]/20">
+            <Trophy className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-[var(--fos-muted)] font-semibold">Wins This Month</div>
+            <div className="text-[var(--fos-text)] text-xl font-bold tabular-nums leading-tight">{winsThisMonth.deals} deals · {fmt(winsThisMonth.revenue)}</div>
+            <div className="text-[10px] text-[var(--fos-muted)]">{winsThisMonth.leads} new enterprise leads</div>
+          </div>
+        </div>
+        <div className="founder-luxe-card p-4 flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#10B981] to-[#22D3EE] flex items-center justify-center shrink-0 shadow-lg shadow-[#10B981]/20">
+            <CalendarCheck className="w-5 h-5 text-white" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-wider text-[var(--fos-muted)] font-semibold">Today's Focus</div>
+            <div className="text-[var(--fos-text)] text-xl font-bold tabular-nums leading-tight">{tasksDue.length + vipLeads.length} actions</div>
+            <div className="text-[10px] text-[var(--fos-muted)]">{tasksDue.length} tasks · {vipLeads.length} VIP leads</div>
+          </div>
         </div>
       </div>
 
