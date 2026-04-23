@@ -240,3 +240,45 @@ html {
   background: hsl(174 62% 50%);
   box-shadow: 0 0 8px hsl(174 62% 50% / 0.5);
 }
+
+/* ===== Founder OS · Owner Command Center theme ===== */
+.founder-os {
+  --fos-bg: #0B1120;
+  --fos-card: #111827;
+  --fos-border: #1F2937;
+  --fos-text: #F9FAFB;
+  --fos-muted: #94A3B8;
+  --fos-accent: #22D3EE;
+  --fos-success: #10B981;
+  --fos-warning: #F59E0B;
+  --fos-danger: #EF4444;
+  background: var(--fos-bg);
+  color: var(--fos-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.founder-os[data-founder-theme="light"] {
+  --fos-bg: #F8FAFC;
+  --fos-card: #FFFFFF;
+  --fos-border: #E5E7EB;
+  --fos-text: #0F172A;
+  --fos-muted: #64748B;
+  --fos-accent: #0EA5E9;
+}
+.founder-os .founder-card {
+  background: var(--fos-card);
+  border: 1px solid var(--fos-border);
+  border-radius: 12px;
+}
+.founder-os .founder-sidebar {
+  background: var(--fos-card);
+  border-right: 1px solid var(--fos-border);
+}
+.founder-os .founder-header {
+  background: color-mix(in srgb, var(--fos-bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--fos-border);
+}
+@media (max-width: 768px) {
+  .founder-os .founder-sidebar { transform: translateX(-100%); }
+}
