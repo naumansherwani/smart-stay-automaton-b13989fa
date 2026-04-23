@@ -2,16 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
-
-const PAYMENTS_PAUSED = true;
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
+import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Building2 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
 import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
@@ -99,27 +99,33 @@ export default function Pricing() {
   const { user } = useAuth();
   const { subscription } = useSubscription();
   const { format, selectedCurrency } = useCurrency();
-  const checkoutLoading = false;
+  const { priceFor } = useLaunchDiscount();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   const handleSelect = async (_plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    // Checkout temporarily unavailable — payment provider migration in progress.
-    const { toast } = await import("sonner");
-    toast.info("Checkout is paused while we onboard a new payment provider. Join the waitlist to be notified.");
+    if (!_plan.plan) return;
+    setLoadingPlan(_plan.plan);
+    try {
+      const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
+        body: { plan: _plan.plan, returnUrl: window.location.origin },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+      else throw new Error("Checkout URL missing");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not start checkout. Please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <PaymentsResumingBanner />
-      <CheckoutRescuePopup
-        onAccept={() => {
-          // Checkout paused — discount will be honored when new provider is live.
-        }}
-      />
 
       <main className="container pt-24 pb-16 space-y-12">
         <div className="text-center space-y-4">
@@ -158,10 +164,13 @@ export default function Pricing() {
                 <CardHeader className="text-center pb-2 pt-8">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold text-foreground">{format(p.price)}</span>
+                    {p.plan ? <LaunchPriceBlock plan={p.plan} format={format} /> : <span className="text-4xl font-bold text-foreground">{format(p.price)}</span>}
                     <span className="text-muted-foreground">/month</span>
                     {selectedCurrency.code !== "GBP" && (
                       <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
+                    )}
+                    {p.plan && (
+                      <div className="mt-3 flex justify-center"><LaunchDiscountBadge plan={p.plan} /></div>
                     )}
                   </div>
                 </CardHeader>
@@ -178,22 +187,13 @@ export default function Pricing() {
                       )
                     )}
                   </ul>
-                  {PAYMENTS_PAUSED ? (
-                    <div className="space-y-2">
-                      <PaymentsResumingBanner variant="inline" plan={p.plan ?? undefined} />
-                      <p className="text-[11px] text-muted-foreground text-center">
-                        Checkout paused for 24–48h • Get notified + launch discount
-                      </p>
-                    </div>
-                  ) : (
-                    <Button
-                      className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                      disabled={!!isCurrent || checkoutLoading}
-                      onClick={() => void handleSelect(p)}
-                    >
-                      {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
-                    </Button>
-                  )}
+                  <Button
+                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                    disabled={!!isCurrent || loadingPlan === p.plan}
+                    onClick={() => void handleSelect(p)}
+                  >
+                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : user ? (priceFor(p.plan!).isDiscounted ? "Claim Launch Price" : "Subscribe Now") : "Start Free Trial"}
+                  </Button>
                 </CardContent>
               </Card>
             );

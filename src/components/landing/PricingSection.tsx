@@ -3,20 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
 import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
-
-const PAYMENTS_PAUSED = true;
-
-const PRICE_IDS: Record<string, string> = {
-  basic: "basic_monthly",
-  pro: "pro_monthly",
-  premium: "premium_monthly",
-};
+import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
+import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 
 const PLANS = [
   {
@@ -105,14 +101,27 @@ const PricingSection = () => {
   const { user } = useAuth();
   const { subscription } = useSubscription();
   const { format, selectedCurrency } = useCurrency();
-  const checkoutLoading = false;
+  const { priceFor } = useLaunchDiscount();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
-  const handleClick = (_plan: typeof PLANS[number]) => {
+  const handleClick = async (_plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    // Checkout paused during payment provider migration.
+    setLoadingPlan(_plan.plan);
+    try {
+      const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
+        body: { plan: _plan.plan, returnUrl: window.location.origin },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+      else throw new Error("Checkout URL missing");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not start checkout. Please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
   };
 
   return (
@@ -180,11 +189,12 @@ const PricingSection = () => {
                   <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
                   <p className="text-xs text-muted-foreground">{p.desc}</p>
                   <div className="mt-4">
-                    <span className="text-4xl font-extrabold text-foreground">{format(p.price)}</span>
+                    <LaunchPriceBlock plan={p.plan} format={format} />
                     <span className="text-muted-foreground">/mo</span>
                     {selectedCurrency.code !== "GBP" && (
                       <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
                     )}
+                    <div className="mt-3 flex justify-center"><LaunchDiscountBadge plan={p.plan} /></div>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col pt-4">
@@ -203,28 +213,17 @@ const PricingSection = () => {
                   {p.upgradeNote && (
                     <p className="text-xs text-primary/80 italic mb-4 text-center">{p.upgradeNote}</p>
                   )}
-                  {PAYMENTS_PAUSED ? (
-                    <>
-                      <PaymentsResumingBanner variant="inline" plan={p.plan} />
-                      <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                        Checkout temporarily paused — get notified + launch discount
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                        variant="default"
-                        disabled={!!isCurrent || checkoutLoading}
-                        onClick={() => handleClick(p)}
-                      >
-                        {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
-                      </Button>
-                      <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                        7-day free trial included — no credit card required
-                      </p>
-                    </>
-                  )}
+                  <Button
+                    className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
+                    variant="default"
+                    disabled={!!isCurrent || loadingPlan === p.plan}
+                    onClick={() => void handleClick(p)}
+                  >
+                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : user ? (priceFor(p.plan).isDiscounted ? "Claim Launch Price" : "Subscribe Now") : "Start Free Trial"}
+                  </Button>
+                  <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                    7-day free trial included — no credit card required
+                  </p>
                 </CardContent>
               </Card>
             );
