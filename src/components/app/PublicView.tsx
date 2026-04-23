@@ -218,8 +218,8 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                    <Crown className="w-3 h-3 text-white" />
                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ring-1 ring-background" />
                  </span>
+                 <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/30">Owner</span>
                  Command Center
-                 <span className="ml-1 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/30">Owner</span>
                </button>
                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight whitespace-nowrap">
                  <span className="bg-gradient-to-r from-[#f97316] via-[#ef4444] to-[#ec4899] bg-clip-text text-transparent">You're Powering</span> <span className="bg-gradient-to-r from-primary to-[hsl(213,97%,87%)] bg-clip-text text-transparent">The Future</span>
