@@ -45,13 +45,13 @@ const Terms = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">5. Payments & Billing</h2>
-          <p>All payments are processed by Paddle.com Market Limited ("Paddle"), acting as our Merchant of Record. Paddle is responsible for payment processing, tax calculation, collection, and remittance, as well as issuing invoices and receipts. By subscribing, you also agree to <a href="https://www.paddle.com/legal/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Paddle's Terms of Use</a>.</p>
+          <p>All payments are securely processed by our authorized payment provider, acting as Merchant of Record. The provider is responsible for payment processing, tax calculation, collection, and remittance, as well as issuing invoices and receipts.</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Subscriptions are billed on a monthly recurring basis</li>
             <li>Your subscription renews automatically unless cancelled before the renewal date</li>
-            <li>Paddle will charge the payment method on file for each renewal</li>
-            <li>All applicable taxes (VAT, GST, sales tax) are added at checkout by Paddle</li>
-            <li>Invoices and receipts are provided by Paddle for each transaction</li>
+            <li>Your payment method on file will be charged for each renewal</li>
+            <li>All applicable taxes (VAT, GST, sales tax) are added at checkout</li>
+            <li>Invoices and receipts are provided for each transaction</li>
           </ul>
         </section>
 
@@ -62,7 +62,7 @@ const Terms = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">7. Cancellation & Refunds</h2>
-          <p>You may cancel your subscription at any time. Upon cancellation, your access continues until the end of the current billing period. Refund eligibility is governed by our <a href="/refund-policy" className="text-primary hover:underline">Refund Policy</a>. Refund requests are processed through Paddle.</p>
+          <p>You may cancel your subscription at any time. Upon cancellation, your access continues until the end of the current billing period. Refund eligibility is governed by our <a href="/refund-policy" className="text-primary hover:underline">Refund Policy</a>. Refund requests are processed through our authorized payment provider.</p>
         </section>
 
         <section className="space-y-3">
