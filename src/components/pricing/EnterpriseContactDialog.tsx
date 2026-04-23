@@ -69,13 +69,23 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
     }
     setSubmitting(true);
     try {
+      const d = parsed.data;
       const payload = {
-        ...parsed.data,
+        full_name: d.full_name,
+        company_name: d.company_name,
+        work_email: d.work_email,
+        phone: d.phone || null,
+        industry: d.industry || null,
+        team_size: d.team_size || null,
+        country: d.country || null,
+        current_challenges: d.current_challenges || null,
+        features_needed: d.features_needed || null,
+        preferred_contact_method: d.preferred_contact_method || null,
         source: "Website Enterprise Pricing Page",
         status: "new",
         currency_context: "GBP",
       };
-      const { error } = await supabase.from("enterprise_leads").insert([payload]);
+      const { error } = await supabase.from("enterprise_leads").insert(payload);
       if (error) throw error;
 
       // Fire-and-forget owner notification
