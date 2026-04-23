@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
 
 const Login = lazy(() => import("./pages/Login"));
@@ -27,6 +28,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const OwnerConsole = lazy(() => import("./pages/OwnerConsole"));
+const EnterpriseConsole = lazy(() => import("./pages/EnterpriseConsole"));
 const RailwayDashboard = lazy(() => import("./pages/RailwayDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
@@ -75,6 +77,9 @@ const App = () => (
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
               <Route path="/owner" element={<ProtectedRoute><OwnerConsole /></ProtectedRoute>} />
+              <Route path="/owner-crm" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
+              <Route path="/admin/enterprise" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
+              <Route path="/enterprise-console" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
               <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>

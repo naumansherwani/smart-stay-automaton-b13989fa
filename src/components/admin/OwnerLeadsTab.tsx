@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { RefreshCw, Mail, Phone, Globe, Users, Building2, Inbox } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface EnterpriseLead {
   id: string;
@@ -79,6 +80,15 @@ export default function OwnerLeadsTab({ showSecret = true }: { showSecret?: bool
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between rounded-lg border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-4 py-2.5">
+        <div className="text-xs">
+          <span className="font-semibold text-amber-400">New:</span>{" "}
+          <span className="text-muted-foreground">Full Enterprise Sales CRM with pipeline, deals, tasks & analytics.</span>
+        </div>
+        <Link to="/owner-crm" className="text-xs font-medium text-amber-400 hover:text-amber-300 underline underline-offset-2">
+          Open Enterprise CRM →
+        </Link>
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
