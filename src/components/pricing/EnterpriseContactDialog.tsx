@@ -133,12 +133,12 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
             <Building2 className="h-6 w-6 text-amber-400" />
           </div>
           <DialogTitle className="text-center text-xl">
-            {success ? "Request Received" : "Talk to Enterprise Sales"}
+            {success ? "Request Received" : "Get Your Custom HostFlow AI Proposal"}
           </DialogTitle>
           <DialogDescription className="text-center">
             {success
-              ? "Our Enterprise Team will be in touch shortly."
-              : "Tailored pricing in GBP, dedicated onboarding and custom integrations. We respond within 1 business day."}
+              ? "Our Enterprise Team will email you a tailored proposal shortly."
+              : "Tell us your needs and receive a tailored business proposal — no meeting required."}
           </DialogDescription>
         </DialogHeader>
 
@@ -147,11 +147,16 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-500/40">
               <CheckCircle2 className="h-7 w-7 text-emerald-400" />
             </div>
-            <p className="text-sm text-foreground leading-relaxed px-4">
-              Thank you for contacting <span className="font-semibold">HostFlow AI Technologies</span>.
-              <br />
-              Our Enterprise Team has received your request and will contact you shortly.
-            </p>
+            <div className="text-sm text-foreground leading-relaxed px-4 space-y-2">
+              <p className="font-semibold">Thank you. Your Enterprise request has been received.</p>
+              <p className="text-muted-foreground">
+                Our team will review your requirements and send a custom proposal shortly.
+              </p>
+              <p className="text-xs text-muted-foreground">No meeting required unless requested.</p>
+              <p className="text-xs pt-2">
+                Direct line: <a href="mailto:enterprise@hostflowai.live" className="text-amber-400 hover:underline">enterprise@hostflowai.live</a>
+              </p>
+            </div>
             <Button
               onClick={() => handleOpenChange(false)}
               className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:opacity-95"
@@ -163,7 +168,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 flex items-center gap-2 text-xs text-muted-foreground">
               <Sparkles className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-              Custom plan & volume pricing in GBP (£) · SSO · Dedicated onboarding
+              Custom proposal · Async onboarding · Email-only flow · Reply via <span className="text-amber-400">enterprise@hostflowai.live</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -229,11 +234,10 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
                 <Select value={form.preferred_contact_method} onValueChange={(v) => update("preferred_contact_method", v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Email">Email</SelectItem>
-                    <SelectItem value="Phone">Phone</SelectItem>
-                    <SelectItem value="Video Call">Video Call</SelectItem>
+                    <SelectItem value="Email">Email only</SelectItem>
                   </SelectContent>
                 </Select>
+                <p className="text-[11px] text-muted-foreground">All communication handled via email. No calls required.</p>
               </div>
             </div>
 
@@ -245,11 +249,11 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
               {submitting ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting…</>
               ) : (
-                "Submit Enterprise Inquiry"
+                "Request Proposal"
               )}
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">
-              We'll reply within 1 business day · All pricing in GBP (£)
+              Reply within 1 business day from <span className="text-amber-400">enterprise@hostflowai.live</span>
             </p>
           </form>
         )}
