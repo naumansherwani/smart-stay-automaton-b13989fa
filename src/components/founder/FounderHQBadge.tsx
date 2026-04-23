@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Crown, ArrowUpRight } from "lucide-react";
@@ -6,6 +7,7 @@ import { Crown, ArrowUpRight } from "lucide-react";
 export default function FounderHQBadge() {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
@@ -16,7 +18,7 @@ export default function FounderHQBadge() {
 
   return (
     <button
-      onClick={() => window.open("/founder", "_blank", "noopener")}
+      onClick={() => navigate("/founder")}
       className="group fixed bottom-6 right-6 z-[60] flex items-center gap-2.5 pl-3 pr-4 py-2.5 rounded-full bg-gradient-to-r from-[#0F172A] to-[#1F2937] border border-amber-500/30 shadow-2xl shadow-amber-500/20 hover:shadow-amber-500/40 hover:border-amber-500/60 transition-all duration-300"
       title="Open Founder Command Center"
     >
