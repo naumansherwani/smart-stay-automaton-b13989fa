@@ -28,11 +28,11 @@ export default function EnterpriseConsole() {
             </div>
             <div className="min-w-0">
               <h1 className="text-base font-bold truncate">Enterprise Sales CRM</h1>
-              <p className="text-[11px] text-muted-foreground truncate">Internal sales operations · separated from customer CRM</p>
+              <p className="text-[11px] text-muted-foreground truncate">Multinational pipeline · async sales · GBP / USD / EUR / AED</p>
             </div>
           </div>
           <Badge variant="outline" className="text-[10px] gap-1 shrink-0 hidden sm:flex">
-            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Admin Only · GBP
+            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Admin Only · Global
           </Badge>
         </div>
       </header>

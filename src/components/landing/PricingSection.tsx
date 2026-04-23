@@ -233,27 +233,27 @@ const PricingSection = () => {
           {/* Enterprise card */}
           <Card className="relative flex flex-col bg-gradient-to-b from-card/70 to-card/40 backdrop-blur-sm border-amber-500/50 ring-2 ring-amber-500/30 shadow-[0_0_40px_hsl(38,92%,55%,0.2)] hover:ring-amber-500/60 hover:shadow-[0_0_50px_hsl(38,92%,55%,0.4)] hover:border-amber-500/70 transition-all duration-300 hover:-translate-y-1">
             <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white border-0 shadow-[0_0_20px_hsl(38,92%,55%,0.6)] px-4 py-1">
-              <Star className="w-3 h-3 mr-1 fill-white" /> Enterprise
+              <Star className="w-3 h-3 mr-1 fill-white" /> Enterprise · Global
             </Badge>
             <CardHeader className="text-center pb-2 pt-8">
               <CardTitle className="text-lg font-bold">Enterprise</CardTitle>
-              <p className="text-xs text-muted-foreground">Custom AI systems for serious businesses.</p>
+              <p className="text-xs text-muted-foreground">Built for multinational teams &amp; growing global brands.</p>
               <div className="mt-4">
                 <span className="text-4xl font-extrabold text-foreground">Custom</span>
-                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing in GBP (£)</div>
+                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing · GBP, USD, EUR &amp; AED</div>
               </div>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col pt-4">
               <ul className="space-y-2.5 flex-1 mb-4">
                 {[
-                  "Multi-user teams",
-                  "Dedicated onboarding",
-                  "Custom workflows",
-                  "Priority support",
-                  "Security controls",
-                  "Tailored pricing",
-                  "Invoice / Contract billing",
-                  "Async onboarding (no calls required)",
+                  "Multi-region, multi-user teams",
+                  "Dedicated success manager",
+                  "Custom AI workflows & integrations",
+                  "SSO, SAML & enterprise-grade security",
+                  "99.9% uptime SLA · priority support",
+                  "Invoice, contract & PO-based billing",
+                  "GDPR & data residency options",
+                  "Async onboarding — no calls required",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
@@ -262,7 +262,7 @@ const PricingSection = () => {
                 ))}
               </ul>
               <p className="text-xs text-amber-400/90 italic mb-4 text-center">
-                We handle everything online.
+                Trusted by serious teams. We handle everything online.
               </p>
               <EnterpriseContactDialog
                 trigger={
