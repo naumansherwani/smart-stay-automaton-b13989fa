@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Inbox as InboxIcon, Star, AlertTriangle, Send as SendIcon, FileText, Clock, Archive, Trash2, ShieldAlert,
-  Search, RefreshCw, Pencil, Reply, Forward, MailOpen, MoreHorizontal, Paperclip, CornerUpLeft, Loader2
+  Search, RefreshCw, Pencil, Reply, Forward, MailOpen, MoreHorizontal, Paperclip, CornerUpLeft, Loader2,
+  Building2, LifeBuoy, Receipt, Sparkles
 } from "lucide-react";
-import { useOwnerMailbox, MailFolder, MailDetail } from "@/hooks/useOwnerMailbox";
+import { useOwnerMailbox, MailFolder, MailDetail, MailIdentity, MAIL_IDENTITIES } from "@/hooks/useOwnerMailbox";
 import ComposeModal, { ComposeInitial } from "@/components/founder/email/ComposeModal";
 
 const FOLDERS: { id: MailFolder; label: string; icon: any }[] = [
@@ -18,6 +19,24 @@ const FOLDERS: { id: MailFolder; label: string; icon: any }[] = [
   { id: "spam", label: "Spam", icon: ShieldAlert },
   { id: "trash", label: "Trash", icon: Trash2 },
 ];
+
+type IdentityFilter = "all" | MailIdentity;
+
+const IDENTITY_TABS: { id: IdentityFilter; label: string; icon: any; color: string; address?: string }[] = [
+  { id: "all",        label: "All",        icon: InboxIcon, color: "var(--fos-muted)" },
+  { id: "enterprise", label: "Enterprise", icon: Building2, color: "#F59E0B", address: "enterprise@hostflowai.live" },
+  { id: "support",    label: "Support",    icon: LifeBuoy,  color: "#10B981", address: "support@hostflowai.live" },
+  { id: "billing",    label: "Billing",    icon: Receipt,   color: "#3B82F6", address: "billing@hostflowai.live" },
+  { id: "connectai",  label: "General",    icon: Sparkles,  color: "#8B5CF6", address: "connectai@hostflowai.live" },
+];
+
+const IDENTITY_META: Record<MailIdentity, { label: string; color: string }> = {
+  enterprise: { label: "Enterprise", color: "#F59E0B" },
+  support:    { label: "Support",    color: "#10B981" },
+  billing:    { label: "Billing",    color: "#3B82F6" },
+  connectai:  { label: "General",    color: "#8B5CF6" },
+  general:    { label: "Other",      color: "#64748B" },
+};
 
 function relTime(d: string | Date) {
   const dt = new Date(d);
@@ -35,6 +54,7 @@ function relTime(d: string | Date) {
 
 export default function Emails() {
   const [folder, setFolder] = useState<MailFolder>("inbox");
+  const [identityFilter, setIdentityFilter] = useState<IdentityFilter>("all");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedUid, setSelectedUid] = useState<number | null>(null);
@@ -46,6 +66,22 @@ export default function Emails() {
   const mb = useOwnerMailbox(folder, search);
 
   useEffect(() => { setSelectedUid(null); setDetail(null); }, [folder]);
+  useEffect(() => { setSelectedUid(null); setDetail(null); }, [identityFilter]);
+
+  const visibleMessages = useMemo(() => {
+    if (identityFilter === "all") return mb.messages;
+    return mb.messages.filter((m) => (m.identity || "general") === identityFilter);
+  }, [mb.messages, identityFilter]);
+
+  const identityCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: mb.messages.length };
+    for (const id of ["enterprise","support","billing","connectai"]) counts[id] = 0;
+    for (const m of mb.messages) {
+      const k = m.identity || "general";
+      counts[k] = (counts[k] || 0) + 1;
+    }
+    return counts;
+  }, [mb.messages]);
 
   useEffect(() => {
     if (selectedUid == null) { setDetail(null); return; }
