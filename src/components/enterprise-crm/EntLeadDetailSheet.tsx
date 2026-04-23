@@ -144,10 +144,10 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
   function fillTemplate(tmpl: ComposeInitial): ComposeInitial {
     if (!lead) return tmpl;
     const replace = (s: string) => s
-      .replaceAll("{{name}}", lead.full_name?.split(" ")[0] || "there")
-      .replaceAll("{{company}}", lead.company_name || "your team")
-      .replaceAll("{{industry}}", lead.industry || "your industry")
-      .replaceAll("{{team}}", lead.team_size || "your");
+      .replace(/\{\{name\}\}/g, lead.full_name?.split(" ")[0] || "there")
+      .replace(/\{\{company\}\}/g, lead.company_name || "your team")
+      .replace(/\{\{industry\}\}/g, lead.industry || "your industry")
+      .replace(/\{\{team\}\}/g, lead.team_size || "your");
     return { ...tmpl, to: lead.work_email, subject: tmpl.subject ? replace(tmpl.subject) : "", body: tmpl.body ? replace(tmpl.body) : "" };
   }
 
