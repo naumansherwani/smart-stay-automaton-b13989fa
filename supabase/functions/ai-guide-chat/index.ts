@@ -285,7 +285,7 @@ const ONBOARDING_FEATURES = `
 const MRR_COMMAND_CENTER = `
 ## 📈 MRR Growth Command Center (Owner Console → first tab)
 Elite founder dashboard with built-in left sidebar navigation across 10 sections. **All 12 metrics are LIVE — pulled directly from Supabase tables (\`subscriptions\`, \`profiles\`, \`cancellation_requests\`, \`retention_offers\`, \`payment_refunds\`, \`bookings\`). Zero manual feeding, zero mock data.**
-- **Overview**: 12 live metric cards — MRR, ARR, Active Subscribers, New This Month, Churned, ARPU, LTV (18-mo avg), Trial→Paid Conversion %, Net Growth %, Saved Revenue (from churn recovery), Expansion MRR, **Refund Rate (30-day, computed from \`payment_refunds\` table populated by Paddle \`adjustment.created\` webhook events — shows refund count and total $ amount; turns red >5%, amber >2%, green ≤2%)**. Plus 6-month MRR area chart.
+- **Overview**: 12 live metric cards — MRR, ARR, Active Subscribers, New This Month, Churned, ARPU, LTV (18-mo avg), Trial→Paid Conversion %, Net Growth %, Saved Revenue (from churn recovery), Expansion MRR, **Refund Rate (30-day, computed from \`payment_refunds\` table — shows refund count and total $ amount; turns red >5%, amber >2%, green ≤2%)**. Plus 6-month MRR area chart.
 - **Revenue**: New vs Churned MRR bar chart, Revenue by Plan pie (Basic $25 / Pro $55 / Premium $110), Revenue by Industry bar chart.
 - **Customers**: counts by plan & by industry, trialing/paused/churned breakdown.
 - **Funnel**: Visitors → Trial Signups → Checkout Opens → Payments → Activated → Retained 30d+ with conversion % between each stage.
@@ -296,7 +296,7 @@ Elite founder dashboard with built-in left sidebar navigation across 10 sections
 - **Live Inbox** (NEW — real-time alerts): Real-time admin inbox powered by Supabase Realtime on the \`admin_alerts\` table. Auto-creates alerts when (1) a Premium user cancels = CRITICAL "high_value_churn", (2) a Pro user cancels after 60+ days = HIGH, (3) any user active 180+ days cancels = HIGH, (4) any refund is recorded — severity scales with $ amount (≥\$500=critical, ≥\$100=high), (5) a payment fails. Owner sees a red badge with unread count on the sidebar, gets a toast notification the moment an event happens, can mark single/all as read, or dismiss. Uses Postgres triggers \`notify_high_value_churn\` (on subscriptions UPDATE) and \`notify_refund_event\` (on payment_refunds INSERT). 100% real-time, no polling.
 - **Actions**: Quick actions — launch discount campaign, send win-back emails, offer upgrade promo, export CSV report.
 
-Built for: founder/investor visibility. **Admin-only** via \`has_role('admin')\`. **NO data is manually entered** — every number traces back to a real DB row updated via Paddle webhooks, app events, or user actions.
+Built for: founder/investor visibility. **Admin-only** via \`has_role('admin')\`. **NO data is manually entered** — every number traces back to a real DB row updated via payment provider webhooks, app events, or user actions.
 `;
 
 const GROWTH_COMMAND_CENTER = `
@@ -317,8 +317,8 @@ Real-data conversion funnel for the last 30 days, sourced from \`profiles\`, \`s
   1. Visitors (estimated until external web analytics is connected — clearly labeled "est.")
   2. Signups (real, from profiles)
   3. Trial Started (real, from subscriptions.status='trialing' + active)
-  4. Checkout Opened (real, logged when Paddle overlay opens)
-  5. Checkout Completed (real, from Paddle's \`checkout.completed\` event)
+  4. Checkout Opened (real, logged when checkout overlay opens)
+  5. Checkout Completed (real, from payment provider's \`checkout.completed\` event)
   6. Paid (real, from subscriptions.status='active' in last 30d)
 - **Leak detection**: Any stage-to-stage drop greater than 50% is auto-flagged in an amber "Leaks Detected" card.
 - **Smart Checkout Rescue popup** (\`CheckoutRescuePopup\`): Exit-intent (mouse leaves top of viewport) shows a one-time-per-session offer of code STAY20 (20% off). Tracked as \`rescue_shown\`, \`rescued\` (accepted), or \`rescue_dismissed\`.
