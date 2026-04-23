@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2 } from "lucide-react";
+import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -231,13 +231,13 @@ const PricingSection = () => {
           })}
 
           {/* Enterprise card */}
-          <Card className="relative flex flex-col bg-card/50 backdrop-blur-sm border-amber-500/40 ring-1 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/50 hover:shadow-[0_0_30px_hsl(38,92%,55%,0.25)] hover:border-amber-500/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-4 py-1">
-              <Building2 className="w-3 h-3 mr-1" /> Enterprise
+          <Card className="relative flex flex-col bg-gradient-to-b from-card/70 to-card/40 backdrop-blur-sm border-amber-500/50 ring-2 ring-amber-500/30 shadow-[0_0_40px_hsl(38,92%,55%,0.2)] hover:ring-amber-500/60 hover:shadow-[0_0_50px_hsl(38,92%,55%,0.4)] hover:border-amber-500/70 transition-all duration-300 hover:-translate-y-1">
+            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white border-0 shadow-[0_0_20px_hsl(38,92%,55%,0.6)] px-4 py-1">
+              <Star className="w-3 h-3 mr-1 fill-white" /> Enterprise
             </Badge>
             <CardHeader className="text-center pb-2 pt-8">
               <CardTitle className="text-lg font-bold">Enterprise</CardTitle>
-              <p className="text-xs text-muted-foreground">For larger teams and custom deployments.</p>
+              <p className="text-xs text-muted-foreground">Custom AI systems for serious businesses.</p>
               <div className="mt-4">
                 <span className="text-4xl font-extrabold text-foreground">Custom</span>
                 <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing in GBP (£)</div>
@@ -248,10 +248,12 @@ const PricingSection = () => {
                 {[
                   "Multi-user teams",
                   "Dedicated onboarding",
-                  "Custom integrations",
+                  "Custom workflows",
                   "Priority support",
                   "Security controls",
                   "Tailored pricing",
+                  "Invoice / Contract billing",
+                  "Async onboarding (no calls required)",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
@@ -260,20 +262,20 @@ const PricingSection = () => {
                 ))}
               </ul>
               <p className="text-xs text-amber-400/90 italic mb-4 text-center">
-                Built for serious business growth.
+                We handle everything online.
               </p>
               <EnterpriseContactDialog
                 trigger={
                   <Button
                     variant="default"
-                    className="w-full font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_20px_hsl(38,92%,55%,0.3)] hover:shadow-[0_0_30px_hsl(38,92%,55%,0.5)]"
+                    className="w-full font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_20px_hsl(38,92%,55%,0.4)] hover:shadow-[0_0_30px_hsl(38,92%,55%,0.6)]"
                   >
-                    <Building2 className="w-4 h-4 mr-2" /> Contact Sales
+                    <Building2 className="w-4 h-4 mr-2" /> Get Custom Proposal
                   </Button>
                 }
               />
               <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                Typical reply within 1 business day
+                Reply within 1 business day · <a href="mailto:enterprise@hostflowai.live" className="text-amber-400 hover:underline">enterprise@hostflowai.live</a>
               </p>
             </CardContent>
           </Card>
