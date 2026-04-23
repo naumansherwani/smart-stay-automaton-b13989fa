@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, ShieldCheck, Globe2 } from "lucide-react";
+import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
 import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
+import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
 
 const PAYMENTS_PAUSED = true;
 
@@ -152,7 +153,7 @@ const PricingSection = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
           {PLANS.map((p) => {
             const isCurrent = subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
@@ -228,6 +229,54 @@ const PricingSection = () => {
               </Card>
             );
           })}
+
+          {/* Enterprise card */}
+          <Card className="relative flex flex-col bg-card/50 backdrop-blur-sm border-amber-500/40 ring-1 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/50 hover:shadow-[0_0_30px_hsl(38,92%,55%,0.25)] hover:border-amber-500/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-4 py-1">
+              <Building2 className="w-3 h-3 mr-1" /> Enterprise
+            </Badge>
+            <CardHeader className="text-center pb-2 pt-8">
+              <CardTitle className="text-lg font-bold">Enterprise</CardTitle>
+              <p className="text-xs text-muted-foreground">For larger teams and custom deployments.</p>
+              <div className="mt-4">
+                <span className="text-4xl font-extrabold text-foreground">Custom</span>
+                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing in GBP (£)</div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col pt-4">
+              <ul className="space-y-2.5 flex-1 mb-4">
+                {[
+                  "Multi-user teams",
+                  "Dedicated onboarding",
+                  "Custom integrations",
+                  "Priority support",
+                  "Security controls",
+                  "Tailored pricing",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm">
+                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
+                    <span className="text-foreground/80">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-amber-400/90 italic mb-4 text-center">
+                Built for serious business growth.
+              </p>
+              <EnterpriseContactDialog
+                trigger={
+                  <Button
+                    variant="default"
+                    className="w-full font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_20px_hsl(38,92%,55%,0.3)] hover:shadow-[0_0_30px_hsl(38,92%,55%,0.5)]"
+                  >
+                    <Building2 className="w-4 h-4 mr-2" /> Contact Sales
+                  </Button>
+                }
+              />
+              <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                Typical reply within 1 business day
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
