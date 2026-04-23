@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: "What plans are available?",
-    a: "We offer 3 plans: Basic ($25/mo) for solo operators, Pro ($55/mo) for growing businesses, and Premium ($110/mo) for advanced AI operations. All plans include a 7-day free trial."
+    a: "We offer 3 plans: Basic (£25/mo) for solo operators, Pro (£52/mo) for growing businesses, and Premium (£108/mo) for advanced AI operations. All plans include a 7-day free trial. GBP is our base currency — switch to USD, EUR, CHF, KWD, or PKR on the pricing page."
   },
   {
     q: "What is the AI CRM?",
