@@ -24,10 +24,22 @@ const IndustriesSection = () => {
 
   const handleClick = (industry: IndustryType) => {
     sessionStorage.setItem("preselected_industry", industry);
-    if (!user) {
-      navigate("/signup");
+    const target = !user ? "/signup" : "/onboarding";
+    if (user) {
+      // Logged-in users: open the selected industry workspace in a NEW tab
+      // so their current dashboard tab stays untouched.
+      try {
+        // Persist selection for the new tab to read (sessionStorage is per-tab,
+        // so also use localStorage as a one-shot handoff).
+        localStorage.setItem("preselected_industry", industry);
+      } catch { /* ignore storage errors */ }
+      const win = window.open(target, "_blank", "noopener,noreferrer");
+      if (!win) {
+        // Pop-up blocked — fall back to same-tab navigation.
+        navigate(target);
+      }
     } else {
-      navigate("/onboarding");
+      navigate(target);
     }
   };
 
