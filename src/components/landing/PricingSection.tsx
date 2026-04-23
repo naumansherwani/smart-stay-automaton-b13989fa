@@ -275,7 +275,7 @@ const PricingSection = () => {
                 }
               />
               <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                Reply within 1 business day · <a href="mailto:enterprise@hostflowai.live" className="text-amber-400 hover:underline">enterprise@hostflowai.live</a>
+                Contact: <a href="mailto:connectai@hostflowai.live" className="text-amber-400 hover:underline">connectai@hostflowai.live</a> · Reply within 1 business day
               </p>
             </CardContent>
           </Card>

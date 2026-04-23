@@ -24,10 +24,10 @@ type IdentityFilter = "all" | MailIdentity;
 
 const IDENTITY_TABS: { id: IdentityFilter; label: string; icon: any; color: string; address?: string }[] = [
   { id: "all",        label: "All",        icon: InboxIcon, color: "var(--fos-muted)" },
-  { id: "enterprise", label: "Enterprise", icon: Building2, color: "#F59E0B", address: "enterprise@hostflowai.live" },
+  { id: "enterprise", label: "Enterprise", icon: Building2, color: "#F59E0B", address: "connectai@hostflowai.live" },
   { id: "support",    label: "Support",    icon: LifeBuoy,  color: "#10B981", address: "support@hostflowai.live" },
   { id: "billing",    label: "Billing",    icon: Receipt,   color: "#3B82F6", address: "billing@hostflowai.live" },
-  { id: "connectai",  label: "General",    icon: Sparkles,  color: "#8B5CF6", address: "connectai@hostflowai.live" },
+  { id: "general",    label: "General",    icon: Sparkles,  color: "#8B5CF6", address: "connectai@hostflowai.live" },
 ];
 
 const IDENTITY_META: Record<MailIdentity, { label: string; color: string }> = {

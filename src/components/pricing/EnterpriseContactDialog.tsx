@@ -154,7 +154,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
               </p>
               <p className="text-xs text-muted-foreground">No meeting required unless requested.</p>
               <p className="text-xs pt-2">
-                Direct line: <a href="mailto:enterprise@hostflowai.live" className="text-amber-400 hover:underline">enterprise@hostflowai.live</a>
+                Direct line: <a href="mailto:connectai@hostflowai.live" className="text-amber-400 hover:underline">connectai@hostflowai.live</a>
               </p>
             </div>
             <Button
@@ -168,7 +168,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 flex items-center gap-2 text-xs text-muted-foreground">
               <Sparkles className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-              Custom proposal · Async onboarding · Email-only flow · Reply via <span className="text-amber-400">enterprise@hostflowai.live</span>
+              Custom proposal · Async onboarding · Email-only flow · Reply via <span className="text-amber-400">connectai@hostflowai.live</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -253,7 +253,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
               )}
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">
-              Reply within 1 business day from <span className="text-amber-400">enterprise@hostflowai.live</span>
+              Reply within 1 business day from <span className="text-amber-400">connectai@hostflowai.live</span>
             </p>
           </form>
         )}
