@@ -21,7 +21,7 @@ const RefundPolicy = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">How to Request a Refund</h2>
-          <p>Refunds are processed by our payment provider, Paddle. To request a refund, visit <a href="https://paddle.net" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">paddle.net</a> or contact our support team at <a href="mailto:support@hostflowai.com" className="text-primary hover:underline">support@hostflowai.com</a>.</p>
+          <p>Refunds are processed by our authorized payment provider. To request a refund, please contact our support team at <a href="mailto:support@hostflowai.com" className="text-primary hover:underline">support@hostflowai.com</a>.</p>
         </section>
 
         <section className="space-y-3">

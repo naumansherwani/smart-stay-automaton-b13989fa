@@ -75,19 +75,7 @@ const Settings = () => {
   const initials = getUserInitials(displayName, user?.email);
 
   const handleManageSubscription = async () => {
-    try {
-      const env = subscription?.environment || (import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN?.startsWith("test_") ? "sandbox" : "live");
-      const { data, error } = await supabase.functions.invoke("customer-portal", {
-        body: { environment: env },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      if (data?.url) {
-        window.open(data.url, "_blank");
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Could not open subscription portal");
-    }
+    toast.info("Subscription management is paused while we onboard a new payment provider.");
   };
 
   if (!isAdmin) {
@@ -98,7 +86,7 @@ const Settings = () => {
           <h1 className="text-2xl font-bold text-foreground">{t("settings.title")}</h1>
 
           {/* Subscription Management */}
-          {subscription?.paddle_subscription_id && (
+          {false && subscription && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2"><CreditCard className="w-4 h-4" /> Subscription</CardTitle>

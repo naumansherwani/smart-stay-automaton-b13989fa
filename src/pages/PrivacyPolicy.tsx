@@ -21,7 +21,7 @@ const PrivacyPolicy = () => (
             <li>Full name and email address</li>
             <li>Company/business name and industry type</li>
             <li>Phone number and business address</li>
-            <li>Payment and billing information (processed securely by our payment provider, Paddle)</li>
+            <li>Payment and billing information (processed securely by our authorized payment provider)</li>
             <li>Profile photos and avatars</li>
           </ul>
           <h3 className="text-lg font-medium text-white/90">2.2 Usage Data</h3>
@@ -50,7 +50,7 @@ const PrivacyPolicy = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">4. Payment Processing</h2>
-          <p>All payment transactions are processed through Paddle.com Market Limited ("Paddle"), our Merchant of Record. Paddle handles all payment data, tax collection, and invoicing on our behalf. We do not store your credit card numbers or payment credentials on our servers. For information about how Paddle handles your data, please refer to <a href="https://www.paddle.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Paddle's Privacy Policy</a>.</p>
+          <p>All payment transactions are processed through our authorized payment provider, acting as Merchant of Record. The provider handles all payment data, tax collection, and invoicing on our behalf. We do not store your credit card numbers or payment credentials on our servers.</p>
         </section>
 
         <section className="space-y-3">
@@ -67,7 +67,7 @@ const PrivacyPolicy = () => (
           <h2 className="text-xl font-semibold text-white">7. Data Sharing & Third Parties</h2>
           <p>We do not sell, rent, or trade your personal information. We may share data only with:</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Payment processor (Paddle):</strong> To process subscriptions and payments</li>
+            <li><strong>Payment processor:</strong> To process subscriptions and payments</li>
             <li><strong>Cloud infrastructure providers:</strong> To host and deliver our services</li>
             <li><strong>Analytics services:</strong> Aggregated, anonymized data to improve our platform</li>
             <li><strong>Legal requirements:</strong> When required by law or to protect our rights</li>
