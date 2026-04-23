@@ -82,6 +82,8 @@ const App = () => (
               <Route path="/admin/enterprise" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
               <Route path="/enterprise-console" element={<AdminRoute><EnterpriseConsole /></AdminRoute>} />
               <Route path="/founder" element={<AdminRoute><FounderOS /></AdminRoute>} />
+              <Route path="/owner/email" element={<AdminRoute><FounderOS /></AdminRoute>} />
+              <Route path="/owner/executive" element={<AdminRoute><FounderOS /></AdminRoute>} />
               <Route path="/railway" element={<ProtectedRoute><RailwayDashboard /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
