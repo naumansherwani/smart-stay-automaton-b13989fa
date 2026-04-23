@@ -1,5 +1,0 @@
-[functions.polar-webhook]
-verify_jwt = false
-
-[functions.polar-create-checkout]
-verify_jwt = true
