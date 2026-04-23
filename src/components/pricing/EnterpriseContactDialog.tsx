@@ -75,7 +75,7 @@ export default function EnterpriseContactDialog({ trigger }: EnterpriseContactDi
         status: "new",
         currency_context: "GBP",
       };
-      const { error } = await supabase.from("enterprise_leads").insert(payload);
+      const { error } = await supabase.from("enterprise_leads").insert([payload]);
       if (error) throw error;
 
       // Fire-and-forget owner notification
