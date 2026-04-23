@@ -12,10 +12,24 @@ const corsHeaders = {
 
 const ZOHO_EMAIL = Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live";
 const ZOHO_APP_PASSWORD = Deno.env.get("ZOHO_APP_PASSWORD") || "";
+const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 
-function imapClient() {
+const REGION_HOSTS: Record<string, { imap: string; smtp: string }> = {
+  com: { imap: "imap.zoho.com", smtp: "smtp.zoho.com" },
+  eu:  { imap: "imap.zoho.eu",  smtp: "smtp.zoho.eu" },
+  in:  { imap: "imap.zoho.in",  smtp: "smtp.zoho.in" },
+  au:  { imap: "imap.zoho.com.au", smtp: "smtp.zoho.com.au" },
+};
+
+function pickHosts() {
+  if (ZOHO_REGION && REGION_HOSTS[ZOHO_REGION]) return [REGION_HOSTS[ZOHO_REGION]];
+  // try common regions in order
+  return [REGION_HOSTS.com, REGION_HOSTS.eu, REGION_HOSTS.in];
+}
+
+function imapClient(host: string) {
   return new ImapFlow({
-    host: "imap.zoho.com",
+    host,
     port: 993,
     secure: true,
     auth: { user: ZOHO_EMAIL, pass: ZOHO_APP_PASSWORD },
@@ -23,13 +37,28 @@ function imapClient() {
   });
 }
 
-function smtpTransport() {
+function smtpTransport(host: string) {
   return nodemailer.createTransport({
-    host: "smtp.zoho.com",
+    host,
     port: 465,
     secure: true,
     auth: { user: ZOHO_EMAIL, pass: ZOHO_APP_PASSWORD },
   });
+}
+
+async function connectImap() {
+  let lastErr: any = null;
+  for (const h of pickHosts()) {
+    try {
+      const c = imapClient(h.imap);
+      await c.connect();
+      return { client: c, host: h };
+    } catch (e) {
+      lastErr = e;
+      console.warn(`IMAP connect failed on ${h.imap}: ${(e as any)?.message}`);
+    }
+  }
+  throw new Error(`Could not connect to Zoho IMAP. Verify (1) email is correct, (2) you generated an App-Specific Password in Zoho (Settings → Security → App Passwords) — regular passwords don't work, (3) IMAP is enabled in Zoho Mail Settings. Last error: ${lastErr?.message || lastErr}`);
 }
 
 const FOLDER_MAP: Record<string, string> = {
@@ -43,8 +72,7 @@ const FOLDER_MAP: Record<string, string> = {
 
 async function listMessages(folderKey: string, limit = 50, search?: string) {
   const folder = FOLDER_MAP[folderKey] || "INBOX";
-  const client = imapClient();
-  await client.connect();
+  const { client } = await connectImap();
   const out: any[] = [];
   try {
     const lock = await client.getMailboxLock(folder);
@@ -110,8 +138,7 @@ function hasAttachments(node: any): boolean {
 
 async function getMessage(folderKey: string, uid: number) {
   const folder = FOLDER_MAP[folderKey] || "INBOX";
-  const client = imapClient();
-  await client.connect();
+  const { client } = await connectImap();
   try {
     const lock = await client.getMailboxLock(folder);
     try {
@@ -141,8 +168,7 @@ async function getMessage(folderKey: string, uid: number) {
 
 async function modifyFlags(folderKey: string, uid: number, add?: string[], remove?: string[]) {
   const folder = FOLDER_MAP[folderKey] || "INBOX";
-  const client = imapClient();
-  await client.connect();
+  const { client } = await connectImap();
   try {
     const lock = await client.getMailboxLock(folder);
     try {
@@ -156,8 +182,7 @@ async function modifyFlags(folderKey: string, uid: number, add?: string[], remov
 async function moveMessage(fromFolderKey: string, toFolderKey: string, uid: number) {
   const from = FOLDER_MAP[fromFolderKey] || "INBOX";
   const to = FOLDER_MAP[toFolderKey] || "Trash";
-  const client = imapClient();
-  await client.connect();
+  const { client } = await connectImap();
   try {
     const lock = await client.getMailboxLock(from);
     try {
@@ -168,8 +193,11 @@ async function moveMessage(fromFolderKey: string, toFolderKey: string, uid: numb
 }
 
 async function sendMail(payload: { to: string; cc?: string; bcc?: string; subject: string; html: string; text?: string; replyTo?: string; inReplyTo?: string; references?: string }) {
-  const transporter = smtpTransport();
-  const info = await transporter.sendMail({
+  let lastErr: any = null;
+  for (const h of pickHosts()) {
+    try {
+      const transporter = smtpTransport(h.smtp);
+      const info = await transporter.sendMail({
     from: { name: "HostFlow AI · Nauman Sherwani", address: ZOHO_EMAIL },
     to: payload.to,
     cc: payload.cc,
@@ -180,19 +208,19 @@ async function sendMail(payload: { to: string; cc?: string; bcc?: string; subjec
     inReplyTo: payload.inReplyTo,
     references: payload.references,
     replyTo: payload.replyTo,
-  });
-  // Try to append to Sent folder
-  try {
-    const client = imapClient();
-    await client.connect();
-    try {
-      const raw = await buildRaw(payload);
-      await client.append("Sent", raw, ["\\Seen"]);
-    } finally { await client.logout().catch(() => {}); }
-  } catch (e) {
-    console.warn("append-to-sent failed", (e as any)?.message);
+      });
+      // Try to append to Sent folder
+      try {
+        const { client } = await connectImap();
+        try {
+          const raw = await buildRaw(payload);
+          await client.append("Sent", raw, ["\\Seen"]);
+        } finally { await client.logout().catch(() => {}); }
+      } catch (e) { console.warn("append-to-sent failed", (e as any)?.message); }
+      return { ok: true, messageId: info.messageId, smtpHost: h.smtp };
+    } catch (e) { lastErr = e; console.warn(`SMTP send failed on ${h.smtp}: ${(e as any)?.message}`); }
   }
-  return { ok: true, messageId: info.messageId };
+  throw new Error(`Send failed across regions. Verify App Password + IMAP/SMTP enabled in Zoho. Last error: ${lastErr?.message || lastErr}`);
 }
 
 async function buildRaw(p: { to: string; cc?: string; subject: string; html: string }) {
@@ -210,8 +238,7 @@ async function buildRaw(p: { to: string; cc?: string; subject: string; html: str
 }
 
 async function counts() {
-  const client = imapClient();
-  await client.connect();
+  const { client } = await connectImap();
   const result: Record<string, { total: number; unread: number }> = {};
   try {
     for (const [k, name] of Object.entries(FOLDER_MAP)) {
