@@ -190,15 +190,42 @@ export default function Emails() {
               <RefreshCw className={`w-3.5 h-3.5 ${mb.loading ? "animate-spin" : ""}`} />
             </button>
           </div>
+          {/* Identity tabs */}
+          <div className="px-2 py-2 border-b border-[var(--fos-border)] flex items-center gap-1 overflow-x-auto">
+            {IDENTITY_TABS.map((tab) => {
+              const Icon = tab.icon;
+              const active = identityFilter === tab.id;
+              const count = identityCounts[tab.id] ?? 0;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setIdentityFilter(tab.id)}
+                  className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-medium whitespace-nowrap transition-all border ${
+                    active
+                      ? "bg-[var(--fos-accent)]/10 border-[var(--fos-accent)]/40 text-[var(--fos-text)]"
+                      : "border-transparent text-[var(--fos-muted)] hover:text-[var(--fos-text)]"
+                  }`}
+                  title={tab.address || "All identities"}
+                >
+                  <Icon className="w-3 h-3" style={{ color: tab.color }} />
+                  {tab.label}
+                  {count > 0 && <span className="text-[9px] tabular-nums opacity-70">{count}</span>}
+                </button>
+              );
+            })}
+          </div>
           <div className="flex-1 overflow-y-auto">
-            {mb.loading && mb.messages.length === 0 && (
+            {mb.loading && visibleMessages.length === 0 && (
               <div className="p-8 text-center text-[var(--fos-muted)] text-xs">Loading mailbox…</div>
             )}
-            {!mb.loading && mb.messages.length === 0 && (
-              <div className="p-8 text-center text-[var(--fos-muted)] text-xs">No messages.</div>
+            {!mb.loading && visibleMessages.length === 0 && (
+              <div className="p-8 text-center text-[var(--fos-muted)] text-xs">
+                {identityFilter === "all" ? "No messages." : `No ${IDENTITY_META[identityFilter as MailIdentity]?.label || ""} messages.`}
+              </div>
             )}
-            {mb.messages.map((m) => {
+            {visibleMessages.map((m) => {
               const active = selectedUid === m.uid;
+              const idMeta = IDENTITY_META[(m.identity || "general") as MailIdentity];
               return (
                 <button
                   key={m.uid}
@@ -212,6 +239,14 @@ export default function Emails() {
                     <span className={`text-[12px] truncate flex-1 ${m.unread ? "text-[var(--fos-text)] font-semibold" : "text-[var(--fos-muted)]"}`}>
                       {m.from?.name || m.from?.address || "Unknown"}
                     </span>
+                    {idMeta && (
+                      <span
+                        className="text-[8px] uppercase tracking-wider px-1 py-0.5 rounded font-bold border"
+                        style={{ color: idMeta.color, borderColor: idMeta.color + "55", background: idMeta.color + "15" }}
+                      >
+                        {idMeta.label}
+                      </span>
+                    )}
                     {m.hasAttachment && <Paperclip className="w-3 h-3 text-[var(--fos-muted)] shrink-0" />}
                     <span className="text-[10px] text-[var(--fos-muted)] shrink-0 tabular-nums">{relTime(m.date)}</span>
                   </div>
