@@ -2,6 +2,7 @@ import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldChe
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
   | "overview" | "executive" | "revenue" | "customers" | "leads" | "crm"
@@ -32,9 +33,7 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
     <aside className="founder-sidebar fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40">
       <div className="px-6 py-5 border-b border-[var(--fos-border)]">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[var(--fos-accent)] to-[#0EA5E9] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[var(--fos-accent)]/20">
-            HF
-          </div>
+          <img src={logoImg} alt="HostFlow AI" className="w-9 h-9 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
           <div>
             <div className="text-[var(--fos-text)] text-sm font-semibold leading-tight">Founder OS</div>
             <div className="text-[var(--fos-muted)] text-[10px] tracking-widest uppercase">HostFlow AI</div>
