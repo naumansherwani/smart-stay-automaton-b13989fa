@@ -8,7 +8,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
-import FounderHQBadge from "@/components/founder/FounderHQBadge";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -87,7 +86,6 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-          <FounderHQBadge />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
