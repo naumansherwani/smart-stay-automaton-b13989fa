@@ -1,11 +1,12 @@
-import { LayoutDashboard, TrendingUp, Users, Target, Briefcase, Mail, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun } from "lucide-react";
+import { LayoutDashboard, TrendingUp, Users, Target, Briefcase, Inbox as InboxIcon, Zap, KanbanSquare, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export type FounderSection =
   | "overview" | "revenue" | "customers" | "leads" | "crm"
-  | "emails" | "tasks" | "ai" | "analytics" | "settings" | "profile";
+  | "inbox" | "actions" | "execution" | "security"
+  | "tasks" | "ai" | "analytics" | "settings" | "profile";
 
 const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -13,10 +14,13 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "customers", label: "Customers", icon: Users },
   { id: "leads", label: "Leads", icon: Target },
   { id: "crm", label: "CRM", icon: Briefcase },
-  { id: "emails", label: "Emails", icon: Mail },
+  { id: "inbox", label: "Owner Inbox", icon: InboxIcon },
+  { id: "actions", label: "Action Center", icon: Zap },
+  { id: "execution", label: "Execution Board", icon: KanbanSquare },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
   { id: "ai", label: "AI Adviser", icon: Sparkles },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "security", label: "Security", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Settings },
   { id: "profile", label: "Founder Profile", icon: UserCircle },
 ];
