@@ -34,6 +34,7 @@ const RailwayDashboard = lazy(() => import("./pages/RailwayDashboard"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/terms-and-conditions" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
+              <Route path="/checkout-success" element={<CheckoutSuccess />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/maintenance" element={<Maintenance />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

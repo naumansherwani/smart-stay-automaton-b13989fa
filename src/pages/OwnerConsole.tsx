@@ -10,6 +10,7 @@ import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
   Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift, Lock, Building2
 } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
 import OwnerUsersTab from "@/components/admin/OwnerUsersTab";
@@ -25,6 +26,7 @@ import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import OwnerGrowthCommandCenter from "@/components/admin/OwnerGrowthCommandCenter";
 import OwnerSalesFunnelTab from "@/components/admin/OwnerSalesFunnelTab";
 import OwnerLeadsTab from "@/components/admin/OwnerLeadsTab";
+import OwnerLaunchDiscountTab from "@/components/admin/OwnerLaunchDiscountTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
@@ -196,6 +198,9 @@ const OwnerConsole = () => {
             <TabsTrigger value="winback" className="gap-1.5 text-xs">
               <Gift className="w-3 h-3" /> Win-Back
             </TabsTrigger>
+            <TabsTrigger value="launch" className="gap-1.5 text-xs">
+              <Sparkles className="w-3 h-3" /> Launch Discount
+            </TabsTrigger>
             <TabsTrigger value="conflicts" className="gap-1.5 text-xs">
               <Lock className="w-3 h-3" /> Conflict Policy
             </TabsTrigger>
@@ -318,6 +323,10 @@ const OwnerConsole = () => {
 
           <TabsContent value="winback">
             <OwnerWinBackTab />
+          </TabsContent>
+
+          <TabsContent value="launch">
+            <OwnerLaunchDiscountTab showSecret={showSecret} />
           </TabsContent>
 
           <TabsContent value="conflicts">

@@ -231,6 +231,44 @@ const PREMIUM_FEATURES = [
   "Custom AI Training — Train AI on your specific business patterns, terminology and workflows. Available for ALL 8 industries. Premium plan only.",
 ];
 
+const LAUNCH_DISCOUNT_INFO = `
+## 🎉 Limited Launch Discount Campaign — IMPORTANT
+
+**Live promotional pricing for first-100-users per plan, valid April 30 → July 31, 2026.**
+
+| Plan | Normal Price | Launch Discount | Discounted Price |
+|------|--------------|-----------------|------------------|
+| Basic | £25 / month | **−12% off** | £22 / month |
+| Pro | £52 / month | **−15% off** | £44.20 / month |
+| Premium | £108 / month | **−20% off** | £86.40 / month |
+
+**Eligibility rules (be 100% clear with users):**
+- ✅ Available to the **first 100 paying users for EACH plan separately** (so 100 Basic + 100 Pro + 100 Premium = up to 300 spots total).
+- ✅ Campaign window: **April 30, 2026 → July 31, 2026** (UTC).
+- ✅ The discounted price is **locked in for 12 months** from the day the user subscribes.
+- ❌ Once any plan reaches 100 redemptions, that plan switches to normal price automatically.
+- ❌ On July 31, 2026 the entire campaign ends and **all plans return to normal pricing automatically**.
+- ❌ One discount claim per user per plan — no duplicate claims.
+
+**Live status:** The pricing page shows real-time remaining spots per plan, plus a countdown to July 31. If a plan is sold out or expired, the badge clearly says so and the price reverts to normal.
+
+**After expiry:** Normal pricing returns automatically — no manual action needed. Existing discounted users keep their locked-in price for the full 12 months.
+
+**Payment provider:** All checkouts go through Polar (our trusted billing partner). Polar handles cards, taxes, invoices and receipts globally.
+`;
+
+const REFUND_POLICY_SUMMARY = `
+## 💳 Refund Policy (summarize for users when asked)
+
+- **7-day refund window** for first-time customers only — request within 7 days of first purchase.
+- **Not refundable**: renewals, upgrades, partial months, misuse/abuse, change of mind after active usage.
+- **Duplicate or accidental charges**: reviewed fairly, resolved promptly.
+- **Technical issues**: if our team can't fix it in reasonable time, refund possible.
+- **7-day free trial** included on all plans — no card required to start.
+- **Cancel anytime** — access continues until end of paid period.
+- **Chargeback abuse** = account suspension. Always contact support@hostflowai.live first.
+`;
+
 const VOICE_AI_FEATURES = `
 ## 🎙️ AI Voice Assistant (ElevenLabs — Low Latency)
 - **Streaming Mode (default)**: Uses ElevenLabs Turbo v2.5 with low-latency optimization. First audio in **~300–500ms** (down from 1.5–3s).
@@ -605,6 +643,10 @@ ${GUARDRAILS}
 ${GROWTH_COMMAND_CENTER}
 
 ${SALES_FUNNEL_AND_RESCUE}
+
+${LAUNCH_DISCOUNT_INFO}
+
+${REFUND_POLICY_SUMMARY}
 
 Your role:
 - Explain features in simple, easy-to-understand language

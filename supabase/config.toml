@@ -22,3 +22,9 @@ verify_jwt = false
 
 [functions.owner-email-ai]
 verify_jwt = false
+
+[functions.polar-webhook]
+verify_jwt = false
+
+[functions.polar-create-checkout]
+verify_jwt = true

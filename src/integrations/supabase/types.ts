@@ -2184,6 +2184,51 @@ export type Database = {
           },
         ]
       }
+      launch_discount_redemptions: {
+        Row: {
+          created_at: string
+          discount_percent: number
+          discounted_price: number
+          id: string
+          locked_until: string
+          original_price: number
+          plan: string
+          polar_checkout_id: string | null
+          polar_subscription_id: string | null
+          redeemed_at: string
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          discount_percent: number
+          discounted_price: number
+          id?: string
+          locked_until: string
+          original_price: number
+          plan: string
+          polar_checkout_id?: string | null
+          polar_subscription_id?: string | null
+          redeemed_at?: string
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          discount_percent?: number
+          discounted_price?: number
+          id?: string
+          locked_until?: string
+          original_price?: number
+          plan?: string
+          polar_checkout_id?: string | null
+          polar_subscription_id?: string | null
+          redeemed_at?: string
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       logistics_drivers: {
         Row: {
           avatar: string | null
@@ -3593,9 +3638,16 @@ export type Database = {
           created_at: string
           current_period_end: string | null
           current_period_start: string | null
+          discount_applied: boolean | null
+          discount_locked_until: string | null
+          discount_percent: number | null
+          failed_payment_at: string | null
           id: string
           is_lifetime: boolean
           plan: Database["public"]["Enums"]["subscription_plan"]
+          polar_customer_id: string | null
+          polar_product_id: string | null
+          polar_subscription_id: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at: string
           trial_starts_at: string
@@ -3606,9 +3658,16 @@ export type Database = {
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
+          discount_applied?: boolean | null
+          discount_locked_until?: string | null
+          discount_percent?: number | null
+          failed_payment_at?: string | null
           id?: string
           is_lifetime?: boolean
           plan?: Database["public"]["Enums"]["subscription_plan"]
+          polar_customer_id?: string | null
+          polar_product_id?: string | null
+          polar_subscription_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string
           trial_starts_at?: string
@@ -3619,9 +3678,16 @@ export type Database = {
           created_at?: string
           current_period_end?: string | null
           current_period_start?: string | null
+          discount_applied?: boolean | null
+          discount_locked_until?: string | null
+          discount_percent?: number | null
+          failed_payment_at?: string | null
           id?: string
           is_lifetime?: boolean
           plan?: Database["public"]["Enums"]["subscription_plan"]
+          polar_customer_id?: string | null
+          polar_product_id?: string | null
+          polar_subscription_id?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string
           trial_starts_at?: string
@@ -4212,6 +4278,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_launch_discount_status: { Args: never; Returns: Json }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_lifetime_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
