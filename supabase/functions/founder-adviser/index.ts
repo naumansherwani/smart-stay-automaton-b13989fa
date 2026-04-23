@@ -11,7 +11,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { messages, mode } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -21,16 +21,19 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const [subs, leads, deals] = await Promise.all([
+    const [subs, leads, deals, refunds, alerts] = await Promise.all([
       supabase.from("subscriptions").select("plan,status,created_at"),
-      supabase.from("enterprise_leads").select("status,country,industry,created_at"),
+      supabase.from("enterprise_leads").select("status,country,industry,team_size,created_at,estimated_value_gbp"),
       supabase.from("ent_deals").select("stage,value_gbp,created_at"),
+      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
+      supabase.from("admin_alerts").select("alert_type,severity,created_at").gte("created_at", new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()),
     ]);
 
     const PLAN_GBP: Record<string, number> = { basic: 19, pro: 49, premium: 99, enterprise: 499, trial: 0 };
     const subsArr = subs.data || [];
     const active = subsArr.filter((s: any) => ["active", "trialing"].includes(s.status));
     const canceled = subsArr.filter((s: any) => s.status === "canceled");
+    const trials = subsArr.filter((s: any) => s.status === "trialing");
     const mrr = active.reduce((sum: number, s: any) => sum + (PLAN_GBP[s.plan] || 0), 0);
 
     const planBreakdown: Record<string, number> = {};
@@ -42,23 +45,68 @@ serve(async (req) => {
     const stageBreakdown: Record<string, number> = {};
     (deals.data || []).forEach((d: any) => { stageBreakdown[d.stage] = (stageBreakdown[d.stage] || 0) + 1; });
 
+    const pipelineValue = (deals.data || [])
+      .filter((d: any) => !["won", "lost"].includes(d.stage))
+      .reduce((s: number, d: any) => s + Number(d.value_gbp || 0), 0);
+
     const ctx = {
       currency: "GBP (£)",
       mrr_gbp: mrr,
       arr_gbp: mrr * 12,
       active_customers: active.length,
+      trial_customers: trials.length,
       canceled_customers: canceled.length,
       churn_pct: subsArr.length ? Math.round((canceled.length / subsArr.length) * 1000) / 10 : 0,
       plan_breakdown: planBreakdown,
       enterprise_leads_total: (leads.data || []).length,
       country_breakdown: countryBreakdown,
       deal_stage_breakdown: stageBreakdown,
+      open_pipeline_value_gbp: pipelineValue,
+      refunds_30d: (refunds.data || []).length,
+      refund_amount_30d: (refunds.data || []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0),
+      alerts_7d: (alerts.data || []).length,
+      critical_alerts_7d: (alerts.data || []).filter((a: any) => a.severity === "critical").length,
     };
 
-    const system = `You are the Founder AI Adviser for HostFlow AI Technologies — a UK-based global SaaS for AI-driven hospitality, travel & operations. You speak directly to the founder/CEO. Be sharp, executive-level, concise. Use £ GBP. Ground every answer in the live business snapshot below. Recommend specific next moves.
+    const baseSystem = `You are the Founder AI Strategist for HostFlow AI Technologies — a UK-based global SaaS for AI-driven hospitality, travel & operations. You speak directly to the founder/CEO. Be sharp, executive-level, concise. Use £ GBP. Ground every answer in the live business snapshot below. Recommend specific next moves.
 
 LIVE BUSINESS SNAPSHOT (JSON):
-${JSON.stringify(ctx, null, 2)}
+${JSON.stringify(ctx, null, 2)}`;
+
+    // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
+    if (mode === "insights") {
+      const insightsSystem = `${baseSystem}
+
+Return ONLY a strict JSON object with these keys (each value is a short 1–2 sentence string in plain English, GBP, no markdown):
+{
+  "risk": "...",
+  "opportunity": "...",
+  "action": "...",
+  "weekly": "..."
+}
+No prose outside the JSON. No code fences.`;
+
+      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [{ role: "system", content: insightsSystem }, { role: "user", content: "Generate the four insights now." }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!resp.ok) {
+        const t = await resp.text();
+        console.error("insights gateway error:", resp.status, t);
+        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const data = await resp.json();
+      let parsed: any = { risk: "", opportunity: "", action: "", weekly: "" };
+      try { parsed = JSON.parse(data?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
+      return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const system = `${baseSystem}
 
 Style: 3–6 short bullet points or a punchy paragraph. No fluff. No preamble. End with one clear recommended action.`;
 
