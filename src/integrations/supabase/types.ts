@@ -2345,6 +2345,60 @@ export type Database = {
         }
         Relationships: []
       }
+      owner_scheduled_emails: {
+        Row: {
+          bcc: string | null
+          cc: string | null
+          created_at: string
+          error: string | null
+          html: string
+          id: string
+          in_reply_to: string | null
+          ref_headers: string | null
+          send_at: string
+          sent_at: string | null
+          status: string
+          subject: string
+          to_addr: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bcc?: string | null
+          cc?: string | null
+          created_at?: string
+          error?: string | null
+          html: string
+          id?: string
+          in_reply_to?: string | null
+          ref_headers?: string | null
+          send_at: string
+          sent_at?: string | null
+          status?: string
+          subject: string
+          to_addr: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bcc?: string | null
+          cc?: string | null
+          created_at?: string
+          error?: string | null
+          html?: string
+          id?: string
+          in_reply_to?: string | null
+          ref_headers?: string | null
+          send_at?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string
+          to_addr?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_refunds: {
         Row: {
           amount: number

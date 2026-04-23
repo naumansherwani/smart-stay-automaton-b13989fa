@@ -1,23 +1,20 @@
-import { LayoutDashboard, TrendingUp, Users, Target, Briefcase, Inbox as InboxIcon, Zap, KanbanSquare, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail } from "lucide-react";
+import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export type FounderSection =
-  | "overview" | "revenue" | "customers" | "leads" | "crm"
-  | "inbox" | "emails" | "actions" | "execution" | "security"
-  | "tasks" | "ai" | "analytics" | "settings" | "profile";
+  | "overview" | "executive" | "revenue" | "customers" | "leads" | "crm"
+  | "emails" | "tasks" | "ai" | "analytics" | "security" | "settings" | "profile";
 
 const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "executive", label: "Executive HQ", icon: Crown },
   { id: "revenue", label: "Revenue", icon: TrendingUp },
   { id: "customers", label: "Customers", icon: Users },
   { id: "leads", label: "Leads", icon: Target },
-  { id: "crm", label: "CRM", icon: Briefcase },
-  { id: "inbox", label: "Owner Inbox", icon: InboxIcon },
-  { id: "emails", label: "Email Center", icon: Mail },
-  { id: "actions", label: "Action Center", icon: Zap },
-  { id: "execution", label: "Execution Board", icon: KanbanSquare },
+  { id: "crm", label: "Enterprise CRM", icon: Briefcase },
+  { id: "emails", label: "AI Email Center", icon: Mail },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
   { id: "ai", label: "AI Adviser", icon: Sparkles },
   { id: "analytics", label: "Analytics", icon: BarChart3 },

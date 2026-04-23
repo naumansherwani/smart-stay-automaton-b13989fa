@@ -279,6 +279,37 @@ html {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--fos-border);
 }
+.founder-os .founder-gold {
+  color: #F59E0B;
+}
+.founder-os .founder-glass {
+  background: color-mix(in srgb, var(--fos-card) 80%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--fos-border);
+  border-radius: 14px;
+}
+.founder-os .founder-luxe-card {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fos-card) 96%, transparent), var(--fos-card));
+  border: 1px solid var(--fos-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 0 color-mix(in srgb, var(--fos-text) 5%, transparent) inset, 0 8px 24px -16px rgba(0,0,0,0.4);
+}
+.founder-os .founder-kpi {
+  background: var(--fos-card);
+  border: 1px solid var(--fos-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color .2s, transform .2s;
+}
+.founder-os .founder-kpi:hover { border-color: color-mix(in srgb, var(--fos-accent) 50%, var(--fos-border)); transform: translateY(-1px); }
+.founder-os .founder-cmd-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 10px;
+  background: var(--fos-card); border: 1px solid var(--fos-border);
+  color: var(--fos-text); font-size: 12px; font-weight: 600;
+  transition: all .2s;
+}
+.founder-os .founder-cmd-btn:hover { border-color: var(--fos-accent); color: var(--fos-accent); transform: translateY(-1px); }
 @media (max-width: 768px) {
   .founder-os .founder-sidebar { transform: translateX(-100%); }
 }
