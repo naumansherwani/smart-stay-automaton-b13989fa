@@ -1462,13 +1462,230 @@ export type Database = {
         }
         Relationships: []
       }
+      ent_companies: {
+        Row: {
+          annual_revenue_band: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          industry: string | null
+          name: string
+          notes: string | null
+          team_size: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          annual_revenue_band?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          industry?: string | null
+          name: string
+          notes?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          annual_revenue_band?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          industry?: string | null
+          name?: string
+          notes?: string | null
+          team_size?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      ent_deals: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          expected_close_date: string | null
+          id: string
+          lead_id: string | null
+          notes: string | null
+          owner_id: string | null
+          probability: number
+          stage: string
+          title: string
+          updated_at: string
+          value_gbp: number
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          expected_close_date?: string | null
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          owner_id?: string | null
+          probability?: number
+          stage?: string
+          title: string
+          updated_at?: string
+          value_gbp?: number
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          expected_close_date?: string | null
+          id?: string
+          lead_id?: string | null
+          notes?: string | null
+          owner_id?: string | null
+          probability?: number
+          stage?: string
+          title?: string
+          updated_at?: string
+          value_gbp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ent_deals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "ent_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ent_deals_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ent_notes: {
+        Row: {
+          body: string
+          company_id: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          id: string
+          lead_id: string | null
+        }
+        Insert: {
+          body: string
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          id?: string
+          lead_id?: string | null
+        }
+        Update: {
+          body?: string
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          id?: string
+          lead_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ent_notes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "ent_companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ent_notes_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "ent_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ent_notes_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ent_tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string | null
+          deal_id: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          lead_id: string | null
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          lead_id?: string | null
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          deal_id?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          lead_id?: string | null
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ent_tasks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "ent_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ent_tasks_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "enterprise_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       enterprise_leads: {
         Row: {
+          assigned_to: string | null
+          company_id: string | null
           company_name: string
           country: string | null
           created_at: string
           currency_context: string
           current_challenges: string | null
+          estimated_value_gbp: number | null
           features_needed: string | null
           full_name: string
           id: string
@@ -1483,11 +1700,14 @@ export type Database = {
           work_email: string
         }
         Insert: {
+          assigned_to?: string | null
+          company_id?: string | null
           company_name: string
           country?: string | null
           created_at?: string
           currency_context?: string
           current_challenges?: string | null
+          estimated_value_gbp?: number | null
           features_needed?: string | null
           full_name: string
           id?: string
@@ -1502,11 +1722,14 @@ export type Database = {
           work_email: string
         }
         Update: {
+          assigned_to?: string | null
+          company_id?: string | null
           company_name?: string
           country?: string | null
           created_at?: string
           currency_context?: string
           current_challenges?: string | null
+          estimated_value_gbp?: number | null
           features_needed?: string | null
           full_name?: string
           id?: string
@@ -1520,7 +1743,15 @@ export type Database = {
           updated_at?: string
           work_email?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "enterprise_leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "ent_companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_bookings: {
         Row: {
