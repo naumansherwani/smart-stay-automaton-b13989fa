@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
 
     // Fetch user profile for industry/country
     const { data: profile } = await supabase.from('profiles').select('industry, company_name').eq('user_id', user.id).maybeSingle();
-    const { data: sub } = await supabase.from('subscriptions').select('id, plan, environment, paddle_subscription_id').eq('user_id', user.id).maybeSingle();
+    const { data: sub } = await supabase.from('subscriptions').select('id, plan').eq('user_id', user.id).maybeSingle();
 
     // Insert cancellation request
     const { data: cr, error: crErr } = await supabase
