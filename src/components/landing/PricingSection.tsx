@@ -5,7 +5,6 @@ import { Check, Sparkles, Crown, ShieldCheck, Globe2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
 
 const PAYMENTS_PAUSED = true;
@@ -102,18 +101,14 @@ const PricingSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const checkoutLoading = false;
 
-  const handleClick = (plan: typeof PLANS[number]) => {
+  const handleClick = (_plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    openCheckout({
-      priceId: PRICE_IDS[plan.plan] || "basic_monthly",
-      customerEmail: user.email || undefined,
-      customData: { userId: user.id },
-    });
+    // Checkout paused during payment provider migration.
   };
 
   return (
@@ -136,7 +131,7 @@ const PricingSection = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(160,84%,45%,0.15)]">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span className="text-sm font-semibold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-                Secure payments powered by Paddle
+                Secure payments via our trusted billing partner
               </span>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-violet-500/10 border border-blue-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(217,91%,60%,0.15)]">

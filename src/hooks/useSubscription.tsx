@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
-import { isTestMode } from "@/lib/paddle";
 
 export interface Subscription {
   id: string;
@@ -9,14 +8,11 @@ export interface Subscription {
   status: "active" | "trialing" | "past_due" | "canceled" | "expired";
   trial_ends_at: string;
   is_lifetime?: boolean;
-  paddle_subscription_id?: string;
-  paddle_customer_id?: string;
   product_id?: string;
   price_id?: string;
   current_period_start?: string;
   current_period_end?: string;
   cancel_at_period_end?: boolean;
-  environment?: string;
 }
 
 export function useSubscription() {
@@ -24,33 +20,15 @@ export function useSubscription() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const env = isTestMode() ? "sandbox" : "live";
-
   const checkSubscription = useCallback(async () => {
     if (!user) return;
 
     try {
-      // First try to find a paid subscription for this environment
-      const { data: paidSub } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("environment", env)
-        .not("paddle_subscription_id", "is", null)
-        .single();
-
-      if (paidSub) {
-        setSubscription(paidSub as Subscription);
-        setLoading(false);
-        return;
-      }
-
-      // Fall back to trial/lifetime (no environment filter — these aren't env-specific)
+      // Payment provider being migrated — only trial / lifetime subs are active.
       const { data: trialSub } = await supabase
         .from("subscriptions")
         .select("*")
         .eq("user_id", user.id)
-        .is("paddle_subscription_id", null)
         .single();
 
       if (trialSub) {
@@ -72,7 +50,7 @@ export function useSubscription() {
     } finally {
       setLoading(false);
     }
-  }, [user, env]);
+  }, [user]);
 
   useEffect(() => {
     if (authLoading) return;

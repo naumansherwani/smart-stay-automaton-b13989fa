@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
 
 const PAYMENTS_PAUSED = true;
@@ -12,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
 
 const PLANS = [
@@ -97,57 +95,25 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const checkoutLoading = false;
 
-  const handleSelect = async (plan: typeof PLANS[number]) => {
+  const handleSelect = async (_plan: typeof PLANS[number]) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-
-    // If user already has a paid subscription, update it (upgrade/downgrade)
-    if (subscription?.paddle_subscription_id && subscription?.plan !== plan.plan) {
-      try {
-        const { data, error } = await (await import("@/integrations/supabase/client")).supabase.functions.invoke("update-subscription", {
-          body: {
-            newPriceId: plan.priceId,
-            environment: subscription.environment || "sandbox",
-          },
-        });
-        if (error) throw error;
-        if (data?.error) throw new Error(data.error);
-        const { toast } = await import("sonner");
-        toast.success(`Switching to ${plan.name} plan...`);
-        return;
-      } catch (err: any) {
-        const { toast } = await import("sonner");
-        toast.error(err?.message || "Failed to update subscription");
-        return;
-      }
-    }
-
-    openCheckout({
-      priceId: plan.priceId,
-      customerEmail: user.email || undefined,
-      customData: { userId: user.id },
-    });
+    // Checkout temporarily unavailable — payment provider migration in progress.
+    const { toast } = await import("sonner");
+    toast.info("Checkout is paused while we onboard a new payment provider. Join the waitlist to be notified.");
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <PaymentTestModeBanner />
       <PaymentsResumingBanner />
       <CheckoutRescuePopup
-        onAccept={(code) => {
-          const popular = PLANS.find((p) => p.popular) || PLANS[0];
-          if (!user) return;
-          openCheckout({
-            priceId: popular.priceId,
-            customerEmail: user.email || undefined,
-            customData: { userId: user.id },
-            discountCode: code,
-          });
+        onAccept={() => {
+          // Checkout paused — discount will be honored when new provider is live.
         }}
       />
 
@@ -213,7 +179,7 @@ export default function Pricing() {
                       disabled={!!isCurrent || checkoutLoading}
                       onClick={() => void handleSelect(p)}
                     >
-                      {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user && subscription?.paddle_subscription_id ? "Switch Plan" : user ? "Subscribe Now" : "Start Free Trial"}
+                      {isCurrent ? "Current Plan" : checkoutLoading ? "Loading..." : user ? "Subscribe Now" : "Start Free Trial"}
                     </Button>
                   )}
                 </CardContent>
