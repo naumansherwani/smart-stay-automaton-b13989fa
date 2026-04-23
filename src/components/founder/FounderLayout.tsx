@@ -16,7 +16,7 @@ export default function FounderLayout({ active, onSelect, children }: { active: 
       <div className="founder-shell min-h-screen">
         <FounderSidebar active={active} onSelect={onSelect} />
         <div className="ml-0 md:ml-[280px] flex flex-col min-h-screen">
-          <FounderHeader title={TITLES[active]} />
+          <FounderHeader title={TITLES[active]} onSelect={(s) => onSelect(s as FounderSection)} />
           <main className="flex-1 p-6 md:p-8">
             {children}
           </main>
