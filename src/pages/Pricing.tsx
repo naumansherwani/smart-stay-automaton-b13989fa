@@ -12,11 +12,13 @@ import { Check, Crown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
+import { useCurrency } from "@/hooks/useCurrency";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 
 const PLANS = [
   {
     name: "Basic",
-    price: 25,
+    price: 25, // GBP base
     plan: "basic" as const,
     priceId: "basic_monthly",
     starter: true,
@@ -34,7 +36,7 @@ const PLANS = [
   },
   {
     name: "Pro",
-    price: 55,
+    price: 52, // GBP base
     plan: "pro" as const,
     priceId: "pro_monthly",
     popular: true,
@@ -61,7 +63,7 @@ const PLANS = [
   },
   {
     name: "Premium",
-    price: 110,
+    price: 108, // GBP base
     plan: "premium" as const,
     priceId: "premium_monthly",
     highlight: "🚀 Advanced AI CRM Hub",
@@ -95,6 +97,7 @@ export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
+  const { format, selectedCurrency } = useCurrency();
   const checkoutLoading = false;
 
   const handleSelect = async (_plan: typeof PLANS[number]) => {
@@ -123,6 +126,11 @@ export default function Pricing() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered scheduling for every industry. 1 industry per plan.
           </p>
+          <div className="flex items-center justify-center gap-2 pt-1">
+            <span className="text-sm text-muted-foreground">Currency</span>
+            <CurrencySwitcher compact />
+            <span className="text-xs text-muted-foreground">· Base GBP (£)</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -149,8 +157,11 @@ export default function Pricing() {
                 <CardHeader className="text-center pb-2 pt-8">
                   <CardTitle className="text-xl">{p.name}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold text-foreground">${p.price}</span>
+                    <span className="text-4xl font-bold text-foreground">{format(p.price)}</span>
                     <span className="text-muted-foreground">/month</span>
+                    {selectedCurrency.code !== "GBP" && (
+                      <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
