@@ -8,12 +8,13 @@ const PAYMENTS_PAUSED = true;
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown } from "lucide-react";
+import { Check, Crown, Building2 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { CheckoutRescuePopup } from "@/components/conversion/CheckoutRescuePopup";
 import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
+import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
 
 const PLANS = [
   {
@@ -133,7 +134,7 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
           {PLANS.map((p) => {
             const isCurrent = p.plan && subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
@@ -197,6 +198,45 @@ export default function Pricing() {
               </Card>
             );
           })}
+
+          {/* Enterprise card */}
+          <Card className="relative flex flex-col border-amber-500/40 ring-1 ring-amber-500/20 hover:ring-2 hover:ring-amber-500/50 hover:shadow-[0_0_25px_hsl(38,92%,55%,0.3)] transition-all duration-300">
+            <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-lg px-4 py-1">
+              <Building2 className="w-3 h-3 mr-1" /> Enterprise
+            </Badge>
+            <CardHeader className="text-center pb-2 pt-8">
+              <CardTitle className="text-xl">Enterprise</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">For larger teams and custom deployments.</p>
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-foreground">Custom</span>
+                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing in GBP (£)</div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col">
+              <ul className="space-y-3 flex-1 mb-6">
+                {[
+                  "Multi-user teams",
+                  "Dedicated onboarding",
+                  "Custom integrations",
+                  "Priority support",
+                  "Security controls",
+                  "Tailored pricing",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm">
+                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-amber-400" />
+                    <span className="text-foreground">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <EnterpriseContactDialog
+                trigger={
+                  <Button className="w-full font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_20px_hsl(38,92%,55%,0.3)] hover:shadow-[0_0_30px_hsl(38,92%,55%,0.5)]">
+                    <Building2 className="w-4 h-4 mr-2" /> Contact Sales
+                  </Button>
+                }
+              />
+            </CardContent>
+          </Card>
         </div>
       </main>
 
