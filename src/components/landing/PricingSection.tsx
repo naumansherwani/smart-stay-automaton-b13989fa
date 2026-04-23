@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { PaymentsResumingBanner } from "@/components/PaymentsResumingBanner";
+import { useCurrency } from "@/hooks/useCurrency";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 
 const PAYMENTS_PAUSED = true;
 
@@ -18,7 +20,7 @@ const PRICE_IDS: Record<string, string> = {
 const PLANS = [
   {
     name: "Basic",
-    price: 25,
+    price: 25, // GBP base
     plan: "basic" as const,
     starter: true,
     desc: "Best for individuals getting started",
@@ -37,7 +39,7 @@ const PLANS = [
   },
   {
     name: "Pro",
-    price: 55,
+    price: 52, // GBP base
     plan: "pro" as const,
     popular: true,
     desc: "Best for growing businesses",
@@ -66,7 +68,7 @@ const PLANS = [
   },
   {
     name: "Premium",
-    price: 110,
+    price: 108, // GBP base
     plan: "premium" as const,
     desc: "For scaling businesses and advanced operations",
     highlight: "🚀 Advanced AI CRM Hub",
@@ -101,6 +103,7 @@ const PricingSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
+  const { format, selectedCurrency } = useCurrency();
   const checkoutLoading = false;
 
   const handleClick = (_plan: typeof PLANS[number]) => {
@@ -126,6 +129,12 @@ const PricingSection = () => {
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Choose your plan. Every plan includes a 7-day free trial — no credit card required.
           </p>
+
+          <div className="flex items-center justify-center gap-2 pt-1">
+            <span className="text-xs text-muted-foreground">Showing prices in</span>
+            <CurrencySwitcher compact />
+            <span className="text-xs text-muted-foreground">· Base currency GBP (£)</span>
+          </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(160,84%,45%,0.15)]">
@@ -170,8 +179,11 @@ const PricingSection = () => {
                   <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
                   <p className="text-xs text-muted-foreground">{p.desc}</p>
                   <div className="mt-4">
-                    <span className="text-4xl font-extrabold text-foreground">${p.price}</span>
+                    <span className="text-4xl font-extrabold text-foreground">{format(p.price)}</span>
                     <span className="text-muted-foreground">/mo</span>
+                    {selectedCurrency.code !== "GBP" && (
+                      <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col pt-4">
