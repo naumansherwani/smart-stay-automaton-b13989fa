@@ -43,7 +43,11 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { createWorkspace } = useWorkspaces();
-  const preselected = sessionStorage.getItem("preselected_industry") as IndustryType | null;
+  // sessionStorage is per-tab; when industry is opened in a NEW tab from the
+  // landing page we hand the value off via localStorage. Read both, then clear.
+  const preselected =
+    (sessionStorage.getItem("preselected_industry") as IndustryType | null) ||
+    (localStorage.getItem("preselected_industry") as IndustryType | null);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryType | null>(preselected);
   const [selectedSubtype, setSelectedSubtype] = useState<BusinessSubtype>(null);
   const [step, setStep] = useState<"industry" | "subtype" | "setup">("industry");
@@ -106,6 +110,7 @@ const Onboarding = () => {
     await createWorkspace(workspaceName, industry);
 
     sessionStorage.removeItem("preselected_industry");
+    try { localStorage.removeItem("preselected_industry"); } catch { /* ignore */ }
 
     await new Promise(resolve => setTimeout(resolve, 1800));
     clearInterval(interval);
