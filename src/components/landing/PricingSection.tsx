@@ -240,7 +240,7 @@ const PricingSection = () => {
               <p className="text-xs text-muted-foreground">Built for multinational teams &amp; growing global brands.</p>
               <div className="mt-4">
                 <span className="text-4xl font-extrabold text-foreground">Custom</span>
-                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing · GBP, USD, EUR &amp; AED</div>
+                <div className="text-[11px] text-muted-foreground mt-1">Tailored pricing · GBP (£) default · USD/EUR/AED on request</div>
               </div>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col pt-4">
