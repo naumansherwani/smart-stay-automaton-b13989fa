@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, DollarSign, Calendar, BarChart3, Activity, Crown, Eye, EyeOff,
-  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift, Lock
+  Briefcase, Layers, RefreshCw, Mic, Rocket, Heart, TrendingUp, Globe, ShoppingCart, Gift, Lock, Building2
 } from "lucide-react";
 import OwnerStatsCards from "@/components/admin/OwnerStatsCards";
 import OwnerIndustryOverview from "@/components/admin/OwnerIndustryOverview";
@@ -24,6 +24,7 @@ import OwnerConflictPolicyTab from "@/components/admin/OwnerConflictPolicyTab";
 import OwnerMrrCommandCenter from "@/components/admin/OwnerMrrCommandCenter";
 import OwnerGrowthCommandCenter from "@/components/admin/OwnerGrowthCommandCenter";
 import OwnerSalesFunnelTab from "@/components/admin/OwnerSalesFunnelTab";
+import OwnerLeadsTab from "@/components/admin/OwnerLeadsTab";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 
 const OwnerConsole = () => {
