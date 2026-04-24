@@ -4,14 +4,26 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+// Smart routing: vision/long-context -> Gemini, deep reasoning -> GPT-5
+const VISION_MODEL = "google/gemini-2.5-pro";
+const REASONING_MODEL = "openai/gpt-5";
+const FAST_MODEL = "google/gemini-3-flash-preview";
+
+function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
+  if (opts.hasImages) return VISION_MODEL;
+  if (opts.deepReasoning) return REASONING_MODEL;
+  if (opts.longContext) return VISION_MODEL;
+  return FAST_MODEL;
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, mode } = await req.json();
+    const { messages, mode, conversationId, deepReasoning } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -20,6 +32,15 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    // Identify the founder calling — required for persistence + admin gating
+    let userId: string | null = null;
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      const { data: userData } = await supabase.auth.getUser(token);
+      userId = userData?.user?.id ?? null;
+    }
 
     const [subs, leads, deals, refunds, alerts] = await Promise.all([
       supabase.from("subscriptions").select("plan,status,created_at"),
@@ -90,7 +111,7 @@ No prose outside the JSON. No code fences.`;
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: FAST_MODEL,
           messages: [{ role: "system", content: insightsSystem }, { role: "user", content: "Generate the four insights now." }],
           response_format: { type: "json_object" },
         }),
@@ -108,14 +129,29 @@ No prose outside the JSON. No code fences.`;
 
     const system = `${baseSystem}
 
-Style: 3–6 short bullet points or a punchy paragraph. No fluff. No preamble. End with one clear recommended action.`;
+Style guide:
+- Clear executive answers in plain text
+- Use short bullet points or a punchy paragraph (3–6 lines)
+- Avoid unnecessary punctuation, no extra full stops or commas where not needed
+- No preamble, no apologies
+- End with one clear recommended next move
+- When the founder uploads a screenshot or image, analyse it carefully (UI quality, conversion issues, layout, trust signals, errors, competitor strengths) and tie advice back to HostFlow AI growth`;
+
+    // Detect images in the latest user message (multimodal content array)
+    const incoming = Array.isArray(messages) ? messages : [];
+    const hasImages = incoming.some((m: any) =>
+      Array.isArray(m?.content) && m.content.some((p: any) => p?.type === "image_url"),
+    );
+    const totalLen = JSON.stringify(incoming).length;
+    const longContext = totalLen > 6000 || incoming.length > 12;
+    const model = pickModel({ hasImages, longContext, deepReasoning: !!deepReasoning });
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [{ role: "system", content: system }, ...(messages || [])],
+        model,
+        messages: [{ role: "system", content: system }, ...incoming],
       }),
     });
 
@@ -129,7 +165,31 @@ Style: 3–6 short bullet points or a punchy paragraph. No fluff. No preamble. E
 
     const data = await resp.json();
     const reply = data?.choices?.[0]?.message?.content || "No response.";
-    return new Response(JSON.stringify({ reply }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    // Persist assistant reply if a conversation id is provided and caller is admin
+    if (conversationId && userId) {
+      try {
+        const { data: roleRow } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle();
+        if (roleRow) {
+          await supabase.from("founder_ai_messages").insert({
+            conversation_id: conversationId,
+            user_id: userId,
+            role: "assistant",
+            content: reply,
+            model,
+          });
+        }
+      } catch (persistErr) {
+        console.warn("persist assistant message failed:", persistErr);
+      }
+    }
+
+    return new Response(JSON.stringify({ reply, model }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("founder-adviser error:", e);
     return new Response(JSON.stringify({ error: e?.message || "Unknown error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
