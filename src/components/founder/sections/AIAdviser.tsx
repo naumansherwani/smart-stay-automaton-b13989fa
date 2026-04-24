@@ -570,6 +570,7 @@ export default function AIAdviser() {
           </div>
         </div>
       </div>
+      </div>
       )}
     </div>
   );
