@@ -58,13 +58,13 @@ const HeroSection = () => {
             </h1>
           </div>
 
-          {/* Localized hero subtext */}
-          <div className="max-w-2xl mx-auto -mt-2">
-            <p className="text-lg md:text-xl text-white/80 font-medium leading-relaxed">
-              Run your business with AI <span className="text-[hsl(174,62%,60%)] font-semibold">in your own language</span>.
+          {/* Hero subtext */}
+          <div className="max-w-3xl mx-auto -mt-2 space-y-2">
+            <p className="text-lg md:text-xl text-white/85 font-medium leading-relaxed">
+              World-class AI that helps your business feel local in every market.
             </p>
-            <p className="text-sm md:text-base text-white/55 mt-2">
-              Smart onboarding, Voice AI, automation, and industry workflows designed for global teams.
+            <p className="text-sm md:text-base text-white/55">
+              Connect AI CRM, Voice AI, onboarding, automation, and industry workflows in one premium operating system.
             </p>
           </div>
 
