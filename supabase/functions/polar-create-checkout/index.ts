@@ -16,7 +16,7 @@ const PLAN_BASE: Record<string, { price: number; discount: number; name: string 
 };
 
 const CAMPAIGN_END = new Date("2026-07-31T23:59:59Z");
-const CAMPAIGN_START = new Date("2026-04-30T00:00:00Z");
+const CAMPAIGN_START = new Date("2026-04-24T00:00:00Z");
 const CAP = 100;
 
 async function polarFetch(path: string, init: RequestInit = {}) {

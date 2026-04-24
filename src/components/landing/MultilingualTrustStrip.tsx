@@ -16,21 +16,21 @@ const FLAGS = [
 ];
 
 const LOCAL_GREETINGS: { lang: string; line: string }[] = [
-  { lang: "EN", line: "Run your business in English" },
-  { lang: "اردو", line: "اپنا کاروبار اپنی زبان میں چلائیں" },
-  { lang: "हिन्दी", line: "अपना व्यवसाय अपनी भाषा में चलाएं" },
-  { lang: "العربية", line: "أدر عملك بلغتك" },
-  { lang: "Español", line: "Gestiona tu negocio en tu idioma" },
-  { lang: "Français", line: "Gérez votre entreprise dans votre langue" },
-  { lang: "Deutsch", line: "Führen Sie Ihr Unternehmen in Ihrer Sprache" },
-  { lang: "Schweizerdeutsch", line: "Füehr dis Gschäft i dinere Sproch" },
-  { lang: "Português", line: "Gerencie seu negócio no seu idioma" },
-  { lang: "中文", line: "用您的语言经营您的业务" },
-  { lang: "日本語", line: "あなたの言語でビジネスを運営" },
-  { lang: "한국어", line: "당신의 언어로 비즈니스 운영" },
-  { lang: "Türkçe", line: "İşinizi kendi dilinizde yönetin" },
-  { lang: "Italiano", line: "Gestisci la tua attività nella tua lingua" },
-  { lang: "Română", line: "Gestionează-ți afacerea în limba ta" },
+  { lang: "EN", line: "World-class AI for businesses that operate locally" },
+  { lang: "اردو", line: "Serve customers locally with world-class AI operations" },
+  { lang: "हिन्दी", line: "World-class AI built for teams serving local markets" },
+  { lang: "العربية", line: "World-class AI for businesses serving every market" },
+  { lang: "Español", line: "World-class AI that helps teams sell and serve locally" },
+  { lang: "Français", line: "World-class AI built for local customer relationships" },
+  { lang: "Deutsch", line: "World-class AI for companies growing across local markets" },
+  { lang: "Schweizerdeutsch", line: "World-class AI for local teams and global standards" },
+  { lang: "Português", line: "World-class AI for businesses that speak to every customer" },
+  { lang: "中文", line: "World-class AI built for local business growth" },
+  { lang: "日本語", line: "World-class AI for modern local operations" },
+  { lang: "한국어", line: "World-class AI for businesses that need local trust" },
+  { lang: "Türkçe", line: "World-class AI for stronger local customer connection" },
+  { lang: "Italiano", line: "World-class AI that helps your business feel local" },
+  { lang: "Română", line: "World-class AI for businesses serving people in their language" },
 ];
 
 const MultilingualTrustStrip = () => {

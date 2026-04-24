@@ -23,9 +23,9 @@ export interface FounderMetrics {
 
 // GBP base prices for each plan (matches pricing page)
 const PLAN_GBP: Record<string, number> = {
-  basic: 19,
-  pro: 49,
-  premium: 99,
+  basic: 25,
+  pro: 52,
+  premium: 108,
   trial: 0,
   enterprise: 499,
 };

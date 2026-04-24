@@ -26,8 +26,7 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   const cd = useCountdown(LAUNCH_DISCOUNT.campaignEnd);
   if (!status) return null;
 
-  const { isDiscounted, remaining, planStatus } = priceFor(plan);
-  const planInfo = status.plans[plan];
+  const { isDiscounted, planStatus } = priceFor(plan);
 
   if (planStatus === "expired") {
     return (
@@ -38,22 +37,24 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   }
   if (planStatus === "sold_out") {
     return (
-      <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/30">
+      <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-muted text-foreground border border-border">
         <AlertCircle className="w-3 h-3" /> Sold out — 100/100 claimed
       </div>
     );
   }
   if (!isDiscounted) return null;
 
-  // Floating corner badge already shows the % off — here we only show
-  // the live spots-remaining + countdown to avoid duplication.
+  // Keep this clean and non-duplicative: badge + price lock + countdown only.
   return (
     <div className="space-y-1 text-center">
+      <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] font-semibold text-foreground">
+        Launch Offer
+      </div>
       <div className="text-[10px] text-muted-foreground">
-        Only <span className="font-semibold text-foreground">{remaining}</span> of {planInfo.discount_percent && 100} spots left · price locked 12 months
+        Price locked for 12 months
       </div>
       {cd && (
-        <div className="inline-flex items-center gap-1 text-[10px] text-orange-300/90">
+        <div className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
           <Clock className="w-3 h-3" /> Ends in {cd.days}d {cd.hours}h {cd.mins}m
         </div>
       )}
@@ -74,7 +75,7 @@ export function LaunchPriceBlock({ plan, format }: { plan: PlanKey; format: (n: 
   return (
     <span className="inline-flex items-baseline gap-2">
       <span className="text-base text-muted-foreground line-through">{format(original)}</span>
-      <span className="text-4xl font-extrabold bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">{format(final)}</span>
+      <span className="text-4xl font-extrabold text-foreground">{format(final)}</span>
     </span>
   );
 }

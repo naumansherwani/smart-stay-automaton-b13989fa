@@ -108,7 +108,7 @@ serve(async (req) => {
       }
     }
 
-    const PLAN_GBP: Record<string, number> = { basic: 19, pro: 49, premium: 99, enterprise: 499, trial: 0 };
+    const PLAN_GBP: Record<string, number> = { basic: 25, pro: 52, premium: 108, enterprise: 499, trial: 0 };
     const subsArr = subs.data || [];
     const active = subsArr.filter((s: any) => ["active", "trialing"].includes(s.status));
     const canceled = subsArr.filter((s: any) => s.status === "canceled");

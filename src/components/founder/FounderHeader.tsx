@@ -24,7 +24,7 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
     const load = async () => {
       try {
         const { data } = await supabase.functions.invoke("owner-mailbox", { body: { action: "counts" } });
-        if (!cancelled && data?.counts?.inbox?.unread != null) setUnreadMail(data.counts.inbox.unread);
+        if (!cancelled && data?.ok && data?.data?.inbox?.unread != null) setUnreadMail(data.data.inbox.unread);
       } catch {}
     };
     load();
