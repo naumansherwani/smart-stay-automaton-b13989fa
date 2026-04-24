@@ -15,8 +15,20 @@ export function useLaunchDiscount() {
 
   useEffect(() => {
     refresh();
-    const id = setInterval(refresh, 30_000); // live update every 30s
-    return () => clearInterval(id);
+    const id = setInterval(refresh, 30_000); // safety poll every 30s
+    // Realtime: refresh instantly when a new signup redeems a launch spot.
+    const channel = supabase
+      .channel("launch-discount-live")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "launch_discount_redemptions" },
+        () => refresh(),
+      )
+      .subscribe();
+    return () => {
+      clearInterval(id);
+      supabase.removeChannel(channel);
+    };
   }, [refresh]);
 
   function priceFor(plan: PlanKey): { original: number; final: number; isDiscounted: boolean; remaining: number; planStatus: string } {
