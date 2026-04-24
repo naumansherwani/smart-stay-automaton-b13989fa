@@ -37,7 +37,7 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   }
   if (planStatus === "sold_out") {
     return (
-      <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/30">
+      <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-muted text-foreground border border-border">
         <AlertCircle className="w-3 h-3" /> Sold out — 100/100 claimed
       </div>
     );
@@ -54,7 +54,7 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
         Price locked for 12 months
       </div>
       {cd && (
-        <div className="inline-flex items-center gap-1 text-[10px] text-orange-300/90">
+        <div className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
           <Clock className="w-3 h-3" /> Ends in {cd.days}d {cd.hours}h {cd.mins}m
         </div>
       )}
@@ -75,7 +75,7 @@ export function LaunchPriceBlock({ plan, format }: { plan: PlanKey; format: (n: 
   return (
     <span className="inline-flex items-baseline gap-2">
       <span className="text-base text-muted-foreground line-through">{format(original)}</span>
-      <span className="text-4xl font-extrabold bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">{format(final)}</span>
+      <span className="text-4xl font-extrabold text-foreground">{format(final)}</span>
     </span>
   );
 }
