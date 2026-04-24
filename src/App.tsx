@@ -35,6 +35,7 @@ const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
 const Maintenance = lazy(() => import("./pages/Maintenance"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
+const CheckoutCancelled = lazy(() => import("./pages/CheckoutCancelled"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -68,6 +69,8 @@ const App = () => (
               <Route path="/terms-and-conditions" element={<Terms />} />
               <Route path="/refund-policy" element={<RefundPolicy />} />
               <Route path="/checkout-success" element={<CheckoutSuccess />} />
+              <Route path="/checkout-cancelled" element={<CheckoutCancelled />} />
+              <Route path="/checkout-canceled" element={<CheckoutCancelled />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/maintenance" element={<Maintenance />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
