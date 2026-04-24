@@ -59,7 +59,7 @@ serve(async (req) => {
       supabase.from("arc_lifecycle_events").select("event_type,event_category,industry,plan,created_at").gte("created_at", since7d),
       supabase.from("arc_actions").select("action_type,phase,status,created_at").gte("created_at", since30d),
       supabase.from("user_health_scores").select("user_id,health_score,risk_level,updated_at").order("health_score", { ascending: true }).limit(50),
-      supabase.from("churn_risk_scores").select("user_id,risk_score,cancel_probability,suggested_action").order("risk_score", { ascending: false }).limit: undefined as any,
+      supabase.from("churn_risk_scores").select("user_id,risk_score,cancel_probability,suggested_action").order("risk_score", { ascending: false }).limit(20),
       supabase.from("profiles").select("user_id,email,company_name,industry,created_at").order("created_at", { ascending: false }).limit(50),
       supabase.from("bookings").select("status,total_price,created_at").gte("created_at", since30d),
       supabase.from("crm_deals").select("stage,value,industry,created_at").gte("created_at", since30d),
