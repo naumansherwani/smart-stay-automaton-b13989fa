@@ -10,7 +10,7 @@ export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string
   { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing" },
-  { id: "general",    address: "connectai@hostflowai.live", label: "General" },
+  { id: "general",    address: "hello@hostflowai.live",     label: "Founder" },
 ];
 
 export interface MailListItem {
