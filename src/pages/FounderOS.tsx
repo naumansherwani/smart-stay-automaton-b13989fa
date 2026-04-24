@@ -12,7 +12,6 @@ import Emails from "@/components/founder/sections/Emails";
 import Security from "@/components/founder/sections/Security";
 import Tasks from "@/components/founder/sections/Tasks";
 import AIAdviser from "@/components/founder/sections/AIAdviser";
-import ArcEngine from "@/components/founder/sections/ArcEngine";
 import Analytics from "@/components/founder/sections/Analytics";
 import Settings from "@/components/founder/sections/Settings";
 import FounderProfile from "@/components/founder/sections/FounderProfile";
@@ -20,8 +19,10 @@ import FounderProfile from "@/components/founder/sections/FounderProfile";
 export default function FounderOS() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const validSections: FounderSection[] = ["overview","executive","revenue","customers","leads","crm","emails","tasks","ai","arc","analytics","security","settings","profile"];
-  const sectionParam = searchParams.get("section") as FounderSection | null;
+  const validSections: FounderSection[] = ["overview","executive","revenue","customers","leads","crm","emails","tasks","ai","analytics","security","settings","profile"];
+  const rawSection = searchParams.get("section");
+  // Backward-compat: old "arc" links open the AI Co-Owner (Autopilot lives inside it)
+  const sectionParam = (rawSection === "arc" ? "ai" : rawSection) as FounderSection | null;
   const initial: FounderSection =
     sectionParam && validSections.includes(sectionParam) ? sectionParam :
     location.pathname.startsWith("/owner/email") ? "emails" :
@@ -41,7 +42,6 @@ export default function FounderOS() {
       {active === "security" && <Security />}
       {active === "tasks" && <Tasks />}
       {active === "ai" && <AIAdviser />}
-      {active === "arc" && <ArcEngine />}
       {active === "analytics" && <Analytics />}
       {active === "settings" && <Settings />}
       {active === "profile" && <FounderProfile />}

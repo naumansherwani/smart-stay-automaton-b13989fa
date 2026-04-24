@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff, CalendarDays, ListTodo, Sparkles, Zap } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff, CalendarDays, ListTodo, Sparkles } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -33,7 +33,6 @@ const primaryNav = [
 
 const founderNav = [
   { title: "AI Co-Owner", url: "/founder?section=ai", icon: Sparkles },
-  { title: "ARC Engine", url: "/founder?section=arc", icon: Zap },
 ];
 
 const conditionalNav = [
