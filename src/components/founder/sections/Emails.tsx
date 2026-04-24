@@ -168,7 +168,10 @@ export default function Emails() {
                 </div>
               );
             })}
-            <div className="text-[var(--fos-success)] mt-1.5 text-[10px]">● Zoho · Connected</div>
+            <div className={`mt-1.5 text-[10px] ${mb.error ? "text-[var(--fos-danger)]" : "text-[var(--fos-success)]"}`}>
+              ● Zoho · {mb.error ? "Connection issue" : "Connected"}
+            </div>
+            {mb.error && <p className="text-[10px] text-[var(--fos-muted)] leading-relaxed">Mailbox needs a valid Zoho inbox connection before messages can load.</p>}
           </div>
         </div>
 
@@ -217,7 +220,13 @@ export default function Emails() {
             {mb.loading && visibleMessages.length === 0 && (
               <div className="p-8 text-center text-[var(--fos-muted)] text-xs">Loading mailbox…</div>
             )}
-            {!mb.loading && visibleMessages.length === 0 && (
+            {mb.error && !mb.loading && (
+              <div className="p-6 text-center text-[var(--fos-muted)] text-xs border-b border-[var(--fos-border)]/50">
+                <p className="text-[var(--fos-text)] font-medium mb-1">Mailbox unavailable</p>
+                <p>{mb.error}</p>
+              </div>
+            )}
+            {!mb.loading && !mb.error && visibleMessages.length === 0 && (
               <div className="p-8 text-center text-[var(--fos-muted)] text-xs">
                 {identityFilter === "all" ? "No messages." : `No ${IDENTITY_META[identityFilter as MailIdentity]?.label || ""} messages.`}
               </div>
