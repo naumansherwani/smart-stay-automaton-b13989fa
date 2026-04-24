@@ -2267,6 +2267,48 @@ export type Database = {
           },
         ]
       }
+      founder_settings: {
+        Row: {
+          autopilot_enabled: boolean
+          autopilot_level: string
+          created_at: string
+          id: string
+          last_weekly_sent_at: string | null
+          preferred_language: string | null
+          updated_at: string
+          user_id: string
+          voice_enabled: boolean
+          weekly_report_email: string | null
+          weekly_report_enabled: boolean
+        }
+        Insert: {
+          autopilot_enabled?: boolean
+          autopilot_level?: string
+          created_at?: string
+          id?: string
+          last_weekly_sent_at?: string | null
+          preferred_language?: string | null
+          updated_at?: string
+          user_id: string
+          voice_enabled?: boolean
+          weekly_report_email?: string | null
+          weekly_report_enabled?: boolean
+        }
+        Update: {
+          autopilot_enabled?: boolean
+          autopilot_level?: string
+          created_at?: string
+          id?: string
+          last_weekly_sent_at?: string | null
+          preferred_language?: string | null
+          updated_at?: string
+          user_id?: string
+          voice_enabled?: boolean
+          weekly_report_email?: string | null
+          weekly_report_enabled?: boolean
+        }
+        Relationships: []
+      }
       healthcare_appointments: {
         Row: {
           appointment_time: string
