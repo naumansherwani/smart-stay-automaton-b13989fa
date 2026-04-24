@@ -16,6 +16,13 @@ const PLAN_BASE: Record<string, { price: number; discount: number }> = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  // Health check (GET) — returns 200 so URL can be verified manually
+  if (req.method === "GET") {
+    return new Response(JSON.stringify({ status: "ok", endpoint: "polar-webhook" }), {
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
   const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const WEBHOOK_SECRET = Deno.env.get("POLAR_WEBHOOK_SECRET");
@@ -36,13 +43,15 @@ serve(async (req) => {
       event = wh.verify(rawBody, headers);
     } catch (err) {
       console.error("[polar-webhook] signature verification failed", err);
-      return new Response(JSON.stringify({ error: "invalid signature" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      // Return 200 to prevent Polar from disabling the endpoint on bad/test deliveries.
+      // Real signature failures are logged for investigation.
+      return new Response(JSON.stringify({ received: true, verified: false }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
   } else {
     console.warn("[polar-webhook] POLAR_WEBHOOK_SECRET not set — skipping signature verification");
-    event = JSON.parse(rawBody);
+    try { event = JSON.parse(rawBody); } catch { event = {}; }
   }
 
   const admin = createClient(SUPABASE_URL, SERVICE_KEY);
@@ -152,8 +161,10 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("[polar-webhook] handler error", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Always 200 so Polar doesn't disable endpoint due to internal handler errors.
+    // Errors are logged and can be retried via Polar dashboard if needed.
+    return new Response(JSON.stringify({ received: true, processed: false, error: e instanceof Error ? e.message : String(e) }), {
+      status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
