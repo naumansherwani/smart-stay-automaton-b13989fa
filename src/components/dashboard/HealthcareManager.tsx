@@ -101,40 +101,7 @@ const typeColors: Record<string, string> = {
   lab: "bg-accent/30 text-accent-foreground",
 };
 
-const MOCK_DOCTORS: Doctor[] = [
-  { id: "DR-001", name: "Dr. Sarah Ahmed", specialization: "Cardiology", status: "with-patient", room: "Room 101", patientsToday: 8, maxPatients: 16, nextAvailable: "10:30 AM", rating: 4.9, workingHours: "09:00–17:00", workingDays: "Mon–Sat", slotDuration: 30, phone: "+1 555-0201", avatar: "❤️" },
-  { id: "DR-002", name: "Dr. Omar Khalid", specialization: "Orthopedics", status: "available", room: "Room 102", patientsToday: 5, maxPatients: 12, nextAvailable: "Now", rating: 4.8, workingHours: "08:00–16:00", workingDays: "Mon–Fri", slotDuration: 30, phone: "+1 555-0202", avatar: "🦴" },
-  { id: "DR-003", name: "Dr. Aisha Malik", specialization: "Dermatology", status: "with-patient", room: "Room 103", patientsToday: 11, maxPatients: 20, nextAvailable: "11:00 AM", rating: 4.95, workingHours: "09:00–18:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0203", avatar: "🧴" },
-  { id: "DR-004", name: "Dr. Chen Wei", specialization: "Pediatrics", status: "break", room: "Room 104", patientsToday: 14, maxPatients: 24, nextAvailable: "11:30 AM", rating: 4.85, workingHours: "08:00–17:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0204", avatar: "👶" },
-  { id: "DR-005", name: "Dr. Fatima Noor", specialization: "Neurology", status: "with-patient", room: "Room 105", patientsToday: 4, maxPatients: 10, nextAvailable: "12:00 PM", rating: 4.7, workingHours: "10:00–18:00", workingDays: "Mon–Fri", slotDuration: 45, phone: "+1 555-0205", avatar: "🧠" },
-  { id: "DR-006", name: "Dr. James Park", specialization: "General Medicine", status: "available", room: "Room 106", patientsToday: 9, maxPatients: 20, nextAvailable: "Now", rating: 4.6, workingHours: "08:00–16:00", workingDays: "Mon–Sat", slotDuration: 15, phone: "+1 555-0206", avatar: "🩺" },
-  { id: "DR-007", name: "Dr. Maria Garcia", specialization: "Psychiatry", status: "off-duty", room: "Room 107", patientsToday: 0, maxPatients: 8, nextAvailable: "Tomorrow", rating: 4.92, workingHours: "10:00–17:00", workingDays: "Tue–Sat", slotDuration: 60, phone: "+1 555-0207", avatar: "🧘" },
-  { id: "DR-008", name: "Dr. Ali Hassan", specialization: "ENT", status: "available", room: "Room 108", patientsToday: 6, maxPatients: 16, nextAvailable: "Now", rating: 4.75, workingHours: "09:00–17:00", workingDays: "Mon–Fri", slotDuration: 20, phone: "+1 555-0208", avatar: "👂" },
-];
-
-const MOCK_APPOINTMENTS: Appointment[] = [
-  { id: "APT-3001", patientName: "Muhammad Ali", patientPhone: "+1 555-1001", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "09:00 AM", duration: "30 min", type: "consultation", status: "completed", fee: 150, notes: "ECG required", noShowRisk: 5 },
-  { id: "APT-3002", patientName: "Zara Khan", patientPhone: "+1 555-1002", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "09:30 AM", duration: "30 min", type: "follow-up", status: "completed", fee: 100, notes: "Post-op check", noShowRisk: 8 },
-  { id: "APT-3003", patientName: "Ravi Patel", patientPhone: "+1 555-1003", doctorName: "Dr. Sarah Ahmed", doctorId: "DR-001", specialization: "Cardiology", time: "10:00 AM", duration: "30 min", type: "procedure", status: "in-progress", fee: 300, notes: "Stress test", noShowRisk: 3 },
-  { id: "APT-3004", patientName: "Emily Brown", patientPhone: "+1 555-1004", doctorName: "Dr. Aisha Malik", doctorId: "DR-003", specialization: "Dermatology", time: "10:15 AM", duration: "15 min", type: "checkup", status: "checked-in", fee: 80, notes: "Skin screening", noShowRisk: 12 },
-  { id: "APT-3005", patientName: "Hassan Shah", patientPhone: "+1 555-1005", doctorName: "Dr. Omar Khalid", doctorId: "DR-002", specialization: "Orthopedics", time: "10:30 AM", duration: "30 min", type: "consultation", status: "scheduled", fee: 120, notes: "Knee pain evaluation", noShowRisk: 22 },
-  { id: "APT-3006", patientName: "Lisa Chen", patientPhone: "+1 555-1006", doctorName: "Dr. Chen Wei", doctorId: "DR-004", specialization: "Pediatrics", time: "11:30 AM", duration: "15 min", type: "checkup", status: "scheduled", fee: 60, notes: "Vaccination", noShowRisk: 15 },
-  { id: "APT-3007", patientName: "Ahmed Rizvi", patientPhone: "+1 555-1007", doctorName: "Dr. Fatima Noor", doctorId: "DR-005", specialization: "Neurology", time: "12:00 PM", duration: "45 min", type: "consultation", status: "scheduled", fee: 200, notes: "Migraine assessment", noShowRisk: 42 },
-  { id: "APT-3008", patientName: "Sophie Turner", patientPhone: "+1 555-1008", doctorName: "Dr. James Park", doctorId: "DR-006", specialization: "General Medicine", time: "01:00 PM", duration: "15 min", type: "follow-up", status: "scheduled", fee: 60, notes: "Blood results review", noShowRisk: 8 },
-  { id: "APT-3009", patientName: "— EMERGENCY —", patientPhone: "—", doctorName: "Dr. Omar Khalid", doctorId: "DR-002", specialization: "Orthopedics", time: "02:00 PM", duration: "60 min", type: "emergency", status: "scheduled", fee: 0, notes: "Fracture - ER referral", noShowRisk: 0 },
-  { id: "APT-3010", patientName: "Nadia Abbas", patientPhone: "+1 555-1010", doctorName: "Dr. Ali Hassan", doctorId: "DR-008", specialization: "ENT", time: "02:30 PM", duration: "20 min", type: "consultation", status: "scheduled", fee: 100, notes: "Hearing test", noShowRisk: 55 },
-];
-
-const MOCK_PATIENTS: Patient[] = [
-  { id: "PT-001", name: "Muhammad Ali", age: 52, gender: "Male", phone: "+1 555-1001", email: "mali@email.com", lastVisit: "Today", totalVisits: 12, upcomingAppt: "—", condition: "Hypertension", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 0 },
-  { id: "PT-002", name: "Zara Khan", age: 34, gender: "Female", phone: "+1 555-1002", email: "zara@email.com", lastVisit: "Today", totalVisits: 4, upcomingAppt: "Apr 20", condition: "Post-surgery", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 1 },
-  { id: "PT-003", name: "Ravi Patel", age: 45, gender: "Male", phone: "+1 555-1003", email: "ravi@email.com", lastVisit: "Today", totalVisits: 8, upcomingAppt: "—", condition: "Cardiac monitoring", doctor: "Dr. Sarah Ahmed", status: "active", noShowCount: 0 },
-  { id: "PT-004", name: "Emily Brown", age: 28, gender: "Female", phone: "+1 555-1004", email: "emily@email.com", lastVisit: "Today", totalVisits: 1, upcomingAppt: "—", condition: "Skin screening", doctor: "Dr. Aisha Malik", status: "new", noShowCount: 0 },
-  { id: "PT-005", name: "Hassan Shah", age: 60, gender: "Male", phone: "+1 555-1005", email: "hassan@email.com", lastVisit: "Mar 28", totalVisits: 6, upcomingAppt: "Today", condition: "Knee replacement", doctor: "Dr. Omar Khalid", status: "active", noShowCount: 2 },
-  { id: "PT-006", name: "Lisa Chen", age: 4, gender: "Female", phone: "+1 555-1006", email: "lchen@email.com", lastVisit: "Feb 15", totalVisits: 10, upcomingAppt: "Today", condition: "Routine checkup", doctor: "Dr. Chen Wei", status: "active", noShowCount: 0 },
-  { id: "PT-007", name: "Ahmed Rizvi", age: 38, gender: "Male", phone: "+1 555-1007", email: "arizvi@email.com", lastVisit: "Mar 10", totalVisits: 3, upcomingAppt: "Today", condition: "Chronic migraine", doctor: "Dr. Fatima Noor", status: "active", noShowCount: 3 },
-  { id: "PT-008", name: "Nadia Abbas", age: 42, gender: "Female", phone: "+1 555-1008", email: "nadia@email.com", lastVisit: "Jan 20", totalVisits: 2, upcomingAppt: "Today", condition: "Hearing loss", doctor: "Dr. Ali Hassan", status: "active", noShowCount: 4 },
-];
+// Healthcare uses real DB via useHealthcare(). Mock seed data removed.
 
 // ─── Healthcare Top Metric Cards ───
 function HealthcareKPIs() {

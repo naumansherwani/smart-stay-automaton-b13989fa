@@ -516,20 +516,6 @@ function DeliveryPricingPanel() {
 export default function LogisticsManager({ config }: { config: IndustryConfig }) {
   return (
     <div className="space-y-6">
-      <Card className="border-amber-500/30 bg-amber-500/5">
-        <CardContent className="p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-foreground">Demo data — preview mode</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              The deliveries, drivers, fleet and time slots below are sample data so you can see how Logistics works.
-              Your real records (added via the "New Delivery" buttons) are saved to your account and shown separately in your CRM.
-              Full real-data rebuild for this dashboard is rolling out shortly.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
       <LogisticsKPIs />
 
       <Tabs defaultValue="deliveries" className="space-y-4">
