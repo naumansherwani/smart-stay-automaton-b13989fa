@@ -42,12 +42,30 @@ serve(async (req) => {
       userId = userData?.user?.id ?? null;
     }
 
-    const [subs, leads, deals, refunds, alerts] = await Promise.all([
-      supabase.from("subscriptions").select("plan,status,created_at"),
-      supabase.from("enterprise_leads").select("status,country,industry,team_size,created_at,estimated_value_gbp"),
-      supabase.from("ent_deals").select("stage,value_gbp,created_at"),
-      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
-      supabase.from("admin_alerts").select("alert_type,severity,created_at").gte("created_at", new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()),
+    const since30d = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+    const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+    const since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+
+    const [
+      subs, leads, deals, refunds, alerts,
+      arcEvents, arcActions, healthScores, churnScores,
+      profiles, bookings, crmDeals, crmTickets, contactSubs, cancelReqs,
+    ] = await Promise.all([
+      supabase.from("subscriptions").select("plan,status,created_at,trial_ends_at"),
+      supabase.from("enterprise_leads").select("status,country,industry,team_size,created_at,estimated_value_gbp,company_name").order("created_at", { ascending: false }).limit(200),
+      supabase.from("ent_deals").select("stage,value_gbp,created_at,title").order("created_at", { ascending: false }).limit(200),
+      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", since30d),
+      supabase.from("admin_alerts").select("alert_type,severity,title,created_at,is_resolved").gte("created_at", since7d).order("created_at", { ascending: false }).limit(50),
+      supabase.from("arc_lifecycle_events").select("event_type,event_category,industry,plan,created_at").gte("created_at", since7d),
+      supabase.from("arc_actions").select("action_type,phase,status,created_at").gte("created_at", since30d),
+      supabase.from("user_health_scores").select("user_id,health_score,risk_level,updated_at").order("health_score", { ascending: true }).limit(50),
+      supabase.from("churn_risk_scores").select("user_id,risk_score,cancel_probability,suggested_action").order("risk_score", { ascending: false }).limit(20),
+      supabase.from("profiles").select("user_id,email,company_name,industry,created_at").order("created_at", { ascending: false }).limit(50),
+      supabase.from("bookings").select("status,total_price,created_at").gte("created_at", since30d),
+      supabase.from("crm_deals").select("stage,value,industry,created_at").gte("created_at", since30d),
+      supabase.from("crm_tickets").select("status,priority,industry,created_at,ai_sentiment").gte("created_at", since7d),
+      supabase.from("enterprise_leads").select("created_at").gte("created_at", since24h),
+      supabase.from("cancellation_requests").select("reason,plan,final_action,created_at").gte("created_at", since30d),
     ]);
 
     const PLAN_GBP: Record<string, number> = { basic: 19, pro: 49, premium: 99, enterprise: 499, trial: 0 };
@@ -70,16 +88,44 @@ serve(async (req) => {
       .filter((d: any) => !["won", "lost"].includes(d.stage))
       .reduce((s: number, d: any) => s + Number(d.value_gbp || 0), 0);
 
+    // ARC engine signals
+    const arcByPhase: Record<string, number> = {};
+    (arcActions.data || []).forEach((a: any) => { arcByPhase[a.phase] = (arcByPhase[a.phase] || 0) + 1; });
+    const arcEventBuckets: Record<string, number> = {};
+    (arcEvents.data || []).forEach((e: any) => { arcEventBuckets[e.event_type] = (arcEventBuckets[e.event_type] || 0) + 1; });
+
+    const highRiskUsers = (healthScores.data || []).filter((h: any) => h.risk_level === "high" || h.risk_level === "critical").length;
+    const churnTopRisk = (churnScores.data || []).slice(0, 5).map((c: any) => ({
+      score: c.risk_score, prob: c.cancel_probability, action: c.suggested_action,
+    }));
+
+    const bookingsArr = bookings.data || [];
+    const revenue30d = bookingsArr.reduce((s: number, b: any) => s + Number(b.total_price || 0), 0);
+    const ticketsByPriority: Record<string, number> = {};
+    (crmTickets.data || []).forEach((t: any) => { ticketsByPriority[t.priority] = (ticketsByPriority[t.priority] || 0) + 1; });
+    const negativeTickets = (crmTickets.data || []).filter((t: any) => t.ai_sentiment === "negative").length;
+
+    const trialEndingSoon = (subs.data || []).filter((s: any) => {
+      if (s.status !== "trialing" || !s.trial_ends_at) return false;
+      const ms = new Date(s.trial_ends_at).getTime() - Date.now();
+      return ms > 0 && ms < 48 * 3600 * 1000;
+    }).length;
+
+    const cancelReasons: Record<string, number> = {};
+    (cancelReqs.data || []).forEach((c: any) => { cancelReasons[c.reason] = (cancelReasons[c.reason] || 0) + 1; });
+
     const ctx = {
       currency: "GBP (£)",
       mrr_gbp: mrr,
       arr_gbp: mrr * 12,
       active_customers: active.length,
       trial_customers: trials.length,
+      trial_ending_within_48h: trialEndingSoon,
       canceled_customers: canceled.length,
       churn_pct: subsArr.length ? Math.round((canceled.length / subsArr.length) * 1000) / 10 : 0,
       plan_breakdown: planBreakdown,
       enterprise_leads_total: (leads.data || []).length,
+      enterprise_leads_24h: (contactSubs.data || []).length,
       country_breakdown: countryBreakdown,
       deal_stage_breakdown: stageBreakdown,
       open_pipeline_value_gbp: pipelineValue,
@@ -87,11 +133,35 @@ serve(async (req) => {
       refund_amount_30d: (refunds.data || []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0),
       alerts_7d: (alerts.data || []).length,
       critical_alerts_7d: (alerts.data || []).filter((a: any) => a.severity === "critical").length,
+      bookings_30d: bookingsArr.length,
+      bookings_revenue_30d_gbp: revenue30d,
+      crm_tickets_7d: (crmTickets.data || []).length,
+      crm_tickets_by_priority: ticketsByPriority,
+      crm_tickets_negative_sentiment: negativeTickets,
+      arc_events_7d: (arcEvents.data || []).length,
+      arc_event_breakdown_7d: arcEventBuckets,
+      arc_actions_30d: (arcActions.data || []).length,
+      arc_actions_by_phase_30d: arcByPhase,
+      high_risk_users: highRiskUsers,
+      top_churn_risks: churnTopRisk,
+      cancellation_reasons_30d: cancelReasons,
+      total_signups: (profiles.data || []).length,
     };
 
-    const baseSystem = `You are the Founder AI Strategist for HostFlow AI Technologies — a UK-based global SaaS for AI-driven hospitality, travel & operations. You speak directly to the founder/CEO. Be sharp, executive-level, concise. Use £ GBP. Ground every answer in the live business snapshot below. Recommend specific next moves.
+    const baseSystem = `You are the AI Co-Owner of HostFlow AI Technologies — a UK-based global multi-industry SaaS (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway).
 
-LIVE BUSINESS SNAPSHOT (JSON):
+Your role is NOT a generic chatbot. You are the founder's strategic partner with full backend visibility. You answer questions AND proactively surface:
+- Sales growth levers (which plan/industry/country to push next)
+- Conversion bottlenecks (trials about to expire, abandoned checkouts, low-activity users)
+- Retention risks (high churn-risk users, negative-sentiment tickets, premium drop-off)
+- Revenue opportunities (upsell candidates, ARC actions ready to fire, enterprise leads to chase)
+- Operational risks (critical alerts, refund spikes, payment failures)
+
+You have read access to: subscriptions, bookings, CRM (contacts/deals/tickets/tasks), enterprise leads, ARC lifecycle events, user health scores, churn risk scores, refunds, admin alerts, cancellation reasons.
+
+Currency: £ GBP. Always ground every claim in the LIVE BUSINESS SNAPSHOT below. If data is missing, say so plainly.
+
+LIVE BUSINESS SNAPSHOT (JSON, last 7-30 days):
 ${JSON.stringify(ctx, null, 2)}`;
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
@@ -130,12 +200,13 @@ No prose outside the JSON. No code fences.`;
     const system = `${baseSystem}
 
 Style guide:
-- Clear executive answers in plain text
-- Use short bullet points or a punchy paragraph (3–6 lines)
-- Avoid unnecessary punctuation, no extra full stops or commas where not needed
-- No preamble, no apologies
-- End with one clear recommended next move
-- When the founder uploads a screenshot or image, analyse it carefully (UI quality, conversion issues, layout, trust signals, errors, competitor strengths) and tie advice back to HostFlow AI growth`;
+- Speak as a co-owner, not an assistant
+- Open with the answer, then 2-4 bullets with concrete numbers from the snapshot
+- Always include a "Sales lever" or "Growth move" line when revenue is relevant
+- End with ONE specific Next Action the founder can take in under 24 hours
+- Plain text only no excessive punctuation no markdown headers
+- When the founder asks "how do I grow sales" or anything vague always pull the strongest signal from the snapshot (highest pipeline country, weakest plan, top churn risk, ARC actions waiting) and turn it into a concrete play
+- When the founder uploads a screenshot analyse UI conversion trust layout errors and tie back to HostFlow growth`;
 
     // Detect images in the latest user message (multimodal content array)
     const incoming = Array.isArray(messages) ? messages : [];
