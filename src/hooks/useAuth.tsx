@@ -22,16 +22,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    let lastLoggedUserId: string | null = null;
+    const fireLogin = (uid: string) => {
+      if (lastLoggedUserId === uid) return;
+      lastLoggedUserId = uid;
+      supabase.functions
+        .invoke("arc-event-ingest", { body: { event_type: "login", event_category: "auth" } })
+        .catch(() => {});
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      if (session?.user && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION")) {
+        fireLogin(session.user.id);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      if (session?.user) fireLogin(session.user.id);
     });
 
     return () => subscription.unsubscribe();
