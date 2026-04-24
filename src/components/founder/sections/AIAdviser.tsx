@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Sparkles, Send, Loader2, AlertTriangle, TrendingUp, Target, BarChart3,
   RefreshCw, Plus, Search, Pin, PinOff, Pencil, Trash2, Copy, Check,
-  ImageIcon, X, Brain, MessageSquare,
+  ImageIcon, X, Brain, MessageSquare, Mic, Volume2, Square,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,6 +52,10 @@ export default function AIAdviser() {
   const [insights, setInsights] = useState<Insights | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+  const recognitionRef = useRef<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
