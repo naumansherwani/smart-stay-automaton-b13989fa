@@ -1969,6 +1969,92 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_ai_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          is_archived: boolean
+          is_pinned: boolean
+          last_message_at: string
+          message_count: number
+          metadata: Json | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
+          last_message_at?: string
+          message_count?: number
+          metadata?: Json | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
+          last_message_at?: string
+          message_count?: number
+          metadata?: Json | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      founder_ai_messages: {
+        Row: {
+          attachments: Json | null
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          model: string | null
+          role: string
+          token_count: number | null
+          user_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          content?: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          model?: string | null
+          role: string
+          token_count?: number | null
+          user_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          model?: string | null
+          role?: string
+          token_count?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "founder_ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       healthcare_appointments: {
         Row: {
           appointment_time: string
