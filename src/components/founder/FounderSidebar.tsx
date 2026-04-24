@@ -1,7 +1,7 @@
 import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
@@ -31,15 +31,17 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
 
   return (
     <aside className="founder-sidebar fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40">
-      <div className="px-6 py-5 border-b border-[var(--fos-border)]">
-        <div className="flex items-center gap-2.5">
-          <img src={logoImg} alt="HostFlow AI" className="w-9 h-9 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.4)]" />
-          <div>
-            <div className="text-[var(--fos-text)] text-sm font-semibold leading-tight">Founder OS</div>
-            <div className="text-[var(--fos-muted)] text-[10px] tracking-widest uppercase">HostFlow AI</div>
-          </div>
+      <Link
+        to="/"
+        className="px-6 py-6 border-b border-[var(--fos-border)] flex items-center gap-3 hover:bg-[var(--fos-card)]/50 transition-colors group"
+        title="Return to landing page"
+      >
+        <img src={logoImg} alt="HostFlow AI" className="w-10 h-10 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] group-hover:scale-105 transition-transform" />
+        <div>
+          <div className="text-[var(--fos-text)] text-sm font-semibold leading-tight">Founder OS</div>
+          <div className="text-[var(--fos-muted)] text-[10px] tracking-widest uppercase">HostFlow AI</div>
         </div>
-      </div>
+      </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
         {items.map((it, i) => {
