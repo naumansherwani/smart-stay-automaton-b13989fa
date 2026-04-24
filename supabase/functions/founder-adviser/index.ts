@@ -23,7 +23,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, mode, conversationId, deepReasoning } = await req.json();
+    const { messages, mode, conversationId, deepReasoning, focusUserId, action } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -67,6 +67,46 @@ serve(async (req) => {
       supabase.from("enterprise_leads").select("created_at").gte("created_at", since24h),
       supabase.from("cancellation_requests").select("reason,plan,final_action,created_at").gte("created_at", since30d),
     ]);
+
+    // Per-user 360° dossier (when founder asks about a specific user)
+    let focusUser: any = null;
+    if (focusUserId) {
+      const [
+        fProfile, fSub, fBookings, fDeals, fTickets, fHealth, fChurn, fArc, fCancel, fEmails,
+      ] = await Promise.all([
+        supabase.from("profiles").select("user_id,email,display_name,company_name,industry,country,created_at").eq("user_id", focusUserId).maybeSingle(),
+        supabase.from("subscriptions").select("plan,status,trial_starts_at,trial_ends_at,current_period_end,is_lifetime,created_at").eq("user_id", focusUserId).maybeSingle(),
+        supabase.from("bookings").select("status,total_price,created_at").eq("user_id", focusUserId).order("created_at", { ascending: false }).limit(20),
+        supabase.from("crm_deals").select("stage,value,industry,created_at").eq("user_id", focusUserId).order("created_at", { ascending: false }).limit(20),
+        supabase.from("crm_tickets").select("status,priority,ai_sentiment,created_at").eq("user_id", focusUserId).order("created_at", { ascending: false }).limit(10),
+        supabase.from("user_health_scores").select("health_score,risk_level,updated_at").eq("user_id", focusUserId).maybeSingle(),
+        supabase.from("churn_risk_scores").select("risk_score,cancel_probability,suggested_action,computed_at").eq("user_id", focusUserId).maybeSingle(),
+        supabase.from("arc_lifecycle_events").select("event_type,event_category,created_at").eq("user_id", focusUserId).order("created_at", { ascending: false }).limit(30),
+        supabase.from("cancellation_requests").select("reason,reason_details,final_action,created_at").eq("user_id", focusUserId).order("created_at", { ascending: false }).limit(5),
+        supabase.from("email_send_log").select("template_name,status,created_at").eq("recipient_email", "").limit(0),
+      ]);
+      focusUser = {
+        profile: fProfile.data,
+        subscription: fSub.data,
+        recent_bookings: fBookings.data,
+        recent_deals: fDeals.data,
+        recent_tickets: fTickets.data,
+        health: fHealth.data,
+        churn: fChurn.data,
+        recent_arc_events: fArc.data,
+        cancellations: fCancel.data,
+      };
+      // Pull email log by recipient email if profile loaded
+      if (fProfile.data?.email) {
+        const { data: emailLog } = await supabase
+          .from("email_send_log")
+          .select("template_name,status,created_at")
+          .eq("recipient_email", fProfile.data.email)
+          .order("created_at", { ascending: false })
+          .limit(20);
+        focusUser.email_history = emailLog || [];
+      }
+    }
 
     const PLAN_GBP: Record<string, number> = { basic: 19, pro: 49, premium: 99, enterprise: 499, trial: 0 };
     const subsArr = subs.data || [];
@@ -148,19 +188,34 @@ serve(async (req) => {
       total_signups: (profiles.data || []).length,
     };
 
-    const baseSystem = `Aap HostFlow AI Technologies ke AI Co-Owner hain — UK-based global SaaS (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway).
+    const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway). You act as the founder's silent co-owner: when he sleeps, you keep users engaged, write emails on his behalf, retain customers, and grow MRR.
 
-ZAROORI RULES (hamesha follow karein):
-1. ROMAN URDU mein jawab dein — friendly, simple, dost ki tarah. English tab use karein jab user English mein puchhe ya technical term ho (jaise MRR, churn).
-2. Short aur seedha jawab. Lambi list nahi. Jargon nahi.
-3. Numbers GBP £ mein. Snapshot se hi bolein, andaza nahi.
-4. Pehle 1 line mein seedha jawab dein. Phir 2-3 chhote bullets max. Aakhir mein ek "Agla qadam" line.
-5. Founder ka co-owner ho — mashwara dein, hukum nahi.
+CRITICAL LANGUAGE RULE — AUTO-DETECT, ALWAYS MIRROR:
+You MUST detect the language of the LAST user message and reply in EXACTLY that same language. No exceptions.
+- Roman Urdu (Latin-letter Urdu like "kaise ho", "mashwara", "kero") → reply in Roman Urdu
+- Urdu script (اردو) → reply in Urdu script
+- English → reply in English
+- Hindi (हिन्दी) → Hindi
+- Arabic (العربية) → Arabic
+- Spanish, French, German, Portuguese, Chinese (中文), Japanese (日本語), Korean (한국어), Turkish, Italian, Romanian, Swiss German → reply in that language
+If the message mixes languages, follow the dominant one. Numbers/brand names stay in English (MRR, GBP, HostFlow).
 
-Aap ke paas yeh data hai: subscriptions, bookings, CRM (contacts/deals/tickets), enterprise leads, ARC events, health scores, churn risk, refunds, alerts, cancellation reasons.
+RESPONSE STYLE (in whatever language was detected):
+1. Friendly, simple, like a trusted business partner texting on WhatsApp.
+2. Short and direct. First line = the answer. Then 2–3 short bullets max with real numbers from the snapshot. End with a "Next step" line (translated to the same language: "Agla qadam" / "Next step" / "الخطوة التالية" / "下一步" etc).
+3. Use GBP £ for money. Cite snapshot numbers, never guess.
+4. No long lists, no jargon dump, no markdown headers, no emoji spam.
+5. You are a co-owner — advise, do not lecture.
 
-LIVE BUSINESS SNAPSHOT (last 7-30 days):
-${JSON.stringify(ctx, null, 2)}`;
+POWERS (you can do these on the founder's behalf):
+- Read 100% of backend: subscriptions, MRR, every user's profile, bookings, CRM (deals/tickets/contacts), enterprise leads, ARC lifecycle events, health & churn scores, refunds, cancellations, email send history.
+- Draft personalized emails to ANY user (welcome, onboarding nudge, ROI report, retention save, win-back, check-in, upsell). When the founder asks "email this user X", produce a complete email (subject + body) ready to send. The system will route it to the user.
+- Recommend "next best action" per at-risk user, per trial, per enterprise lead.
+- When the founder is asleep / away, prioritize keeping trials and at-risk premium users engaged.
+
+LIVE BUSINESS SNAPSHOT (last 7–30 days):
+${JSON.stringify(ctx, null, 2)}
+${focusUser ? `\nFOCUS USER 360° DOSSIER:\n${JSON.stringify(focusUser, null, 2)}` : ""}`;
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
     if (mode === "insights") {
@@ -195,17 +250,34 @@ No prose outside the JSON. No code fences.`;
       return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const system = `${baseSystem}
+    // Special action: draft an email to a user (founder asks "email this user...")
+    if (action === "draft_email" && focusUser) {
+      const draftSystem = `${baseSystem}
 
-JAWAB KA STYLE:
-- Roman Urdu mein. Bilkul simple. Jaise WhatsApp pe dost ko likh rahe ho.
-- Pehli line: seedha jawab (1 sentence).
-- Phir 2-3 chhote points snapshot ke numbers ke saath.
-- Aakhir mein: "Agla qadam:" — ek chhota kaam jo founder 24 ghante mein kar sake.
-- No markdown headers. No bullets ke andar bullets. No emoji spam.
-- Agar user "sales kaise barhein" ya kuch vague puchhe — snapshot se sab se strong signal uthao (sab se bara pipeline, sab se kamzor plan, top churn risk) aur ek concrete plan do.
-- Agar screenshot upload ho — UI/conversion ke baare mein simple feedback do.
-- Mushkil baat nahi karna. Founder ko confuse mat karein.`;
+TASK: Draft a complete email to this user as if you were the founder. Reply in the SAME language as the founder's request. Output STRICT JSON only:
+{ "subject": "...", "body_text": "plain text body", "body_html": "<p>...</p>", "recipient_email": "...", "rationale": "1-line why this email now" }
+No prose outside the JSON. No code fences.`;
+      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: REASONING_MODEL,
+          messages: [{ role: "system", content: draftSystem }, ...(Array.isArray(messages) ? messages : [])],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!resp.ok) {
+        const t = await resp.text();
+        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status, detail: t }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const d = await resp.json();
+      let draft: any = {};
+      try { draft = JSON.parse(d?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
+      if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
+      return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const system = baseSystem;
 
     // Detect images in the latest user message (multimodal content array)
     const incoming = Array.isArray(messages) ? messages : [];

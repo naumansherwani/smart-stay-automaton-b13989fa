@@ -291,8 +291,8 @@ export default function AIAdviser() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-[var(--fos-text)]">AI Co-Owner</h1>
-            <p className="text-xs text-[var(--fos-muted)]">Chat + Autopilot · full backend access · Roman Urdu</p>
+            <h1 className="text-xl font-bold text-[var(--fos-text)]">AI Adviser</h1>
+            <p className="text-xs text-[var(--fos-muted)]">Chat + Autopilot · 15 languages · full backend access · writes emails for you</p>
           </div>
         </div>
         <div className="ml-auto flex items-center gap-1 p-1 rounded-lg bg-[var(--fos-card)] border border-[var(--fos-border)]">
@@ -396,7 +396,7 @@ export default function AIAdviser() {
       >
         <div className="px-5 py-3 border-b border-[var(--fos-border)] flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-[var(--fos-accent)]" />
-          <h3 className="text-[var(--fos-text)] font-semibold text-sm">Founder Co-Pilot</h3>
+          <h3 className="text-[var(--fos-text)] font-semibold text-sm">AI Adviser</h3>
           <span className="ml-2 text-[10px] text-[var(--fos-success)]">● Online</span>
           <button
             onClick={() => setDeepReasoning((v) => !v)}
