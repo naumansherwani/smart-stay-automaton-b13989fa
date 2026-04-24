@@ -144,12 +144,15 @@ serve(async (req) => {
 
     const baseUrl = (returnUrl as string) || `${req.headers.get("origin") || ""}`;
     const successUrl = `${baseUrl}/checkout-success?checkout_id={CHECKOUT_ID}`;
+    const cancelUrl = `${baseUrl}/checkout-cancelled`;
 
     const checkout = await polarFetch(`/checkouts/`, {
       method: "POST",
       body: JSON.stringify({
         products: [productId],
         success_url: successUrl,
+        // Polar shows this when the customer abandons checkout
+        customer_cancel_url: cancelUrl,
         external_customer_id: user.id,
         customer_email: user.email,
         metadata: {
