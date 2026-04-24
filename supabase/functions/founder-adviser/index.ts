@@ -379,6 +379,70 @@ No prose outside the JSON. No code fences.`;
       return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // Self-heal: detect anomalies (mock/test/duplicate data, stuck trials) — read-only scan + optional cleanup.
+    if (action === "self_heal_scan" || action === "self_heal_apply") {
+      // Verify caller is admin
+      let isAdmin = false;
+      if (userId) {
+        const { data: roleRow } = await supabase
+          .from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+        isAdmin = !!roleRow;
+      }
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Admin only" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // Find anomalies
+      const findings: any[] = [];
+
+      // 1. Obvious mock/test profiles
+      const { data: mockProfiles } = await supabase
+        .from("profiles")
+        .select("user_id,email,company_name,created_at")
+        .or("email.ilike.%test%,email.ilike.%mock%,email.ilike.%example.com,email.ilike.%demo%,company_name.ilike.%test%,company_name.ilike.%mock%");
+      if (mockProfiles?.length) findings.push({ kind: "mock_profiles", count: mockProfiles.length, sample: mockProfiles.slice(0, 5), ids: mockProfiles.map((p) => p.user_id) });
+
+      // 2. Stuck trials (trial_ends_at in the past, still status=trialing)
+      const { data: stuckTrials } = await supabase
+        .from("subscriptions")
+        .select("id,user_id,trial_ends_at")
+        .eq("status", "trialing")
+        .lt("trial_ends_at", new Date().toISOString());
+      if (stuckTrials?.length) findings.push({ kind: "stuck_trials", count: stuckTrials.length, ids: stuckTrials.map((s) => s.id) });
+
+      // 3. Zero-value open enterprise deals older than 60 days
+      const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 3600 * 1000).toISOString();
+      const { data: staleDeals } = await supabase
+        .from("ent_deals")
+        .select("id,title,stage,value_gbp,created_at")
+        .eq("value_gbp", 0)
+        .not("stage", "in", "(won,lost)")
+        .lt("created_at", sixtyDaysAgo);
+      if (staleDeals?.length) findings.push({ kind: "stale_zero_deals", count: staleDeals.length, ids: staleDeals.map((d) => d.id) });
+
+      if (action === "self_heal_scan") {
+        return new Response(JSON.stringify({ findings, scanned_at: new Date().toISOString() }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // self_heal_apply — perform safe cleanup
+      const applied: any[] = [];
+      for (const f of findings) {
+        if (f.kind === "stuck_trials" && f.ids.length) {
+          const { error } = await supabase.from("subscriptions").update({ status: "canceled" }).in("id", f.ids);
+          applied.push({ kind: f.kind, count: f.ids.length, ok: !error, error: error?.message });
+        }
+        if (f.kind === "stale_zero_deals" && f.ids.length) {
+          const { error } = await supabase.from("ent_deals").update({ stage: "lost" }).in("id", f.ids);
+          applied.push({ kind: f.kind, count: f.ids.length, ok: !error, error: error?.message });
+        }
+        // Mock profiles: never auto-delete. Just flag.
+        if (f.kind === "mock_profiles") {
+          applied.push({ kind: f.kind, count: f.count, ok: true, note: "Flagged only — manual review required, not deleted." });
+        }
+      }
+      return new Response(JSON.stringify({ findings, applied, applied_at: new Date().toISOString() }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const system = baseSystem;
 
     // Detect images in the latest user message (multimodal content array)
