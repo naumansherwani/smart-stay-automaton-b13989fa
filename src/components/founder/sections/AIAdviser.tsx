@@ -174,6 +174,7 @@ export default function AIAdviser() {
 
   // ---- Send message ----
   const send = async (override?: string) => {
+    void toggleMic; void speakMsg; // hoist refs
     const q = (override ?? input).trim();
     if ((!q && attachments.length === 0) || loading || !user) return;
 
