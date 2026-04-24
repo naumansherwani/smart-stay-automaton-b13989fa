@@ -10,8 +10,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live";
-const ZOHO_APP_PASSWORD = Deno.env.get("ZOHO_APP_PASSWORD") || "";
+const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live").trim();
+// Zoho App Passwords are often shown with spaces — strip ALL whitespace.
+const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
 const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 
 // ---------------------------------------------------------------------------
