@@ -58,11 +58,11 @@ const MultilingualTrustStrip = () => {
         <div className="relative flex flex-col items-center gap-4 md:gap-5">
           {/* Row 1 + 2 — Real flags with native greetings underneath */}
           <div className="w-full">
-            <ul className="flex flex-wrap items-start justify-center gap-x-[10px] gap-y-3 md:gap-x-[18px]">
+            <ul className="flex flex-wrap items-start justify-center gap-x-[14px] gap-y-[18px] md:gap-x-[26px] md:gap-y-[28px]">
               {LANGUAGES.map((l, i) => (
                 <li
                   key={l.code + i}
-                  className="flex flex-col items-center gap-1.5 select-none min-w-[52px] md:min-w-[64px]"
+                  className="flex flex-col items-center gap-2 select-none min-w-[56px] md:min-w-[68px]"
                 >
                   <span
                     className="inline-block leading-none"
@@ -75,11 +75,11 @@ const MultilingualTrustStrip = () => {
                     <img
                       src={`https://flagcdn.com/w80/${l.code}.png`}
                       srcSet={`https://flagcdn.com/w160/${l.code}.png 2x`}
-                      width={32}
-                      height={24}
+                      width={34}
+                      height={26}
                       alt={l.name}
                       loading="lazy"
-                      className="w-[24px] h-[18px] md:w-[32px] md:h-[24px] rounded-[3px] object-cover ring-1 ring-white/15"
+                      className="w-[26px] h-[19px] md:w-[34px] md:h-[25px] rounded-[3px] object-cover ring-1 ring-white/15"
                       style={{ boxShadow: "0 3px 8px rgba(0,0,0,0.45)" }}
                     />
                   </span>
@@ -126,6 +126,14 @@ const MultilingualTrustStrip = () => {
               </li>
             ))}
           </ul>
+
+          {/* Row 6 — Limited launch offer */}
+          <p className="text-[11px] md:text-[12px] text-[#94A3B8] text-center max-w-[640px] leading-relaxed">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#FBBF24] mr-2 align-middle animate-pulse" />
+            <span className="font-semibold text-[#F8FAFC]/90">Limited Launch Offer</span>
+            <span className="mx-1.5 text-[#22D3EE]/50">—</span>
+            First <span className="font-semibold text-[#67E8F9]">100 early users</span> lock discounted pricing for <span className="font-semibold text-[#F8FAFC]/90">12 months</span>.
+          </p>
         </div>
       </div>
 
