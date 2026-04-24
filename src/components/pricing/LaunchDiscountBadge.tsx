@@ -26,8 +26,7 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   const cd = useCountdown(LAUNCH_DISCOUNT.campaignEnd);
   if (!status) return null;
 
-  const { isDiscounted, remaining, planStatus } = priceFor(plan);
-  const planInfo = status.plans[plan];
+  const { isDiscounted, planStatus } = priceFor(plan);
 
   if (planStatus === "expired") {
     return (
@@ -45,12 +44,14 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   }
   if (!isDiscounted) return null;
 
-  // Floating corner badge already shows the % off — here we only show
-  // the live spots-remaining + countdown to avoid duplication.
+  // Keep this clean and non-duplicative: badge + price lock + countdown only.
   return (
     <div className="space-y-1 text-center">
+      <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] font-semibold text-foreground">
+        Launch Offer
+      </div>
       <div className="text-[10px] text-muted-foreground">
-        Only <span className="font-semibold text-foreground">{remaining}</span> of {planInfo.discount_percent && 100} spots left · price locked 12 months
+        Price locked for 12 months
       </div>
       {cd && (
         <div className="inline-flex items-center gap-1 text-[10px] text-orange-300/90">
