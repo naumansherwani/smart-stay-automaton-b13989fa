@@ -290,6 +290,51 @@ const PricingSection = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Trust micro-badges */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-4xl mx-auto pt-2">
+          {[
+            { icon: Languages, label: "15 Languages" },
+            { icon: Mic, label: "Voice AI Ready" },
+            { icon: Briefcase, label: "8 Industries" },
+            { icon: Zap, label: "Fast Onboarding" },
+            { icon: Users, label: "Global Teams" },
+          ].map(({ icon: Icon, label }) => (
+            <div
+              key={label}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-semibold text-foreground/80 backdrop-blur-sm hover:bg-white/[0.07] transition-colors"
+            >
+              <Check className="w-3 h-3 text-primary" />
+              <Icon className="w-3.5 h-3.5 text-primary/80" />
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* Final CTA */}
+        <div className="flex flex-col items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white font-semibold px-8 py-6 rounded-xl shadow-[0_0_30px_rgba(45,212,191,0.3)] hover:shadow-[0_0_45px_rgba(45,212,191,0.5)]"
+              onClick={() => navigate(user ? "/dashboard" : "/signup")}
+            >
+              Start Free Trial — In Your Language
+            </Button>
+            <EnterpriseContactDialog
+              trigger={
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 py-6 rounded-xl border-white/15 bg-white/5 text-foreground/85 hover:bg-white/10"
+                >
+                  Book Demo
+                </Button>
+              }
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">No credit card required · 7-day free trial · Cancel anytime</p>
+        </div>
       </div>
     </section>
   );
