@@ -95,6 +95,147 @@ export type Database = {
         }
         Relationships: []
       }
+      arc_actions: {
+        Row: {
+          action_type: string
+          body: string | null
+          channel: string | null
+          created_at: string
+          executed_at: string | null
+          id: string
+          payload: Json | null
+          phase: string
+          result: Json | null
+          rule_id: string | null
+          status: string
+          title: string
+          triggered_by: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          body?: string | null
+          channel?: string | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          payload?: Json | null
+          phase: string
+          result?: Json | null
+          rule_id?: string | null
+          status?: string
+          title: string
+          triggered_by?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          body?: string | null
+          channel?: string | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          payload?: Json | null
+          phase?: string
+          result?: Json | null
+          rule_id?: string | null
+          status?: string
+          title?: string
+          triggered_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      arc_lifecycle_events: {
+        Row: {
+          created_at: string
+          event_category: string
+          event_type: string
+          feature_key: string | null
+          id: string
+          industry: string | null
+          metadata: Json | null
+          plan: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_category?: string
+          event_type: string
+          feature_key?: string | null
+          id?: string
+          industry?: string | null
+          metadata?: Json | null
+          plan?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_category?: string
+          event_type?: string
+          feature_key?: string | null
+          id?: string
+          industry?: string | null
+          metadata?: Json | null
+          plan?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      arc_rules: {
+        Row: {
+          action_template: Json
+          cooldown_hours: number | null
+          created_at: string
+          description: string | null
+          id: string
+          industries: string[] | null
+          is_active: boolean
+          last_triggered_at: string | null
+          name: string
+          phase: string
+          priority: number
+          trigger_conditions: Json
+          trigger_count: number
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          action_template?: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industries?: string[] | null
+          is_active?: boolean
+          last_triggered_at?: string | null
+          name: string
+          phase: string
+          priority?: number
+          trigger_conditions?: Json
+          trigger_count?: number
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          action_template?: Json
+          cooldown_hours?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industries?: string[] | null
+          is_active?: boolean
+          last_triggered_at?: string | null
+          name?: string
+          phase?: string
+          priority?: number
+          trigger_conditions?: Json
+          trigger_count?: number
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       booking_conflicts: {
         Row: {
           conflict_type: string
@@ -1968,6 +2109,77 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      founder_action_queue: {
+        Row: {
+          action_type: string
+          ai_reasoning: string | null
+          created_at: string
+          decision_at: string | null
+          description: string | null
+          executed_at: string | null
+          expires_at: string | null
+          founder_id: string
+          id: string
+          payload: Json
+          proposed_by: string
+          result: Json | null
+          risk_level: string
+          source_conversation_id: string | null
+          status: string
+          target_user_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          action_type: string
+          ai_reasoning?: string | null
+          created_at?: string
+          decision_at?: string | null
+          description?: string | null
+          executed_at?: string | null
+          expires_at?: string | null
+          founder_id: string
+          id?: string
+          payload?: Json
+          proposed_by?: string
+          result?: Json | null
+          risk_level?: string
+          source_conversation_id?: string | null
+          status?: string
+          target_user_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          ai_reasoning?: string | null
+          created_at?: string
+          decision_at?: string | null
+          description?: string | null
+          executed_at?: string | null
+          expires_at?: string | null
+          founder_id?: string
+          id?: string
+          payload?: Json
+          proposed_by?: string
+          result?: Json | null
+          risk_level?: string
+          source_conversation_id?: string | null
+          status?: string
+          target_user_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_action_queue_source_conversation_id_fkey"
+            columns: ["source_conversation_id"]
+            isOneToOne: false
+            referencedRelation: "founder_ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       founder_ai_conversations: {
         Row: {
@@ -3871,6 +4083,69 @@ export type Database = {
           source?: string
           status?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_health_scores: {
+        Row: {
+          computed_at: string
+          created_at: string
+          days_since_last_action: number | null
+          engagement_score: number
+          feature_count_30d: number | null
+          health_score: number
+          id: string
+          industry: string | null
+          lifecycle_phase: string
+          payment_health_score: number
+          plan: string | null
+          recommended_action: string | null
+          recommended_action_reason: string | null
+          signals: Json | null
+          trial_day: number | null
+          updated_at: string
+          usage_score: number
+          user_id: string
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          days_since_last_action?: number | null
+          engagement_score?: number
+          feature_count_30d?: number | null
+          health_score?: number
+          id?: string
+          industry?: string | null
+          lifecycle_phase?: string
+          payment_health_score?: number
+          plan?: string | null
+          recommended_action?: string | null
+          recommended_action_reason?: string | null
+          signals?: Json | null
+          trial_day?: number | null
+          updated_at?: string
+          usage_score?: number
+          user_id: string
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          days_since_last_action?: number | null
+          engagement_score?: number
+          feature_count_30d?: number | null
+          health_score?: number
+          id?: string
+          industry?: string | null
+          lifecycle_phase?: string
+          payment_health_score?: number
+          plan?: string | null
+          recommended_action?: string | null
+          recommended_action_reason?: string | null
+          signals?: Json | null
+          trial_day?: number | null
+          updated_at?: string
+          usage_score?: number
           user_id?: string
         }
         Relationships: []
