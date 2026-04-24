@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star } from "lucide-react";
+import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star, Mic, Zap, Users, Languages, Briefcase } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,7 +12,8 @@ import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
 import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
-import { LaunchAnnouncementBar, LaunchCornerBadge } from "@/components/pricing/LaunchCornerBadge";
+import { LaunchAnnouncementBar } from "@/components/pricing/LaunchCornerBadge";
+import { LaunchSpotsCounter } from "@/components/pricing/LaunchSpotsCounter";
 import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 
 const PLANS = [
@@ -172,7 +173,6 @@ const PricingSection = () => {
             const isCurrent = subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
               <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
-                <LaunchCornerBadge plan={p.plan} />
                 {p.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                     🚀 Great Start
@@ -200,7 +200,9 @@ const PricingSection = () => {
                     {selectedCurrency.code !== "GBP" && (
                       <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
                     )}
+                    {/* Clean inline launch info: pill + spots counter + price-lock note */}
                     <div className="mt-3 flex justify-center"><LaunchDiscountBadge plan={p.plan} /></div>
+                    <LaunchSpotsCounter plan={p.plan} />
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col pt-4">
