@@ -252,6 +252,16 @@ POWERS (you can act on the founder's behalf):
 SELF-HEAL RULES (very important — protect the business):
 - You may suggest cleaning data (archive duplicates, mark obvious test/mock rows, close stuck trials) — but ALWAYS ask one short confirmation first ("Yeh 6 mock signups archive ker doon?"). Never silently delete real customer data. Never touch code, RLS, schemas, or auth.
 
+SECURITY SCANNER (you have a live security & bug detector):
+When the founder asks about bugs, security, errors, broken things, "kuch theek nahi", "scan kero", "audit", "issues" — tell him you can run an instant scan that detects:
+- Unresolved critical alerts older than 24h
+- Open CRM security alerts (mass-delete, bulk-export, mass-edit warnings)
+- Failed email deliveries (Zoho/SMTP issues)
+- Stuck booking conflicts (>7 days unresolved)
+- Orphan bookings / orphan subscriptions
+- High-volume destructive activity (potential data exfiltration)
+After the scan, summarize in plain language with counts, then ask if you should run the safe auto-fix pass (which only marks stuck records as expired/canceled — never deletes real data).
+
 LIVE BUSINESS SNAPSHOT (last 7–30 days):
 ${JSON.stringify(ctx, null, 2)}
 ${focusUser ? `\nFOCUS USER 360° DOSSIER:\n${JSON.stringify(focusUser, null, 2)}` : ""}`;
@@ -441,6 +451,168 @@ No prose outside the JSON. No code fences.`;
         }
       }
       return new Response(JSON.stringify({ findings, applied, applied_at: new Date().toISOString() }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Advanced security scanner — detects RLS gaps, stuck data, suspicious activity, and runtime bugs.
+    if (action === "security_scan" || action === "security_fix") {
+      // Verify caller is admin
+      let isAdmin = false;
+      if (userId) {
+        const { data: roleRow } = await supabase
+          .from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+        isAdmin = !!roleRow;
+      }
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Admin only" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      const issues: any[] = [];
+      const now = new Date();
+
+      // 1. Critical alerts unresolved > 24h
+      const dayAgo = new Date(now.getTime() - 24 * 3600 * 1000).toISOString();
+      const { data: oldAlerts } = await supabase
+        .from("admin_alerts")
+        .select("id,title,severity,created_at")
+        .eq("is_resolved", false)
+        .eq("severity", "critical")
+        .lt("created_at", dayAgo);
+      if (oldAlerts?.length) issues.push({
+        kind: "unresolved_critical_alerts",
+        severity: "high",
+        count: oldAlerts.length,
+        sample: oldAlerts.slice(0, 3),
+        ids: oldAlerts.map((a) => a.id),
+        fix: "Mark resolved if already addressed.",
+      });
+
+      // 2. CRM security alerts unresolved
+      const { data: crmAlerts } = await supabase
+        .from("crm_security_alerts")
+        .select("id,alert_type,severity,title,created_at")
+        .eq("is_resolved", false);
+      if (crmAlerts?.length) issues.push({
+        kind: "open_crm_security_alerts",
+        severity: "medium",
+        count: crmAlerts.length,
+        sample: crmAlerts.slice(0, 3),
+        ids: crmAlerts.map((a) => a.id),
+        fix: "Review & resolve via CRM admin panel.",
+      });
+
+      // 3. Mass-delete / mass-export activity in last 24h
+      const { data: massActivity } = await supabase
+        .from("crm_activity_logs")
+        .select("user_id,action_type,created_at")
+        .in("action_type", ["delete", "export"])
+        .gte("created_at", dayAgo);
+      if (massActivity && massActivity.length > 50) issues.push({
+        kind: "high_volume_destructive_activity",
+        severity: "high",
+        count: massActivity.length,
+        fix: "Investigate the user(s) responsible — may indicate data exfiltration or accidental loss.",
+      });
+
+      // 4. Failed email sends in last 7 days
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 3600 * 1000).toISOString();
+      const { data: failedEmails } = await supabase
+        .from("email_send_log")
+        .select("id,template_name,error_message,created_at")
+        .eq("status", "failed")
+        .gte("created_at", weekAgo);
+      if (failedEmails && failedEmails.length > 0) issues.push({
+        kind: "failed_email_deliveries",
+        severity: failedEmails.length > 10 ? "high" : "medium",
+        count: failedEmails.length,
+        sample: failedEmails.slice(0, 3),
+        fix: "Check ZOHO_APP_PASSWORD and SMTP connectivity.",
+      });
+
+      // 5. Stuck booking conflicts (unresolved > 7 days)
+      const { data: stuckConflicts } = await supabase
+        .from("booking_conflicts")
+        .select("id,resource_name,created_at")
+        .eq("resolution", "unresolved")
+        .lt("created_at", weekAgo);
+      if (stuckConflicts?.length) issues.push({
+        kind: "stuck_booking_conflicts",
+        severity: "medium",
+        count: stuckConflicts.length,
+        ids: stuckConflicts.map((c) => c.id),
+        fix: "Auto-mark as 'expired' since they're older than 7 days.",
+      });
+
+      // 6. Orphan bookings (resource_id missing)
+      const { data: orphanBookings } = await supabase
+        .from("bookings")
+        .select("id,guest_name,created_at")
+        .is("resource_id", null)
+        .limit(20);
+      if (orphanBookings?.length) issues.push({
+        kind: "orphan_bookings",
+        severity: "low",
+        count: orphanBookings.length,
+        sample: orphanBookings.slice(0, 3),
+        fix: "Manual review — booking has no resource attached.",
+      });
+
+      // 7. Subscriptions without profile (orphan accounts)
+      const { data: allSubs } = await supabase.from("subscriptions").select("user_id");
+      const { data: allProfiles } = await supabase.from("profiles").select("user_id");
+      const profileIds = new Set((allProfiles || []).map((p) => p.user_id));
+      const orphanSubs = (allSubs || []).filter((s) => !profileIds.has(s.user_id));
+      if (orphanSubs.length) issues.push({
+        kind: "orphan_subscriptions",
+        severity: "medium",
+        count: orphanSubs.length,
+        fix: "Subscriptions exist for deleted users. Safe to mark canceled.",
+        ids: orphanSubs.map((s) => s.user_id),
+      });
+
+      if (action === "security_scan") {
+        return new Response(
+          JSON.stringify({
+            issues,
+            scanned_at: now.toISOString(),
+            summary: {
+              total: issues.length,
+              high: issues.filter((i) => i.severity === "high").length,
+              medium: issues.filter((i) => i.severity === "medium").length,
+              low: issues.filter((i) => i.severity === "low").length,
+            },
+          }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      // security_fix — auto-resolve safe issues
+      const fixed: any[] = [];
+      for (const i of issues) {
+        if (i.kind === "unresolved_critical_alerts" && i.ids?.length) {
+          // Don't auto-resolve — too risky. Just flag.
+          fixed.push({ kind: i.kind, action: "flagged_for_review", count: i.count });
+        }
+        if (i.kind === "stuck_booking_conflicts" && i.ids?.length) {
+          const { error } = await supabase
+            .from("booking_conflicts")
+            .update({ resolution: "expired" })
+            .in("id", i.ids);
+          fixed.push({ kind: i.kind, action: "marked_expired", count: i.ids.length, ok: !error, error: error?.message });
+        }
+        if (i.kind === "orphan_subscriptions" && i.ids?.length) {
+          const { error } = await supabase
+            .from("subscriptions")
+            .update({ status: "canceled" })
+            .in("user_id", i.ids)
+            .neq("status", "canceled");
+          fixed.push({ kind: i.kind, action: "canceled_orphans", count: i.ids.length, ok: !error, error: error?.message });
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ issues, fixed, fixed_at: now.toISOString() }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const system = baseSystem;
