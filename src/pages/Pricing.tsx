@@ -5,6 +5,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
+import { LaunchAnnouncementBar, LaunchCornerBadge } from "@/components/pricing/LaunchCornerBadge";
 import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,6 +139,9 @@ export default function Pricing() {
             <CurrencySwitcher compact />
             <span className="text-xs text-muted-foreground">· Base GBP (£)</span>
           </div>
+          <div className="pt-2">
+            <LaunchAnnouncementBar />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
@@ -145,6 +149,7 @@ export default function Pricing() {
             const isCurrent = p.plan && subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
               <Card key={p.name} className={`relative flex flex-col transition-all duration-300 ${p.starter ? "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]" : p.popular ? "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]" : p.highlight ? "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]" : ""}`}>
+                {p.plan && <LaunchCornerBadge plan={p.plan} />}
                 {p.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">🚀 Great Start</Badge>
                 )}
@@ -197,6 +202,11 @@ export default function Pricing() {
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
                     Instant access · Cancel anytime · Secure Stripe checkout
                   </p>
+                  {p.plan && (
+                    <p className="text-[10px] text-pink-300/80 text-center mt-1 font-medium">
+                      Offer valid until July 30 or first 100 users.
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             );

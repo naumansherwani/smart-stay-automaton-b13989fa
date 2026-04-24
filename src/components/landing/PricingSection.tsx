@@ -12,6 +12,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
 import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
+import { LaunchAnnouncementBar, LaunchCornerBadge } from "@/components/pricing/LaunchCornerBadge";
 import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 
 const PLANS = [
@@ -140,6 +141,10 @@ const PricingSection = () => {
             Choose your plan. Every plan includes a 7-day free trial — no credit card required.
           </p>
 
+          <div className="pt-2">
+            <LaunchAnnouncementBar />
+          </div>
+
           <div className="flex items-center justify-center gap-2 pt-1">
             <span className="text-xs text-muted-foreground">Showing prices in</span>
             <CurrencySwitcher compact />
@@ -167,6 +172,7 @@ const PricingSection = () => {
             const isCurrent = subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
             return (
               <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+                <LaunchCornerBadge plan={p.plan} />
                 {p.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                     🚀 Great Start
@@ -223,6 +229,9 @@ const PricingSection = () => {
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
                     Instant access · Cancel anytime · Secure Stripe checkout
+                  </p>
+                  <p className="text-[10px] text-pink-300/80 text-center mt-1 font-medium">
+                    Offer valid until July 30 or first 100 users.
                   </p>
                 </CardContent>
               </Card>
