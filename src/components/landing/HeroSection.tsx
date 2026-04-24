@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Brain, Shield, Zap, TrendingUp, Globe, Play, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import MultilingualTrustStrip from "@/components/landing/MultilingualTrustStrip";
 
 const ROTATING_WORDS = ["Hotels", "Airlines", "Clinics", "Schools", "Fleets", "Events", "Railways"];
 
@@ -36,12 +37,8 @@ const HeroSection = () => {
       <div className="container relative z-10">
         <div className={`max-w-5xl mx-auto text-center space-y-10 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           
-          {/* Top badge */}
-          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-[0_0_30px_rgba(45,212,191,0.1)]">
-            <div className="w-2 h-2 rounded-full bg-[hsl(160,60%,45%)] animate-pulse shadow-[0_0_8px_hsl(160,60%,45%)]" />
-            <span className="text-sm font-medium text-white/80">AI-Powered Business Scheduling Platform</span>
-            <span className="px-2 py-0.5 rounded-full bg-[hsl(174,62%,50%)]/15 text-[hsl(174,62%,50%)] text-xs font-bold">NEW</span>
-          </div>
+          {/* Top: premium multilingual trust strip with animated flags */}
+          <MultilingualTrustStrip />
 
           {/* Main headline */}
           <div className="space-y-5">
@@ -59,6 +56,16 @@ const HeroSection = () => {
                 {ROTATING_WORDS[wordIndex]}
               </span>
             </h1>
+          </div>
+
+          {/* Localized hero subtext */}
+          <div className="max-w-2xl mx-auto -mt-2">
+            <p className="text-lg md:text-xl text-white/80 font-medium leading-relaxed">
+              Run your business with AI <span className="text-[hsl(174,62%,60%)] font-semibold">in your own language</span>.
+            </p>
+            <p className="text-sm md:text-base text-white/55 mt-2">
+              Smart onboarding, Voice AI, automation, and industry workflows designed for global teams.
+            </p>
           </div>
 
           {/* Sub-headline */}
