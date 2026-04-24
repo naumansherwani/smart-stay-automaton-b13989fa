@@ -88,16 +88,44 @@ serve(async (req) => {
       .filter((d: any) => !["won", "lost"].includes(d.stage))
       .reduce((s: number, d: any) => s + Number(d.value_gbp || 0), 0);
 
+    // ARC engine signals
+    const arcByPhase: Record<string, number> = {};
+    (arcActions.data || []).forEach((a: any) => { arcByPhase[a.phase] = (arcByPhase[a.phase] || 0) + 1; });
+    const arcEventBuckets: Record<string, number> = {};
+    (arcEvents.data || []).forEach((e: any) => { arcEventBuckets[e.event_type] = (arcEventBuckets[e.event_type] || 0) + 1; });
+
+    const highRiskUsers = (healthScores.data || []).filter((h: any) => h.risk_level === "high" || h.risk_level === "critical").length;
+    const churnTopRisk = (churnScores.data || []).slice(0, 5).map((c: any) => ({
+      score: c.risk_score, prob: c.cancel_probability, action: c.suggested_action,
+    }));
+
+    const bookingsArr = bookings.data || [];
+    const revenue30d = bookingsArr.reduce((s: number, b: any) => s + Number(b.total_price || 0), 0);
+    const ticketsByPriority: Record<string, number> = {};
+    (crmTickets.data || []).forEach((t: any) => { ticketsByPriority[t.priority] = (ticketsByPriority[t.priority] || 0) + 1; });
+    const negativeTickets = (crmTickets.data || []).filter((t: any) => t.ai_sentiment === "negative").length;
+
+    const trialEndingSoon = (subs.data || []).filter((s: any) => {
+      if (s.status !== "trialing" || !s.trial_ends_at) return false;
+      const ms = new Date(s.trial_ends_at).getTime() - Date.now();
+      return ms > 0 && ms < 48 * 3600 * 1000;
+    }).length;
+
+    const cancelReasons: Record<string, number> = {};
+    (cancelReqs.data || []).forEach((c: any) => { cancelReasons[c.reason] = (cancelReasons[c.reason] || 0) + 1; });
+
     const ctx = {
       currency: "GBP (£)",
       mrr_gbp: mrr,
       arr_gbp: mrr * 12,
       active_customers: active.length,
       trial_customers: trials.length,
+      trial_ending_within_48h: trialEndingSoon,
       canceled_customers: canceled.length,
       churn_pct: subsArr.length ? Math.round((canceled.length / subsArr.length) * 1000) / 10 : 0,
       plan_breakdown: planBreakdown,
       enterprise_leads_total: (leads.data || []).length,
+      enterprise_leads_24h: (contactSubs.data || []).length,
       country_breakdown: countryBreakdown,
       deal_stage_breakdown: stageBreakdown,
       open_pipeline_value_gbp: pipelineValue,
@@ -105,11 +133,35 @@ serve(async (req) => {
       refund_amount_30d: (refunds.data || []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0),
       alerts_7d: (alerts.data || []).length,
       critical_alerts_7d: (alerts.data || []).filter((a: any) => a.severity === "critical").length,
+      bookings_30d: bookingsArr.length,
+      bookings_revenue_30d_gbp: revenue30d,
+      crm_tickets_7d: (crmTickets.data || []).length,
+      crm_tickets_by_priority: ticketsByPriority,
+      crm_tickets_negative_sentiment: negativeTickets,
+      arc_events_7d: (arcEvents.data || []).length,
+      arc_event_breakdown_7d: arcEventBuckets,
+      arc_actions_30d: (arcActions.data || []).length,
+      arc_actions_by_phase_30d: arcByPhase,
+      high_risk_users: highRiskUsers,
+      top_churn_risks: churnTopRisk,
+      cancellation_reasons_30d: cancelReasons,
+      total_signups: (profiles.data || []).length,
     };
 
-    const baseSystem = `You are the Founder AI Strategist for HostFlow AI Technologies — a UK-based global SaaS for AI-driven hospitality, travel & operations. You speak directly to the founder/CEO. Be sharp, executive-level, concise. Use £ GBP. Ground every answer in the live business snapshot below. Recommend specific next moves.
+    const baseSystem = `You are the AI Co-Owner of HostFlow AI Technologies — a UK-based global multi-industry SaaS (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway).
 
-LIVE BUSINESS SNAPSHOT (JSON):
+Your role is NOT a generic chatbot. You are the founder's strategic partner with full backend visibility. You answer questions AND proactively surface:
+- Sales growth levers (which plan/industry/country to push next)
+- Conversion bottlenecks (trials about to expire, abandoned checkouts, low-activity users)
+- Retention risks (high churn-risk users, negative-sentiment tickets, premium drop-off)
+- Revenue opportunities (upsell candidates, ARC actions ready to fire, enterprise leads to chase)
+- Operational risks (critical alerts, refund spikes, payment failures)
+
+You have read access to: subscriptions, bookings, CRM (contacts/deals/tickets/tasks), enterprise leads, ARC lifecycle events, user health scores, churn risk scores, refunds, admin alerts, cancellation reasons.
+
+Currency: £ GBP. Always ground every claim in the LIVE BUSINESS SNAPSHOT below. If data is missing, say so plainly.
+
+LIVE BUSINESS SNAPSHOT (JSON, last 7-30 days):
 ${JSON.stringify(ctx, null, 2)}`;
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
