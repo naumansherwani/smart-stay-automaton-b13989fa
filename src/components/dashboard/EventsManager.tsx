@@ -266,15 +266,8 @@ function EventsPanel() {
 // ─── Schedule Tab ───
 function SchedulePanel() {
   const days = ["Mon Apr 13", "Tue Apr 14", "Wed Apr 15", "Thu Apr 16", "Fri Apr 17", "Sat Apr 18", "Sun Apr 19"];
-  const eventsByDay: Record<string, typeof MOCK_EVENTS> = {
-    "Mon Apr 13": [],
-    "Tue Apr 14": [MOCK_EVENTS[7]],
-    "Wed Apr 15": [MOCK_EVENTS[1]],
-    "Thu Apr 16": [MOCK_EVENTS[1]],
-    "Fri Apr 17": [MOCK_EVENTS[3]],
-    "Sat Apr 18": [MOCK_EVENTS[0], MOCK_EVENTS[2]],
-    "Sun Apr 19": [MOCK_EVENTS[4]],
-  };
+  // Real data only — no mock seeded days. Real events render once user creates them.
+  const eventsByDay: Record<string, Event[]> = {};
 
   return (
     <div className="space-y-4">
