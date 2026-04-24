@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -126,8 +126,10 @@ const OwnerConsole = () => {
       <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-lg border-b border-border">
         <div className="container flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
-            <Crown className="w-5 h-5 text-yellow-400" />
-            <span className="text-base font-bold text-foreground">Owner Console</span>
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity" aria-label="Back to landing page">
+              <Crown className="w-5 h-5 text-yellow-400" />
+              <span className="text-base font-bold text-foreground">Owner Console</span>
+            </Link>
             <Badge className="bg-yellow-400/10 text-yellow-400 border-yellow-400/30 text-[10px]">SECRET</Badge>
             <div className="flex items-center gap-1.5 ml-3">
               <div className="w-2 h-2 rounded-full bg-[hsl(160,60%,45%)] animate-pulse" />
