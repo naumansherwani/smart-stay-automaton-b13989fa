@@ -17,8 +17,10 @@ export function useLaunchDiscount() {
     refresh();
     const id = setInterval(refresh, 30_000); // safety poll every 30s
     // Realtime: refresh instantly when a new signup redeems a launch spot.
+    // Use a unique channel name per mount to avoid SDK reusing an already-subscribed channel
+    // (which throws "cannot add postgres_changes callbacks ... after subscribe()").
     const channel = supabase
-      .channel("launch-discount-live")
+      .channel(`launch-discount-live-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "launch_discount_redemptions" },
