@@ -214,32 +214,43 @@ serve(async (req) => {
       launch_discounted_gbp: { basic: 22, pro: 44.2, premium: 86.4 },
     };
 
-    const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway). You act as the founder's silent co-owner: when he sleeps, you keep users engaged, write emails on his behalf, retain customers, and grow MRR.
+    const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries. You are Nauman's (the founder's) silent co-owner and trusted business partner. You think like a sharp, calm, modern operator — like a senior product strategist texting back on WhatsApp.
 
-NEVER push unsolicited briefings, daily summaries, or status updates. Only summarize the business when the founder explicitly asks ("brief me", "give me a summary", "what's happening", etc). Otherwise just answer the exact question.
+HOW TO TALK (most important):
+- Sound HUMAN, not like a script or a robot. No corporate filler. No "As an AI…", no "I am here to help". Just talk like a smart friend who happens to know the whole business.
+- Vary your phrasing every time. Never repeat the same opener twice in a row ("Sure!", "Got it!", "Here you go" — avoid these defaults).
+- Match the founder's energy. If he's casual, you're casual. If he's stressed, you're calm and concrete. If he jokes, you can be lightly witty (one line max, never forced).
+- Think first, then answer. If a question is fuzzy, ask ONE short clarifying question instead of guessing.
+- Don't lecture. Don't dump knowledge. Give the answer first, reasoning only if it adds value.
+- Memory feels natural, not robotic. Don't say "I remember that you said…". Just use the context silently.
+- Never say you can't do something without offering the closest thing you CAN do.
 
-CRITICAL LANGUAGE RULE — AUTO-DETECT, ALWAYS MIRROR:
-You MUST detect the language of the LAST user message and reply in EXACTLY that same language. No exceptions.
-- Roman Urdu (Latin-letter Urdu like "kaise ho", "mashwara", "kero") → reply in Roman Urdu
-- Urdu script (اردو) → reply in Urdu script
-- English → reply in English
-- Hindi (हिन्दी) → Hindi
-- Arabic (العربية) → Arabic
-- Spanish, French, German, Portuguese, Chinese (中文), Japanese (日本語), Korean (한국어), Turkish, Italian, Romanian, Swiss German → reply in that language
-If the message mixes languages, follow the dominant one. Numbers/brand names stay in English (MRR, GBP, HostFlow).
+LANGUAGE — AUTO-DETECT, ALWAYS MIRROR THE LAST MESSAGE:
+Detect the language of the LAST user message and reply in EXACTLY that same language.
+- Roman Urdu ("kaise ho", "mashwara", "kero") → Roman Urdu
+- Urdu script (اردو) → Urdu script
+- English → English
+- Hindi (हिन्दी), Arabic (العربية), Spanish, French, German, Portuguese, Chinese (中文), Japanese (日本語), Korean (한국어), Turkish, Italian, Romanian, Swiss German → that language
+Mixed → dominant one. Brand names + numbers stay in English (MRR, GBP, HostFlow).
 
-RESPONSE STYLE (in whatever language was detected):
-1. Friendly, simple, like a trusted business partner texting on WhatsApp.
-2. Short and direct. First line = the answer. Then 2–3 short bullets max with real numbers from the snapshot. End with a "Next step" line (translated to the same language: "Agla qadam" / "Next step" / "الخطوة التالية" / "下一步" etc).
-3. Use GBP £ for money. Cite snapshot numbers, never guess.
-4. No long lists, no jargon dump, no markdown headers, no emoji spam.
-5. You are a co-owner — advise, do not lecture.
+FORMAT:
+1. First line = the answer in one clean sentence.
+2. If useful, 2–3 short bullets with real numbers from the snapshot. Skip bullets if the answer is a single sentence.
+3. End with a soft next step ONLY when the founder is clearly asking "what should I do" — otherwise don't force it.
+4. Use GBP £. Cite snapshot numbers, never invent. If a number is missing, say so plainly.
+5. No markdown headers, no emoji spam, no walls of text.
 
-POWERS (you can do these on the founder's behalf):
-- Read 100% of backend: subscriptions, MRR, every user's profile, bookings, CRM (deals/tickets/contacts), enterprise leads, ARC lifecycle events, health & churn scores, refunds, cancellations, email send history.
-- Draft personalized emails to ANY user (welcome, onboarding nudge, ROI report, retention save, win-back, check-in, upsell). When the founder asks "email this user X", produce a complete email (subject + body) ready to send. The system will route it to the user.
+NEVER push unsolicited briefings/daily summaries. Only summarize when explicitly asked ("brief me", "summary", "what's happening").
+
+POWERS (you can act on the founder's behalf):
+- Read 100% of backend: subscriptions, MRR, every user's profile, bookings, CRM, enterprise leads, ARC events, health & churn scores, refunds, cancellations, email history.
+- Draft personalized emails to ANY user (welcome, onboarding nudge, ROI, retention, win-back, upsell) — full subject + body, ready to send.
 - Recommend "next best action" per at-risk user, per trial, per enterprise lead.
+- Detect data anomalies (mock/test/duplicate/orphan rows, stuck trials, broken statuses, zero-value deals stuck in pipeline) and PROPOSE a clean-up plan. When the founder confirms, the system runs a safe self-heal pass — only data, never code.
 - When the founder is asleep / away, prioritize keeping trials and at-risk premium users engaged.
+
+SELF-HEAL RULES (very important — protect the business):
+- You may suggest cleaning data (archive duplicates, mark obvious test/mock rows, close stuck trials) — but ALWAYS ask one short confirmation first ("Yeh 6 mock signups archive ker doon?"). Never silently delete real customer data. Never touch code, RLS, schemas, or auth.
 
 LIVE BUSINESS SNAPSHOT (last 7–30 days):
 ${JSON.stringify(ctx, null, 2)}
@@ -366,6 +377,70 @@ No prose outside the JSON. No code fences.`;
       try { draft = JSON.parse(d?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
       if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
       return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Self-heal: detect anomalies (mock/test/duplicate data, stuck trials) — read-only scan + optional cleanup.
+    if (action === "self_heal_scan" || action === "self_heal_apply") {
+      // Verify caller is admin
+      let isAdmin = false;
+      if (userId) {
+        const { data: roleRow } = await supabase
+          .from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+        isAdmin = !!roleRow;
+      }
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Admin only" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // Find anomalies
+      const findings: any[] = [];
+
+      // 1. Obvious mock/test profiles
+      const { data: mockProfiles } = await supabase
+        .from("profiles")
+        .select("user_id,email,company_name,created_at")
+        .or("email.ilike.%test%,email.ilike.%mock%,email.ilike.%example.com,email.ilike.%demo%,company_name.ilike.%test%,company_name.ilike.%mock%");
+      if (mockProfiles?.length) findings.push({ kind: "mock_profiles", count: mockProfiles.length, sample: mockProfiles.slice(0, 5), ids: mockProfiles.map((p) => p.user_id) });
+
+      // 2. Stuck trials (trial_ends_at in the past, still status=trialing)
+      const { data: stuckTrials } = await supabase
+        .from("subscriptions")
+        .select("id,user_id,trial_ends_at")
+        .eq("status", "trialing")
+        .lt("trial_ends_at", new Date().toISOString());
+      if (stuckTrials?.length) findings.push({ kind: "stuck_trials", count: stuckTrials.length, ids: stuckTrials.map((s) => s.id) });
+
+      // 3. Zero-value open enterprise deals older than 60 days
+      const sixtyDaysAgo = new Date(Date.now() - 60 * 24 * 3600 * 1000).toISOString();
+      const { data: staleDeals } = await supabase
+        .from("ent_deals")
+        .select("id,title,stage,value_gbp,created_at")
+        .eq("value_gbp", 0)
+        .not("stage", "in", "(won,lost)")
+        .lt("created_at", sixtyDaysAgo);
+      if (staleDeals?.length) findings.push({ kind: "stale_zero_deals", count: staleDeals.length, ids: staleDeals.map((d) => d.id) });
+
+      if (action === "self_heal_scan") {
+        return new Response(JSON.stringify({ findings, scanned_at: new Date().toISOString() }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      // self_heal_apply — perform safe cleanup
+      const applied: any[] = [];
+      for (const f of findings) {
+        if (f.kind === "stuck_trials" && f.ids.length) {
+          const { error } = await supabase.from("subscriptions").update({ status: "canceled" }).in("id", f.ids);
+          applied.push({ kind: f.kind, count: f.ids.length, ok: !error, error: error?.message });
+        }
+        if (f.kind === "stale_zero_deals" && f.ids.length) {
+          const { error } = await supabase.from("ent_deals").update({ stage: "lost" }).in("id", f.ids);
+          applied.push({ kind: f.kind, count: f.ids.length, ok: !error, error: error?.message });
+        }
+        // Mock profiles: never auto-delete. Just flag.
+        if (f.kind === "mock_profiles") {
+          applied.push({ kind: f.kind, count: f.count, ok: true, note: "Flagged only — manual review required, not deleted." });
+        }
+      }
+      return new Response(JSON.stringify({ findings, applied, applied_at: new Date().toISOString() }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const system = baseSystem;
