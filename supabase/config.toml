@@ -34,3 +34,12 @@ verify_jwt = true
 
 [functions.contact-form]
 verify_jwt = false
+
+[functions.arc-event-ingest]
+verify_jwt = true
+
+[functions.arc-orchestrator]
+verify_jwt = false
+
+[functions.founder-action-execute]
+verify_jwt = true

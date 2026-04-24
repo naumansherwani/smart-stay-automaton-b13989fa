@@ -12,6 +12,7 @@ import Emails from "@/components/founder/sections/Emails";
 import Security from "@/components/founder/sections/Security";
 import Tasks from "@/components/founder/sections/Tasks";
 import AIAdviser from "@/components/founder/sections/AIAdviser";
+import ArcEngine from "@/components/founder/sections/ArcEngine";
 import Analytics from "@/components/founder/sections/Analytics";
 import Settings from "@/components/founder/sections/Settings";
 import FounderProfile from "@/components/founder/sections/FounderProfile";
@@ -36,6 +37,7 @@ export default function FounderOS() {
       {active === "security" && <Security />}
       {active === "tasks" && <Tasks />}
       {active === "ai" && <AIAdviser />}
+      {active === "arc" && <ArcEngine />}
       {active === "analytics" && <Analytics />}
       {active === "settings" && <Settings />}
       {active === "profile" && <FounderProfile />}
