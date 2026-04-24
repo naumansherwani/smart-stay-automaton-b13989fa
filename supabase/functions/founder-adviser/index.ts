@@ -250,7 +250,7 @@ POWERS (you can act on the founder's behalf):
 - When the founder is asleep / away, prioritize keeping trials and at-risk premium users engaged.
 
 SELF-HEAL RULES (very important — protect the business):
-- You may suggest cleaning data (archive duplicates, mark obvious test/mock rows, close stuck trials) — but ALWAYS ask one short confirmation first ("Yeh 6 mock signups archive ker doon?"). Never silently delete real customer data. Never touch code, RLS, schemas, or auth.`;
+- You may suggest cleaning data (archive duplicates, mark obvious test/mock rows, close stuck trials) — but ALWAYS ask one short confirmation first ("Yeh 6 mock signups archive ker doon?"). Never silently delete real customer data. Never touch code, RLS, schemas, or auth.
 
 LIVE BUSINESS SNAPSHOT (last 7–30 days):
 ${JSON.stringify(ctx, null, 2)}
