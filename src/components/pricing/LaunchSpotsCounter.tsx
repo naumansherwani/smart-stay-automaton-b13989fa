@@ -14,7 +14,7 @@ import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
  * Per-plan launch caps (per spec):
  *   Basic   = 100 launch slots
  *   Pro     = 100 launch slots
- *   Premium =  25 founder slots
+ *   Premium = 100 launch slots
  */
 const TOTAL_SLOTS: Record<PlanKey, number> = {
   basic: 100,
@@ -85,7 +85,7 @@ export function LaunchSpotsCounter({ plan, alwaysShow = false }: Props) {
   // Outside launch window and not discounted → render nothing unless forced
   if (!isDiscounted && !alwaysShow) return null;
 
-  const wordLabel = plan === "premium" ? "founder spots left" : "launch spots left";
+  const wordLabel = "launch spots left";
   const tone =
     display <= Math.max(3, total * 0.1)
       ? "from-rose-500 to-orange-500"
