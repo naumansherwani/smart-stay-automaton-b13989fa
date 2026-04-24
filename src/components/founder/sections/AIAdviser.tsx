@@ -2,11 +2,12 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Sparkles, Send, Loader2, AlertTriangle, TrendingUp, Target, BarChart3,
   RefreshCw, Plus, Search, Pin, PinOff, Pencil, Trash2, Copy, Check,
-  ImageIcon, X, Brain, MessageSquare, Mic, Volume2, Square,
+  ImageIcon, X, Brain, MessageSquare, Mic, Volume2, Square, Zap,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import ArcEngine from "./ArcEngine";
 
 const QUICK = [
   "What should I focus on today?",
@@ -37,6 +38,7 @@ type Insights = { risk: string; opportunity: string; action: string; weekly: str
 
 export default function AIAdviser() {
   const { user } = useAuth();
+  const [view, setView] = useState<"chat" | "autopilot">("chat");
   const [convs, setConvs] = useState<Conv[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<DbMsg[]>([]);
