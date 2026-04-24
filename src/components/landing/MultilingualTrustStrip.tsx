@@ -20,7 +20,6 @@ const LANGUAGES: { flag: string; greeting: string; color: string; dir?: "rtl" }[
   { flag: "🇷🇺", greeting: "Добро пожаловать", color: "#BFDBFE" },
   { flag: "🇮🇹", greeting: "Benvenuto", color: "#86EFAC" },
   { flag: "🇹🇷", greeting: "Hoşgeldiniz", color: "#FCA5A5" },
-  { flag: "🇮🇳", greeting: "स्वागत है", color: "#FDBA74" },
   { flag: "🇵🇹", greeting: "Bem-vindo", color: "#86EFAC" },
   { flag: "🇨🇭", greeting: "Grüezi", color: "#FCA5A5" },
 ];
@@ -28,7 +27,7 @@ const LANGUAGES: { flag: string; greeting: string; color: string; dir?: "rtl" }[
 const TRUST_BADGES = [
   "CRM Connected",
   "Voice AI Ready",
-  "15 Languages",
+  "14 Languages",
   "Global Teams",
   "Fast Setup",
 ];
@@ -45,9 +44,9 @@ const MultilingualTrustStrip = () => {
           bg-[rgba(13,27,46,0.78)]
           border border-[#22D3EE]/30
           backdrop-blur-2xl
-          shadow-[0_25px_70px_-20px_rgba(0,0,0,0.55),0_0_80px_-20px_rgba(34,211,238,0.35)]
+          shadow-[0_25px_70px_-20px_rgba(0,0,0,0.55),0_0_60px_-25px_rgba(34,211,238,0.22)]
           transition-all duration-700
-          animate-[breathe_5s_ease-in-out_infinite]
+          animate-[breathe_10s_ease-in-out_infinite]
           ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}
         `}
       >
@@ -103,7 +102,7 @@ const MultilingualTrustStrip = () => {
 
           {/* Row 4 — Value line */}
           <p className="text-[13px] md:text-sm text-[#94A3B8] text-center max-w-[720px] leading-relaxed">
-            From leads, bookings, WhatsApp, support, calendars, and payments — HostFlow AI helps run your business naturally in 15 languages.
+            From leads, bookings, WhatsApp, support, calendars, and payments — HostFlow AI helps run your business naturally in 14 languages.
           </p>
 
           {/* Row 5 — Trust badges */}
@@ -130,8 +129,8 @@ const MultilingualTrustStrip = () => {
           75% { transform: rotate(4deg) translateY(-1px); }
         }
         @keyframes breathe {
-          0%, 100% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 80px -20px rgba(34,211,238,0.35); }
-          50% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 100px -15px rgba(34,211,238,0.5); }
+          0%, 100% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 55px -25px rgba(34,211,238,0.20); }
+          50% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 70px -22px rgba(34,211,238,0.30); }
         }
       `}</style>
     </div>
