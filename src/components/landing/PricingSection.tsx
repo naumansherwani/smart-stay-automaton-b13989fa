@@ -150,13 +150,13 @@ const PricingSection = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(160,84%,45%,0.15)]">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span className="text-sm font-semibold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-                Secure payments via our trusted billing partner
+                Secure checkout powered by Stripe
               </span>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-violet-500/10 border border-blue-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(217,91%,60%,0.15)]">
               <Globe2 className="w-4 h-4 text-blue-400" />
               <span className="text-sm font-semibold bg-gradient-to-r from-blue-300 to-violet-300 bg-clip-text text-transparent">
-                🌍 Trusted global billing platform
+                🌍 Trusted global payments · 256-bit SSL
               </span>
             </div>
           </div>
@@ -219,10 +219,10 @@ const PricingSection = () => {
                     disabled={!!isCurrent || loadingPlan === p.plan}
                     onClick={() => void handleClick(p)}
                   >
-                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : user ? (priceFor(p.plan).isDiscounted ? "Claim Launch Price" : "Subscribe Now") : "Start Free Trial"}
+                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : priceFor(p.plan).isDiscounted ? "Claim Launch Price" : "Get Started"}
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                    7-day free trial included — no credit card required
+                    Instant access · Cancel anytime · Secure Stripe checkout
                   </p>
                 </CardContent>
               </Card>

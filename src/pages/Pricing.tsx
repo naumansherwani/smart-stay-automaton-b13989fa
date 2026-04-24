@@ -192,8 +192,11 @@ export default function Pricing() {
                     disabled={!!isCurrent || loadingPlan === p.plan}
                     onClick={() => void handleSelect(p)}
                   >
-                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : user ? (priceFor(p.plan!).isDiscounted ? "Claim Launch Price" : "Subscribe Now") : "Start Free Trial"}
+                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : priceFor(p.plan!).isDiscounted ? "Claim Launch Price" : "Get Started"}
                   </Button>
+                  <p className="text-[11px] text-muted-foreground text-center mt-2.5">
+                    Instant access · Cancel anytime · Secure Stripe checkout
+                  </p>
                 </CardContent>
               </Card>
             );

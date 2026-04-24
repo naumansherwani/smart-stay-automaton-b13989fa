@@ -70,6 +70,9 @@ export default function CheckoutSuccess() {
               Checkout ref: {checkoutId}
             </p>
           )}
+          <p className="text-[11px] text-muted-foreground/60">
+            Secure billing powered by Polar · Card processed by Stripe
+          </p>
         </div>
       </main>
       <Footer />
