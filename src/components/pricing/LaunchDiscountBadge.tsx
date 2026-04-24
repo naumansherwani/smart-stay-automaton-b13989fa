@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Sparkles, Clock, AlertCircle } from "lucide-react";
+import { Clock, AlertCircle } from "lucide-react";
 import type { PlanKey } from "@/lib/pricingConfig";
 import { LAUNCH_DISCOUNT } from "@/lib/pricingConfig";
 import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
@@ -45,13 +45,12 @@ export function LaunchDiscountBadge({ plan }: { plan: PlanKey }) {
   }
   if (!isDiscounted) return null;
 
+  // Floating corner badge already shows the % off — here we only show
+  // the live spots-remaining + countdown to avoid duplication.
   return (
-    <div className="space-y-1.5 text-center">
-      <div className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-300 border border-pink-500/40 shadow-[0_0_12px_hsl(330,80%,60%,0.25)]">
-        <Sparkles className="w-3 h-3" /> LIMITED LAUNCH OFFER · −{planInfo.discount_percent}%
-      </div>
+    <div className="space-y-1 text-center">
       <div className="text-[10px] text-muted-foreground">
-        Only {remaining} of 100 spots left for {plan.charAt(0).toUpperCase() + plan.slice(1)} · price locked 12 months
+        Only <span className="font-semibold text-foreground">{remaining}</span> of {planInfo.discount_percent && 100} spots left · price locked 12 months
       </div>
       {cd && (
         <div className="inline-flex items-center gap-1 text-[10px] text-orange-300/90">
