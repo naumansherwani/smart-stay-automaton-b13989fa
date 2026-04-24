@@ -5,7 +5,7 @@
  */
 
 export const LAUNCH_DISCOUNT = {
-  campaignStart: "2026-04-30T00:00:00Z",
+  campaignStart: "2026-04-24T00:00:00Z",
   campaignEnd: "2026-07-31T23:59:59Z",
   capPerPlan: 100,
   // 12-month price lock for users who claim during the window
