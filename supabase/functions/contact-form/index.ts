@@ -8,17 +8,16 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live";
-const ZOHO_APP_PASSWORD = Deno.env.get("ZOHO_APP_PASSWORD") || "";
-const FROM_NAME = "HostFlow AI Technologies";
+const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live").trim();
+const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
+const FROM_NAME = "HostFlow AI";
 const OWNER_EMAIL = ZOHO_EMAIL;
 
 function buildTransport() {
   return nodemailer.createTransport({
     host: "smtp.zoho.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
+    port: 465,
+    secure: true,
     auth: { user: ZOHO_EMAIL, pass: ZOHO_APP_PASSWORD },
     tls: { minVersion: "TLSv1.2" },
   });
