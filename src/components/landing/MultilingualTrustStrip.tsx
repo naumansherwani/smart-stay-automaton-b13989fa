@@ -3,25 +3,27 @@ import { Check, Sparkles } from "lucide-react";
 
 /**
  * Premium multilingual trust card — sits directly above the hero headline.
- * Real flag emojis + native greetings + elite SaaS color scheme.
+ * Real SVG country flags (via flagcdn) + native greetings + elite SaaS color scheme.
+ * Reflects the 14 languages actually supported on the site (excluding Hindi/India).
  */
 
-// Each country: real flag emoji + native greeting + tasteful accent color
-const LANGUAGES: { flag: string; greeting: string; color: string; dir?: "rtl" }[] = [
-  { flag: "🇬🇧", greeting: "Hello", color: "#93C5FD" },
-  { flag: "🇵🇰", greeting: "خوش آمدید", color: "#86EFAC", dir: "rtl" },
-  { flag: "🇸🇦", greeting: "أهلاً", color: "#86EFAC", dir: "rtl" },
-  { flag: "🇪🇸", greeting: "Hola", color: "#FCD34D" },
-  { flag: "🇫🇷", greeting: "Bonjour", color: "#93C5FD" },
-  { flag: "🇩🇪", greeting: "Willkommen", color: "#FDE68A" },
-  { flag: "🇨🇳", greeting: "欢迎", color: "#FCA5A5" },
-  { flag: "🇯🇵", greeting: "ようこそ", color: "#F8FAFC" },
-  { flag: "🇰🇷", greeting: "환영합니다", color: "#C7D2FE" },
-  { flag: "🇷🇺", greeting: "Добро пожаловать", color: "#BFDBFE" },
-  { flag: "🇮🇹", greeting: "Benvenuto", color: "#86EFAC" },
-  { flag: "🇹🇷", greeting: "Hoşgeldiniz", color: "#FCA5A5" },
-  { flag: "🇵🇹", greeting: "Bem-vindo", color: "#86EFAC" },
-  { flag: "🇨🇭", greeting: "Grüezi", color: "#FCA5A5" },
+// Each country: ISO code (for SVG flag) + native greeting + tasteful accent color
+// 14 languages — matches site i18n (en, ur, ar, es, fr, de, zh, ja, ko, it, tr, pt, ro, de-CH)
+const LANGUAGES: { code: string; name: string; greeting: string; color: string; dir?: "rtl" }[] = [
+  { code: "gb", name: "United Kingdom", greeting: "Hello", color: "#93C5FD" },
+  { code: "pk", name: "Pakistan", greeting: "خوش آمدید", color: "#86EFAC", dir: "rtl" },
+  { code: "sa", name: "Saudi Arabia", greeting: "أهلاً", color: "#86EFAC", dir: "rtl" },
+  { code: "es", name: "Spain", greeting: "Hola", color: "#FCD34D" },
+  { code: "fr", name: "France", greeting: "Bonjour", color: "#93C5FD" },
+  { code: "de", name: "Germany", greeting: "Willkommen", color: "#FDE68A" },
+  { code: "cn", name: "China", greeting: "欢迎", color: "#FCA5A5" },
+  { code: "jp", name: "Japan", greeting: "ようこそ", color: "#F8FAFC" },
+  { code: "kr", name: "South Korea", greeting: "환영합니다", color: "#C7D2FE" },
+  { code: "it", name: "Italy", greeting: "Benvenuto", color: "#86EFAC" },
+  { code: "tr", name: "Turkey", greeting: "Hoşgeldiniz", color: "#FCA5A5" },
+  { code: "pt", name: "Portugal", greeting: "Bem-vindo", color: "#86EFAC" },
+  { code: "ro", name: "Romania", greeting: "Bun venit", color: "#FCD34D" },
+  { code: "ch", name: "Switzerland", greeting: "Grüezi", color: "#FCA5A5" },
 ];
 
 const TRUST_BADGES = [
@@ -59,20 +61,27 @@ const MultilingualTrustStrip = () => {
             <ul className="flex flex-wrap items-start justify-center gap-x-[10px] gap-y-3 md:gap-x-[18px]">
               {LANGUAGES.map((l, i) => (
                 <li
-                  key={l.greeting + i}
+                  key={l.code + i}
                   className="flex flex-col items-center gap-1.5 select-none min-w-[52px] md:min-w-[64px]"
                 >
                   <span
-                    className="text-[24px] md:text-[32px] leading-none"
+                    className="inline-block leading-none"
                     style={{
-                      filter: "drop-shadow(0 3px 8px rgba(0,0,0,0.5))",
-                      display: "inline-block",
                       transformOrigin: "bottom center",
-                      animation: `flagWave 3.6s ease-in-out ${(i % 6) * 0.2}s infinite`,
+                      animation: `flagWave 6s ease-in-out ${(i % 7) * 0.35}s infinite`,
                     }}
                     aria-hidden
                   >
-                    {l.flag}
+                    <img
+                      src={`https://flagcdn.com/w80/${l.code}.png`}
+                      srcSet={`https://flagcdn.com/w160/${l.code}.png 2x`}
+                      width={32}
+                      height={24}
+                      alt={l.name}
+                      loading="lazy"
+                      className="w-[24px] h-[18px] md:w-[32px] md:h-[24px] rounded-[3px] object-cover ring-1 ring-white/15"
+                      style={{ boxShadow: "0 3px 8px rgba(0,0,0,0.45)" }}
+                    />
                   </span>
                   <span
                     className="text-[9px] md:text-[11px] font-semibold leading-tight text-center whitespace-nowrap"
@@ -124,13 +133,11 @@ const MultilingualTrustStrip = () => {
       <style>{`
         @keyframes flagWave {
           0%, 100% { transform: rotate(0deg) translateY(0); }
-          25% { transform: rotate(-4deg) translateY(-1px); }
           50% { transform: rotate(0deg) translateY(-2px); }
-          75% { transform: rotate(4deg) translateY(-1px); }
         }
         @keyframes breathe {
-          0%, 100% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 55px -25px rgba(34,211,238,0.20); }
-          50% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.55), 0 0 70px -22px rgba(34,211,238,0.30); }
+          0%, 100% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.50), 0 0 50px -28px rgba(34,211,238,0.16); }
+          50% { box-shadow: 0 25px 70px -20px rgba(0,0,0,0.50), 0 0 60px -26px rgba(34,211,238,0.22); }
         }
       `}</style>
     </div>
