@@ -545,7 +545,7 @@ export default function AIAdviser() {
             <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"} group`}>
               <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
                 m.role === "user"
-                  ? "bg-[var(--fos-accent)] text-white"
+                  ? "bg-white/10 border border-white/15 text-white backdrop-blur-sm"
                   : "bg-[var(--fos-bg)] border border-[var(--fos-border)] text-[var(--fos-text)]"
               }`}>
                 {Array.isArray(m.attachments) && m.attachments.length > 0 && (
