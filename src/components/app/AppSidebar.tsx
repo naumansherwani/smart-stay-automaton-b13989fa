@@ -18,7 +18,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useCallback } from "react";
+import { useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const primaryNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -29,8 +32,8 @@ const primaryNav = [
 ];
 
 const founderNav = [
-  { title: "AI Co-Owner", url: "/owner?tab=ai", icon: Sparkles },
-  { title: "ARC Engine", url: "/owner?tab=arc", icon: Zap },
+  { title: "AI Co-Owner", url: "/founder?section=ai", icon: Sparkles },
+  { title: "ARC Engine", url: "/founder?section=arc", icon: Zap },
 ];
 
 const conditionalNav = [
@@ -46,6 +49,14 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const [pinned, setPinned] = useState(false);
   const { profile } = useProfile();
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
 
   const userIndustry = profile?.industry || "";
 
@@ -136,6 +147,17 @@ export function AppSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {visibleConditional.map(renderNavItem)}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
+
+          {isAdmin && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Founder</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {founderNav.map(renderNavItem)}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
