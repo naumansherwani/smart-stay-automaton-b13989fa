@@ -23,7 +23,7 @@ const IDENTITIES = [
   { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise", displayName: "HostFlow AI · Enterprise Sales" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",    displayName: "HostFlow AI · Billing" },
-  { id: "general",    address: "connectai@hostflowai.live", label: "General",    displayName: "HostFlow AI · ConnectAI" },
+  { id: "general",    address: "hello@hostflowai.live",     label: "Founder",    displayName: "Nauman Sherwani · HostFlow AI" },
 ] as const;
 
 function identityFromRecipients(recipients: { address?: string }[] = []): string {
