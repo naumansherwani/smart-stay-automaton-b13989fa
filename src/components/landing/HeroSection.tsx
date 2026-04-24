@@ -36,12 +36,12 @@ const HeroSection = () => {
 
       <div className="container relative z-10">
         <div className={`max-w-5xl mx-auto text-center space-y-10 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          
-          {/* Top: premium multilingual trust strip with animated flags */}
+
+          {/* Top: premium multilingual trust card — sits directly above the headline */}
           <MultilingualTrustStrip />
 
-          {/* Main headline */}
-          <div className="space-y-5">
+          {/* Main headline (28px desktop / 18px mobile above) */}
+          <div className="space-y-5 !mt-[18px] md:!mt-[28px]">
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] tracking-tight">
               <span className="text-white">Grow Smarter.</span>
               <br />
