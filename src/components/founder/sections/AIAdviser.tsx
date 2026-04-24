@@ -2,11 +2,12 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Sparkles, Send, Loader2, AlertTriangle, TrendingUp, Target, BarChart3,
   RefreshCw, Plus, Search, Pin, PinOff, Pencil, Trash2, Copy, Check,
-  ImageIcon, X, Brain, MessageSquare, Mic, Volume2, Square,
+  ImageIcon, X, Brain, MessageSquare, Mic, Volume2, Square, Zap,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import ArcEngine from "./ArcEngine";
 
 const QUICK = [
   "What should I focus on today?",
@@ -37,6 +38,7 @@ type Insights = { risk: string; opportunity: string; action: string; weekly: str
 
 export default function AIAdviser() {
   const { user } = useAuth();
+  const [view, setView] = useState<"chat" | "autopilot">("chat");
   const [convs, setConvs] = useState<Conv[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<DbMsg[]>([]);
@@ -281,7 +283,38 @@ export default function AIAdviser() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_320px] gap-4 h-[calc(100vh-180px)]">
+    <div className="space-y-4">
+      {/* HEADER — single AI Co-Owner with Chat / Autopilot tabs */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-[var(--fos-text)]">AI Co-Owner</h1>
+            <p className="text-xs text-[var(--fos-muted)]">Chat + Autopilot · full backend access · Roman Urdu</p>
+          </div>
+        </div>
+        <div className="ml-auto flex items-center gap-1 p-1 rounded-lg bg-[var(--fos-card)] border border-[var(--fos-border)]">
+          <button
+            onClick={() => setView("chat")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition ${view === "chat" ? "bg-[var(--fos-accent)]/15 text-[var(--fos-accent)]" : "text-[var(--fos-muted)] hover:text-[var(--fos-text)]"}`}
+          >
+            <MessageSquare className="w-3.5 h-3.5" /> Chat
+          </button>
+          <button
+            onClick={() => setView("autopilot")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition ${view === "autopilot" ? "bg-[var(--fos-accent)]/15 text-[var(--fos-accent)]" : "text-[var(--fos-muted)] hover:text-[var(--fos-text)]"}`}
+          >
+            <Zap className="w-3.5 h-3.5" /> Autopilot (ARC)
+          </button>
+        </div>
+      </div>
+
+      {view === "autopilot" ? (
+        <ArcEngine />
+      ) : (
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_320px] gap-4 h-[calc(100vh-220px)]">
       {/* SIDEBAR — conversations */}
       <div className="founder-card flex flex-col overflow-hidden">
         <div className="p-3 border-b border-[var(--fos-border)] space-y-2">
@@ -537,6 +570,8 @@ export default function AIAdviser() {
           </div>
         </div>
       </div>
+      </div>
+      )}
     </div>
   );
 }

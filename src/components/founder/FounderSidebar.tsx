@@ -1,4 +1,4 @@
-import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Zap } from "lucide-react";
+import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
   | "overview" | "executive" | "revenue" | "customers" | "leads" | "crm"
-  | "emails" | "tasks" | "ai" | "arc" | "analytics" | "security" | "settings" | "profile";
+  | "emails" | "tasks" | "ai" | "analytics" | "security" | "settings" | "profile";
 
 const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -17,8 +17,7 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "crm", label: "Enterprise CRM", icon: Briefcase },
   { id: "emails", label: "AI Email Center", icon: Mail },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
-  { id: "ai", label: "AI Adviser", icon: Sparkles },
-  { id: "arc", label: "ARC Engine", icon: Zap },
+  { id: "ai", label: "AI Co-Owner", icon: Sparkles },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "security", label: "Security", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Settings },
