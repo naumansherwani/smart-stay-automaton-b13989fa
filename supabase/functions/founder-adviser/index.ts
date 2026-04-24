@@ -42,12 +42,30 @@ serve(async (req) => {
       userId = userData?.user?.id ?? null;
     }
 
-    const [subs, leads, deals, refunds, alerts] = await Promise.all([
-      supabase.from("subscriptions").select("plan,status,created_at"),
-      supabase.from("enterprise_leads").select("status,country,industry,team_size,created_at,estimated_value_gbp"),
-      supabase.from("ent_deals").select("stage,value_gbp,created_at"),
-      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
-      supabase.from("admin_alerts").select("alert_type,severity,created_at").gte("created_at", new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()),
+    const since30d = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
+    const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+    const since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+
+    const [
+      subs, leads, deals, refunds, alerts,
+      arcEvents, arcActions, healthScores, churnScores,
+      profiles, bookings, crmDeals, crmTickets, contactSubs, cancelReqs,
+    ] = await Promise.all([
+      supabase.from("subscriptions").select("plan,status,created_at,trial_ends_at"),
+      supabase.from("enterprise_leads").select("status,country,industry,team_size,created_at,estimated_value_gbp,company_name").order("created_at", { ascending: false }).limit(200),
+      supabase.from("ent_deals").select("stage,value_gbp,created_at,title").order("created_at", { ascending: false }).limit(200),
+      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", since30d),
+      supabase.from("admin_alerts").select("alert_type,severity,title,created_at,is_resolved").gte("created_at", since7d).order("created_at", { ascending: false }).limit(50),
+      supabase.from("arc_lifecycle_events").select("event_type,event_category,industry,plan,created_at").gte("created_at", since7d),
+      supabase.from("arc_actions").select("action_type,phase,status,created_at").gte("created_at", since30d),
+      supabase.from("user_health_scores").select("user_id,health_score,risk_level,updated_at").order("health_score", { ascending: true }).limit(50),
+      supabase.from("churn_risk_scores").select("user_id,risk_score,cancel_probability,suggested_action").order("risk_score", { ascending: false }).limit: undefined as any,
+      supabase.from("profiles").select("user_id,email,company_name,industry,created_at").order("created_at", { ascending: false }).limit(50),
+      supabase.from("bookings").select("status,total_price,created_at").gte("created_at", since30d),
+      supabase.from("crm_deals").select("stage,value,industry,created_at").gte("created_at", since30d),
+      supabase.from("crm_tickets").select("status,priority,industry,created_at,ai_sentiment").gte("created_at", since7d),
+      supabase.from("enterprise_leads").select("created_at").gte("created_at", since24h),
+      supabase.from("cancellation_requests").select("reason,plan,final_action,created_at").gte("created_at", since30d),
     ]);
 
     const PLAN_GBP: Record<string, number> = { basic: 19, pro: 49, premium: 99, enterprise: 499, trial: 0 };
