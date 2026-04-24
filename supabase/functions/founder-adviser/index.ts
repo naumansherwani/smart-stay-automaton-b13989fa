@@ -154,6 +154,27 @@ serve(async (req) => {
     const cancelReasons: Record<string, number> = {};
     (cancelReqs.data || []).forEach((c: any) => { cancelReasons[c.reason] = (cancelReasons[c.reason] || 0) + 1; });
 
+    // Live launch-discount scarcity counter — same backend the public landing page reads.
+    let launchDiscount: any = null;
+    try {
+      const { data: ld } = await supabase.rpc("get_launch_discount_status");
+      launchDiscount = ld;
+    } catch { /* non-fatal */ }
+
+    // Static catalog of the 8 production industries + the headline AI features each one ships with.
+    // Keep this in sync with src/lib/industryFeatures.ts. Used so the adviser can answer
+    // "what does HostFlow do for airlines?" without making things up.
+    const industriesCatalog = {
+      hospitality: ["Smart pricing", "Gap-night filler", "Competitor radar", "Guest scoring", "Demand forecast", "Auto-pricing"],
+      airlines: ["Crew scheduling", "Demand forecast", "Smart pricing", "AI ops resolve", "Fleet intelligence"],
+      car_rental: ["Fleet map", "Smart pricing", "Auto-pricing", "Demand forecast"],
+      events_entertainment: ["Ticket capacity", "Smart pricing", "Demand forecast", "Auto-pricing"],
+      healthcare: ["Patient flow", "Schedule timeline", "AI auto-schedule"],
+      education: ["Class schedule", "Timetable manager", "AI auto-schedule"],
+      logistics: ["Driver/vehicle ops", "Delivery tracking", "AI auto-schedule"],
+      railways: ["Crew scheduling", "Demand forecast", "Smart pricing", "Coach/route management"],
+    };
+
     const ctx = {
       currency: "GBP (£)",
       mrr_gbp: mrr,
@@ -186,6 +207,11 @@ serve(async (req) => {
       top_churn_risks: churnTopRisk,
       cancellation_reasons_30d: cancelReasons,
       total_signups: (profiles.data || []).length,
+      launch_discount: launchDiscount,
+      industries_supported: industriesCatalog,
+      industries_count: Object.keys(industriesCatalog).length,
+      pricing_gbp: { basic: 25, pro: 52, premium: 108, enterprise: 499 },
+      launch_discounted_gbp: { basic: 22, pro: 44.2, premium: 86.4 },
     };
 
     const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway). You act as the founder's silent co-owner: when he sleeps, you keep users engaged, write emails on his behalf, retain customers, and grow MRR.
