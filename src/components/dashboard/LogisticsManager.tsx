@@ -66,44 +66,11 @@ interface TimeSlot {
   overridden: boolean;
 }
 
-const MOCK_DELIVERIES: Delivery[] = [
-  { id: "DEL-5001", location: "123 Main St, Downtown", timeWindow: "09:00–11:00", status: "in-transit", driver: "Ahmed Khan", vehicle: "VAN-01", priority: "express", price: 25, distance: "8.2 km", eta: "32 min", capacity: 3 },
-  { id: "DEL-5002", location: "456 Oak Ave, Westside", timeWindow: "09:00–11:00", status: "assigned", driver: "Sara Ali", vehicle: "TRK-02", priority: "normal", price: 15, distance: "12.5 km", eta: "48 min", capacity: 5 },
-  { id: "DEL-5003", location: "789 Pine Rd, Northgate", timeWindow: "11:00–13:00", status: "pending", driver: "—", vehicle: "—", priority: "urgent", price: 35, distance: "5.1 km", eta: "—", capacity: 1 },
-  { id: "DEL-5004", location: "321 Elm St, Eastville", timeWindow: "11:00–13:00", status: "delivered", driver: "Omar Hassan", vehicle: "VAN-03", priority: "normal", price: 15, distance: "15.8 km", eta: "Done", capacity: 2 },
-  { id: "DEL-5005", location: "654 Maple Dr, Southpark", timeWindow: "13:00–15:00", status: "delayed", driver: "Ahmed Khan", vehicle: "VAN-01", priority: "express", price: 28, distance: "20.3 km", eta: "+45 min", capacity: 4 },
-  { id: "DEL-5006", location: "987 Cedar Ln, Midtown", timeWindow: "15:00–17:00", status: "pending", driver: "—", vehicle: "—", priority: "normal", price: 15, distance: "7.6 km", eta: "—", capacity: 1 },
-  { id: "DEL-5007", location: "147 Birch Way, Harbor", timeWindow: "15:00–17:00", status: "assigned", driver: "Fatima Noor", vehicle: "BK-01", priority: "urgent", price: 40, distance: "3.2 km", eta: "15 min", capacity: 1 },
-  { id: "DEL-5008", location: "258 Walnut Ct, Hilltop", timeWindow: "17:00–19:00", status: "pending", driver: "—", vehicle: "—", priority: "normal", price: 18, distance: "11.0 km", eta: "—", capacity: 2 },
-];
-
-const MOCK_VEHICLES: Vehicle[] = [
-  { id: "VAN-01", name: "Delivery Van Alpha", type: "van", plate: "ABC-1234", status: "in-use", capacity: 20, fuel: 72, mileage: "45,200 km", lastService: "2 weeks ago", deliveriesToday: 6 },
-  { id: "TRK-02", name: "Heavy Truck Beta", type: "truck", plate: "DEF-5678", status: "in-use", capacity: 50, fuel: 55, mileage: "82,100 km", lastService: "1 month ago", deliveriesToday: 4 },
-  { id: "VAN-03", name: "Express Van Gamma", type: "van", plate: "GHI-9012", status: "available", capacity: 15, fuel: 90, mileage: "28,400 km", lastService: "3 days ago", deliveriesToday: 8 },
-  { id: "BK-01", name: "E-Bike Courier", type: "bike", plate: "—", status: "in-use", capacity: 3, fuel: 85, mileage: "1,200 km", lastService: "1 week ago", deliveriesToday: 12 },
-  { id: "VAN-04", name: "City Van Delta", type: "van", plate: "JKL-3456", status: "maintenance", capacity: 18, fuel: 30, mileage: "67,800 km", lastService: "Today", deliveriesToday: 0 },
-  { id: "CAR-01", name: "Sedan Express", type: "car", plate: "MNO-7890", status: "available", capacity: 5, fuel: 95, mileage: "15,600 km", lastService: "5 days ago", deliveriesToday: 3 },
-];
-
-const MOCK_DRIVERS: Driver[] = [
-  { id: "DRV-01", name: "Ahmed Khan", status: "driving", vehicle: "VAN-01", hoursWorked: 5.5, maxHours: 10, deliveriesCompleted: 6, rating: 4.8, phone: "+1 555-0101", zone: "Downtown" },
-  { id: "DRV-02", name: "Sara Ali", status: "driving", vehicle: "TRK-02", hoursWorked: 3, maxHours: 10, deliveriesCompleted: 4, rating: 4.9, phone: "+1 555-0102", zone: "Westside" },
-  { id: "DRV-03", name: "Omar Hassan", status: "break", vehicle: "—", hoursWorked: 7, maxHours: 10, deliveriesCompleted: 8, rating: 4.6, phone: "+1 555-0103", zone: "Eastville" },
-  { id: "DRV-04", name: "Fatima Noor", status: "driving", vehicle: "BK-01", hoursWorked: 4, maxHours: 8, deliveriesCompleted: 12, rating: 4.95, phone: "+1 555-0104", zone: "Harbor" },
-  { id: "DRV-05", name: "Youssef Malik", status: "available", vehicle: "—", hoursWorked: 0, maxHours: 10, deliveriesCompleted: 0, rating: 4.7, phone: "+1 555-0105", zone: "Midtown" },
-  { id: "DRV-06", name: "Aisha Begum", status: "off-duty", vehicle: "—", hoursWorked: 10, maxHours: 10, deliveriesCompleted: 11, rating: 4.85, phone: "+1 555-0106", zone: "Northgate" },
-];
-
-const MOCK_SLOTS: TimeSlot[] = [
-  { time: "07:00–09:00", deliveries: 2, capacity: 8, demand: "low", price: 12, basePrice: 15, overridden: false },
-  { time: "09:00–11:00", deliveries: 6, capacity: 8, demand: "high", price: 22, basePrice: 15, overridden: false },
-  { time: "11:00–13:00", deliveries: 5, capacity: 8, demand: "medium", price: 18, basePrice: 15, overridden: false },
-  { time: "13:00–15:00", deliveries: 4, capacity: 8, demand: "medium", price: 16, basePrice: 15, overridden: false },
-  { time: "15:00–17:00", deliveries: 7, capacity: 8, demand: "peak", price: 28, basePrice: 15, overridden: true },
-  { time: "17:00–19:00", deliveries: 3, capacity: 8, demand: "medium", price: 20, basePrice: 15, overridden: false },
-  { time: "19:00–21:00", deliveries: 1, capacity: 6, demand: "low", price: 14, basePrice: 15, overridden: false },
-];
+// Real data only — no mocks. UI renders from user-created deliveries/vehicles/drivers.
+const MOCK_DELIVERIES: Delivery[] = [];
+const MOCK_VEHICLES: Vehicle[] = [];
+const MOCK_DRIVERS: Driver[] = [];
+const MOCK_SLOTS: TimeSlot[] = [];
 
 const statusColors: Record<string, string> = {
   "pending": "text-muted-foreground",

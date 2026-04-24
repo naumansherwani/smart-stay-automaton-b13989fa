@@ -81,38 +81,10 @@ const statusColors: Record<string, string> = {
   "available": "text-success", "in-use": "text-primary", "setup": "text-warning", "maintenance": "text-muted-foreground",
 };
 
-const MOCK_EVENTS: Event[] = [
-  { id: "EVT-001", name: "Neon Nights Festival", venue: "Grand Arena", date: "Apr 12, 2026", time: "18:00–23:00", duration: "5h", category: "festival", capacity: 5000, sold: 4680, basePrice: 45, currentPrice: 78, status: "on-sale", demand: "viral", revenue: 364_840, priceOverridden: false, performers: ["DJ Shadow", "Marshmello", "Deadmau5"], image: "🎪" },
-  { id: "EVT-002", name: "Tech Summit 2026", venue: "Convention Center", date: "Apr 15-16, 2026", time: "09:00–18:00", duration: "2 days", category: "conference", capacity: 800, sold: 645, basePrice: 120, currentPrice: 145, status: "on-sale", demand: "high", revenue: 93_525, priceOverridden: false, performers: ["Keynote: AI Future", "Panel: Cloud Native"], image: "🎤" },
-  { id: "EVT-003", name: "Comedy Night Special", venue: "Laugh Lounge", date: "Apr 18, 2026", time: "20:00–22:30", duration: "2.5h", category: "comedy", capacity: 200, sold: 198, basePrice: 35, currentPrice: 55, status: "sold-out", demand: "viral", revenue: 10_890, priceOverridden: false, performers: ["Dave Chappelle", "Ali Wong"], image: "😂" },
-  { id: "EVT-004", name: "Classical Orchestra", venue: "Royal Theater", date: "Apr 20, 2026", time: "19:30–21:30", duration: "2h", category: "theater", capacity: 350, sold: 180, basePrice: 60, currentPrice: 52, status: "on-sale", demand: "medium", revenue: 9_360, priceOverridden: false, performers: ["City Philharmonic"], image: "🎭" },
-  { id: "EVT-005", name: "Startup Workshop", venue: "Innovation Hub", date: "Apr 22, 2026", time: "10:00–16:00", duration: "6h", category: "workshop", capacity: 50, sold: 12, basePrice: 80, currentPrice: 65, status: "upcoming", demand: "low", revenue: 780, priceOverridden: true, performers: ["Y Combinator Alumni"], image: "📚" },
-  { id: "EVT-006", name: "Football Derby Finals", venue: "City Stadium", date: "Apr 25, 2026", time: "15:00–17:00", duration: "2h", category: "sports", capacity: 40000, sold: 38500, basePrice: 30, currentPrice: 85, status: "on-sale", demand: "viral", revenue: 3_272_500, priceOverridden: false, performers: ["City FC vs United FC"], image: "⚽" },
-  { id: "EVT-007", name: "Private Gala Dinner", venue: "Skyline Ballroom", date: "Apr 28, 2026", time: "19:00–23:00", duration: "4h", category: "private", capacity: 150, sold: 150, basePrice: 250, currentPrice: 250, status: "sold-out", demand: "high", revenue: 37_500, priceOverridden: true, performers: ["Chef Gordon", "Live Jazz Band"], image: "🔒" },
-  { id: "EVT-008", name: "Indie Music Showcase", venue: "Basement Club", date: "Apr 30, 2026", time: "21:00–02:00", duration: "5h", category: "concert", capacity: 300, sold: 88, basePrice: 20, currentPrice: 18, status: "on-sale", demand: "low", revenue: 1_584, priceOverridden: false, performers: ["The Waves", "Luna Park", "Echo Valley"], image: "🎵" },
-];
-
-const MOCK_BOOKINGS: Booking[] = [
-  { id: "BK-8001", eventId: "EVT-001", eventName: "Neon Nights Festival", customerName: "Ali Raza", email: "ali@email.com", tickets: 4, ticketType: "vip", totalPaid: 312, bookedAt: "2 min ago", status: "confirmed" },
-  { id: "BK-8002", eventId: "EVT-006", eventName: "Football Derby Finals", customerName: "Sarah Johnson", email: "sarah@email.com", tickets: 2, ticketType: "premium", totalPaid: 170, bookedAt: "5 min ago", status: "confirmed" },
-  { id: "BK-8003", eventId: "EVT-002", eventName: "Tech Summit 2026", customerName: "Omar Sheikh", email: "omar@email.com", tickets: 1, ticketType: "general", totalPaid: 145, bookedAt: "12 min ago", status: "pending" },
-  { id: "BK-8004", eventId: "EVT-003", eventName: "Comedy Night Special", customerName: "Fatima Noor", email: "fatima@email.com", tickets: 2, ticketType: "general", totalPaid: 110, bookedAt: "20 min ago", status: "checked-in" },
-  { id: "BK-8005", eventId: "EVT-001", eventName: "Neon Nights Festival", customerName: "Chen Wei", email: "chen@email.com", tickets: 6, ticketType: "backstage", totalPaid: 780, bookedAt: "35 min ago", status: "confirmed" },
-  { id: "BK-8006", eventId: "EVT-004", eventName: "Classical Orchestra", customerName: "Maria Garcia", email: "maria@email.com", tickets: 3, ticketType: "general", totalPaid: 156, bookedAt: "1h ago", status: "confirmed" },
-  { id: "BK-8007", eventId: "EVT-005", eventName: "Startup Workshop", customerName: "James Park", email: "james@email.com", tickets: 1, ticketType: "general", totalPaid: 65, bookedAt: "2h ago", status: "cancelled" },
-  { id: "BK-8008", eventId: "EVT-006", eventName: "Football Derby Finals", customerName: "Aisha Khan", email: "aisha@email.com", tickets: 8, ticketType: "general", totalPaid: 680, bookedAt: "3h ago", status: "confirmed" },
-];
-
-const MOCK_VENUES: Venue[] = [
-  { id: "V-01", name: "Grand Arena", type: "arena", capacity: 5000, eventsThisMonth: 8, utilization: 88, amenities: ["LED Screens", "VIP Boxes", "Backstage", "Sound System", "Parking"], status: "in-use" },
-  { id: "V-02", name: "Convention Center", type: "hall", capacity: 1200, eventsThisMonth: 12, utilization: 92, amenities: ["Projectors", "WiFi", "Catering", "Break Rooms"], status: "setup" },
-  { id: "V-03", name: "Laugh Lounge", type: "lounge", capacity: 200, eventsThisMonth: 20, utilization: 95, amenities: ["Bar", "Stage Lighting", "Sound"], status: "available" },
-  { id: "V-04", name: "Royal Theater", type: "theater", capacity: 350, eventsThisMonth: 6, utilization: 65, amenities: ["Orchestra Pit", "Balcony", "Dressing Rooms"], status: "available" },
-  { id: "V-05", name: "City Stadium", type: "stadium", capacity: 40000, eventsThisMonth: 4, utilization: 78, amenities: ["Floodlights", "Scoreboard", "Press Box", "VIP Suites"], status: "in-use" },
-  { id: "V-06", name: "Innovation Hub", type: "hall", capacity: 100, eventsThisMonth: 15, utilization: 45, amenities: ["Whiteboard", "WiFi", "Projector", "Coffee"], status: "available" },
-  { id: "V-07", name: "Skyline Ballroom", type: "hall", capacity: 200, eventsThisMonth: 3, utilization: 70, amenities: ["Chandelier", "Stage", "Kitchen", "Dance Floor"], status: "maintenance" },
-  { id: "V-08", name: "Basement Club", type: "lounge", capacity: 300, eventsThisMonth: 22, utilization: 82, amenities: ["DJ Booth", "Light Rig", "Bar", "VIP Area"], status: "available" },
-];
+// Real data only — no mocks. UI renders from user-created events/bookings/venues.
+const MOCK_EVENTS: Event[] = [];
+const MOCK_BOOKINGS: Booking[] = [];
+const MOCK_VENUES: Venue[] = [];
 
 const ticketTypeColors: Record<string, string> = {
   general: "bg-secondary text-secondary-foreground",
@@ -552,20 +524,6 @@ function EventsPricingPanel() {
 export default function EventsManager({ config }: { config: IndustryConfig }) {
   return (
     <div className="space-y-6">
-      <Card className="border-amber-500/30 bg-amber-500/5">
-        <CardContent className="p-4 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-foreground">Demo data — preview mode</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              The events, venues, bookings and pricing below are sample data so you can explore how the Events workspace works.
-              Your real events (created via the "New Event" buttons) are saved to your account.
-              Full real-data rebuild for this dashboard is rolling out shortly.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
       <EventsKPIs />
 
       <Tabs defaultValue="events" className="space-y-4">
