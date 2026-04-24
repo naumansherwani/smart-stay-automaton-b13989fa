@@ -164,16 +164,67 @@ serve(async (req) => {
     // Static catalog of the 8 production industries + the headline AI features each one ships with.
     // Keep this in sync with src/lib/industryFeatures.ts. Used so the adviser can answer
     // "what does HostFlow do for airlines?" without making things up.
+    // Full feature map for the 8 production industries.
+    // Keep in sync with src/lib/industryFeatures.ts and the landing page.
+    // Shared across ALL industries: AI Calendar/Scheduling, Double Booking Guard,
+    // CRM (Premium), Voice AI Assistant (ElevenLabs), Analytics & Reports,
+    // Email notifications, Client/Lead Scoring, Custom AI Training (Premium),
+    // 14-language support, AI Onboarding Wizard, Smart Greeting, Trial system.
+    const SHARED_FEATURES = [
+      "AI Calendar & Auto-Schedule",
+      "Double Booking Guard",
+      "CRM (Premium)",
+      "AI Voice Assistant (ElevenLabs)",
+      "Analytics & Reports",
+      "Email + WhatsApp notifications",
+      "Client/Lead Scoring",
+      "Custom AI Training (Premium)",
+      "14-language UI + AI",
+      "Owner Console + Founder OS",
+    ];
     const industriesCatalog = {
-      hospitality: ["Smart pricing", "Gap-night filler", "Competitor radar", "Guest scoring", "Demand forecast", "Auto-pricing"],
-      airlines: ["Crew scheduling", "Demand forecast", "Smart pricing", "AI ops resolve", "Fleet intelligence"],
-      car_rental: ["Fleet map", "Smart pricing", "Auto-pricing", "Demand forecast"],
-      events_entertainment: ["Ticket capacity", "Smart pricing", "Demand forecast", "Auto-pricing"],
-      healthcare: ["Patient flow", "Schedule timeline", "AI auto-schedule"],
-      education: ["Class schedule", "Timetable manager", "AI auto-schedule"],
-      logistics: ["Driver/vehicle ops", "Delivery tracking", "AI auto-schedule"],
-      railways: ["Crew scheduling", "Demand forecast", "Smart pricing", "Coach/route management"],
+      hospitality: {
+        shared: SHARED_FEATURES,
+        unique: ["AI Smart Pricing", "Auto Price Alerts (>15%)", "Demand Forecasting", "Gap-Night Filler", "Competitor Radar", "Guest Score Card", "Booking Manager", "Resource Manager"],
+        pricing_industry: true,
+      },
+      airlines: {
+        shared: SHARED_FEATURES,
+        unique: ["AI Smart Pricing", "Demand Forecasting", "Crew Scheduling", "Fleet Intelligence", "Airline Ops Dashboard", "AI Resolve Conflicts", "Route Optimization", "AI Ticket Generator + Email"],
+        pricing_industry: true,
+      },
+      car_rental: {
+        shared: SHARED_FEATURES,
+        unique: ["AI Smart Pricing", "Auto Price Alerts", "Demand Forecasting", "Fleet Map", "Vehicle Manager"],
+        pricing_industry: true,
+      },
+      events_entertainment: {
+        shared: SHARED_FEATURES,
+        unique: ["AI Smart Pricing", "Auto Price Alerts", "Demand Forecasting", "Ticket Capacity Manager", "Events Manager", "AI Ticket Generator + Email"],
+        pricing_industry: true,
+      },
+      railways: {
+        shared: SHARED_FEATURES,
+        unique: ["AI Smart Pricing", "Demand Forecasting", "Crew Scheduling", "Trains/Coaches/Seats", "Stations & Routes", "Schedules", "Pricing Overrides", "AI Ticket Generator + Email", "Railway Notifications"],
+        pricing_industry: true,
+      },
+      healthcare: {
+        shared: SHARED_FEATURES,
+        unique: ["Doctors / Patients / Appointments", "Patient Flow", "Schedule Timeline", "AI Auto-Schedule"],
+        pricing_industry: false,
+      },
+      education: {
+        shared: SHARED_FEATURES,
+        unique: ["Class Schedule", "Timetable Manager", "AI Auto-Schedule"],
+        pricing_industry: false,
+      },
+      logistics: {
+        shared: SHARED_FEATURES,
+        unique: ["Drivers", "Vehicles", "Deliveries Tracking", "Route Optimization", "AI Auto-Schedule"],
+        pricing_industry: false,
+      },
     };
+    const launchCaps = { basic: 100, pro: 100, premium: 100 };
 
     const ctx = {
       currency: "GBP (£)",
@@ -212,6 +263,7 @@ serve(async (req) => {
       industries_count: Object.keys(industriesCatalog).length,
       pricing_gbp: { basic: 25, pro: 52, premium: 108, enterprise: 499 },
       launch_discounted_gbp: { basic: 22, pro: 44.2, premium: 86.4 },
+      launch_caps_per_plan: launchCaps,
     };
 
     const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries. You are Nauman's (the founder's) silent co-owner and trusted business partner. You think like a sharp, calm, modern operator — like a senior product strategist texting back on WhatsApp.
