@@ -23,7 +23,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, mode, conversationId, deepReasoning, focusUserId, action } = await req.json();
+    const { messages, mode, conversationId, deepReasoning, focusUserId, action, voiceText } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -190,6 +190,8 @@ serve(async (req) => {
 
     const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries (hospitality, airlines, car rental, healthcare, education, logistics, events, fitness, legal, real estate, coworking, maritime, government, railway). You act as the founder's silent co-owner: when he sleeps, you keep users engaged, write emails on his behalf, retain customers, and grow MRR.
 
+NEVER push unsolicited briefings, daily summaries, or status updates. Only summarize the business when the founder explicitly asks ("brief me", "give me a summary", "what's happening", etc). Otherwise just answer the exact question.
+
 CRITICAL LANGUAGE RULE — AUTO-DETECT, ALWAYS MIRROR:
 You MUST detect the language of the LAST user message and reply in EXACTLY that same language. No exceptions.
 - Roman Urdu (Latin-letter Urdu like "kaise ho", "mashwara", "kero") → reply in Roman Urdu
@@ -216,6 +218,69 @@ POWERS (you can do these on the founder's behalf):
 LIVE BUSINESS SNAPSHOT (last 7–30 days):
 ${JSON.stringify(ctx, null, 2)}
 ${focusUser ? `\nFOCUS USER 360° DOSSIER:\n${JSON.stringify(focusUser, null, 2)}` : ""}`;
+
+    // Voice command intent parser — turn spoken text into a structured action JSON.
+    if (action === "voice_intent" && typeof voiceText === "string") {
+      const voiceSystem = `${baseSystem}
+
+TASK: The founder spoke a voice command. Detect the language, then return STRICT JSON:
+{
+  "intent": "chat" | "draft_email" | "send_email" | "summary" | "unknown",
+  "language": "en|ur-roman|ur|hi|ar|es|fr|de|pt|zh|ja|ko|tr|it|ro|de-CH",
+  "target_email": "user@example.com or null",
+  "topic": "what the founder wants to do",
+  "spoken_back": "1-line confirmation in the same language the founder spoke"
+}
+No prose outside JSON. No code fences.`;
+      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: FAST_MODEL,
+          messages: [{ role: "system", content: voiceSystem }, { role: "user", content: voiceText }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!r.ok) {
+        const t = await r.text();
+        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const j = await r.json();
+      let parsed: any = { intent: "chat", spoken_back: voiceText };
+      try { parsed = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
+      return new Response(JSON.stringify({ voice: parsed }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Weekly Founder Report — produces a short HTML/text summary email body
+    if (action === "weekly_report") {
+      const weeklySystem = `${baseSystem}
+
+TASK: Produce the founder's weekly summary email. Detect the founder's preferred language from any provided sample messages; default to English. Output STRICT JSON:
+{
+  "subject": "Weekly Founder Report — <date range>",
+  "body_text": "plain text, ~200 words, with concrete numbers from the snapshot",
+  "body_html": "<p>...</p> with simple inline styling",
+  "highlights": ["bullet 1", "bullet 2", "bullet 3"]
+}
+No prose outside JSON. No code fences.`;
+      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: REASONING_MODEL,
+          messages: [{ role: "system", content: weeklySystem }, { role: "user", content: "Generate this week's founder report now." }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!r.ok) {
+        const t = await r.text();
+        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const j = await r.json();
+      let report: any = {};
+      try { report = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
+      return new Response(JSON.stringify({ report, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
     if (mode === "insights") {

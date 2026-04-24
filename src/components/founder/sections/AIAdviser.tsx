@@ -61,6 +61,72 @@ export default function AIAdviser() {
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // Founder settings: Autopilot, Weekly Report, Voice
+  const [settings, setSettings] = useState<{
+    autopilot_enabled: boolean;
+    autopilot_level: string;
+    weekly_report_enabled: boolean;
+    voice_enabled: boolean;
+  }>({ autopilot_enabled: false, autopilot_level: "conservative", weekly_report_enabled: false, voice_enabled: true });
+  const [savingSettings, setSavingSettings] = useState(false);
+
+  const loadSettings = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("founder_settings")
+      .select("autopilot_enabled,autopilot_level,weekly_report_enabled,voice_enabled")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (data) setSettings(data as any);
+  }, [user]);
+  useEffect(() => { loadSettings(); }, [loadSettings]);
+
+  const updateSettings = async (patch: Partial<typeof settings>) => {
+    if (!user) return;
+    const next = { ...settings, ...patch };
+    setSettings(next);
+    setSavingSettings(true);
+    try {
+      await supabase.from("founder_settings").upsert({ user_id: user.id, ...next }, { onConflict: "user_id" });
+    } finally { setSavingSettings(false); }
+  };
+
+  // Voice command — Web Speech API → founder-adviser voice_intent → execute
+  const startVoice = useCallback(() => {
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { alert("Voice not supported on this browser. Use Chrome/Edge."); return; }
+    const r = new SR();
+    r.continuous = false;
+    r.interimResults = false;
+    r.lang = navigator.language || "en-US";
+    r.onstart = () => setListening(true);
+    r.onerror = () => setListening(false);
+    r.onend = () => setListening(false);
+    r.onresult = async (ev: any) => {
+      const text = Array.from(ev.results).map((res: any) => res[0].transcript).join(" ").trim();
+      if (!text) return;
+      // Try intent parse; on any failure, just put the text in the input box.
+      try {
+        const { data } = await supabase.functions.invoke("founder-adviser", { body: { action: "voice_intent", voiceText: text } });
+        const v = data?.voice;
+        if (v && v.intent && v.intent !== "chat") {
+          // Send a structured prompt so the chat handles the action with full context
+          send(`[VOICE COMMAND] ${text}\n(intent: ${v.intent}${v.target_email ? `, target: ${v.target_email}` : ""})`);
+        } else {
+          setInput(text);
+        }
+      } catch {
+        setInput(text);
+      }
+    };
+    recognitionRef.current = r;
+    r.start();
+  }, []);
+  const stopVoice = useCallback(() => {
+    try { recognitionRef.current?.stop(); } catch { /* noop */ }
+    setListening(false);
+  }, []);
+
   // ---- Conversations list ----
   const loadConvs = useCallback(async () => {
     if (!user) return;
@@ -314,6 +380,61 @@ export default function AIAdviser() {
       {view === "autopilot" ? (
         <ArcEngine />
       ) : (
+      <>
+      {/* Founder Settings strip — Autopilot / Weekly Report / Voice */}
+      <div className="founder-card p-3 mb-3 flex flex-wrap items-center gap-3 text-xs">
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${settings.autopilot_enabled ? "bg-[var(--fos-success)]" : "bg-[var(--fos-muted)]/40"}`} />
+          <span className="text-[var(--fos-text)] font-medium">Autopilot</span>
+          <button
+            onClick={() => updateSettings({ autopilot_enabled: !settings.autopilot_enabled })}
+            disabled={savingSettings}
+            className={`px-2 py-1 rounded-md text-[10px] font-semibold border transition ${
+              settings.autopilot_enabled
+                ? "border-[var(--fos-success)] text-[var(--fos-success)] bg-[var(--fos-success)]/10"
+                : "border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-text)]"
+            }`}
+          >{settings.autopilot_enabled ? "ON" : "OFF"}</button>
+          {settings.autopilot_enabled && (
+            <select
+              value={settings.autopilot_level}
+              onChange={(e) => updateSettings({ autopilot_level: e.target.value })}
+              className="bg-[var(--fos-bg)] border border-[var(--fos-border)] rounded-md px-2 py-1 text-[10px] text-[var(--fos-text)]"
+            >
+              <option value="conservative">Conservative</option>
+              <option value="balanced">Balanced</option>
+              <option value="aggressive">Aggressive</option>
+            </select>
+          )}
+        </div>
+        <div className="h-4 w-px bg-[var(--fos-border)]" />
+        <div className="flex items-center gap-2">
+          <span className="text-[var(--fos-text)] font-medium">Weekly Report (Sun)</span>
+          <button
+            onClick={() => updateSettings({ weekly_report_enabled: !settings.weekly_report_enabled })}
+            disabled={savingSettings}
+            className={`px-2 py-1 rounded-md text-[10px] font-semibold border transition ${
+              settings.weekly_report_enabled
+                ? "border-[var(--fos-accent)] text-[var(--fos-accent)] bg-[var(--fos-accent)]/10"
+                : "border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-text)]"
+            }`}
+          >{settings.weekly_report_enabled ? "ON" : "OFF"}</button>
+        </div>
+        <div className="h-4 w-px bg-[var(--fos-border)]" />
+        <div className="flex items-center gap-2">
+          <span className="text-[var(--fos-text)] font-medium">Voice</span>
+          <button
+            onClick={() => updateSettings({ voice_enabled: !settings.voice_enabled })}
+            disabled={savingSettings}
+            className={`px-2 py-1 rounded-md text-[10px] font-semibold border transition ${
+              settings.voice_enabled
+                ? "border-[var(--fos-accent)] text-[var(--fos-accent)] bg-[var(--fos-accent)]/10"
+                : "border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-text)]"
+            }`}
+          >{settings.voice_enabled ? "ON" : "OFF"}</button>
+        </div>
+        <span className="ml-auto text-[10px] text-[var(--fos-muted)]">No briefings unless you ask. AI works 24/7 silently.</span>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_320px] gap-4 h-[calc(100vh-220px)]">
       {/* SIDEBAR — conversations */}
       <div className="founder-card flex flex-col overflow-hidden">
@@ -502,6 +623,20 @@ export default function AIAdviser() {
             >
               <ImageIcon className="w-4 h-4" />
             </button>
+            {settings.voice_enabled && (
+              <button
+                type="button"
+                onClick={listening ? stopVoice : startVoice}
+                className={`p-2.5 rounded-lg border transition ${
+                  listening
+                    ? "border-[var(--fos-danger)] text-[var(--fos-danger)] bg-[var(--fos-danger)]/10 animate-pulse"
+                    : "border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-accent)] hover:border-[var(--fos-accent)]/50"
+                }`}
+                title={listening ? "Stop listening" : "Voice command"}
+              >
+                {listening ? <Square className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              </button>
+            )}
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -571,6 +706,7 @@ export default function AIAdviser() {
         </div>
       </div>
       </div>
+      </>
       )}
     </div>
   );
