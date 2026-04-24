@@ -19,23 +19,15 @@ import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 const TOTAL_SLOTS: Record<PlanKey, number> = {
   basic: 100,
   pro: 100,
-  premium: 25,
+  premium: 100,
 };
 
-// Backend cap is a flat 100 for every plan. For Premium we map that
-// proportionally onto the tighter 25-slot launch window so the visible
-// remaining count tracks real redemptions 1:1 within the launch window.
+// Backend cap is a flat 100 for every plan. Visible counts now match 1:1.
 const BACKEND_CAP = 100;
 
 function realRemaining(plan: PlanKey, backendRemaining: number) {
   const total = TOTAL_SLOTS[plan];
-  if (total === BACKEND_CAP) {
-    return Math.max(0, Math.min(total, backendRemaining));
-  }
-  // Scale (Premium: 25/100) so 1 real signup ≈ 0.25 visible — but we always
-  // round so integer redemptions still move the number in a believable way.
-  const scaled = Math.round((backendRemaining / BACKEND_CAP) * total);
-  return Math.max(0, Math.min(total, scaled));
+  return Math.max(0, Math.min(total, backendRemaining));
 }
 
 function useAnimatedNumber(target: number) {
