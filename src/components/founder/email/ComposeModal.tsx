@@ -4,10 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const SEND_IDENTITIES = [
-  { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise Sales", color: "#F59E0B" },
+  { id: "advisor",    address: "connectai@hostflowai.live", label: "HostFlow ConnectAI · AI Advisor", color: "#06B6D4" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support",          color: "#10B981" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",          color: "#3B82F6" },
-  { id: "general",    address: "hello@hostflowai.live",     label: "Founder",          color: "#8B5CF6" },
+  { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)", color: "#8B5CF6" },
 ] as const;
 type SendIdentityId = typeof SEND_IDENTITIES[number]["id"];
 
