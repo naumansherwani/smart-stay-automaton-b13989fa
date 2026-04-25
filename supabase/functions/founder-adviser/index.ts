@@ -269,11 +269,14 @@ serve(async (req) => {
     // Owner email identities (Zoho-routed). All inboxes land in the founder mailbox.
     const ownerEmailIdentities = {
       primary_owner: "naumansherwani@hostflowai.live",
-      enterprise_sales: "connectai@hostflowai.live",
+      ai_advisor_outbound: "connectai@hostflowai.live",
+      ai_advisor_sender_name: "HostFlow ConnectAI",
       customer_support: "support@hostflowai.live",
       billing: "billing@hostflowai.live",
       smtp_provider: "Zoho Mail (smtp.zoho.com:465 SSL)",
       priority_rule: "Emails to naumansherwani@hostflowai.live are owner-direct = highest priority in inbox.",
+      advisor_outbound_rule: "ALL automated AI Advisor / Autopilot emails (welcome, trial onboarding, lead follow-up, re-engagement, booking reminders, upgrade nudges, churn prevention, AI tips, comeback, founder assistant messages) MUST be sent FROM 'HostFlow ConnectAI <connectai@hostflowai.live>'. Replies route back to this same mailbox and appear in the Email Center. Never use naumansherwani@ for outbound automated AI emails — that address is the founder's personal inbox.",
+      advisor_signature_rule: "Every AI Advisor outgoing email is auto-appended with the official premium signature (HostFlow ConnectAI · AI Growth & Success Assistant · HostFlow AI Technologies · www.hostflowai.live). Do NOT add a second signature in the body.",
     };
     (ctx as any).owner_email_identities = ownerEmailIdentities;
 
