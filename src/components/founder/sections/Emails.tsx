@@ -74,7 +74,7 @@ export default function Emails() {
 
   const identityCounts = useMemo(() => {
     const counts: Record<string, number> = { all: mb.messages.length };
-    for (const id of ["enterprise","support","billing","general"]) counts[id] = 0;
+    for (const id of ["advisor","support","billing","general"]) counts[id] = 0;
     for (const m of mb.messages) {
       const k = m.identity || "general";
       counts[k] = (counts[k] || 0) + 1;
