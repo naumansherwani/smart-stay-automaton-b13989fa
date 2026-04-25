@@ -275,7 +275,7 @@ serve(async (req) => {
       smtp_provider: "Zoho Mail (smtp.zoho.com:465 SSL)",
       priority_rule: "Emails to naumansherwani@hostflowai.live are owner-direct = highest priority in inbox.",
     };
-    snapshot.owner_email_identities = ownerEmailIdentities;
+    (ctx as any).owner_email_identities = ownerEmailIdentities;
 
     const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries. You are Nauman's (the founder's) silent co-owner and trusted business partner. You think like a sharp, calm, modern operator — like a senior product strategist texting back on WhatsApp.
 
