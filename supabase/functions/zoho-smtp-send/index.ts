@@ -15,6 +15,40 @@ const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+
 const FROM_NAME = "HostFlow AI";
 const FROM_EMAIL = ZOHO_EMAIL;
 
+// AI Advisor identity — used by all automated AI Advisor / Autopilot emails.
+// Replies route back to the same Zoho mailbox so they appear in the Email Center.
+const ADVISOR_NAME = "HostFlow ConnectAI";
+const ADVISOR_EMAIL = "connectai@hostflowai.live";
+
+// Premium signature appended to every AI Advisor email (HTML + plain text).
+export const ADVISOR_SIGNATURE_HTML = `
+<table cellpadding="0" cellspacing="0" border="0" style="margin-top:32px;border-top:1px solid #e2e8f0;padding-top:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#0f172a;font-size:14px;line-height:1.55">
+  <tr><td>
+    <div style="color:#475569;margin-bottom:10px">Best regards,</div>
+    <div style="font-weight:600;color:#0f172a;font-size:15px">HostFlow ConnectAI</div>
+    <div style="color:#3b82f6;font-size:13px;margin-top:2px">AI Growth &amp; Success Assistant</div>
+    <div style="color:#64748b;font-size:13px">HostFlow AI Technologies</div>
+    <div style="margin-top:12px;font-size:13px;color:#475569">
+      🌐 <a href="https://www.hostflowai.live" style="color:#3b82f6;text-decoration:none">www.hostflowai.live</a><br/>
+      ✉ <a href="mailto:connectai@hostflowai.live" style="color:#3b82f6;text-decoration:none">connectai@hostflowai.live</a>
+    </div>
+    <div style="margin-top:14px;font-size:12px;color:#94a3b8;font-style:italic">Smart automation for modern businesses.</div>
+  </td></tr>
+</table>`.trim();
+
+export const ADVISOR_SIGNATURE_TEXT = `
+
+--
+Best regards,
+HostFlow ConnectAI
+AI Growth & Success Assistant
+HostFlow AI Technologies
+
+🌐 www.hostflowai.live
+✉ connectai@hostflowai.live
+
+Smart automation for modern businesses.`;
+
 function buildTransport() {
   return nodemailer.createTransport({
     host: "smtp.zoho.com",
@@ -80,7 +114,7 @@ Deno.serve(async (req) => {
     }
 
     // Generic send
-    const { to, subject, html, text, replyTo, cc, bcc, fromName } = body;
+    const { to, subject, html, text, replyTo, cc, bcc, fromName, fromAddress, identity, appendSignature } = body;
     if (!to || !subject || (!html && !text)) {
       return new Response(
         JSON.stringify({ ok: false, error: "Missing required fields: to, subject, html|text" }),
@@ -88,16 +122,25 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Resolve identity — `advisor` routes via connectai@hostflowai.live.
+    const isAdvisor = identity === "advisor" || (fromAddress && String(fromAddress).toLowerCase() === ADVISOR_EMAIL);
+    const resolvedFromName = isAdvisor ? ADVISOR_NAME : (fromName || FROM_NAME);
+    const resolvedFromEmail = isAdvisor ? ADVISOR_EMAIL : (fromAddress || FROM_EMAIL);
+    const resolvedReplyTo = replyTo || (isAdvisor ? ADVISOR_EMAIL : undefined);
+    const shouldAppendSig = appendSignature !== false && (isAdvisor || appendSignature === true);
+    const finalHtml = shouldAppendSig && html ? `${html}${ADVISOR_SIGNATURE_HTML}` : html;
+    const finalText = shouldAppendSig && text ? `${text}${ADVISOR_SIGNATURE_TEXT}` : text;
+
     try {
       const info = await transport.sendMail({
-        from: `"${fromName || FROM_NAME}" <${FROM_EMAIL}>`,
+        from: `"${resolvedFromName}" <${resolvedFromEmail}>`,
         to,
         cc,
         bcc,
-        replyTo,
+        replyTo: resolvedReplyTo,
         subject,
-        text,
-        html,
+        text: finalText,
+        html: finalHtml,
       });
       return new Response(
         JSON.stringify({ ok: true, messageId: info.messageId, accepted: info.accepted }),
