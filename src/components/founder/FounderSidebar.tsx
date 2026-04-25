@@ -17,7 +17,7 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "crm", label: "Enterprise CRM", icon: Briefcase },
   { id: "emails", label: "AI Email Center", icon: Mail },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
-  { id: "ai", label: "AI Adviser", icon: Sparkles },
+  { id: "ai", label: "AI Advisor", icon: Sparkles },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "security", label: "Security", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Settings },
