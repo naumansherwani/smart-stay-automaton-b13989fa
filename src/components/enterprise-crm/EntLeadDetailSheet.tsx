@@ -34,17 +34,17 @@ const PACKAGE_TEMPLATES: Record<string, ComposeInitial> = {
   proposal: {
     subject: "HostFlow AI · Custom Enterprise Proposal",
     body: "Hi {{name}},\n\nThank you for your interest in HostFlow AI. Based on your requirements ({{industry}}, {{team}} team), I've prepared a tailored proposal:\n\n• Multi-user workspace with SSO\n• Custom AI workflows for your operations\n• Dedicated async onboarding (no calls required)\n• Priority support with SLA\n• Invoice / contract billing in GBP\n\nI'll send the full PDF proposal in a follow-up email shortly. Let me know if you'd like any adjustments.\n\nBest regards,\nNauman Sherwani\nFounder, HostFlow AI Technologies\nconnectai@hostflowai.live",
-    fromIdentity: "enterprise",
+    fromIdentity: "advisor",
   },
   pricing: {
     subject: "HostFlow AI · Enterprise Pricing",
     body: "Hi {{name}},\n\nAs requested, here's our Enterprise pricing structure tailored for {{company}}:\n\n• Tier 1 (up to 25 seats): from £499/month\n• Tier 2 (26–100 seats): from £1,200/month\n• Tier 3 (100+ seats): custom quote\n\nAll Enterprise tiers include dedicated onboarding, custom workflows, SSO, and priority support. Final pricing depends on your selected workflows and integrations.\n\nHappy to walk through anything by email.\n\nNauman",
-    fromIdentity: "enterprise",
+    fromIdentity: "advisor",
   },
   contract: {
     subject: "HostFlow AI · Service Agreement Ready for Review",
     body: "Hi {{name}},\n\nPlease find attached the HostFlow AI Service Agreement for {{company}}.\n\nKey terms:\n• 12-month initial term, monthly auto-renewal thereafter\n• 30-day termination notice\n• 99.9% uptime SLA\n• GDPR-compliant data processing addendum included\n\nReply with any redlines and we'll iterate. Once signed, we'll generate the first invoice.\n\nBest,\nNauman",
-    fromIdentity: "enterprise",
+    fromIdentity: "advisor",
   },
   invoice: {
     subject: "HostFlow AI · Invoice for {{company}}",
@@ -265,7 +265,7 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
                 <ActionBtn icon={FileSignature} label="Send Contract" onClick={() => openCompose(PACKAGE_TEMPLATES.contract)} />
                 <ActionBtn icon={Receipt} label="Generate Invoice" onClick={() => openCompose(PACKAGE_TEMPLATES.invoice)} />
                 <ActionBtn icon={Banknote} label="Bank Transfer" onClick={() => openCompose(PACKAGE_TEMPLATES.bank_transfer)} />
-                <ActionBtn icon={Mail} label="Custom Email" onClick={() => openCompose({ to: lead.work_email, fromIdentity: "enterprise" })} />
+                <ActionBtn icon={Mail} label="Custom Email" onClick={() => openCompose({ to: lead.work_email, fromIdentity: "advisor" })} />
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <Button size="sm" variant="outline" className="h-9 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10" disabled={updating} onClick={() => setStatus("won")}>
