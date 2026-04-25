@@ -67,7 +67,7 @@ export default function ComposeModal({
   const [sending, setSending] = useState(false);
   const [scheduleAt, setScheduleAt] = useState<string>("");
   const [scheduling, setScheduling] = useState(false);
-  const [fromIdentity, setFromIdentity] = useState<SendIdentityId>(initial?.fromIdentity || "enterprise");
+  const [fromIdentity, setFromIdentity] = useState<SendIdentityId>(initial?.fromIdentity || "advisor");
   const activeIdentity = SEND_IDENTITIES.find((i) => i.id === fromIdentity)!;
 
   if (!open) return null;
