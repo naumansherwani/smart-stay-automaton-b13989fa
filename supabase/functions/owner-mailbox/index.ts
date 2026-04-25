@@ -22,7 +22,7 @@ const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 // ---------------------------------------------------------------------------
 const IDENTITIES = [
   { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)", displayName: "Nauman Sherwani · HostFlow AI" },
-  { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise", displayName: "HostFlow AI · Enterprise Sales" },
+  { id: "advisor",    address: "connectai@hostflowai.live", label: "AI Advisor", displayName: "HostFlow ConnectAI" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",    displayName: "HostFlow AI · Billing" },
 ] as const;
