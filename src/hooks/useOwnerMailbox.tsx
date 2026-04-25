@@ -4,7 +4,9 @@ import { toast } from "sonner";
 
 export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "scheduled" | "starred" | "archive" | "spam" | "trash";
 
-export type MailIdentity = "advisor" | "support" | "billing" | "general";
+// Inbox tagging uses: advisor | support | billing | general.
+// `enterprise` is a SEND-ONLY persona (owner composing as Enterprise Sales) — same address as advisor.
+export type MailIdentity = "advisor" | "enterprise" | "support" | "billing" | "general";
 
 export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string }[] = [
   { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)" },
