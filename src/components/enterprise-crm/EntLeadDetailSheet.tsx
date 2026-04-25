@@ -222,13 +222,13 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
           </div>
 
           <div className="px-6 py-5 space-y-6">
-            {/* AI Sales Adviser */}
+            {/* AI Sales Advisor */}
             {insight && (
               <section className="rounded-xl border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-orange-500/5 p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-400" />
-                    <h3 className="text-sm font-bold">AI Sales Adviser</h3>
+                    <h3 className="text-sm font-bold">AI Sales Advisor</h3>
                   </div>
                   <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={refreshAiInsight} disabled={insightLoading}>
                     {insightLoading ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Wand2 className="w-3 h-3 mr-1" />}

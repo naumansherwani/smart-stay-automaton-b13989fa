@@ -32,7 +32,7 @@ const primaryNav = [
 ];
 
 const founderNav = [
-  { title: "AI Adviser", url: "/founder?section=ai", icon: Sparkles },
+  { title: "AI Advisor", url: "/founder?section=ai", icon: Sparkles },
 ];
 
 const conditionalNav = [
