@@ -266,6 +266,17 @@ serve(async (req) => {
       launch_caps_per_plan: launchCaps,
     };
 
+    // Owner email identities (Zoho-routed). All inboxes land in the founder mailbox.
+    const ownerEmailIdentities = {
+      primary_owner: "naumansherwani@hostflowai.live",
+      enterprise_sales: "connectai@hostflowai.live",
+      customer_support: "support@hostflowai.live",
+      billing: "billing@hostflowai.live",
+      smtp_provider: "Zoho Mail (smtp.zoho.com:465 SSL)",
+      priority_rule: "Emails to naumansherwani@hostflowai.live are owner-direct = highest priority in inbox.",
+    };
+    (ctx as any).owner_email_identities = ownerEmailIdentities;
+
     const baseSystem = `You are the AI Adviser for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries. You are Nauman's (the founder's) silent co-owner and trusted business partner. You think like a sharp, calm, modern operator — like a senior product strategist texting back on WhatsApp.
 
 HOW TO TALK (most important):

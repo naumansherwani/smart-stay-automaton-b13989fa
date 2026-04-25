@@ -21,10 +21,10 @@ const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 // based on the `To:` recipient so the Founder OS UI can filter by identity.
 // ---------------------------------------------------------------------------
 const IDENTITIES = [
+  { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)", displayName: "Nauman Sherwani · HostFlow AI" },
   { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise", displayName: "HostFlow AI · Enterprise Sales" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",    displayName: "HostFlow AI · Billing" },
-  { id: "general",    address: "hello@hostflowai.live",     label: "Founder",    displayName: "Nauman Sherwani · HostFlow AI" },
 ] as const;
 
 function identityFromRecipients(recipients: { address?: string }[] = []): string {
