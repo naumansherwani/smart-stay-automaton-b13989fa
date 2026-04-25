@@ -4,11 +4,11 @@ import { toast } from "sonner";
 
 export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "scheduled" | "starred" | "archive" | "spam" | "trash";
 
-export type MailIdentity = "enterprise" | "support" | "billing" | "general";
+export type MailIdentity = "advisor" | "support" | "billing" | "general";
 
 export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string }[] = [
   { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)" },
-  { id: "enterprise", address: "connectai@hostflowai.live",      label: "Enterprise" },
+  { id: "advisor",    address: "connectai@hostflowai.live",      label: "AI Advisor" },
   { id: "support",    address: "support@hostflowai.live",        label: "Support" },
   { id: "billing",    address: "billing@hostflowai.live",        label: "Billing" },
 ];
