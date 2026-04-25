@@ -45,6 +45,7 @@ serve(async (req) => {
     const since30d = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
     const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
     const since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+    const since8h = new Date(Date.now() - 8 * 3600 * 1000).toISOString();
 
     const [
       subs, leads, deals, refunds, alerts,
@@ -276,9 +277,35 @@ serve(async (req) => {
       smtp_provider: "Zoho Mail (smtp.zoho.com:465 SSL)",
       priority_rule: "Emails to naumansherwani@hostflowai.live are owner-direct = highest priority in inbox.",
       advisor_outbound_rule: "ALL automated AI Advisor / Autopilot emails (welcome, trial onboarding, lead follow-up, re-engagement, booking reminders, upgrade nudges, churn prevention, AI tips, comeback, founder assistant messages) MUST be sent FROM 'HostFlow ConnectAI <connectai@hostflowai.live>'. Replies route back to this same mailbox and appear in the Email Center. Never use naumansherwani@ for outbound automated AI emails — that address is the founder's personal inbox.",
+      connectai_dual_purpose: "The address connectai@hostflowai.live is shared by TWO personas: (1) automated AI Advisor sends use sender name 'HostFlow ConnectAI'; (2) when the OWNER (Nauman) composes manually, he can pick the 'Enterprise Sales' persona which uses the same address with sender name 'HostFlow AI · Enterprise Sales'. Both are legitimate — the owner is allowed to use this address in either role.",
       advisor_signature_rule: "Every AI Advisor outgoing email is auto-appended with the official premium signature (HostFlow ConnectAI · AI Growth & Success Assistant · HostFlow AI Technologies · www.hostflowai.live). Do NOT add a second signature in the body.",
     };
     (ctx as any).owner_email_identities = ownerEmailIdentities;
+
+    // Live "what changed in the last 8 hours" feed — gives the AI Advisor immediate
+    // awareness of every system event, deploy, lead, deal, refund, alert, signup.
+    // Pulled fresh on every call so the AI is never out-of-date.
+    const [recentEvents, recentLeads, recentSignups, recentAlerts, recentRefunds, recentArcActions, recentDeals] = await Promise.all([
+      supabase.from("arc_lifecycle_events").select("event_type,event_category,industry,plan,created_at,metadata").gte("created_at", since8h).order("created_at", { ascending: false }).limit(50),
+      supabase.from("enterprise_leads").select("company_name,country,industry,status,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(20),
+      supabase.from("profiles").select("email,company_name,industry,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(20),
+      supabase.from("admin_alerts").select("alert_type,severity,title,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(20),
+      supabase.from("payment_refunds").select("amount,reason,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(20),
+      supabase.from("arc_actions").select("action_type,phase,status,title,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(30),
+      supabase.from("ent_deals").select("title,stage,value_gbp,created_at").gte("created_at", since8h).order("created_at", { ascending: false }).limit(20),
+    ]);
+    (ctx as any).live_feed_last_8h = {
+      generated_at: new Date().toISOString(),
+      window: "last 8 hours",
+      lifecycle_events: recentEvents.data || [],
+      new_leads: recentLeads.data || [],
+      new_signups: recentSignups.data || [],
+      new_alerts: recentAlerts.data || [],
+      new_refunds: recentRefunds.data || [],
+      arc_actions: recentArcActions.data || [],
+      new_deals: recentDeals.data || [],
+      summary: `${(recentSignups.data || []).length} new signups · ${(recentLeads.data || []).length} new leads · ${(recentDeals.data || []).length} new deals · ${(recentAlerts.data || []).length} alerts · ${(recentArcActions.data || []).length} ARC actions in the last 8h.`,
+    };
 
     const baseSystem = `You are the AI Advisor for HostFlow AI Technologies — a UK-based global SaaS serving 14+ industries. You are Nauman's (the founder's) silent co-owner and trusted business partner. You think like a sharp, calm, modern operator — like a senior product strategist texting back on WhatsApp.
 

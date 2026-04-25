@@ -23,13 +23,17 @@ const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 const IDENTITIES = [
   { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)", displayName: "Nauman Sherwani · HostFlow AI" },
   { id: "advisor",    address: "connectai@hostflowai.live", label: "AI Advisor", displayName: "HostFlow ConnectAI" },
+  { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise Sales", displayName: "HostFlow AI · Enterprise Sales" },
   { id: "support",    address: "support@hostflowai.live",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
   { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",    displayName: "HostFlow AI · Billing" },
 ] as const;
 
 function identityFromRecipients(recipients: { address?: string }[] = []): string {
   const addrs = recipients.map((r) => (r?.address || "").toLowerCase());
+  // For incoming mail tagging we treat connectai@ as "advisor" (single inbox label).
+  // Enterprise is a SEND-ONLY persona that the owner can pick when composing.
   for (const id of IDENTITIES) {
+    if (id.id === "enterprise") continue;
     if (addrs.some((a) => a === id.address)) return id.id;
   }
   return "general";

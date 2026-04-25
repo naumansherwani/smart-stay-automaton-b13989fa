@@ -32,6 +32,7 @@ const IDENTITY_TABS: { id: IdentityFilter; label: string; icon: any; color: stri
 
 const IDENTITY_META: Record<MailIdentity, { label: string; color: string }> = {
   advisor:    { label: "AI Advisor", color: "#06B6D4" },
+  enterprise: { label: "Enterprise Sales", color: "#F59E0B" },
   support:    { label: "Support",    color: "#10B981" },
   billing:    { label: "Billing",    color: "#3B82F6" },
   general:    { label: "Founder",    color: "#8B5CF6" },

@@ -184,7 +184,16 @@ export default function AIAdviser() {
     } catch (e) { console.error(e); }
     finally { setInsightsLoading(false); }
   }, []);
-  useEffect(() => { loadInsights(); }, [loadInsights]);
+  useEffect(() => {
+    loadInsights();
+    // Real-time freshness — re-pull live insights every 60s so the panel
+    // always reflects the latest signups, leads, alerts, deploys, etc.
+    const interval = setInterval(() => { loadInsights(); }, 60_000);
+    // Also refresh when the tab regains focus.
+    const onFocus = () => loadInsights();
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(interval); window.removeEventListener("focus", onFocus); };
+  }, [loadInsights]);
 
   // ---- New / pin / rename / delete ----
   const newChat = async () => {
