@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -88,6 +89,37 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
 
         if (!resp.ok || !resp.body) {
           const errData = await resp.json().catch(() => ({}));
+          // Friendly handling for tier limits — never expose model names or technical details.
+          const reason = errData.reason as string | undefined;
+          if (reason === "daily_limit" || reason === "expired" || reason === "fair_use") {
+            const friendly =
+              errData.error ||
+              (reason === "daily_limit"
+                ? "You've used today's free AI messages. Upgrade to keep going."
+                : reason === "expired"
+                ? "Your free trial has ended. Upgrade to keep using AI features."
+                : "You're sending requests very fast. Please wait a minute.");
+            toast.error(friendly, {
+              action:
+                reason !== "fair_use"
+                  ? { label: "Upgrade", onClick: () => (window.location.href = "/pricing") }
+                  : undefined,
+              duration: 8000,
+            });
+            setMessages((prev) => [
+              ...prev,
+              {
+                role: "assistant",
+                content:
+                  reason === "daily_limit"
+                    ? "🌟 You've reached today's free AI message limit. Your daily allowance refreshes tomorrow — or [upgrade your plan](/pricing) for unlimited AI assistance."
+                    : reason === "expired"
+                    ? "Your free trial has ended. [Choose a plan](/pricing) to keep your AI assistant working for you."
+                    : "I'm getting a lot of requests right now. Please wait a moment and try again. 🙏",
+              },
+            ]);
+            return;
+          }
           throw new Error(errData.error || "Failed to get response");
         }
 

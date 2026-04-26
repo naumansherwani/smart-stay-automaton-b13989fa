@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_message_log: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          model_used: string | null
+          plan: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          model_used?: string | null
+          plan?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          model_used?: string | null
+          plan?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           created_at: string

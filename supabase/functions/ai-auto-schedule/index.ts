@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { pickTierAndCheck, tierDenyResponse } from "../_shared/ai-tier.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,6 +49,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const decision = await pickTierAndCheck(req.headers.get("Authorization"), "structured", "ai-auto-schedule");
+    if (!decision.allowed) return tierDenyResponse(decision, corsHeaders);
+
     const periodDays = { "1month": 30, "3months": 90, "6months": 180, "1year": 365 }[period] || 90;
 
     const systemPrompt = `You are an AI scheduling assistant for a ${safeIndustryLabel} business. 
@@ -94,7 +98,7 @@ Return JSON with suggestions array.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: decision.model,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
