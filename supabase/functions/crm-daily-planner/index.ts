@@ -3,20 +3,23 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { pickTierAndCheck, tierDenyResponse } from "../_shared/ai-tier.ts";
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
+let CURRENT_MODEL = "google/gemini-2.5-flash-lite";
+
 async function callAI(systemPrompt: string, userPrompt: string) {
-  const res = await fetch("https://ai.lovable.dev/api/chat/completions", {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${LOVABLE_API_KEY}`,
     },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: CURRENT_MODEL,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -46,6 +49,10 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const decision = await pickTierAndCheck(authHeader, "structured", "crm-daily-planner");
+    if (!decision.allowed) return tierDenyResponse(decision, corsHeaders);
+    CURRENT_MODEL = decision.model;
 
     const body = await req.json();
     const { action, industry, tasks, today_tasks, pending_tasks, overdue_tasks, completed_count } = body;
