@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { pickTierAndCheck, tierDenyResponse } from "../_shared/ai-tier.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +32,9 @@ serve(async (req) => {
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
+    const decision = await pickTierAndCheck(req.headers.get("Authorization"), "structured", "ai-onboarding-guide");
+    if (!decision.allowed) return tierDenyResponse(decision, corsHeaders);
 
     const body = await req.json();
     const industry = String(body.industry || "hospitality");
@@ -85,7 +89,7 @@ All text MUST be in ${langName}. Make ai_tip fields genuinely useful — referen
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: decision.model,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
