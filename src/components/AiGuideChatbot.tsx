@@ -69,6 +69,14 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
     async (text: string) => {
       if (!text.trim() || isLoading) return;
 
+      // Client-side throttle: prevent rapid repeated submissions (under 800ms).
+      const now = Date.now();
+      if ((sendMessage as any)._lastSent && now - (sendMessage as any)._lastSent < 800) {
+        toast.info("Please wait a moment before sending again.");
+        return;
+      }
+      (sendMessage as any)._lastSent = now;
+
       const userMsg: Msg = { role: "user", content: text.trim() };
       const allMessages = [...messages, userMsg];
       setMessages(allMessages);
