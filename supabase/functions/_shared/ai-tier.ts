@@ -35,10 +35,13 @@ const FOUNDER_EMAILS = new Set([
 
 // Internal model mapping — NEVER returned to client.
 const MODEL_BY_TIER: Record<string, Record<TierTask, string>> = {
+  // Speed-optimized: flash-lite is the fastest (sub-second TTFB), used for chat on Trial/Basic.
   trial:    { chat: "google/gemini-2.5-flash-lite", structured: "google/gemini-2.5-flash-lite", deep: "google/gemini-2.5-flash-lite" },
   basic:    { chat: "google/gemini-2.5-flash-lite", structured: "google/gemini-2.5-flash-lite", deep: "google/gemini-2.5-flash" },
-  standard: { chat: "google/gemini-2.5-flash",      structured: "google/gemini-2.5-flash",      deep: "google/gemini-2.5-flash" },
-  pro:      { chat: "google/gemini-3-flash-preview",structured: "google/gemini-3-flash-preview",deep: "google/gemini-2.5-pro" },
+  standard: { chat: "google/gemini-2.5-flash-lite", structured: "google/gemini-2.5-flash",      deep: "google/gemini-2.5-flash" },
+  // Pro: flash-lite for chat (snappy), flash for structured/deep (smarter).
+  pro:      { chat: "google/gemini-2.5-flash-lite", structured: "google/gemini-2.5-flash",      deep: "google/gemini-2.5-flash" },
+  // Premium: gpt-5-mini stays as the elite default; gpt-5 for deep insights only.
   premium:  { chat: "openai/gpt-5-mini",            structured: "openai/gpt-5-mini",            deep: "openai/gpt-5" },
 };
 
@@ -52,13 +55,23 @@ const FOUNDER_MODELS: Record<TierTask, string> = {
 // Hard daily cap for trial only. Paid plans are unlimited (UI shows no counter).
 const TRIAL_DAILY_CAP = 5;
 
-// Hidden anti-spam ceiling per hour. Never shown to user; only triggers on abuse.
+// Hidden anti-spam ceiling per minute (was per hour). Tighter to protect costs
+// and discourage rapid-fire abuse — never shown to user.
+const FAIR_USE_PER_MINUTE: Record<string, number> = {
+  trial: 3,
+  basic: 8,
+  standard: 12,
+  pro: 15,
+  premium: 30,
+};
+
+// Soft hourly ceiling — second layer of protection.
 const FAIR_USE_PER_HOUR: Record<string, number> = {
   trial: 5,
-  basic: 60,
-  standard: 120,
-  pro: 120,
-  premium: 240,
+  basic: 90,
+  standard: 150,
+  pro: 180,
+  premium: 360,
 };
 
 function makeAdmin(): SupabaseClient {
