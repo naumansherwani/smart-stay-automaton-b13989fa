@@ -282,6 +282,31 @@ serve(async (req) => {
     };
     (ctx as any).owner_email_identities = ownerEmailIdentities;
 
+    // AI Tier System (deployed Apr 2026) — keep the AI Advisor aware so it never
+    // proposes duplicate work or contradicts the live policy. Founder/admin (Nauman)
+    // is bypassed: premium models, no caps. Model names MUST stay internal — never
+    // surface them to end users.
+    const aiTierSystem = {
+      deployed_at: "2026-04-26",
+      policy_file: "supabase/functions/_shared/ai-tier.ts",
+      tiers: {
+        trial:   { visible_limit: "5 messages/day", hidden_fair_use: "5/hr",   experience: "Onboarding, FAQs, simple CRM guidance, multilingual greetings" },
+        basic:   { visible_limit: "none",           hidden_fair_use: "60/hr",  experience: "Fast everyday business help + AI CRM support" },
+        pro:     { visible_limit: "none",           hidden_fair_use: "120/hr", experience: "Better reasoning, smarter CRM suggestions, stronger business support" },
+        premium: { visible_limit: "none",           hidden_fair_use: "240/hr", experience: "Elite tier — deep insights, growth advice, advanced CRM intelligence, priority speed" },
+      },
+      founder_admin_rule: "Nauman + raanamasood1962@gmail.com are admin → no caps, premium model mix, untouched. Founder AI Advisor (this function) and founder-intelligence / mrr-ai-insights / owner-email-ai are NEVER throttled.",
+      wired_functions: ["ai-guide-chat", "crm-ai-assistant", "crm-daily-planner", "ai-smart-pricing", "ai-onboarding-guide", "ai-auto-schedule"],
+      ui_compliance: "Strict: technical model names are NEVER shown to users in any toast, error, or message. AI Guide chatbot detects daily_limit / expired / fair_use and shows friendly upgrade prompts.",
+      recent_db_fixes: [
+        "Trial ai_followups duplicate row removed (single row = 10).",
+        "Pro plan unlocked: ai_voice_assistant, ai_conflict_resolution, ai_demand_forecasting.",
+        "New ai_message_log table tracks every AI call for usage + fair-use enforcement.",
+      ],
+      preserved: ["pricing", "checkout flow", "site design", "existing customer data", "Founder AI Advisor capabilities"],
+    };
+    (ctx as any).ai_tier_system = aiTierSystem;
+
     // Live "what changed in the last 8 hours" feed — gives the AI Advisor immediate
     // awareness of every system event, deploy, lead, deal, refund, alert, signup.
     // Pulled fresh on every call so the AI is never out-of-date.
