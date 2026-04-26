@@ -188,16 +188,20 @@ export async function pickTierAndCheck(
   }
 
   // Hidden hourly fair-use ceiling for all plans (anti-spam only).
-  const hourlyCap = FAIR_USE_PER_HOUR[ctx.plan] ?? 60;
-  const hourlyUsed = await countMessagesSince(ctx.userId, new Date(Date.now() - 60 * 60 * 1000).toISOString());
-  if (hourlyUsed >= hourlyCap) {
+  const minuteCap = FAIR_USE_PER_MINUTE[ctx.plan] ?? 10;
+  const hourlyCap = FAIR_USE_PER_HOUR[ctx.plan] ?? 90;
+  const [minuteUsed, hourlyUsed] = await Promise.all([
+    countMessagesSince(ctx.userId, new Date(Date.now() - 60 * 1000).toISOString()),
+    countMessagesSince(ctx.userId, new Date(Date.now() - 60 * 60 * 1000).toISOString()),
+  ]);
+  if (minuteUsed >= minuteCap || hourlyUsed >= hourlyCap) {
     return {
       allowed: false,
       plan: ctx.plan,
       isAdmin: false,
       model,
       denyReason: "fair_use",
-      message: "You're sending requests very fast. Please wait a minute and try again.",
+      message: "You're sending requests very fast. Please wait a moment and try again.",
     };
   }
 
