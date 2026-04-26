@@ -142,6 +142,8 @@ async function callAI(systemPrompt: string, userPrompt: string): Promise<string>
         { role: "user", content: userPrompt },
       ],
       response_format: { type: "json_object" },
+      temperature: 0.4,
+      max_tokens: 900,
     }),
   });
 

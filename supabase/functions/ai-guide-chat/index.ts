@@ -703,6 +703,10 @@ serve(async (req) => {
 
     const systemPrompt = buildSystemPrompt(context || "dashboard", industry || "hospitality");
 
+    // Speed optimization: cap context window to last 8 messages.
+    // Cuts tokens dramatically → faster TTFB without losing recent context.
+    const trimmedMessages = messages.slice(-8);
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -711,8 +715,10 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: decision.model,
-        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        messages: [{ role: "system", content: systemPrompt }, ...trimmedMessages],
         stream: true,
+        temperature: 0.5,
+        max_tokens: 700,
       }),
     });
 
