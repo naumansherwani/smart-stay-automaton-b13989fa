@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
