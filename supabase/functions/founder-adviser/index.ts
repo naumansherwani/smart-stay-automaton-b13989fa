@@ -307,6 +307,29 @@ serve(async (req) => {
     };
     (ctx as any).ai_tier_system = aiTierSystem;
 
+    // Polar webhook integration status (incident-aware) — keeps the Advisor from
+    // suggesting "set up Polar webhook" when it's already healthy, and helps it
+    // explain past delivery failures correctly.
+    const polarWebhook = {
+      status: "healthy",
+      endpoint_function: "polar-webhook",
+      correct_url: "https://uapvdzphibxoomokahjh.supabase.co/functions/v1/polar-webhook",
+      verified_at: "2026-04-27",
+      last_incident: {
+        date: "2026-04-23 → 2026-04-27",
+        cause: "Polar dashboard had a typo in the configured webhook URL (digit '1' instead of letter 'i' in project ref). DNS resolution failed for ~4 days; our edge function was never the problem.",
+        resolution: "Old broken endpoint deleted in Polar dashboard. New endpoint added pointing at the correct URL above. Missed events to be replayed from Polar delivery logs.",
+      },
+      events_subscribed: [
+        "checkout.created","checkout.updated",
+        "subscription.created","subscription.active","subscription.updated","subscription.canceled","subscription.revoked","subscription.past_due",
+        "order.created","order.paid",
+      ],
+      signature_verification: "POLAR_WEBHOOK_SECRET present — Standard Webhooks signature verified on every delivery.",
+      checkout_function: "polar-create-checkout (active, verify_jwt=true)",
+    };
+    (ctx as any).polar_webhook = polarWebhook;
+
     // Live "what changed in the last 8 hours" feed — gives the AI Advisor immediate
     // awareness of every system event, deploy, lead, deal, refund, alert, signup.
     // Pulled fresh on every call so the AI is never out-of-date.
