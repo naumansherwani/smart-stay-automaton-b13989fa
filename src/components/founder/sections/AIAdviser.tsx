@@ -328,11 +328,34 @@ export default function AIAdviser() {
       }
     } catch (e: any) {
       console.error(e);
+      // Smart error classification — show friendly toast + clear inline msg
+      const status = e?.context?.status ?? e?.status;
+      const rawMsg = (e?.message || e?.error_description || "").toLowerCase();
+      let friendly = "Connection hiccup — please try again in a moment.";
+      let toastTitle = "Try again";
+      let toastDesc = "Network issue talking to the AI gateway.";
+
+      if (status === 402 || rawMsg.includes("payment") || rawMsg.includes("credits")) {
+        friendly = "💳 AI credits are exhausted. Top up at Workspace → Cloud & AI balance to resume.";
+        toastTitle = "AI credits needed";
+        toastDesc = "Add funds in Settings → Workspace → Cloud & AI balance.";
+      } else if (status === 429 || rawMsg.includes("rate")) {
+        friendly = "⏱️ A bit too fast — wait ~30 seconds and ask again.";
+        toastTitle = "Rate limited";
+        toastDesc = "Please wait a moment before sending another message.";
+      } else if (status === 401 || status === 403) {
+        friendly = "🔒 Auth issue. Please refresh the page and sign in again.";
+        toastTitle = "Auth required";
+        toastDesc = "Session may have expired.";
+      }
+
+      toast({ title: toastTitle, description: toastDesc, variant: "destructive" });
+
       await supabase.from("founder_ai_messages").insert({
         conversation_id: convId,
         user_id: user.id,
         role: "assistant",
-        content: "I could not reach the gateway right now. Try again in a moment.",
+        content: friendly,
       });
       loadMessages(convId);
     } finally {
