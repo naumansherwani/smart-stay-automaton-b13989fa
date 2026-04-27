@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import ArcEngine from "./ArcEngine";
+import { toast } from "@/hooks/use-toast";
 
 const QUICK = [
   "What should I focus on today?",
