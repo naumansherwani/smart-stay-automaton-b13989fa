@@ -15,7 +15,7 @@ const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") || "";
 const USE_OPENAI = OPENAI_KEY.length > 0;
 const AI_BASE_URL = USE_OPENAI
   ? "https://api.openai.com/v1/chat/completions"
-  : "https://ai.gateway.lovable.dev/v1/chat/completions";
+  : "${AI_BASE_URL_PLACEHOLDER}";
 
 // Model names depend on which provider we're calling.
 // OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
@@ -431,7 +431,7 @@ TASK: The founder spoke a voice command. Detect the language, then return STRICT
   "spoken_back": "1-line confirmation in the same language the founder spoke"
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const r = await fetch("${AI_BASE_URL_PLACEHOLDER}", {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -462,7 +462,7 @@ TASK: Produce the founder's weekly summary email. Detect the founder's preferred
   "highlights": ["bullet 1", "bullet 2", "bullet 3"]
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const r = await fetch("${AI_BASE_URL_PLACEHOLDER}", {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -494,7 +494,7 @@ Return ONLY a strict JSON object with these keys (each value is a short 1–2 se
 }
 No prose outside the JSON. No code fences.`;
 
-      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const resp = await fetch("${AI_BASE_URL_PLACEHOLDER}", {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -521,7 +521,7 @@ No prose outside the JSON. No code fences.`;
 TASK: Draft a complete email to this user as if you were the founder. Reply in the SAME language as the founder's request. Output STRICT JSON only:
 { "subject": "...", "body_text": "plain text body", "body_html": "<p>...</p>", "recipient_email": "...", "rationale": "1-line why this email now" }
 No prose outside the JSON. No code fences.`;
-      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const resp = await fetch("${AI_BASE_URL_PLACEHOLDER}", {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -778,7 +778,7 @@ No prose outside the JSON. No code fences.`;
     const longContext = totalLen > 6000 || incoming.length > 12;
     const model = pickModel({ hasImages, longContext, deepReasoning: !!deepReasoning });
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("${AI_BASE_URL_PLACEHOLDER}", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
