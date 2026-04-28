@@ -19,9 +19,18 @@ const AI_BASE_URL = USE_OPENAI
 
 // Model names depend on which provider we're calling.
 // OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
-const VISION_MODEL    = USE_OPENAI ? "gpt-5"      : "google/gemini-2.5-pro";
-const REASONING_MODEL = USE_OPENAI ? "gpt-5"      : "openai/gpt-5";
-const FAST_MODEL      = USE_OPENAI ? "gpt-5-mini" : "google/gemini-3-flash-preview";
+// We use widely-available, stable OpenAI models so the adviser keeps working
+// regardless of which models the user's API key has been granted.
+// Override per environment via OPENAI_MODEL_* secrets if needed.
+const VISION_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_VISION") || "gpt-4o")
+  : "google/gemini-2.5-pro";
+const REASONING_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_REASONING") || "gpt-4o")
+  : "openai/gpt-5";
+const FAST_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_FAST") || "gpt-4o-mini")
+  : "google/gemini-3-flash-preview";
 
 function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
   if (opts.hasImages) return VISION_MODEL;
