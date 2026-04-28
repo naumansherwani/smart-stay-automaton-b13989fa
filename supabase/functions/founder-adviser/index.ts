@@ -35,8 +35,8 @@ serve(async (req) => {
 
   try {
     const { messages, mode, conversationId, deepReasoning, focusUserId, action, voiceText } = await req.json();
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+    const apiKey = USE_OPENAI ? OPENAI_KEY : (Deno.env.get("LOVABLE_API_KEY") || "");
+    if (!apiKey) throw new Error("No AI key configured (set OPENAI_API_KEY or LOVABLE_API_KEY)");
 
     // Build a context snapshot from the database for grounded answers
     const supabase = createClient(
