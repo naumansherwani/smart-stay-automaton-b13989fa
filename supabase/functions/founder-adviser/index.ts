@@ -1,42 +1,35 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { routeChat, providerStatus, type RouterTask } from "../_shared/ai-router.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// AI provider routing.
-// We prefer the user's own OpenAI (ChatGPT) API key when OPENAI_API_KEY is set,
-// so the adviser keeps working even if the Lovable AI workspace credits run out.
-// If OPENAI_API_KEY is missing, we transparently fall back to the Lovable AI gateway.
-const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") || "";
-const USE_OPENAI = OPENAI_KEY.length > 0;
-const AI_BASE_URL = USE_OPENAI
-  ? "https://api.openai.com/v1/chat/completions"
-  : "https://ai.gateway.lovable.dev/v1/chat/completions";
+// Smart AI routing now lives in supabase/functions/_shared/ai-router.ts.
+// Primary: OpenAI (ChatGPT). Secondary: Google Gemini Pro. Last-resort: Lovable gateway.
+// Automatic failover on 429/402/401/403/5xx. All calls are logged to ai_usage_logs.
+const FEATURE = "founder_adviser";
 
-// Model names depend on which provider we're calling.
-// OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
-// We use widely-available, stable OpenAI models so the adviser keeps working
-// regardless of which models the user's API key has been granted.
-// Override per environment via OPENAI_MODEL_* secrets if needed.
-const VISION_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_VISION") || "gpt-4o")
-  : "google/gemini-2.5-pro";
-const REASONING_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_REASONING") || "gpt-4o")
-  : "openai/gpt-5";
-const FAST_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_FAST") || "gpt-4o-mini")
-  : "google/gemini-3-flash-preview";
-
-function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
-  if (opts.hasImages) return VISION_MODEL;
-  if (opts.deepReasoning) return REASONING_MODEL;
-  if (opts.longContext) return VISION_MODEL;
-  return FAST_MODEL;
+// Translate router errors into the same {status, error, detail} shape the
+// frontend already understands.
+function aiErrorResponse(err: any) {
+  const msg = String(err?.message || "");
+  const status = err?.status ?? 0;
+  if (msg.includes("openai_no_key") && msg.includes("gemini_no_key")) {
+    return new Response(JSON.stringify({ error: "No AI provider configured. Add OPENAI_API_KEY or GEMINI_API_KEY." }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+  if (status === 429) return new Response(JSON.stringify({ error: "Rate limit on all AI providers. Try again shortly.", detail: msg.slice(0, 200) }),
+    { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted on all providers.", detail: msg.slice(0, 200) }),
+    { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  if (status === 401 || status === 403) return new Response(JSON.stringify({ error: "AI API key invalid or unauthorized.", detail: msg.slice(0, 200) }),
+    { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  return new Response(JSON.stringify({ error: "AI provider error", detail: msg.slice(0, 200), providers: providerStatus() }),
+    { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 serve(async (req) => {
@@ -44,8 +37,10 @@ serve(async (req) => {
 
   try {
     const { messages, mode, conversationId, deepReasoning, focusUserId, action, voiceText } = await req.json();
-    const apiKey = USE_OPENAI ? OPENAI_KEY : (Deno.env.get("LOVABLE_API_KEY") || "");
-    if (!apiKey) throw new Error("No AI key configured (set OPENAI_API_KEY or LOVABLE_API_KEY)");
+    const ps = providerStatus();
+    if (!ps.openai_configured && !ps.gemini_configured && !ps.lovable_configured) {
+      throw new Error("No AI provider configured (set OPENAI_API_KEY and/or GEMINI_API_KEY)");
+    }
 
     // Build a context snapshot from the database for grounded answers
     const supabase = createClient(
