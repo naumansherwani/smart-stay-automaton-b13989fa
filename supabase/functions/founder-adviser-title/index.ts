@@ -17,7 +17,7 @@ serve(async (req) => {
     const url = useOpenAI
       ? "https://api.openai.com/v1/chat/completions"
       : "https://ai.gateway.lovable.dev/v1/chat/completions";
-    const model = useOpenAI ? "gpt-5-nano" : "google/gemini-2.5-flash-lite";
+    const model = useOpenAI ? "gpt-4o-mini" : "google/gemini-2.5-flash-lite";
 
     const resp = await fetch(url, {
       method: "POST",
