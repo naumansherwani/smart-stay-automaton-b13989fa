@@ -797,11 +797,12 @@ No prose outside the JSON. No code fences.`;
     });
 
     if (!resp.ok) {
-      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Lovable workspace." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await resp.text();
-      console.error("AI gateway error:", resp.status, t);
-      return new Response(JSON.stringify({ error: "AI gateway error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      console.error("AI provider error:", USE_OPENAI ? "openai" : "lovable", "status:", resp.status, "body:", t.slice(0, 500));
+      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly.", detail: t.slice(0, 200) }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted.", detail: t.slice(0, 200) }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 401) return new Response(JSON.stringify({ error: "OpenAI API key invalid or expired.", detail: t.slice(0, 200) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "AI provider error", status: resp.status, detail: t.slice(0, 200) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const data = await resp.json();
