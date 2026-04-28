@@ -331,19 +331,29 @@ export default function AIAdviser() {
       // Smart error classification — show friendly toast + clear inline msg
       const status = e?.context?.status ?? e?.status;
       const rawMsg = (e?.message || e?.error_description || "").toLowerCase();
+      const detail = (e?.context?.body || e?.body || e?.message || "").toString().toLowerCase();
       let friendly = "Connection hiccup — please try again in a moment.";
       let toastTitle = "Try again";
-      let toastDesc = "Network issue talking to the AI gateway.";
+      let toastDesc = "Network issue talking to the AI provider.";
 
-      if (status === 402 || rawMsg.includes("payment") || rawMsg.includes("credits")) {
-        friendly = "💳 AI credits are exhausted. Top up at Workspace → Cloud & AI balance to resume.";
+      // OpenAI quota exhausted (429 with "exceeded your quota")
+      if (detail.includes("exceeded your quota") || detail.includes("insufficient_quota")) {
+        friendly = "💳 OpenAI account ka quota khatam hai. Apne OpenAI billing me funds add karein: https://platform.openai.com/settings/organization/billing";
+        toastTitle = "OpenAI billing needed";
+        toastDesc = "Add credit at platform.openai.com → Settings → Billing.";
+      } else if (status === 401 || detail.includes("invalid api key") || detail.includes("incorrect api key")) {
+        friendly = "🔑 OpenAI API key invalid hai. Settings me sahi key dobara add karein.";
+        toastTitle = "OpenAI key invalid";
+        toastDesc = "Update OPENAI_API_KEY secret with a working key.";
+      } else if (status === 402 || rawMsg.includes("payment") || rawMsg.includes("credits")) {
+        friendly = "💳 AI credits are exhausted. Top up to resume.";
         toastTitle = "AI credits needed";
-        toastDesc = "Add funds in Settings → Workspace → Cloud & AI balance.";
+        toastDesc = "Add funds to your AI provider.";
       } else if (status === 429 || rawMsg.includes("rate")) {
         friendly = "⏱️ A bit too fast — wait ~30 seconds and ask again.";
         toastTitle = "Rate limited";
         toastDesc = "Please wait a moment before sending another message.";
-      } else if (status === 401 || status === 403) {
+      } else if (status === 403) {
         friendly = "🔒 Auth issue. Please refresh the page and sign in again.";
         toastTitle = "Auth required";
         toastDesc = "Session may have expired.";

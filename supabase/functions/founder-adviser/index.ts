@@ -7,10 +7,30 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Smart routing: vision/long-context -> Gemini, deep reasoning -> GPT-5
-const VISION_MODEL = "google/gemini-2.5-pro";
-const REASONING_MODEL = "openai/gpt-5";
-const FAST_MODEL = "google/gemini-3-flash-preview";
+// AI provider routing.
+// We prefer the user's own OpenAI (ChatGPT) API key when OPENAI_API_KEY is set,
+// so the adviser keeps working even if the Lovable AI workspace credits run out.
+// If OPENAI_API_KEY is missing, we transparently fall back to the Lovable AI gateway.
+const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") || "";
+const USE_OPENAI = OPENAI_KEY.length > 0;
+const AI_BASE_URL = USE_OPENAI
+  ? "https://api.openai.com/v1/chat/completions"
+  : "https://ai.gateway.lovable.dev/v1/chat/completions";
+
+// Model names depend on which provider we're calling.
+// OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
+// We use widely-available, stable OpenAI models so the adviser keeps working
+// regardless of which models the user's API key has been granted.
+// Override per environment via OPENAI_MODEL_* secrets if needed.
+const VISION_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_VISION") || "gpt-4o")
+  : "google/gemini-2.5-pro";
+const REASONING_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_REASONING") || "gpt-4o")
+  : "openai/gpt-5";
+const FAST_MODEL = USE_OPENAI
+  ? (Deno.env.get("OPENAI_MODEL_FAST") || "gpt-4o-mini")
+  : "google/gemini-3-flash-preview";
 
 function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
   if (opts.hasImages) return VISION_MODEL;
@@ -24,8 +44,8 @@ serve(async (req) => {
 
   try {
     const { messages, mode, conversationId, deepReasoning, focusUserId, action, voiceText } = await req.json();
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+    const apiKey = USE_OPENAI ? OPENAI_KEY : (Deno.env.get("LOVABLE_API_KEY") || "");
+    if (!apiKey) throw new Error("No AI key configured (set OPENAI_API_KEY or LOVABLE_API_KEY)");
 
     // Build a context snapshot from the database for grounded answers
     const supabase = createClient(
@@ -420,7 +440,7 @@ TASK: The founder spoke a voice command. Detect the language, then return STRICT
   "spoken_back": "1-line confirmation in the same language the founder spoke"
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const r = await fetch(AI_BASE_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -451,7 +471,7 @@ TASK: Produce the founder's weekly summary email. Detect the founder's preferred
   "highlights": ["bullet 1", "bullet 2", "bullet 3"]
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const r = await fetch(AI_BASE_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -483,7 +503,7 @@ Return ONLY a strict JSON object with these keys (each value is a short 1–2 se
 }
 No prose outside the JSON. No code fences.`;
 
-      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const resp = await fetch(AI_BASE_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -510,7 +530,7 @@ No prose outside the JSON. No code fences.`;
 TASK: Draft a complete email to this user as if you were the founder. Reply in the SAME language as the founder's request. Output STRICT JSON only:
 { "subject": "...", "body_text": "plain text body", "body_html": "<p>...</p>", "recipient_email": "...", "rationale": "1-line why this email now" }
 No prose outside the JSON. No code fences.`;
-      const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const resp = await fetch(AI_BASE_URL, {
         method: "POST",
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -767,7 +787,7 @@ No prose outside the JSON. No code fences.`;
     const longContext = totalLen > 6000 || incoming.length > 12;
     const model = pickModel({ hasImages, longContext, deepReasoning: !!deepReasoning });
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch(AI_BASE_URL, {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -777,11 +797,12 @@ No prose outside the JSON. No code fences.`;
     });
 
     if (!resp.ok) {
-      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Lovable workspace." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       const t = await resp.text();
-      console.error("AI gateway error:", resp.status, t);
-      return new Response(JSON.stringify({ error: "AI gateway error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      console.error("AI provider error:", USE_OPENAI ? "openai" : "lovable", "status:", resp.status, "body:", t.slice(0, 500));
+      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly.", detail: t.slice(0, 200) }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted.", detail: t.slice(0, 200) }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (resp.status === 401) return new Response(JSON.stringify({ error: "OpenAI API key invalid or expired.", detail: t.slice(0, 200) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "AI provider error", status: resp.status, detail: t.slice(0, 200) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const data = await resp.json();
