@@ -92,6 +92,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage_logs: {
+        Row: {
+          completion_tokens: number | null
+          created_at: string | null
+          error: string | null
+          failover_used: boolean | null
+          feature: string
+          id: string
+          model: string
+          prompt_tokens: number | null
+          provider: string
+          task: string | null
+          total_tokens: number | null
+          user_id: string | null
+        }
+        Insert: {
+          completion_tokens?: number | null
+          created_at?: string | null
+          error?: string | null
+          failover_used?: boolean | null
+          feature: string
+          id?: string
+          model: string
+          prompt_tokens?: number | null
+          provider: string
+          task?: string | null
+          total_tokens?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          completion_tokens?: number | null
+          created_at?: string | null
+          error?: string | null
+          failover_used?: boolean | null
+          feature?: string
+          id?: string
+          model?: string
+          prompt_tokens?: number | null
+          provider?: string
+          task?: string | null
+          total_tokens?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       alerts: {
         Row: {
           created_at: string

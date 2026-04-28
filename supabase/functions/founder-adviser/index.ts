@@ -1,42 +1,35 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { routeChat, providerStatus, type RouterTask } from "../_shared/ai-router.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// AI provider routing.
-// We prefer the user's own OpenAI (ChatGPT) API key when OPENAI_API_KEY is set,
-// so the adviser keeps working even if the Lovable AI workspace credits run out.
-// If OPENAI_API_KEY is missing, we transparently fall back to the Lovable AI gateway.
-const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") || "";
-const USE_OPENAI = OPENAI_KEY.length > 0;
-const AI_BASE_URL = USE_OPENAI
-  ? "https://api.openai.com/v1/chat/completions"
-  : "https://ai.gateway.lovable.dev/v1/chat/completions";
+// Smart AI routing now lives in supabase/functions/_shared/ai-router.ts.
+// Primary: OpenAI (ChatGPT). Secondary: Google Gemini Pro. Last-resort: Lovable gateway.
+// Automatic failover on 429/402/401/403/5xx. All calls are logged to ai_usage_logs.
+const FEATURE = "founder_adviser";
 
-// Model names depend on which provider we're calling.
-// OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
-// We use widely-available, stable OpenAI models so the adviser keeps working
-// regardless of which models the user's API key has been granted.
-// Override per environment via OPENAI_MODEL_* secrets if needed.
-const VISION_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_VISION") || "gpt-4o")
-  : "google/gemini-2.5-pro";
-const REASONING_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_REASONING") || "gpt-4o")
-  : "openai/gpt-5";
-const FAST_MODEL = USE_OPENAI
-  ? (Deno.env.get("OPENAI_MODEL_FAST") || "gpt-4o-mini")
-  : "google/gemini-3-flash-preview";
-
-function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
-  if (opts.hasImages) return VISION_MODEL;
-  if (opts.deepReasoning) return REASONING_MODEL;
-  if (opts.longContext) return VISION_MODEL;
-  return FAST_MODEL;
+// Translate router errors into the same {status, error, detail} shape the
+// frontend already understands.
+function aiErrorResponse(err: any) {
+  const msg = String(err?.message || "");
+  const status = err?.status ?? 0;
+  if (msg.includes("openai_no_key") && msg.includes("gemini_no_key")) {
+    return new Response(JSON.stringify({ error: "No AI provider configured. Add OPENAI_API_KEY or GEMINI_API_KEY." }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+  if (status === 429) return new Response(JSON.stringify({ error: "Rate limit on all AI providers. Try again shortly.", detail: msg.slice(0, 200) }),
+    { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  if (status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted on all providers.", detail: msg.slice(0, 200) }),
+    { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  if (status === 401 || status === 403) return new Response(JSON.stringify({ error: "AI API key invalid or unauthorized.", detail: msg.slice(0, 200) }),
+    { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  return new Response(JSON.stringify({ error: "AI provider error", detail: msg.slice(0, 200), providers: providerStatus() }),
+    { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
 serve(async (req) => {
@@ -44,8 +37,10 @@ serve(async (req) => {
 
   try {
     const { messages, mode, conversationId, deepReasoning, focusUserId, action, voiceText } = await req.json();
-    const apiKey = USE_OPENAI ? OPENAI_KEY : (Deno.env.get("LOVABLE_API_KEY") || "");
-    if (!apiKey) throw new Error("No AI key configured (set OPENAI_API_KEY or LOVABLE_API_KEY)");
+    const ps = providerStatus();
+    if (!ps.openai_configured && !ps.gemini_configured && !ps.lovable_configured) {
+      throw new Error("No AI provider configured (set OPENAI_API_KEY and/or GEMINI_API_KEY)");
+    }
 
     // Build a context snapshot from the database for grounded answers
     const supabase = createClient(
@@ -440,23 +435,16 @@ TASK: The founder spoke a voice command. Detect the language, then return STRICT
   "spoken_back": "1-line confirmation in the same language the founder spoke"
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: FAST_MODEL,
-          messages: [{ role: "system", content: voiceSystem }, { role: "user", content: voiceText }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!r.ok) {
-        const t = await r.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const j = await r.json();
-      let parsed: any = { intent: "chat", spoken_back: voiceText };
-      try { parsed = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ voice: parsed }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: voiceSystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: voiceText }],
+          task: "multilingual", supabase, userId, feature: FEATURE,
+        });
+        let parsed: any = { intent: "chat", spoken_back: voiceText };
+        try { parsed = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ voice: parsed }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Weekly Founder Report — produces a short HTML/text summary email body
@@ -471,23 +459,16 @@ TASK: Produce the founder's weekly summary email. Detect the founder's preferred
   "highlights": ["bullet 1", "bullet 2", "bullet 3"]
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: REASONING_MODEL,
-          messages: [{ role: "system", content: weeklySystem }, { role: "user", content: "Generate this week's founder report now." }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!r.ok) {
-        const t = await r.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const j = await r.json();
-      let report: any = {};
-      try { report = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ report, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: weeklySystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: "Generate this week's founder report now." }],
+          task: "reasoning", deepReasoning: true, supabase, userId, feature: FEATURE,
+        });
+        let report: any = {};
+        try { report = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ report, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
@@ -503,24 +484,16 @@ Return ONLY a strict JSON object with these keys (each value is a short 1–2 se
 }
 No prose outside the JSON. No code fences.`;
 
-      const resp = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: FAST_MODEL,
-          messages: [{ role: "system", content: insightsSystem }, { role: "user", content: "Generate the four insights now." }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!resp.ok) {
-        const t = await resp.text();
-        console.error("insights gateway error:", resp.status, t);
-        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const data = await resp.json();
-      let parsed: any = { risk: "", opportunity: "", action: "", weekly: "" };
-      try { parsed = JSON.parse(data?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: insightsSystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: "Generate the four insights now." }],
+          task: "fast", supabase, userId, feature: FEATURE,
+        });
+        let parsed: any = { risk: "", opportunity: "", action: "", weekly: "" };
+        try { parsed = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Special action: draft an email to a user (founder asks "email this user...")
@@ -530,24 +503,17 @@ No prose outside the JSON. No code fences.`;
 TASK: Draft a complete email to this user as if you were the founder. Reply in the SAME language as the founder's request. Output STRICT JSON only:
 { "subject": "...", "body_text": "plain text body", "body_html": "<p>...</p>", "recipient_email": "...", "rationale": "1-line why this email now" }
 No prose outside the JSON. No code fences.`;
-      const resp = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: REASONING_MODEL,
-          messages: [{ role: "system", content: draftSystem }, ...(Array.isArray(messages) ? messages : [])],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!resp.ok) {
-        const t = await resp.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status, detail: t }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const d = await resp.json();
-      let draft: any = {};
-      try { draft = JSON.parse(d?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
-      return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: draftSystem + "\n\nReturn ONLY a single JSON object." },
+                     ...(Array.isArray(messages) ? messages : [])],
+          task: "sales", deepReasoning: true, supabase, userId, feature: FEATURE,
+        });
+        let draft: any = {};
+        try { draft = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
+        return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Self-heal: detect anomalies (mock/test/duplicate data, stuck trials) — read-only scan + optional cleanup.
@@ -785,28 +751,20 @@ No prose outside the JSON. No code fences.`;
     );
     const totalLen = JSON.stringify(incoming).length;
     const longContext = totalLen > 6000 || incoming.length > 12;
-    const model = pickModel({ hasImages, longContext, deepReasoning: !!deepReasoning });
-
-    const resp = await fetch(AI_BASE_URL, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
+    // Pick task: vision/long → Gemini-first; everything else → OpenAI-first.
+    const task: RouterTask = hasImages ? "vision" : (longContext ? "long_context" : (deepReasoning ? "reasoning" : "chat"));
+    let routed;
+    try {
+      routed = await routeChat({
         messages: [{ role: "system", content: system }, ...incoming],
-      }),
-    });
-
-    if (!resp.ok) {
-      const t = await resp.text();
-      console.error("AI provider error:", USE_OPENAI ? "openai" : "lovable", "status:", resp.status, "body:", t.slice(0, 500));
-      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly.", detail: t.slice(0, 200) }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted.", detail: t.slice(0, 200) }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 401) return new Response(JSON.stringify({ error: "OpenAI API key invalid or expired.", detail: t.slice(0, 200) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      return new Response(JSON.stringify({ error: "AI provider error", status: resp.status, detail: t.slice(0, 200) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        task, hasImages, deepReasoning: !!deepReasoning,
+        supabase, userId, feature: FEATURE,
+      });
+    } catch (e) {
+      return aiErrorResponse(e);
     }
-
-    const data = await resp.json();
-    const reply = data?.choices?.[0]?.message?.content || "No response.";
+    const reply = routed.text || "No response.";
+    const model = `${routed.provider}:${routed.model}${routed.failoverUsed ? " (failover)" : ""}`;
 
     // Persist assistant reply if a conversation id is provided and caller is admin
     if (conversationId && userId) {
