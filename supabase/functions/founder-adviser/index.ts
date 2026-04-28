@@ -751,28 +751,20 @@ No prose outside the JSON. No code fences.`;
     );
     const totalLen = JSON.stringify(incoming).length;
     const longContext = totalLen > 6000 || incoming.length > 12;
-    const model = pickModel({ hasImages, longContext, deepReasoning: !!deepReasoning });
-
-    const resp = await fetch(AI_BASE_URL, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
+    // Pick task: vision/long → Gemini-first; everything else → OpenAI-first.
+    const task: RouterTask = hasImages ? "vision" : (longContext ? "long_context" : (deepReasoning ? "reasoning" : "chat"));
+    let routed;
+    try {
+      routed = await routeChat({
         messages: [{ role: "system", content: system }, ...incoming],
-      }),
-    });
-
-    if (!resp.ok) {
-      const t = await resp.text();
-      console.error("AI provider error:", USE_OPENAI ? "openai" : "lovable", "status:", resp.status, "body:", t.slice(0, 500));
-      if (resp.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again shortly.", detail: t.slice(0, 200) }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted.", detail: t.slice(0, 200) }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (resp.status === 401) return new Response(JSON.stringify({ error: "OpenAI API key invalid or expired.", detail: t.slice(0, 200) }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      return new Response(JSON.stringify({ error: "AI provider error", status: resp.status, detail: t.slice(0, 200) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        task, hasImages, deepReasoning: !!deepReasoning,
+        supabase, userId, feature: FEATURE,
+      });
+    } catch (e) {
+      return aiErrorResponse(e);
     }
-
-    const data = await resp.json();
-    const reply = data?.choices?.[0]?.message?.content || "No response.";
+    const reply = routed.text || "No response.";
+    const model = `${routed.provider}:${routed.model}${routed.failoverUsed ? " (failover)" : ""}`;
 
     // Persist assistant reply if a conversation id is provided and caller is admin
     if (conversationId && userId) {
