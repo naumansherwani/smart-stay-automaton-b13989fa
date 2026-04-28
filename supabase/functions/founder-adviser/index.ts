@@ -7,10 +7,21 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Smart routing: vision/long-context -> Gemini, deep reasoning -> GPT-5
-const VISION_MODEL = "google/gemini-2.5-pro";
-const REASONING_MODEL = "openai/gpt-5";
-const FAST_MODEL = "google/gemini-3-flash-preview";
+// AI provider routing.
+// We prefer the user's own OpenAI (ChatGPT) API key when OPENAI_API_KEY is set,
+// so the adviser keeps working even if the Lovable AI workspace credits run out.
+// If OPENAI_API_KEY is missing, we transparently fall back to the Lovable AI gateway.
+const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY") || "";
+const USE_OPENAI = OPENAI_KEY.length > 0;
+const AI_BASE_URL = USE_OPENAI
+  ? "https://api.openai.com/v1/chat/completions"
+  : "https://ai.gateway.lovable.dev/v1/chat/completions";
+
+// Model names depend on which provider we're calling.
+// OpenAI direct uses bare model ids; Lovable gateway uses provider-prefixed ids.
+const VISION_MODEL    = USE_OPENAI ? "gpt-5"      : "google/gemini-2.5-pro";
+const REASONING_MODEL = USE_OPENAI ? "gpt-5"      : "openai/gpt-5";
+const FAST_MODEL      = USE_OPENAI ? "gpt-5-mini" : "google/gemini-3-flash-preview";
 
 function pickModel(opts: { hasImages: boolean; longContext: boolean; deepReasoning: boolean }) {
   if (opts.hasImages) return VISION_MODEL;
