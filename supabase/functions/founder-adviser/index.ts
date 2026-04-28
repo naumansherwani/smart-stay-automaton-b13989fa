@@ -435,23 +435,16 @@ TASK: The founder spoke a voice command. Detect the language, then return STRICT
   "spoken_back": "1-line confirmation in the same language the founder spoke"
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: FAST_MODEL,
-          messages: [{ role: "system", content: voiceSystem }, { role: "user", content: voiceText }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!r.ok) {
-        const t = await r.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const j = await r.json();
-      let parsed: any = { intent: "chat", spoken_back: voiceText };
-      try { parsed = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ voice: parsed }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: voiceSystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: voiceText }],
+          task: "multilingual", supabase, userId, feature: FEATURE,
+        });
+        let parsed: any = { intent: "chat", spoken_back: voiceText };
+        try { parsed = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ voice: parsed }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Weekly Founder Report — produces a short HTML/text summary email body
@@ -466,23 +459,16 @@ TASK: Produce the founder's weekly summary email. Detect the founder's preferred
   "highlights": ["bullet 1", "bullet 2", "bullet 3"]
 }
 No prose outside JSON. No code fences.`;
-      const r = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: REASONING_MODEL,
-          messages: [{ role: "system", content: weeklySystem }, { role: "user", content: "Generate this week's founder report now." }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!r.ok) {
-        const t = await r.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: r.status, detail: t }), { status: r.status === 429 || r.status === 402 ? r.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const j = await r.json();
-      let report: any = {};
-      try { report = JSON.parse(j?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ report, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: weeklySystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: "Generate this week's founder report now." }],
+          task: "reasoning", deepReasoning: true, supabase, userId, feature: FEATURE,
+        });
+        let report: any = {};
+        try { report = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ report, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Structured insights mode for the right-side panel (Risk / Opportunity / Action / Weekly)
@@ -498,24 +484,16 @@ Return ONLY a strict JSON object with these keys (each value is a short 1–2 se
 }
 No prose outside the JSON. No code fences.`;
 
-      const resp = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: FAST_MODEL,
-          messages: [{ role: "system", content: insightsSystem }, { role: "user", content: "Generate the four insights now." }],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!resp.ok) {
-        const t = await resp.text();
-        console.error("insights gateway error:", resp.status, t);
-        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const data = await resp.json();
-      let parsed: any = { risk: "", opportunity: "", action: "", weekly: "" };
-      try { parsed = JSON.parse(data?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: insightsSystem + "\n\nReturn ONLY a single JSON object." },
+                     { role: "user", content: "Generate the four insights now." }],
+          task: "fast", supabase, userId, feature: FEATURE,
+        });
+        let parsed: any = { risk: "", opportunity: "", action: "", weekly: "" };
+        try { parsed = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        return new Response(JSON.stringify({ insights: parsed, snapshot: ctx }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Special action: draft an email to a user (founder asks "email this user...")
@@ -525,24 +503,17 @@ No prose outside the JSON. No code fences.`;
 TASK: Draft a complete email to this user as if you were the founder. Reply in the SAME language as the founder's request. Output STRICT JSON only:
 { "subject": "...", "body_text": "plain text body", "body_html": "<p>...</p>", "recipient_email": "...", "rationale": "1-line why this email now" }
 No prose outside the JSON. No code fences.`;
-      const resp = await fetch(AI_BASE_URL, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: REASONING_MODEL,
-          messages: [{ role: "system", content: draftSystem }, ...(Array.isArray(messages) ? messages : [])],
-          response_format: { type: "json_object" },
-        }),
-      });
-      if (!resp.ok) {
-        const t = await resp.text();
-        return new Response(JSON.stringify({ error: "AI gateway error", status: resp.status, detail: t }), { status: resp.status === 429 || resp.status === 402 ? resp.status : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      const d = await resp.json();
-      let draft: any = {};
-      try { draft = JSON.parse(d?.choices?.[0]?.message?.content || "{}"); } catch { /* ignore */ }
-      if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
-      return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      try {
+        const res = await routeChat({
+          messages: [{ role: "system", content: draftSystem + "\n\nReturn ONLY a single JSON object." },
+                     ...(Array.isArray(messages) ? messages : [])],
+          task: "sales", deepReasoning: true, supabase, userId, feature: FEATURE,
+        });
+        let draft: any = {};
+        try { draft = JSON.parse((res.text || "").replace(/^```json\s*|\s*```$/g, "")); } catch { /* ignore */ }
+        if (!draft.recipient_email && focusUser?.profile?.email) draft.recipient_email = focusUser.profile.email;
+        return new Response(JSON.stringify({ draft }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } catch (e) { return aiErrorResponse(e); }
     }
 
     // Self-heal: detect anomalies (mock/test/duplicate data, stuck trials) — read-only scan + optional cleanup.
