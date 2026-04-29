@@ -324,6 +324,8 @@ export default function AIAdviser() {
       });
       if (error) throw error;
       setBackendHealthy(true);
+      // Realtime will push the assistant message; reload as fallback
+      await loadMessages(convId);
       if (data?.reply) {
         setMessages((prev) => {
           const alreadyThere = prev.some((m) => m.role === "assistant" && m.content === data.reply);
@@ -338,8 +340,6 @@ export default function AIAdviser() {
           } as DbMsg];
         });
       }
-      // Realtime will push the assistant message; reload as fallback
-      await loadMessages(convId);
       // Auto-title on first exchange
       if ((messages.length + 1) <= 1) {
         try {
