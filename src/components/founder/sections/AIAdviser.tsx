@@ -52,6 +52,7 @@ export default function AIAdviser() {
   const [renameVal, setRenameVal] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deepReasoning, setDeepReasoning] = useState(false);
+  const [backendHealthy, setBackendHealthy] = useState(true);
   const [insights, setInsights] = useState<Insights | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -142,6 +143,16 @@ export default function AIAdviser() {
   }, [user]);
 
   useEffect(() => { loadConvs(); }, [loadConvs]);
+
+  const resetAdvisor = useCallback(async () => {
+    if (!user || loading) return;
+    setActiveId(null);
+    setMessages([]);
+    setAttachments([]);
+    setInput("");
+    await newChat();
+    toast({ title: "AI Advisor reset", description: "Fresh conversation ready." });
+  }, [user, loading]);
 
   // ---- Messages for active conversation ----
   const loadMessages = useCallback(async (id: string) => {
@@ -312,6 +323,21 @@ export default function AIAdviser() {
         body: { messages: aiMessages, conversationId: convId, deepReasoning },
       });
       if (error) throw error;
+      setBackendHealthy(true);
+      if (data?.reply) {
+        setMessages((prev) => {
+          const alreadyThere = prev.some((m) => m.role === "assistant" && m.content === data.reply);
+          if (alreadyThere) return prev;
+          return [...prev, {
+            id: `local-${Date.now()}`,
+            conversation_id: convId!,
+            role: "assistant",
+            content: data.reply,
+            attachments: null,
+            created_at: new Date().toISOString(),
+          } as DbMsg];
+        });
+      }
       // Realtime will push the assistant message; reload as fallback
       await loadMessages(convId);
       // Auto-title on first exchange
@@ -328,6 +354,7 @@ export default function AIAdviser() {
       }
     } catch (e: any) {
       console.error(e);
+      setBackendHealthy(false);
       // Smart error classification — show friendly toast + clear inline msg
       const status = e?.context?.status ?? e?.status;
       const rawMsg = (e?.message || e?.error_description || "").toLowerCase();
@@ -561,7 +588,9 @@ export default function AIAdviser() {
         <div className="px-5 py-3 border-b border-[var(--fos-border)] flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-[var(--fos-accent)]" />
           <h3 className="text-[var(--fos-text)] font-semibold text-sm">AI Advisor</h3>
-          <span className="ml-2 text-[10px] text-[var(--fos-success)]">● Online</span>
+          <span className={`ml-2 text-[10px] ${backendHealthy ? "text-[var(--fos-success)]" : "text-[var(--fos-danger)]"}`}>
+            ● {backendHealthy ? "Online" : "Needs retry"}
+          </span>
           <button
             onClick={() => setDeepReasoning((v) => !v)}
             className={`ml-auto flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1 rounded-md border transition ${
@@ -572,6 +601,14 @@ export default function AIAdviser() {
             title="Deep reasoning routes to GPT-5 instead of Gemini Flash"
           >
             <Brain className="w-3 h-3" /> Deep think {deepReasoning ? "on" : "off"}
+          </button>
+          <button
+            onClick={resetAdvisor}
+            disabled={loading}
+            className="flex items-center gap-1 text-[10px] uppercase tracking-wider px-2 py-1 rounded-md border border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-text)] disabled:opacity-50 transition"
+            title="Start a clean founder advisor session"
+          >
+            <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} /> Reset
           </button>
         </div>
 
