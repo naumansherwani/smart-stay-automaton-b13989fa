@@ -766,16 +766,17 @@ No prose outside the JSON. No code fences.`;
     const reply = routed.text || "No response.";
     const model = `${routed.provider}:${routed.model}${routed.failoverUsed ? " (failover)" : ""}`;
 
-    // Persist assistant reply if a conversation id is provided and caller is admin
+    // Persist assistant reply if the conversation belongs to the authenticated founder.
+    // This avoids losing replies when role lookup or token propagation is flaky.
     if (conversationId && userId) {
       try {
-        const { data: roleRow } = await supabase
-          .from("user_roles")
-          .select("role")
+        const { data: ownedConversation } = await supabase
+          .from("founder_ai_conversations")
+          .select("id")
+          .eq("id", conversationId)
           .eq("user_id", userId)
-          .eq("role", "admin")
           .maybeSingle();
-        if (roleRow) {
+        if (ownedConversation) {
           await supabase.from("founder_ai_messages").insert({
             conversation_id: conversationId,
             user_id: userId,
