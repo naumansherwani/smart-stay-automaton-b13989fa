@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
     }
 
     // Generic send
-    const { to, subject, html, text, replyTo, cc, bcc, fromName, fromAddress, identity, appendSignature } = body;
+    const { to, subject, html, text, replyTo, cc, bcc, fromName, fromAddress, identity, appendSignature, attachments } = body;
     if (!to || !subject || (!html && !text)) {
       return new Response(
         JSON.stringify({ ok: false, error: "Missing required fields: to, subject, html|text" }),
@@ -141,6 +141,7 @@ Deno.serve(async (req) => {
         subject,
         text: finalText,
         html: finalHtml,
+        attachments: Array.isArray(attachments) ? attachments : undefined,
       });
       return new Response(
         JSON.stringify({ ok: true, messageId: info.messageId, accepted: info.accepted }),
