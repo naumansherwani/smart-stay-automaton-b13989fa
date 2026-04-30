@@ -45,22 +45,6 @@ const About = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t("about.subtitle")}</p>
           </div>
 
-          {/* Mission */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-8 space-y-4">
-              <Sparkles className="w-8 h-8 text-primary mx-auto" />
-              <h2 className="text-2xl font-bold text-foreground text-center">{t("about.missionTitle")}</h2>
-              <p className="text-muted-foreground text-lg text-center">{t("about.mission")}</p>
-              <ul className="space-y-2 text-muted-foreground text-base max-w-md mx-auto">
-                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet1")}</li>
-                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet2")}</li>
-                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet3")}</li>
-                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet4")}</li>
-              </ul>
-              <p className="text-muted-foreground text-base text-center italic">{t("about.missionFooter")}</p>
-            </CardContent>
-          </Card>
-
           {/* Founder Message */}
           <Card className="relative overflow-hidden border-primary/30 shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-[hsl(216,88%,55%)]/5 to-[hsl(270,80%,65%)]/10 pointer-events-none" />
@@ -111,6 +95,22 @@ const About = () => {
                 </p>
                 <p className="text-sm text-muted-foreground">{t("about.founderTitle")}</p>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Mission */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-8 space-y-4">
+              <Sparkles className="w-8 h-8 text-primary mx-auto" />
+              <h2 className="text-2xl font-bold text-foreground text-center">{t("about.missionTitle")}</h2>
+              <p className="text-muted-foreground text-lg text-center">{t("about.mission")}</p>
+              <ul className="space-y-2 text-muted-foreground text-base max-w-md mx-auto">
+                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet1")}</li>
+                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet2")}</li>
+                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet3")}</li>
+                <li className="flex items-center gap-2"><span className="text-primary">✦</span> {t("about.missionBullet4")}</li>
+              </ul>
+              <p className="text-muted-foreground text-base text-center italic">{t("about.missionFooter")}</p>
             </CardContent>
           </Card>
 

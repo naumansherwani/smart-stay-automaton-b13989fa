@@ -10,7 +10,7 @@ import { Check, Sparkles } from "lucide-react";
 // Each country: ISO code (for SVG flag) + native greeting + tasteful accent color
 // 14 languages — matches site i18n (en, ur, ar, es, fr, de, zh, ja, ko, it, tr, pt, ro, de-CH)
 const LANGUAGES: { code: string; name: string; greeting: string; color: string; dir?: "rtl" }[] = [
-  { code: "gb", name: "United Kingdom", greeting: "Hello", color: "#93C5FD" },
+  { code: "us", name: "United States", greeting: "Hello", color: "#93C5FD" },
   { code: "pk", name: "Pakistan", greeting: "خوش آمدید", color: "#86EFAC", dir: "rtl" },
   { code: "sa", name: "Saudi Arabia", greeting: "أهلاً", color: "#86EFAC", dir: "rtl" },
   { code: "es", name: "Spain", greeting: "Hola", color: "#FCD34D" },
