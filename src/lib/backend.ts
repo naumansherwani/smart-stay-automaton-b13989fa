@@ -42,38 +42,71 @@ export async function backendFetch(path: string, init: RequestInit = {}) {
  * Send the current UI/Industry manifest to Replit so the backend always
  * knows what the Experience Layer is rendering. Fire-and-forget.
  */
-export async function syncManifest(extra: Record<string, unknown> = {}) {
+export type UiFlags = {
+  show_ai_advisor?: boolean;
+  play_welcome_voice?: boolean;
+  show_revenue_chart?: boolean;
+  voice_trigger?: boolean;
+  [k: string]: unknown;
+};
+
+let latestUiFlags: UiFlags = {};
+export const getUiFlags = () => latestUiFlags;
+
+function getSessionId(): string {
+  try {
+    let sid = sessionStorage.getItem("sid");
+    if (!sid) {
+      sid =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `sid_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      sessionStorage.setItem("sid", sid);
+    }
+    return sid;
+  } catch {
+    return `sid_${Date.now()}`;
+  }
+}
+
+/**
+ * Sync the current UI state with the Brain. Returns ui_flags from backend.
+ * Fire-and-forget on the caller side; UI must never break on failure.
+ */
+export async function syncManifest(opts: {
+  industry?: string;
+  page?: string;
+  user_id?: string | null;
+} = {}) {
   try {
     const industry =
+      opts.industry ||
       (typeof localStorage !== "undefined" && localStorage.getItem("hf-industry")) ||
-      "hospitality";
-    const theme =
-      (typeof localStorage !== "undefined" && localStorage.getItem("theme")) || "system";
-    const lang =
-      (typeof localStorage !== "undefined" && localStorage.getItem("i18nextLng")) || "en";
+      "tourism_hospitality";
+    const page =
+      opts.page ||
+      (typeof location !== "undefined" ? location.pathname : "/");
 
-    const manifest = {
-      app: "hostflow-experience",
-      version: 1,
-      ts: new Date().toISOString(),
-      route: typeof location !== "undefined" ? location.pathname : "/",
-      origin: typeof location !== "undefined" ? location.origin : "",
+    const body = {
       industry,
-      theme,
-      lang,
-      viewport:
-        typeof window !== "undefined"
-          ? { w: window.innerWidth, h: window.innerHeight, dpr: window.devicePixelRatio }
-          : null,
-      ...extra,
+      page,
+      user_id: opts.user_id ?? null,
+      session_id: getSessionId(),
     };
 
-    await backendFetch("/v1/sync-manifest", {
+    const res = await backendFetch("/v1/sync-manifest", {
       method: "POST",
-      body: JSON.stringify(manifest),
+      body: JSON.stringify(body),
       keepalive: true,
     });
+    const json = await res.json().catch(() => null);
+    const flags = (json?.data?.ui_flags ?? json?.ui_flags ?? {}) as UiFlags;
+    latestUiFlags = flags;
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("hf:ui-flags", { detail: flags }));
+    }
+    return flags;
   } catch {
-    // Silent — UI must never break on sync failure.
+    return {} as UiFlags;
   }
 }
