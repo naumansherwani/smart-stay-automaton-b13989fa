@@ -1,0 +1,15 @@
+---
+name: AI Bank project deferred
+description: AI Bank / Rapid Pay / payments ledger work is paused for 15 days from May 5 2026. Do NOT send any AI Bank related prompts to Replit.
+type: constraint
+---
+AI Bank project (Rapid Pay, Stripe Layer 0, double-entry ledger, payments brain) is DEFERRED for 15 days starting May 5, 2026.
+
+Do NOT:
+- Send any AI Bank / Rapid Pay / payments prompts to Replit
+- Include AI Bank endpoints in Replit phase plans
+- Suggest payment ledger work proactively
+
+Focus Replit work on: health, auth/JWT, subscription read APIs, and non-payment brain features only.
+
+Why: User explicitly paused this stream on May 5, 2026 to focus on other priorities first.
