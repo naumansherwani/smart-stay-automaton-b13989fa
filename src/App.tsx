@@ -8,7 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
-import { backendFetch } from "@/lib/backend";
+import { backendFetch, syncManifest } from "@/lib/backend";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -57,6 +57,23 @@ const App = () => {
       .catch(() => {
         // Silent fail — no UI impact
       });
+
+    // Initial manifest push + heartbeat every 60s
+    syncManifest({ event: "boot" });
+    const interval = window.setInterval(() => syncManifest({ event: "heartbeat" }), 60_000);
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") syncManifest({ event: "focus" });
+    };
+    const onRoute = () => syncManifest({ event: "route" });
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("popstate", onRoute);
+
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("popstate", onRoute);
+    };
   }, []);
 
   return (
