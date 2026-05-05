@@ -1,10 +1,10 @@
 import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
@@ -47,35 +47,31 @@ const Loading = () => (
   </div>
 );
 
-const App = () => {
+/**
+ * Invisible bridge: handshake with the Brain on boot, then sync the manifest
+ * on every route change / auth change. Renders nothing.
+ */
+const BrainBridge = () => {
+  const { user } = useAuth();
+  const location = useLocation();
+
   useEffect(() => {
-    backendFetch("/health")
+    backendFetch("/v1/health")
       .then((r) => r.json())
       .then((res) => {
-        if (res?.ok === true) console.log("Brain connected ✓", res);
+        if (res?.ok === true) console.log("Brain connected ✓", res?.data ?? res);
       })
-      .catch(() => {
-        // Silent fail — no UI impact
-      });
-
-    // Initial manifest push + heartbeat every 60s
-    syncManifest({ event: "boot" });
-    const interval = window.setInterval(() => syncManifest({ event: "heartbeat" }), 60_000);
-
-    const onVisible = () => {
-      if (document.visibilityState === "visible") syncManifest({ event: "focus" });
-    };
-    const onRoute = () => syncManifest({ event: "route" });
-    document.addEventListener("visibilitychange", onVisible);
-    window.addEventListener("popstate", onRoute);
-
-    return () => {
-      window.clearInterval(interval);
-      document.removeEventListener("visibilitychange", onVisible);
-      window.removeEventListener("popstate", onRoute);
-    };
+      .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    syncManifest({ page: location.pathname, user_id: user?.id ?? null });
+  }, [location.pathname, user?.id]);
+
+  return null;
+};
+
+const App = () => {
   return (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -83,6 +79,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <BrainBridge />
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={<Index />} />
