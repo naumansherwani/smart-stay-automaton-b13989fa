@@ -321,17 +321,6 @@ const PricingSection = () => {
             >
               Start Free Trial — In Your Language
             </Button>
-            <EnterpriseContactDialog
-              trigger={
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-8 py-6 rounded-xl border-white/15 bg-white/5 text-foreground/85 hover:bg-white/10"
-                >
-                  Book Demo
-                </Button>
-              }
-            />
           </div>
           <p className="text-xs text-muted-foreground">No credit card required · 7-day free trial · Cancel anytime</p>
         </div>
