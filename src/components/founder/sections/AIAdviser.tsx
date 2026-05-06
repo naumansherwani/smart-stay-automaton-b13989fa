@@ -62,6 +62,7 @@ export default function AIAdviser() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const cancelRef = useRef<{ id: number; cancelled: boolean } | null>(null);
 
   // Founder settings: Autopilot, Weekly Report, Voice
   const [settings, setSettings] = useState<{
@@ -295,6 +296,8 @@ export default function AIAdviser() {
     setInput("");
     setAttachments([]);
     setLoading(true);
+    const ticket = { id: Date.now(), cancelled: false };
+    cancelRef.current = ticket;
 
     // Build full history for AI
     const { data: history } = await supabase
@@ -322,6 +325,7 @@ export default function AIAdviser() {
       const { data, error } = await supabase.functions.invoke("founder-adviser", {
         body: { messages: aiMessages, conversationId: convId, deepReasoning },
       });
+      if (ticket.cancelled) return;
       if (error) throw error;
       setBackendHealthy(true);
       // Realtime will push the assistant message; reload as fallback
@@ -353,6 +357,7 @@ export default function AIAdviser() {
         loadConvs();
       }
     } catch (e: any) {
+      if (ticket.cancelled) return;
       console.error(e);
       setBackendHealthy(false);
       // Smart error classification — show friendly toast + clear inline msg
@@ -396,8 +401,14 @@ export default function AIAdviser() {
       });
       loadMessages(convId);
     } finally {
+      if (cancelRef.current === ticket) cancelRef.current = null;
       setLoading(false);
     }
+  };
+
+  const stopGenerating = () => {
+    if (cancelRef.current) cancelRef.current.cancelled = true;
+    setLoading(false);
   };
 
   const filteredConvs = useMemo(() => {
@@ -728,11 +739,14 @@ export default function AIAdviser() {
               className="flex-1 resize-none bg-[var(--fos-bg)] border border-[var(--fos-border)] rounded-lg px-4 py-2.5 text-sm text-[var(--fos-text)] placeholder:text-[var(--fos-muted)] focus:outline-none focus:border-[var(--fos-accent)]/50 max-h-32"
             />
             <button
-              type="submit"
-              disabled={loading || (!input.trim() && attachments.length === 0)}
+              type={loading ? "button" : "submit"}
+              onClick={loading ? (e) => { e.preventDefault(); stopGenerating(); } : undefined}
+              disabled={!loading && !input.trim() && attachments.length === 0}
               className="p-2.5 rounded-lg bg-[var(--fos-accent)] text-white disabled:opacity-50 hover:opacity-90 transition"
+              title={loading ? "Stop generating" : "Send"}
+              aria-label={loading ? "Stop generating" : "Send message"}
             >
-              <Send className="w-4 h-4" />
+              {loading ? <Square className="w-4 h-4 fill-current" /> : <Send className="w-4 h-4" />}
             </button>
           </form>
         </div>
