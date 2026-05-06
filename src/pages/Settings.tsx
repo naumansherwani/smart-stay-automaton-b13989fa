@@ -76,7 +76,7 @@ const Settings = () => {
   const initials = getUserInitials(displayName, user?.email);
 
   const handleManageSubscription = async () => {
-    navigate?.("/pricing");
+    window.location.href = "/pricing";
   };
 
   const handleCancelPlan = async () => {
