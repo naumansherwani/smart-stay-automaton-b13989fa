@@ -26,6 +26,7 @@ import { LANGUAGES } from "@/i18n";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 import RetentionWizard from "@/components/retention/RetentionWizard";
+import { cancelPlan, ApiError } from "@/lib/api";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -75,7 +76,19 @@ const Settings = () => {
   const initials = getUserInitials(displayName, user?.email);
 
   const handleManageSubscription = async () => {
-    toast.info("Subscription management is paused while we onboard a new payment provider.");
+    window.location.href = "/pricing";
+  };
+
+  const handleCancelPlan = async () => {
+    try {
+      const res = await cancelPlan();
+      const end = res?.current_period_end ? new Date(res.current_period_end).toLocaleDateString() : "your period end";
+      toast.success(`Your plan will remain active until ${end}. After that it will revert to Trial.`);
+    } catch (e) {
+      const err = e as ApiError;
+      if (err?.status === 401) { window.location.href = "/login"; return; }
+      toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
+    }
   };
 
   if (!isAdmin) {
@@ -86,7 +99,7 @@ const Settings = () => {
           <h1 className="text-2xl font-bold text-foreground">{t("settings.title")}</h1>
 
           {/* Subscription Management */}
-          {false && subscription && (
+          {subscription && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2"><CreditCard className="w-4 h-4" /> Subscription</CardTitle>
@@ -107,7 +120,7 @@ const Settings = () => {
                       Manage
                     </Button>
                     {!subscription.cancel_at_period_end && (
-                      <Button variant="ghost" size="sm" onClick={() => setRetentionOpen(true)} className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10">
+                      <Button variant="ghost" size="sm" onClick={handleCancelPlan} className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10">
                         Cancel
                       </Button>
                     )}

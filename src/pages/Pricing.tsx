@@ -1,28 +1,34 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
-import { LaunchAnnouncementBar, LaunchCornerBadge } from "@/components/pricing/LaunchCornerBadge";
-import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Building2 } from "lucide-react";
+import { Check, Crown, Building2, Loader2, Clock, Flame } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import { useCurrency } from "@/hooks/useCurrency";
-import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
+import {
+  fetchPaymentProducts,
+  createPaymentsCheckout,
+  ApiError,
+  type PaymentProduct,
+  type PaymentsPlanKey,
+} from "@/lib/api";
 
-const PLANS = [
-  {
-    name: "Basic",
-    price: 25, // GBP base
-    plan: "basic" as const,
-    priceId: "basic_monthly",
+type PlanMeta = {
+  plan: PaymentsPlanKey;
+  starter?: boolean;
+  popular?: boolean;
+  highlight?: string;
+  features: string[];
+};
+
+const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
+  basic: {
+    plan: "basic",
     starter: true,
     features: [
       "Includes 1 industry (workspace)",
@@ -36,11 +42,8 @@ const PLANS = [
       "Basic analytics",
     ],
   },
-  {
-    name: "Standard",
-    price: 52, // GBP base
-    plan: "standard" as const,
-    priceId: "standard_monthly",
+  pro: {
+    plan: "pro",
     popular: true,
     features: [
       "Includes 1 industry (workspace)",
@@ -63,11 +66,8 @@ const PLANS = [
       "Priority support",
     ],
   },
-  {
-    name: "Premium",
-    price: 108, // GBP base
-    plan: "premium" as const,
-    priceId: "premium_monthly",
+  premium: {
+    plan: "premium",
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
       "Includes 1 industry (workspace)",
@@ -93,36 +93,98 @@ const PLANS = [
       "Priority email support",
     ],
   },
-];
+};
+
+const CURRENCY_SYMBOL: Record<string, string> = { gbp: "£", usd: "$", eur: "€" };
+
+function formatMoney(pence: number, currency: string) {
+  const symbol = CURRENCY_SYMBOL[currency.toLowerCase()] ?? currency.toUpperCase() + " ";
+  return `${symbol}${(pence / 100).toFixed(2)}`;
+}
+
+function useCountdown(target: string | null) {
+  const [diff, setDiff] = useState(() => (target ? new Date(target).getTime() - Date.now() : 0));
+  useEffect(() => {
+    if (!target) return;
+    const id = setInterval(() => setDiff(new Date(target).getTime() - Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, [target]);
+  if (!target || diff <= 0) return null;
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  return { days, hours, mins };
+}
+
+function CountdownLine({ endsAt }: { endsAt: string | null }) {
+  const cd = useCountdown(endsAt);
+  if (!cd) return null;
+  return (
+    <div className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+      <Clock className="w-3 h-3" /> Ends in {cd.days}d {cd.hours}h {cd.mins}m
+    </div>
+  );
+}
 
 export default function Pricing() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const { format, selectedCurrency } = useCurrency();
-  const { priceFor } = useLaunchDiscount();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [products, setProducts] = useState<PaymentProduct[] | null>(null);
+  const [productsError, setProductsError] = useState<string | null>(null);
 
-  const handleSelect = async (_plan: typeof PLANS[number]) => {
+  useEffect(() => {
+    let cancelled = false;
+    fetchPaymentProducts()
+      .then((d) => { if (!cancelled) setProducts(d.products); })
+      .catch(() => { if (!cancelled) setProductsError("Pricing temporarily unavailable. Please refresh."); });
+    return () => { cancelled = true; };
+  }, []);
+
+  // Refresh plan when returning from successful checkout.
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("payment") === "success") {
+      toast.success("Payment successful — your plan is now active");
+    } else if (sp.get("payment") === "cancelled") {
+      toast.info("Checkout cancelled. You can try again anytime.");
+    }
+  }, []);
+
+  const handleSelect = async (product: PaymentProduct) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    if (!_plan.plan) return;
-    setLoadingPlan(_plan.plan);
+    setLoadingPlan(product.plan);
     try {
-      const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
-        body: { plan: _plan.plan, returnUrl: window.location.origin },
+      const data = await createPaymentsCheckout({
+        product_id: product.checkout_product_id,
+        success_url: `${window.location.origin}/dashboard?payment=success`,
+        cancel_url: `${window.location.origin}/pricing?payment=cancelled`,
       });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-      else throw new Error("Checkout URL missing");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not start checkout. Please try again.");
+      window.location.href = data.checkout_url;
+    } catch (e) {
+      const err = e as ApiError;
+      if (err?.status === 401) {
+        navigate("/login");
+        return;
+      }
+      if (err?.status === 429) toast.error("Too many requests, please wait a moment");
+      else toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
     } finally {
       setLoadingPlan(null);
     }
   };
+
+  const productByPlan = useMemo(() => {
+    const m: Partial<Record<PaymentsPlanKey, PaymentProduct>> = {};
+    products?.forEach((p) => { m[p.plan] = p; });
+    return m;
+  }, [products]);
+
+  const PLAN_ORDER: PaymentsPlanKey[] = ["basic", "pro", "premium"];
 
   return (
     <div className="min-h-screen bg-background">
@@ -134,54 +196,62 @@ export default function Pricing() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-powered scheduling for every industry. 1 industry per plan.
           </p>
-          <div className="flex items-center justify-center gap-2 pt-1">
-            <span className="text-sm text-muted-foreground">Currency</span>
-            <CurrencySwitcher compact />
-            <span className="text-xs text-muted-foreground">· Base GBP (£)</span>
-          </div>
-          <div className="pt-2">
-            <LaunchAnnouncementBar />
-          </div>
+          {productsError && (
+            <p className="text-sm text-rose-400">{productsError}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
-          {PLANS.map((p) => {
-            const isCurrent = p.plan && subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
+          {PLAN_ORDER.map((planKey) => {
+            const meta = PLAN_META[planKey];
+            const product = productByPlan[planKey];
+            const isCurrent = subscription?.plan === planKey && (subscription?.status === "active" || subscription?.status === "trialing");
+            const launchActive = !!product?.launch_active && product.active_price < product.regular_price;
             return (
-              <Card key={p.name} className={`relative flex flex-col transition-all duration-300 ${p.starter ? "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]" : p.popular ? "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]" : p.highlight ? "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]" : ""}`}>
-                {p.plan && <LaunchCornerBadge plan={p.plan} />}
-                {p.starter && (
+              <Card key={planKey} className={`relative flex flex-col transition-all duration-300 ${meta.starter ? "border-cyan-400/50 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_20px_hsl(186,80%,50%,0.3)]" : meta.popular ? "border-primary/50 hover:ring-2 hover:ring-primary/40 hover:shadow-[0_0_20px_hsl(174,62%,50%,0.3)]" : meta.highlight ? "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]" : ""}`}>
+                {meta.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">🚀 Great Start</Badge>
                 )}
-                {p.popular && (
+                {meta.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                     <Crown className="w-3 h-3 mr-1" /> Most Popular
                   </Badge>
                 )}
-                {p.highlight && (
+                {meta.highlight && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg whitespace-nowrap">
-                    {p.highlight}
+                    {meta.highlight}
                   </div>
                 )}
                 {isCurrent && (
                   <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground">Current Plan</Badge>
                 )}
                 <CardHeader className="text-center pb-2 pt-8">
-                  <CardTitle className="text-xl">{p.name}</CardTitle>
+                  <CardTitle className="text-xl">{product?.name ?? meta.plan.charAt(0).toUpperCase() + meta.plan.slice(1)}</CardTitle>
                   <div className="mt-4">
-                    {p.plan ? <LaunchPriceBlock plan={p.plan} format={format} /> : <span className="text-4xl font-bold text-foreground">{format(p.price)}</span>}
-                    <span className="text-muted-foreground">/month</span>
-                    {selectedCurrency.code !== "GBP" && (
-                      <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
+                    {!product ? (
+                      <div className="h-12 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+                    ) : (
+                      <span className="inline-flex items-baseline gap-2">
+                        {launchActive && (
+                          <span className="text-base text-muted-foreground line-through">{formatMoney(product.regular_price, product.currency)}</span>
+                        )}
+                        <span className="text-4xl font-extrabold text-foreground">{formatMoney(product.active_price, product.currency)}</span>
+                      </span>
                     )}
-                    {p.plan && (
-                      <div className="mt-3 flex justify-center"><LaunchDiscountBadge plan={p.plan} /></div>
+                    <span className="text-muted-foreground">/month</span>
+                    {launchActive && (
+                      <div className="mt-3 flex flex-col items-center gap-1">
+                        <div className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30">
+                          <Flame className="w-3 h-3" /> Launch Offer
+                        </div>
+                        <CountdownLine endsAt={product?.launch_ends_at ?? null} />
+                      </div>
                     )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                   <ul className="space-y-3 flex-1 mb-6">
-                    {p.features.map((f, i) =>
+                    {meta.features.map((f, i) =>
                       f === "" ? (
                         <li key={`sep-${i}`} className="border-t border-border/30 my-1" />
                       ) : (
@@ -194,19 +264,18 @@ export default function Pricing() {
                   </ul>
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
-                    disabled={!!isCurrent || loadingPlan === p.plan}
-                    onClick={() => void handleSelect(p)}
+                    disabled={!!isCurrent || !product || loadingPlan === planKey}
+                    onClick={() => product && void handleSelect(product)}
                   >
-                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : priceFor(p.plan!).isDiscounted ? "Claim Launch Price" : "Get Started"}
+                    {isCurrent
+                      ? "Current Plan"
+                      : loadingPlan === planKey
+                      ? <span className="inline-flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading…</span>
+                      : launchActive ? "Claim Launch Price" : "Subscribe"}
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                    Instant access · Cancel anytime · Secure Stripe checkout
+                    Instant access · Cancel anytime · Secure checkout
                   </p>
-                  {p.plan && (
-                    <p className="text-[10px] text-pink-300/80 text-center mt-1 font-medium">
-                      Offer valid until July 30 or first 100 users.
-                    </p>
-                  )}
                 </CardContent>
               </Card>
             );

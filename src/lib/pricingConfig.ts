@@ -12,7 +12,7 @@ export const LAUNCH_DISCOUNT = {
   lockMonths: 12,
 } as const;
 
-export type PlanKey = "basic" | "standard" | "premium";
+export type PlanKey = "basic" | "pro" | "premium";
 
 export interface PlanPricing {
   key: PlanKey;
@@ -23,7 +23,7 @@ export interface PlanPricing {
 
 export const PLAN_PRICING: Record<PlanKey, PlanPricing> = {
   basic:   { key: "basic",   name: "Basic",   basePriceGBP: 25,  discountPercent: 12 },
-  standard:{ key: "standard",name: "Standard",basePriceGBP: 52,  discountPercent: 15 },
+  pro:     { key: "pro",     name: "Pro",     basePriceGBP: 52,  discountPercent: 15 },
   premium: { key: "premium", name: "Premium", basePriceGBP: 108, discountPercent: 20 },
 };
 

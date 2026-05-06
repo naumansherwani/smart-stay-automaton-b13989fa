@@ -71,7 +71,7 @@ export default function CheckoutSuccess() {
             </p>
           )}
           <p className="text-[11px] text-muted-foreground/60">
-            Secure billing powered by Polar · Card processed by Stripe
+            Secure global billing
           </p>
         </div>
       </main>
