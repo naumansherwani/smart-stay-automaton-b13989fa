@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { streamAdvisor, API_BASE, ApiError } from "@/lib/api";
+import { useProfile } from "@/hooks/useProfile";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -30,8 +31,7 @@ const INDUSTRY_API_MAP: Record<string, string> = {
   hospitality: "tourism_hospitality",
 };
 
-const ADVISOR_API_URL = `${import.meta.env.VITE_REPLIT_ADVISOR_URL ?? ""}/api/advisor/industries`;
-const ADVISOR_BASE_URL = import.meta.env.VITE_REPLIT_ADVISOR_URL ?? "";
+const ADVISOR_API_URL = `${API_BASE}/advisor/industries`;
 
 const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> = {
   dashboard: [
@@ -61,9 +61,8 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
   ],
 };
 
-const FALLBACK_CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-guide-chat`;
-
 export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProps) {
+  const { profile } = useProfile();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -78,7 +77,6 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
 
   // Fetch advisor identities from Replit API — never hardcode names/voices.
   useEffect(() => {
-    if (!import.meta.env.VITE_REPLIT_ADVISOR_URL) return;
     let cancelled = false;
     (async () => {
       try {
@@ -148,78 +146,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
       abortRef.current = controller;
 
       try {
-        // Prefer Replit advisor API per industry; fall back to Supabase function if not configured.
         const apiIndustry = INDUSTRY_API_MAP[industry] ?? industry;
-        const useReplit = !!ADVISOR_BASE_URL;
-        let resp: Response;
-        if (useReplit) {
-          const { data: { session } } = await supabase.auth.getSession();
-          const token = session?.access_token;
-          if (!token) {
-            toast.error("Please sign in to chat with the advisor.");
-            setIsLoading(false);
-            return;
-          }
-          resp = await fetch(`${ADVISOR_BASE_URL}/api/advisor/${apiIndustry}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ message: text.trim() }),
-            signal: controller.signal,
-          });
-        } else {
-          resp = await fetch(FALLBACK_CHAT_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-            body: JSON.stringify({ messages: allMessages, context, industry }),
-            signal: controller.signal,
-          });
-        }
-
-        if (!resp.ok || !resp.body) {
-          const errData = await resp.json().catch(() => ({}));
-          // Friendly handling for tier limits — never expose model names or technical details.
-          const reason = errData.reason as string | undefined;
-          if (reason === "daily_limit" || reason === "expired" || reason === "fair_use") {
-            const friendly =
-              errData.error ||
-              (reason === "daily_limit"
-                ? "You've used today's free AI messages. Upgrade to keep going."
-                : reason === "expired"
-                ? "Your free trial has ended. Upgrade to keep using AI features."
-                : "You're sending requests very fast. Please wait a minute.");
-            toast.error(friendly, {
-              action:
-                reason !== "fair_use"
-                  ? { label: "Upgrade", onClick: () => (window.location.href = "/pricing") }
-                  : undefined,
-              duration: 8000,
-            });
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "assistant",
-                content:
-                  reason === "daily_limit"
-                    ? "🌟 You've reached today's free AI message limit. Your daily allowance refreshes tomorrow — or [upgrade your plan](/pricing) for unlimited AI assistance."
-                    : reason === "expired"
-                    ? "Your free trial has ended. [Choose a plan](/pricing) to keep your AI assistant working for you."
-                    : "I'm getting a lot of requests right now. Please wait a moment and try again. 🙏",
-              },
-            ]);
-            return;
-          }
-          throw new Error(errData.error || "Failed to get response");
-        }
-
-        const reader = resp.body.getReader();
-        const decoder = new TextDecoder();
-        let textBuffer = "";
 
         const upsertAssistant = (chunk: string) => {
           assistantSoFar += chunk;
@@ -234,110 +161,53 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
           });
         };
 
-        let streamDone = false;
-        while (!streamDone) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          textBuffer += decoder.decode(value, { stream: true });
-
-          let newlineIndex: number;
-          while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-            let line = textBuffer.slice(0, newlineIndex);
-            textBuffer = textBuffer.slice(newlineIndex + 1);
-            if (line.endsWith("\r")) line = line.slice(0, -1);
-            if (line.startsWith(":") || line.trim() === "") continue;
-            // SSE named-event lines: "event: start" / "event: escalation"
-            if (line.startsWith("event: ")) {
-              (sendMessage as any)._pendingEvent = line.slice(7).trim();
-              continue;
-            }
-            if (!line.startsWith("data: ")) continue;
-            const jsonStr = line.slice(6).trim();
-            if (jsonStr === "[DONE]") {
-              streamDone = true;
-              break;
-            }
-            const pendingEvent = (sendMessage as any)._pendingEvent as string | undefined;
-            if (
-              pendingEvent === "start" ||
-              pendingEvent === "escalation" ||
-              pendingEvent === "chunk" ||
-              pendingEvent === "done" ||
-              pendingEvent === "error"
-            ) {
-              try {
-                const ev = JSON.parse(jsonStr);
-                if (pendingEvent === "escalation") {
-                  const escTo = ev.escalating_to || ev.name;
-                  const escVoice = ev.escalating_voice || ev.voiceId;
-                  if (escTo && escVoice) {
-                    setActiveAdvisor({
-                      name: escTo,
-                      role: ev.role || "Owner AI Advisor",
-                      industry: "owner",
-                      voiceId: escVoice,
-                    });
-                    setEscalated(true);
-                  } else if (ownerAdvisor) {
-                    setActiveAdvisor(ownerAdvisor);
-                    setEscalated(true);
-                  }
-                } else if (pendingEvent === "start") {
-                  setActiveAdvisor((prev) =>
-                    prev
-                      ? {
-                          ...prev,
-                          voiceId: ev.voice_id || prev.voiceId,
-                          name: ev.name || prev.name,
-                          role: ev.role || prev.role,
-                        }
-                      : {
-                          name: ev.name || "AI Advisor",
-                          role: ev.role || "",
-                          industry: apiIndustry,
-                          voiceId: ev.voice_id || "",
-                        }
-                  );
-                } else if (pendingEvent === "chunk") {
-                  const delta = (ev.delta ?? ev.text ?? ev.content) as string | undefined;
-                  if (delta) upsertAssistant(delta);
-                } else if (pendingEvent === "done") {
-                  streamDone = true;
-                } else if (pendingEvent === "error") {
-                  toast.error(ev.message || "Advisor error");
-                  setMessages((prev) => [
-                    ...prev,
-                    { role: "assistant", content: ev.message || "Sorry, something went wrong." },
-                  ]);
-                  streamDone = true;
+        await streamAdvisor(
+          apiIndustry,
+          {
+            message: text.trim(),
+            user_industry: profile?.industry ?? industry,
+            business_subtype: profile?.business_subtype ?? null,
+          },
+          {
+            signal: controller.signal,
+            onChunk: (t) => upsertAssistant(t),
+            onEvent: (eventName, ev) => {
+              if (eventName === "start") {
+                setActiveAdvisor((prev) =>
+                  prev
+                    ? { ...prev, voiceId: ev?.voice_id || prev.voiceId, name: ev?.name || prev.name, role: ev?.role || prev.role }
+                    : { name: ev?.name || "AI Advisor", role: ev?.role || "", industry: apiIndustry, voiceId: ev?.voice_id || "" }
+                );
+              } else if (eventName === "escalation") {
+                const escTo = ev?.escalating_to || ev?.name;
+                const escVoice = ev?.escalating_voice || ev?.voiceId;
+                if (escTo && escVoice) {
+                  setActiveAdvisor({ name: escTo, role: ev?.role || "Owner AI Advisor", industry: "owner", voiceId: escVoice });
+                  setEscalated(true);
+                } else if (ownerAdvisor) {
+                  setActiveAdvisor(ownerAdvisor);
+                  setEscalated(true);
                 }
-              } catch {}
-              (sendMessage as any)._pendingEvent = undefined;
-              if (streamDone) break;
-              continue;
-            }
-            // Legacy OpenAI-style chunk fallback
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-              if (content) upsertAssistant(content);
-            } catch {
-              textBuffer = line + "\n" + textBuffer;
-              break;
-            }
-          }
-        }
-
-        // (legacy flush block below handles trailing buffer)
-        // eslint-disable-next-line no-constant-condition
-        if (false) {
-          try {
-            // placeholder to keep diff minimal
-          } catch {}
-        }
+              }
+            },
+            onError: (err) => {
+              if (err.code === "AI_LIMIT_REACHED") {
+                // global hf:ai-limit listener will show the upgrade modal
+                setMessages((prev) => [...prev, { role: "assistant", content: "🌟 You've hit your AI message limit. [Upgrade your plan](/pricing) to keep going." }]);
+                return;
+              }
+              toast.error(err.message || "Advisor error");
+              setMessages((prev) => [...prev, { role: "assistant", content: err.message || "Sorry, something went wrong." }]);
+            },
+          },
+        );
       } catch (e) {
         if ((e as any)?.name === "AbortError") {
           // User stopped — keep partial assistant text if any, do not show error.
+          return;
+        }
+        if (e instanceof ApiError && (e.code === "AI_LIMIT_REACHED" || e.code === "INDUSTRY_MISMATCH")) {
+          // Already handled by global handler in api.ts
           return;
         }
         console.error("AI Guide error:", e);
@@ -353,7 +223,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
         if (abortRef.current === controller) abortRef.current = null;
       }
     },
-    [messages, isLoading, context, industry, ownerAdvisor]
+    [messages, isLoading, context, industry, ownerAdvisor, profile?.industry, profile?.business_subtype]
   );
 
   const stopGenerating = useCallback(() => {

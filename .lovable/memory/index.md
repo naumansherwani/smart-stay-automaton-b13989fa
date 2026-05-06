@@ -4,6 +4,9 @@
 HostFlow AI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
 3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
 8 industries: Travel/Tourism/Hospitality, Airlines, Car Rental, Healthcare, Education, Logistics, Events & Entertainment, Railways.
+Plans: trial | basic | standard | premium. "pro" plan does NOT exist anywhere.
+Brain = Replit (all AI/payments/DB writes). Lovable = UI only. Replit base: https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api
+API contract: { ok, data, error:{code,message}, trace_id }. 429 AI_LIMIT_REACHED → upgrade modal. 403 INDUSTRY_MISMATCH → signout. All AI advisor calls go through src/lib/api.ts (streamAdvisor / streamOwnerAdvisor) — never call ai-guide-chat / founder-adviser edge fns from frontend.
 Auth: Email + Google + Apple. No anonymous signups. Email verification required.
 Domain: hostflowai.net (primary, May 2026). .live FULLY REMOVED everywhere.
 Owner: naumansherwani@hostflowai.net, notifications → naumankhansherwani@gmail.com (Gmail = backup recovery contact since Zoho often down)

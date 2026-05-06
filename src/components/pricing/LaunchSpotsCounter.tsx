@@ -18,7 +18,7 @@ import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
  */
 const TOTAL_SLOTS: Record<PlanKey, number> = {
   basic: 100,
-  pro: 100,
+  standard: 100,
   premium: 100,
 };
 

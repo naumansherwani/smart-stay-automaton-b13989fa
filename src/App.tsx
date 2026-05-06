@@ -10,6 +10,7 @@ import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
 import { backendFetch, syncManifest, notifyChangelog } from "@/lib/backend";
 import { connectBrainStream } from "@/lib/brain-sync";
+import AiLimitModal from "@/components/AiLimitModal";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -334,6 +335,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <BrainBridge />
+          <AiLimitModal />
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={<Index />} />

@@ -37,9 +37,9 @@ const PLANS = [
     style: "border-cyan-400/50 ring-1 ring-cyan-400/20 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_30px_hsl(186,80%,50%,0.25)] hover:border-cyan-400/70",
   },
   {
-    name: "Pro",
+    name: "Standard",
     price: 52, // GBP base
-    plan: "pro" as const,
+    plan: "standard" as const,
     popular: true,
     desc: "Best for growing businesses",
     features: [
