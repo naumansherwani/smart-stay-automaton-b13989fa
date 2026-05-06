@@ -21,3 +21,4 @@ Payments: Paddle FULLY REMOVED Apr 2026. No provider integrated. Checkout shows 
 - [Industry features](mem://features/industry-features) — Per-industry feature configs
 - [Trial system](mem://features/trial-system) — Trial & subscription logic
 - [No payment provider](mem://constraints/no-paddle-stripe-lemon) — Paddle removed Apr 2026, no provider currently integrated
+- [AI usage caps](mem://features/ai-usage-caps) — Per-plan AI message/voice/feature limits (Basic/Standard/Premium)
