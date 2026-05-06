@@ -9,6 +9,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
 import { backendFetch, syncManifest, notifyChangelog } from "@/lib/backend";
+import { connectBrainStream } from "@/lib/brain-sync";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -62,6 +63,11 @@ const BrainBridge = () => {
         if (res?.ok === true) console.log("Brain connected ✓", res?.data ?? res);
       })
       .catch(() => {});
+  }, []);
+
+  // Real-time SSE stream from the Replit Brain. Silent background channel.
+  useEffect(() => {
+    connectBrainStream();
   }, []);
 
   // One-shot changelog ping: tell Replit what the frontend just shipped.
