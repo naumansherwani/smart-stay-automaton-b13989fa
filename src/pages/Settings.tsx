@@ -26,6 +26,7 @@ import { LANGUAGES } from "@/i18n";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 import RetentionWizard from "@/components/retention/RetentionWizard";
+import { cancelPlan, ApiError } from "@/lib/api";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -75,7 +76,19 @@ const Settings = () => {
   const initials = getUserInitials(displayName, user?.email);
 
   const handleManageSubscription = async () => {
-    toast.info("Subscription management is paused while we onboard a new payment provider.");
+    navigate?.("/pricing");
+  };
+
+  const handleCancelPlan = async () => {
+    try {
+      const res = await cancelPlan();
+      const end = res?.current_period_end ? new Date(res.current_period_end).toLocaleDateString() : "your period end";
+      toast.success(`Your plan will remain active until ${end}. After that it will revert to Trial.`);
+    } catch (e) {
+      const err = e as ApiError;
+      if (err?.status === 401) { window.location.href = "/login"; return; }
+      toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
+    }
   };
 
   if (!isAdmin) {
