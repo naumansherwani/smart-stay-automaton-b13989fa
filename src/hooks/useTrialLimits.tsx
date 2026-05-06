@@ -73,7 +73,7 @@ export function useTrialLimits() {
     supabase
       .from("plan_feature_limits")
       .select("feature_key, limit_value, is_unlimited")
-      .eq("plan", plan)
+      .eq("plan", plan as "trial" | "basic" | "pro" | "premium")
       .then(({ data }) => {
         if (data && data.length > 0) {
           const map: Record<string, FeatureLimit> = {};
