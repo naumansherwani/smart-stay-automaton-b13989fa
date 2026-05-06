@@ -9,7 +9,7 @@ import { Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
 
-const OWNER_EMAIL = "naumansherwani@hostflowai.live";
+const OWNER_EMAIL = "naumansherwani@hostflowai.net";
 
 export default function Login() {
   const [email, setEmail] = useState("");

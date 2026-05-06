@@ -22,8 +22,8 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 const SOCIAL_LINKS = [
-  { href: "mailto:contact@hostflowai.live", icon: Mail, label: "contact@hostflowai.live" },
-  { href: "mailto:connectai@hostflowai.live", icon: Mail, label: "connectai@hostflowai.live" },
+  { href: "mailto:contact@hostflowai.net", icon: Mail, label: "contact@hostflowai.net" },
+  { href: "mailto:connectai@hostflowai.net", icon: Mail, label: "connectai@hostflowai.net" },
   { href: "https://instagram.com/hostflowai", icon: InstagramIcon, label: "Instagram" },
   { href: "https://wa.me/923001234567", icon: WhatsAppIcon, label: "WhatsApp" },
   { href: "https://facebook.com/hostflowai", icon: Facebook, label: "Facebook" },

@@ -6,7 +6,7 @@ import { Mail, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export default function Settings() {
   const { mode, toggle } = useFounderTheme();
-  const [testEmail, setTestEmail] = useState("naumansherwani@hostflowai.live");
+  const [testEmail, setTestEmail] = useState("naumansherwani@hostflowai.net");
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
 
@@ -52,7 +52,7 @@ export default function Settings() {
           <Mail className="w-4 h-4 text-[var(--fos-accent)]" /> Email System (Zoho SMTP)
         </h3>
         <p className="text-[var(--fos-muted)] text-xs mb-4">
-          smtp.zoho.com:587 · STARTTLS · From: <span className="text-[var(--fos-text)] font-semibold">naumansherwani@hostflowai.live</span>
+          smtp.zoho.com:587 · STARTTLS · From: <span className="text-[var(--fos-text)] font-semibold">naumansherwani@hostflowai.net</span>
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <input
