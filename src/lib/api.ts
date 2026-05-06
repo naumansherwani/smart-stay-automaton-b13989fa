@@ -256,7 +256,7 @@ async function streamSSE(path: string, body: unknown, handlers: StreamHandlers) 
  * Plan limits — public + per-user.
  * ────────────────────────────────────────────────────────── */
 
-export type PlanKey = "trial" | "basic" | "standard" | "premium";
+export type PlanKey = "trial" | "basic" | "pro" | "premium" | "enterprise";
 
 export interface PlanLimitBucket {
   ai?: { daily_messages: number | null; hourly_fair_use: number | null };
@@ -279,3 +279,53 @@ export interface PlanMeResponse {
 
 export const fetchPlanLimits = () => apiGet<PlanLimitsResponse>("/plan/limits", { auth: false });
 export const fetchMyPlan = () => apiGet<PlanMeResponse>("/plan/me");
+
+/* ──────────────────────────────────────────────────────────
+ * Payments — Replit is the source of truth.
+ * Lovable never calls Stripe / Paddle / Lemon / Polar directly,
+ * never invokes a Supabase edge function for checkout, and never
+ * hardcodes prices. All catalog + checkout + cancel goes through here.
+ * ────────────────────────────────────────────────────────── */
+
+export type PaymentsPlanKey = "basic" | "pro" | "premium";
+
+export interface PaymentProduct {
+  plan: PaymentsPlanKey;
+  name: string;
+  currency: string;            // e.g. "gbp"
+  regular_price: number;       // pence
+  active_price: number;        // pence
+  launch_active: boolean;
+  launch_ends_at: string | null;
+  checkout_product_id: string;
+}
+
+export interface PaymentsProductsResponse {
+  products: PaymentProduct[];
+}
+
+export interface PaymentsCheckoutResponse {
+  checkout_url: string;
+}
+
+export interface PlanMeData {
+  plan: PlanKey;
+  status: string;
+  current_period_end?: string | null;
+  trial_ends_at?: string | null;
+}
+
+export const fetchPaymentProducts = () =>
+  apiGet<PaymentsProductsResponse>("/payments/products", { auth: false });
+
+export const fetchMe = () => apiGet<PlanMeData>("/plan/me");
+
+export const createPaymentsCheckout = (body: {
+  product_id: string;
+  success_url: string;
+  cancel_url: string;
+}) => apiPost<PaymentsCheckoutResponse>("/payments/checkout", body);
+
+export async function cancelPlan(): Promise<PlanMeData> {
+  return request<PlanMeData>("DELETE", "/payments/cancel");
+}
