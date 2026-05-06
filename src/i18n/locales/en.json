@@ -25,7 +25,7 @@
     "noCreditCard": "No credit card required",
     "doubleBooking": "AI double-booking guard",
     "dynamicPricing": "AI dynamic pricing",
-    "industriesSupported": "7 industries supported",
+    "industriesSupported": "8 industries supported",
     "trustedAcross": "Trusted across industries worldwide"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "AI-powered risk assessment and VIP detection for every booking.",
     "revenueOpt": "Revenue Optimization",
     "revenueOptDesc": "Gap-filling, turnover analysis, and profit-per-unit calculations in real time.",
-    "industriesTitle": "Built for 7 Industries",
+    "industriesTitle": "Built for 8 Industries",
     "industriesSubtitle": "One AI. Every industry. No limits."
   },
   "pricing": {

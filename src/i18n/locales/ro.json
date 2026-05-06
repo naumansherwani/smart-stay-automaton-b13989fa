@@ -25,7 +25,7 @@
     "noCreditCard": "Nu este nevoie de card",
     "doubleBooking": "Protecție AI împotriva rezervărilor duble",
     "dynamicPricing": "Prețuri dinamice AI",
-    "industriesSupported": "7 industrii suportate",
+    "industriesSupported": "8 industrii suportate",
     "trustedAcross": "De încredere în întreaga lume"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "Evaluare risc AI și detectare VIP.",
     "revenueOpt": "Optimizare venituri",
     "revenueOptDesc": "Umplere goluri în timp real.",
-    "industriesTitle": "Construit pentru 7 industrii",
+    "industriesTitle": "Construit pentru 8 industrii",
     "industriesSubtitle": "Un singur AI. Orice industrie. Nelimitat."
   },
   "pricing": {

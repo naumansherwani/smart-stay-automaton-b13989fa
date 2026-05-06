@@ -25,7 +25,7 @@
     "noCreditCard": "لا حاجة لبطاقة ائتمان",
     "doubleBooking": "حارس AI ضد الحجز المزدوج",
     "dynamicPricing": "تسعير ديناميكي AI",
-    "industriesSupported": "7 صناعات مدعومة",
+    "industriesSupported": "8 صناعات مدعومة",
     "trustedAcross": "موثوق في الصناعات حول العالم"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "تقييم مخاطر AI وكشف VIP.",
     "revenueOpt": "تحسين الإيرادات",
     "revenueOptDesc": "سد الفجوات وتحليل الدوران في الوقت الفعلي.",
-    "industriesTitle": "مبني لـ 7 صناعات",
+    "industriesTitle": "مبني لـ 8 صناعات",
     "industriesSubtitle": "AI واحد. كل صناعة. بلا حدود."
   },
   "pricing": {
@@ -58,7 +58,7 @@
     "label": "FAQ"
   },
   "footer": {
-    "description": "منصة جدولة وحجز بالذكاء الاصطناعي لأكثر من 13 صناعة.",
+    "description": "منصة جدولة وحجز بالذكاء الاصطناعي مبنية لـ 8 صناعات.",
     "links": "روابط",
     "legal": "قانوني",
     "getInTouch": "تواصل معنا",
