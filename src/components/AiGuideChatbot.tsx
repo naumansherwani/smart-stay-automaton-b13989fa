@@ -345,54 +345,6 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
     },
     [messages, isLoading, context, industry, ownerAdvisor]
   );
-                  );
-                }
-              } catch {}
-              (sendMessage as any)._pendingEvent = undefined;
-              continue;
-            }
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-              if (content) upsertAssistant(content);
-            } catch {
-              textBuffer = line + "\n" + textBuffer;
-              break;
-            }
-          }
-        }
-
-        // flush remaining
-        if (textBuffer.trim()) {
-          for (let raw of textBuffer.split("\n")) {
-            if (!raw) continue;
-            if (raw.endsWith("\r")) raw = raw.slice(0, -1);
-            if (raw.startsWith(":") || raw.trim() === "") continue;
-            if (!raw.startsWith("data: ")) continue;
-            const jsonStr = raw.slice(6).trim();
-            if (jsonStr === "[DONE]") continue;
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-              if (content) upsertAssistant(content);
-            } catch {}
-          }
-        }
-      } catch (e) {
-        console.error("AI Guide error:", e);
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "Sorry, I couldn't process your request right now. Please try again. 🙏",
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [messages, isLoading, context, industry]
-  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
