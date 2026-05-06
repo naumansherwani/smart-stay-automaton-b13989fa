@@ -37,10 +37,10 @@ const PLANS = [
     ],
   },
   {
-    name: "Pro",
+    name: "Standard",
     price: 52, // GBP base
-    plan: "pro" as const,
-    priceId: "pro_monthly",
+    plan: "standard" as const,
+    priceId: "standard_monthly",
     popular: true,
     features: [
       "Includes 1 industry (workspace)",

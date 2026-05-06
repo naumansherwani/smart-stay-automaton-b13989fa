@@ -132,7 +132,7 @@ export default function RetentionWizard({ open, onOpenChange, onCompleted }: Pro
       case "expensive":
         return [
           { id: "discount_20", label: "Get 20% off next month", icon: DollarSign, action: () => { setOfferAccepted("discount_20"); submit("stayed", { offerShown: "discount_20" }); } },
-          { id: "downgrade_pro", label: "Downgrade to a lower plan", icon: ArrowDown, action: () => { setOfferAccepted("downgrade_pro"); submit("downgraded", { downgradeTo: "pro" }); } },
+          { id: "downgrade_standard", label: "Downgrade to a lower plan", icon: ArrowDown, action: () => { setOfferAccepted("downgrade_standard"); submit("downgraded", { downgradeTo: "standard" }); } },
         ];
       case "low_usage":
         return [

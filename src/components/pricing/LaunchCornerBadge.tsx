@@ -2,7 +2,7 @@ import { Sparkles, Crown, Flame } from "lucide-react";
 import type { PlanKey } from "@/lib/pricingConfig";
 import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
 
-type Variant = "basic" | "pro" | "premium";
+type Variant = "basic" | "standard" | "premium";
 
 /**
  * Floating corner ribbon for pricing cards.
@@ -18,7 +18,7 @@ export function LaunchCornerBadge({ plan }: { plan: PlanKey }) {
 
   const variant = plan as Variant;
 
-  if (variant === "pro") {
+  if (variant === "standard") {
     // Top-center premium glowing — sits ABOVE the existing "Most Popular" badge slot
     // The PricingSection already places "Most Popular" at -top-3. We sit at -top-9.
     return (

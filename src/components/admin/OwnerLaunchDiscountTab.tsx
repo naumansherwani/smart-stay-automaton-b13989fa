@@ -19,7 +19,7 @@ interface Redemption {
 
 const PLAN_LABEL: Record<string, string> = {
   basic: "Basic",
-  pro: "Pro",
+  standard: "Standard",
   premium: "Premium",
 };
 
@@ -48,7 +48,7 @@ export default function OwnerLaunchDiscountTab({ showSecret }: { showSecret: boo
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(["basic", "pro", "premium"] as const).map((plan) => {
+        {(["basic", "standard", "premium"] as const).map((plan) => {
           const p = status?.plans?.[plan];
           if (!p) return null;
           return (
