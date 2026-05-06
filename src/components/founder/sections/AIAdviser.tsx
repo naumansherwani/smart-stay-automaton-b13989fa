@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import ArcEngine from "./ArcEngine";
 import { toast } from "@/hooks/use-toast";
+import { streamOwnerAdvisor, ApiError } from "@/lib/api";
 
 const QUICK = [
   "What should I focus on today?",
@@ -298,52 +299,66 @@ export default function AIAdviser() {
     setLoading(true);
     const ticket = { id: Date.now(), cancelled: false };
     cancelRef.current = ticket;
+    const controller = new AbortController();
+    (cancelRef.current as any).controller = controller;
 
-    // Build full history for AI
-    const { data: history } = await supabase
-      .from("founder_ai_messages")
-      .select("role,content,attachments")
-      .eq("conversation_id", convId)
-      .order("created_at", { ascending: true })
-      .limit(60);
-
-    const aiMessages = (history || []).map((m: any) => {
-      const att: Attachment[] = m.attachments || [];
-      if (att.length > 0 && m.role === "user") {
-        return {
-          role: m.role,
-          content: [
-            ...(m.content ? [{ type: "text", text: m.content }] : []),
-            ...att.map((a) => ({ type: "image_url", image_url: { url: a.url } })),
-          ],
-        };
-      }
-      return { role: m.role, content: m.content };
-    });
+    let assistantBuf = "";
+    const localId = `local-${Date.now()}`;
+    const upsertLocal = (chunk: string) => {
+      assistantBuf += chunk;
+      setMessages((prev) => {
+        const idx = prev.findIndex((m) => m.id === localId);
+        if (idx === -1) {
+          return [
+            ...prev,
+            {
+              id: localId,
+              conversation_id: convId!,
+              role: "assistant",
+              content: assistantBuf,
+              attachments: null,
+              created_at: new Date().toISOString(),
+            } as DbMsg,
+          ];
+        }
+        const next = [...prev];
+        next[idx] = { ...next[idx], content: assistantBuf };
+        return next;
+      });
+    };
 
     try {
-      const { data, error } = await supabase.functions.invoke("founder-adviser", {
-        body: { messages: aiMessages, conversationId: convId, deepReasoning },
-      });
+      await streamOwnerAdvisor(
+        {
+          message: localContent,
+          conversationId: convId,
+          deepReasoning,
+          attachments: localAttach,
+        },
+        {
+          signal: controller.signal,
+          onChunk: (t) => { if (!ticket.cancelled) upsertLocal(t); },
+          onDone: () => {
+            if (ticket.cancelled) return;
+            setBackendHealthy(true);
+            // Persist final assistant message so it survives page reloads.
+            if (assistantBuf.trim()) {
+              supabase.from("founder_ai_messages").insert({
+                conversation_id: convId,
+                user_id: user.id,
+                role: "assistant",
+                content: assistantBuf,
+              }).then(() => loadMessages(convId!));
+            }
+          },
+          onError: (err) => {
+            if (ticket.cancelled) return;
+            setBackendHealthy(false);
+            toast({ title: "Advisor error", description: err.message, variant: "destructive" });
+          },
+        },
+      );
       if (ticket.cancelled) return;
-      if (error) throw error;
-      setBackendHealthy(true);
-      // Realtime will push the assistant message; reload as fallback
-      await loadMessages(convId);
-      if (data?.reply) {
-        setMessages((prev) => {
-          const alreadyThere = prev.some((m) => m.role === "assistant" && m.content === data.reply);
-          if (alreadyThere) return prev;
-          return [...prev, {
-            id: `local-${Date.now()}`,
-            conversation_id: convId!,
-            role: "assistant",
-            content: data.reply,
-            attachments: null,
-            created_at: new Date().toISOString(),
-          } as DbMsg];
-        });
-      }
       // Auto-title on first exchange
       if ((messages.length + 1) <= 1) {
         try {
@@ -358,41 +373,18 @@ export default function AIAdviser() {
       }
     } catch (e: any) {
       if (ticket.cancelled) return;
+      if ((e as any)?.name === "AbortError") return;
+      if (e instanceof ApiError && (e.code === "AI_LIMIT_REACHED" || e.code === "INDUSTRY_MISMATCH")) return;
       console.error(e);
       setBackendHealthy(false);
-      // Smart error classification — show friendly toast + clear inline msg
-      const status = e?.context?.status ?? e?.status;
-      const rawMsg = (e?.message || e?.error_description || "").toLowerCase();
-      const detail = (e?.context?.body || e?.body || e?.message || "").toString().toLowerCase();
-      let friendly = "Connection hiccup — please try again in a moment.";
-      let toastTitle = "Try again";
-      let toastDesc = "Network issue talking to the AI provider.";
-
-      // OpenAI quota exhausted (429 with "exceeded your quota")
-      if (detail.includes("exceeded your quota") || detail.includes("insufficient_quota")) {
-        friendly = "💳 OpenAI account ka quota khatam hai. Apne OpenAI billing me funds add karein: https://platform.openai.com/settings/organization/billing";
-        toastTitle = "OpenAI billing needed";
-        toastDesc = "Add credit at platform.openai.com → Settings → Billing.";
-      } else if (status === 401 || detail.includes("invalid api key") || detail.includes("incorrect api key")) {
-        friendly = "🔑 OpenAI API key invalid hai. Settings me sahi key dobara add karein.";
-        toastTitle = "OpenAI key invalid";
-        toastDesc = "Update OPENAI_API_KEY secret with a working key.";
-      } else if (status === 402 || rawMsg.includes("payment") || rawMsg.includes("credits")) {
-        friendly = "💳 AI credits are exhausted. Top up to resume.";
-        toastTitle = "AI credits needed";
-        toastDesc = "Add funds to your AI provider.";
-      } else if (status === 429 || rawMsg.includes("rate")) {
-        friendly = "⏱️ A bit too fast — wait ~30 seconds and ask again.";
-        toastTitle = "Rate limited";
-        toastDesc = "Please wait a moment before sending another message.";
-      } else if (status === 403) {
-        friendly = "🔒 Auth issue. Please refresh the page and sign in again.";
-        toastTitle = "Auth required";
-        toastDesc = "Session may have expired.";
-      }
-
-      toast({ title: toastTitle, description: toastDesc, variant: "destructive" });
-
+      const status = (e as any)?.status;
+      const friendly =
+        status === 429
+          ? "⏱️ A bit too fast — wait ~30 seconds and ask again."
+          : status === 403
+          ? "🔒 Auth issue. Please refresh the page and sign in again."
+          : (e as any)?.message || "Connection hiccup — please try again in a moment.";
+      toast({ title: "Advisor error", description: friendly, variant: "destructive" });
       await supabase.from("founder_ai_messages").insert({
         conversation_id: convId,
         user_id: user.id,
@@ -407,7 +399,10 @@ export default function AIAdviser() {
   };
 
   const stopGenerating = () => {
-    if (cancelRef.current) cancelRef.current.cancelled = true;
+    if (cancelRef.current) {
+      cancelRef.current.cancelled = true;
+      try { (cancelRef.current as any).controller?.abort?.(); } catch { /* noop */ }
+    }
     setLoading(false);
   };
 
