@@ -110,3 +110,27 @@ export async function syncManifest(opts: {
     return {} as UiFlags;
   }
 }
+
+/**
+ * Send a one-shot changelog/notification payload to the Brain so Replit
+ * always knows what the Experience Layer just shipped. Fire-and-forget.
+ */
+export async function notifyChangelog(payload: {
+  event: string;
+  summary: string;
+  details?: Record<string, unknown>;
+}) {
+  try {
+    await backendFetch("/v1/changelog", {
+      method: "POST",
+      body: JSON.stringify({
+        ...payload,
+        session_id: getSessionId(),
+        ts: new Date().toISOString(),
+      }),
+      keepalive: true,
+    });
+  } catch {
+    /* never break the UI on failure */
+  }
+}
