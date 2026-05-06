@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, Sparkles, Loader2, RotateCcw } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles, Loader2, RotateCcw, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -74,6 +74,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
   const [escalated, setEscalated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Fetch advisor identities from Replit API — never hardcode names/voices.
   useEffect(() => {
@@ -143,6 +144,8 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
       setIsLoading(true);
 
       let assistantSoFar = "";
+      const controller = new AbortController();
+      abortRef.current = controller;
 
       try {
         // Prefer Replit advisor API per industry; fall back to Supabase function if not configured.
@@ -164,6 +167,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ message: text.trim() }),
+            signal: controller.signal,
           });
         } else {
           resp = await fetch(FALLBACK_CHAT_URL, {
@@ -173,6 +177,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
               Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
             },
             body: JSON.stringify({ messages: allMessages, context, industry }),
+            signal: controller.signal,
           });
         }
 
@@ -331,6 +336,10 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
           } catch {}
         }
       } catch (e) {
+        if ((e as any)?.name === "AbortError") {
+          // User stopped — keep partial assistant text if any, do not show error.
+          return;
+        }
         console.error("AI Guide error:", e);
         setMessages((prev) => [
           ...prev,
@@ -341,10 +350,15 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
         ]);
       } finally {
         setIsLoading(false);
+        if (abortRef.current === controller) abortRef.current = null;
       }
     },
     [messages, isLoading, context, industry, ownerAdvisor]
   );
+
+  const stopGenerating = useCallback(() => {
+    abortRef.current?.abort();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -486,12 +500,15 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
                 disabled={isLoading}
               />
               <Button
-                type="submit"
+                type={isLoading ? "button" : "submit"}
+                onClick={isLoading ? stopGenerating : undefined}
                 size="icon"
-                disabled={!input.trim() || isLoading}
+                disabled={!isLoading && !input.trim()}
                 className="h-10 w-10 rounded-xl shrink-0"
+                title={isLoading ? "Stop" : "Send"}
+                aria-label={isLoading ? "Stop generating" : "Send message"}
               >
-                <Send className="h-4 w-4" />
+                {isLoading ? <Square className="h-4 w-4 fill-current" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
             <p className="text-[10px] text-muted-foreground/50 text-center mt-2">
