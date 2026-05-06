@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -30,6 +31,7 @@ const INDUSTRY_API_MAP: Record<string, string> = {
 };
 
 const ADVISOR_API_URL = `${import.meta.env.VITE_REPLIT_ADVISOR_URL ?? ""}/api/advisor/industries`;
+const ADVISOR_BASE_URL = import.meta.env.VITE_REPLIT_ADVISOR_URL ?? "";
 
 const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> = {
   dashboard: [
@@ -59,7 +61,7 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
   ],
 };
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-guide-chat`;
+const FALLBACK_CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-guide-chat`;
 
 export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProps) {
   const [open, setOpen] = useState(false);
@@ -143,14 +145,36 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
       let assistantSoFar = "";
 
       try {
-        const resp = await fetch(CHAT_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ messages: allMessages, context, industry }),
-        });
+        // Prefer Replit advisor API per industry; fall back to Supabase function if not configured.
+        const apiIndustry = INDUSTRY_API_MAP[industry] ?? industry;
+        const useReplit = !!ADVISOR_BASE_URL;
+        let resp: Response;
+        if (useReplit) {
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          if (!token) {
+            toast.error("Please sign in to chat with the advisor.");
+            setIsLoading(false);
+            return;
+          }
+          resp = await fetch(`${ADVISOR_BASE_URL}/api/advisor/${apiIndustry}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ message: text.trim() }),
+          });
+        } else {
+          resp = await fetch(FALLBACK_CHAT_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ messages: allMessages, context, industry }),
+          });
+        }
 
         if (!resp.ok || !resp.body) {
           const errData = await resp.json().catch(() => ({}));
@@ -229,7 +253,13 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
               break;
             }
             const pendingEvent = (sendMessage as any)._pendingEvent as string | undefined;
-            if (pendingEvent === "start" || pendingEvent === "escalation") {
+            if (
+              pendingEvent === "start" ||
+              pendingEvent === "escalation" ||
+              pendingEvent === "chunk" ||
+              pendingEvent === "done" ||
+              pendingEvent === "error"
+            ) {
               try {
                 const ev = JSON.parse(jsonStr);
                 if (pendingEvent === "escalation") {
@@ -247,9 +277,74 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
                     setActiveAdvisor(ownerAdvisor);
                     setEscalated(true);
                   }
-                } else if (pendingEvent === "start" && ev.voice_id) {
+                } else if (pendingEvent === "start") {
                   setActiveAdvisor((prev) =>
-                    prev ? { ...prev, voiceId: ev.voice_id, name: ev.name || prev.name, role: ev.role || prev.role } : prev
+                    prev
+                      ? {
+                          ...prev,
+                          voiceId: ev.voice_id || prev.voiceId,
+                          name: ev.name || prev.name,
+                          role: ev.role || prev.role,
+                        }
+                      : {
+                          name: ev.name || "AI Advisor",
+                          role: ev.role || "",
+                          industry: apiIndustry,
+                          voiceId: ev.voice_id || "",
+                        }
+                  );
+                } else if (pendingEvent === "chunk") {
+                  const delta = (ev.delta ?? ev.text ?? ev.content) as string | undefined;
+                  if (delta) upsertAssistant(delta);
+                } else if (pendingEvent === "done") {
+                  streamDone = true;
+                } else if (pendingEvent === "error") {
+                  toast.error(ev.message || "Advisor error");
+                  setMessages((prev) => [
+                    ...prev,
+                    { role: "assistant", content: ev.message || "Sorry, something went wrong." },
+                  ]);
+                  streamDone = true;
+                }
+              } catch {}
+              (sendMessage as any)._pendingEvent = undefined;
+              if (streamDone) break;
+              continue;
+            }
+            // Legacy OpenAI-style chunk fallback
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+              if (content) upsertAssistant(content);
+            } catch {
+              textBuffer = line + "\n" + textBuffer;
+              break;
+            }
+          }
+        }
+
+        // (legacy flush block below handles trailing buffer)
+        // eslint-disable-next-line no-constant-condition
+        if (false) {
+          try {
+            // placeholder to keep diff minimal
+          } catch {}
+        }
+      } catch (e) {
+        console.error("AI Guide error:", e);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "Sorry, I couldn't process your request right now. Please try again. 🙏",
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [messages, isLoading, context, industry, ownerAdvisor]
+  );
                   );
                 }
               } catch {}
