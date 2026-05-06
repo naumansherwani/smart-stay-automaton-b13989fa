@@ -1,26 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star, Mic, Zap, Users, Languages, Briefcase } from "lucide-react";
+import { Check, Sparkles, Crown, ShieldCheck, Globe2, Building2, Star, Mic, Zap, Users, Languages, Briefcase, Loader2, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { useCurrency } from "@/hooks/useCurrency";
-import CurrencySwitcher from "@/components/CurrencySwitcher";
 import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialog";
-import { LaunchDiscountBadge, LaunchPriceBlock } from "@/components/pricing/LaunchDiscountBadge";
-import { LaunchAnnouncementBar } from "@/components/pricing/LaunchCornerBadge";
-import { LaunchSpotsCounter } from "@/components/pricing/LaunchSpotsCounter";
-import { useLaunchDiscount } from "@/hooks/useLaunchDiscount";
+import {
+  fetchPaymentProducts,
+  createPaymentsCheckout,
+  ApiError,
+  type PaymentProduct,
+  type PaymentsPlanKey,
+} from "@/lib/api";
 
-const PLANS = [
-  {
-    name: "Basic",
-    price: 25, // GBP base
-    plan: "basic" as const,
+type PlanMeta = {
+  plan: PaymentsPlanKey;
+  starter?: boolean;
+  popular?: boolean;
+  highlight?: string;
+  desc: string;
+  features: string[];
+  upgradeNote?: string;
+  style: string;
+};
+
+const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
+  basic: {
+    plan: "basic",
     starter: true,
     desc: "Best for individuals getting started",
     features: [
@@ -36,10 +45,8 @@ const PLANS = [
     upgradeNote: "Upgrade to Pro to automate your business and close more clients.",
     style: "border-cyan-400/50 ring-1 ring-cyan-400/20 hover:ring-2 hover:ring-cyan-400/40 hover:shadow-[0_0_30px_hsl(186,80%,50%,0.25)] hover:border-cyan-400/70",
   },
-  {
-    name: "Standard",
-    price: 52, // GBP base
-    plan: "standard" as const,
+  pro: {
+    plan: "pro",
     popular: true,
     desc: "Best for growing businesses",
     features: [
@@ -65,10 +72,8 @@ const PLANS = [
     upgradeNote: "Automatically capture, follow up, and convert leads into paying customers with AI.",
     style: "border-primary/50 ring-2 ring-primary/30 shadow-[0_0_30px_hsl(174,62%,50%,0.2)] hover:shadow-[0_0_40px_hsl(174,62%,50%,0.35)] scale-[1.03]",
   },
-  {
-    name: "Premium",
-    price: 108, // GBP base
-    plan: "premium" as const,
+  premium: {
+    plan: "premium",
     desc: "For scaling businesses and advanced operations",
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
@@ -96,31 +101,56 @@ const PLANS = [
     ],
     style: "border-yellow-500/50 hover:ring-2 hover:ring-yellow-500/40 hover:shadow-[0_0_25px_hsl(45,100%,50%,0.35)]",
   },
-];
+};
+
+const CURRENCY_SYMBOL: Record<string, string> = { gbp: "£", usd: "$", eur: "€" };
+const formatMoney = (pence: number, currency: string) => {
+  const symbol = CURRENCY_SYMBOL[currency.toLowerCase()] ?? currency.toUpperCase() + " ";
+  return `${symbol}${(pence / 100).toFixed(2)}`;
+};
+
+const PLAN_ORDER: PaymentsPlanKey[] = ["basic", "pro", "premium"];
 
 const PricingSection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { subscription } = useSubscription();
-  const { format, selectedCurrency } = useCurrency();
-  const { priceFor } = useLaunchDiscount();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [products, setProducts] = useState<PaymentProduct[] | null>(null);
 
-  const handleClick = async (_plan: typeof PLANS[number]) => {
+  useEffect(() => {
+    let cancelled = false;
+    fetchPaymentProducts()
+      .then((d) => { if (!cancelled) setProducts(d.products); })
+      .catch(() => { /* keep silent on landing */ });
+    return () => { cancelled = true; };
+  }, []);
+
+  const productByPlan = useMemo(() => {
+    const m: Partial<Record<PaymentsPlanKey, PaymentProduct>> = {};
+    products?.forEach((p) => { m[p.plan] = p; });
+    return m;
+  }, [products]);
+
+  const handleClick = async (product: PaymentProduct | undefined, plan: PaymentsPlanKey) => {
     if (!user) {
       navigate("/signup");
       return;
     }
-    setLoadingPlan(_plan.plan);
+    if (!product) return;
+    setLoadingPlan(plan);
     try {
-      const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
-        body: { plan: _plan.plan, returnUrl: window.location.origin },
+      const data = await createPaymentsCheckout({
+        product_id: product.checkout_product_id,
+        success_url: `${window.location.origin}/dashboard?payment=success`,
+        cancel_url: `${window.location.origin}/pricing?payment=cancelled`,
       });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-      else throw new Error("Checkout URL missing");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not start checkout. Please try again.");
+      window.location.href = data.checkout_url;
+    } catch (e) {
+      const err = e as ApiError;
+      if (err?.status === 401) { navigate("/login"); return; }
+      if (err?.status === 429) toast.error("Too many requests, please wait a moment");
+      else toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
     } finally {
       setLoadingPlan(null);
     }
@@ -142,21 +172,11 @@ const PricingSection = () => {
             Choose your plan. Every plan includes a 7-day free trial — no credit card required.
           </p>
 
-          <div className="pt-2">
-            <LaunchAnnouncementBar />
-          </div>
-
-          <div className="flex items-center justify-center gap-2 pt-1">
-            <span className="text-xs text-muted-foreground">Showing prices in</span>
-            <CurrencySwitcher compact />
-            <span className="text-xs text-muted-foreground">· Base currency GBP (£)</span>
-          </div>
-
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(160,84%,45%,0.15)]">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span className="text-sm font-semibold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-                Secure checkout powered by Stripe
+                Secure global checkout
               </span>
             </div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-violet-500/10 border border-blue-400/30 backdrop-blur-sm shadow-[0_0_20px_hsl(217,91%,60%,0.15)]">
@@ -169,10 +189,13 @@ const PricingSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
-          {PLANS.map((p) => {
-            const isCurrent = subscription?.plan === p.plan && (subscription?.status === "active" || subscription?.status === "trialing");
+          {PLAN_ORDER.map((planKey) => {
+            const p = PLAN_META[planKey];
+            const product = productByPlan[planKey];
+            const isCurrent = subscription?.plan === planKey && (subscription?.status === "active" || subscription?.status === "trialing");
+            const launchActive = !!product?.launch_active && product.active_price < product.regular_price;
             return (
-              <Card key={p.name} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+              <Card key={planKey} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
                 {p.starter && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white border-0 shadow-lg px-4 py-1">
                     🚀 Great Start
@@ -192,17 +215,27 @@ const PricingSection = () => {
                   <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground">Current Plan</Badge>
                 )}
                 <CardHeader className="text-center pb-2 pt-8">
-                  <CardTitle className="text-lg font-bold">{p.name}</CardTitle>
+                  <CardTitle className="text-lg font-bold">{product?.name ?? planKey.charAt(0).toUpperCase() + planKey.slice(1)}</CardTitle>
                   <p className="text-xs text-muted-foreground">{p.desc}</p>
                   <div className="mt-4">
-                    <LaunchPriceBlock plan={p.plan} format={format} />
-                    <span className="text-muted-foreground">/mo</span>
-                    {selectedCurrency.code !== "GBP" && (
-                      <div className="text-[11px] text-muted-foreground mt-1">≈ £{p.price} GBP base</div>
+                    {!product ? (
+                      <div className="h-12 flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+                    ) : (
+                      <span className="inline-flex items-baseline gap-2">
+                        {launchActive && (
+                          <span className="text-base text-muted-foreground line-through">{formatMoney(product.regular_price, product.currency)}</span>
+                        )}
+                        <span className="text-4xl font-extrabold text-foreground">{formatMoney(product.active_price, product.currency)}</span>
+                      </span>
                     )}
-                    {/* Clean inline launch info: pill + spots counter + price-lock note */}
-                    <div className="mt-3 flex justify-center"><LaunchDiscountBadge plan={p.plan} /></div>
-                    <LaunchSpotsCounter plan={p.plan} />
+                    <span className="text-muted-foreground">/mo</span>
+                    {launchActive && (
+                      <div className="mt-3 flex justify-center">
+                        <div className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30">
+                          <Flame className="w-3 h-3" /> Launch Offer
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col pt-4">
@@ -224,16 +257,17 @@ const PricingSection = () => {
                   <Button
                     className="w-full font-semibold bg-gradient-to-r from-[hsl(174,62%,50%)] to-[hsl(217,91%,60%)] text-white shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)]"
                     variant="default"
-                    disabled={!!isCurrent || loadingPlan === p.plan}
-                    onClick={() => void handleClick(p)}
+                    disabled={!!isCurrent || !product || loadingPlan === planKey}
+                    onClick={() => void handleClick(product, planKey)}
                   >
-                    {isCurrent ? "Current Plan" : loadingPlan === p.plan ? "Loading..." : priceFor(p.plan).isDiscounted ? "Claim Launch Price" : "Get Started"}
+                    {isCurrent
+                      ? "Current Plan"
+                      : loadingPlan === planKey
+                      ? <span className="inline-flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Loading…</span>
+                      : launchActive ? "Claim Launch Price" : "Subscribe"}
                   </Button>
                   <p className="text-[11px] text-muted-foreground text-center mt-2.5">
-                    Instant access · Cancel anytime · Secure Stripe checkout
-                  </p>
-                  <p className="text-[10px] text-pink-300/80 text-center mt-1 font-medium">
-                    Offer valid until July 30 or first 100 users.
+                    Instant access · Cancel anytime · Secure checkout
                   </p>
                 </CardContent>
               </Card>
