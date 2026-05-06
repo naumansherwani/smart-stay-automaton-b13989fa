@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminRoute from "@/components/auth/AdminRoute";
 import Index from "./pages/Index";
-import { backendFetch, syncManifest } from "@/lib/backend";
+import { backendFetch, syncManifest, notifyChangelog } from "@/lib/backend";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -62,6 +62,34 @@ const BrainBridge = () => {
         if (res?.ok === true) console.log("Brain connected ✓", res?.data ?? res);
       })
       .catch(() => {});
+  }, []);
+
+  // One-shot changelog ping: tell Replit what the frontend just shipped.
+  // Fires once per browser session (sessionStorage flag).
+  useEffect(() => {
+    try {
+      const KEY = "hf-changelog-2026-05-06-net";
+      if (sessionStorage.getItem(KEY)) return;
+      sessionStorage.setItem(KEY, "1");
+      notifyChangelog({
+        event: "frontend_update",
+        summary:
+          "Domain switched to hostflowai.net (.live fully removed). Public support@ email removed. 'Book Demo' CTA removed from pricing. Owner email migrated to .net. AI ownership now: Replit AI (frontend layer); Lovable AI gateway remains active in existing edge functions until migration phase.",
+        details: {
+          primary_domain: "hostflowai.net",
+          removed_domain: "hostflowai.live",
+          owner_email: "naumansherwani@hostflowai.net",
+          contact_email: "contact@hostflowai.net",
+          removed_public_emails: ["support@hostflowai.live", "support@hostflowai.com"],
+          removed_ctas: ["Book Demo (pricing final CTA)"],
+          ai_provider_policy: "replit_primary",
+          notes:
+            "Frontend = Experience Layer (dumb UI). Brain = Replit. All business logic and AI orchestration owned by Replit going forward.",
+        },
+      });
+    } catch {
+      /* never break UI */
+    }
   }, []);
 
   useEffect(() => {
