@@ -15,6 +15,22 @@ interface AiGuideChatbotProps {
   industry: string;
 }
 
+type Advisor = {
+  name: string;
+  industry: string;
+  role: string;
+  vibe?: string;
+  voiceId: string;
+  voiceName?: string;
+};
+
+// App-side industry IDs differ slightly from advisor API IDs.
+const INDUSTRY_API_MAP: Record<string, string> = {
+  hospitality: "tourism_hospitality",
+};
+
+const ADVISOR_API_URL = `${import.meta.env.VITE_REPLIT_ADVISOR_URL ?? ""}/api/advisor/industries`;
+
 const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> = {
   dashboard: [
     { label: "📅 Calendar", question: "Smart Calendar kaise kaam karta hai?" },
@@ -50,8 +66,49 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [advisor, setAdvisor] = useState<Advisor | null>(null);
+  const [ownerAdvisor, setOwnerAdvisor] = useState<Advisor | null>(null);
+  const [activeAdvisor, setActiveAdvisor] = useState<Advisor | null>(null);
+  const [escalated, setEscalated] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch advisor identities from Replit API — never hardcode names/voices.
+  useEffect(() => {
+    if (!import.meta.env.VITE_REPLIT_ADVISOR_URL) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const resp = await fetch(ADVISOR_API_URL);
+        if (!resp.ok) return;
+        const json = await resp.json();
+        const data = json?.data ?? json;
+        const apiIndustry = INDUSTRY_API_MAP[industry] ?? industry;
+        const match: Advisor | undefined = data?.advisors?.find(
+          (a: Advisor) => a.industry === apiIndustry
+        );
+        if (cancelled) return;
+        if (match) {
+          setAdvisor(match);
+          setActiveAdvisor(match);
+        }
+        if (data?.owner_advisor) setOwnerAdvisor(data.owner_advisor);
+      } catch (e) {
+        console.warn("[AiGuide] advisor fetch failed", e);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [industry]);
+
+  // Reset escalation when starting a new chat.
+  useEffect(() => {
+    if (messages.length === 0 && advisor) {
+      setActiveAdvisor(advisor);
+      setEscalated(false);
+    }
+  }, [messages.length, advisor]);
 
   useEffect(() => {
     if (open && inputRef.current) {
@@ -160,11 +217,44 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
             textBuffer = textBuffer.slice(newlineIndex + 1);
             if (line.endsWith("\r")) line = line.slice(0, -1);
             if (line.startsWith(":") || line.trim() === "") continue;
+            // SSE named-event lines: "event: start" / "event: escalation"
+            if (line.startsWith("event: ")) {
+              (sendMessage as any)._pendingEvent = line.slice(7).trim();
+              continue;
+            }
             if (!line.startsWith("data: ")) continue;
             const jsonStr = line.slice(6).trim();
             if (jsonStr === "[DONE]") {
               streamDone = true;
               break;
+            }
+            const pendingEvent = (sendMessage as any)._pendingEvent as string | undefined;
+            if (pendingEvent === "start" || pendingEvent === "escalation") {
+              try {
+                const ev = JSON.parse(jsonStr);
+                if (pendingEvent === "escalation") {
+                  const escTo = ev.escalating_to || ev.name;
+                  const escVoice = ev.escalating_voice || ev.voiceId;
+                  if (escTo && escVoice) {
+                    setActiveAdvisor({
+                      name: escTo,
+                      role: ev.role || "Owner AI Advisor",
+                      industry: "owner",
+                      voiceId: escVoice,
+                    });
+                    setEscalated(true);
+                  } else if (ownerAdvisor) {
+                    setActiveAdvisor(ownerAdvisor);
+                    setEscalated(true);
+                  }
+                } else if (pendingEvent === "start" && ev.voice_id) {
+                  setActiveAdvisor((prev) =>
+                    prev ? { ...prev, voiceId: ev.voice_id, name: ev.name || prev.name, role: ev.role || prev.role } : prev
+                  );
+                }
+              } catch {}
+              (sendMessage as any)._pendingEvent = undefined;
+              continue;
             }
             try {
               const parsed = JSON.parse(jsonStr);
@@ -217,6 +307,11 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
   const contextLabel =
     context === "dashboard" ? "Dashboard" : context === "crm" ? "AI CRM" : "Settings";
 
+  const headerTitle = activeAdvisor?.name ?? "AI Guide";
+  const headerSubtitle = activeAdvisor?.role
+    ? `${activeAdvisor.role}${escalated ? " • Escalated" : ""}`
+    : `${contextLabel} • ${industry.replace(/_/g, " ")}`;
+
   return (
     <>
       {/* Floating button */}
@@ -248,10 +343,8 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
                   <Sparkles className="h-5 w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <SheetTitle className="text-base font-semibold">AI Guide</SheetTitle>
-                  <p className="text-xs text-muted-foreground">
-                    {contextLabel} • {industry.replace(/_/g, " ")}
-                  </p>
+                  <SheetTitle className="text-base font-semibold">{headerTitle}</SheetTitle>
+                  <p className="text-xs text-muted-foreground">{headerSubtitle}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
