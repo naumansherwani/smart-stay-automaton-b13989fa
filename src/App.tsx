@@ -68,7 +68,7 @@ const BrainBridge = () => {
   // Fires once per browser session (sessionStorage flag).
   useEffect(() => {
     try {
-      const KEY = "hf-changelog-2026-05-06-net";
+      const KEY = "hf-changelog-2026-05-06-net-v2";
       if (sessionStorage.getItem(KEY)) return;
       sessionStorage.setItem(KEY, "1");
       notifyChangelog({
@@ -85,6 +85,15 @@ const BrainBridge = () => {
           ai_provider_policy: "replit_primary",
           notes:
             "Frontend = Experience Layer (dumb UI). Brain = Replit. All business logic and AI orchestration owned by Replit going forward.",
+          owner_email_change_request: {
+            from: "naumansherwani@hostflowai.live",
+            to: "naumansherwani@hostflowai.net",
+            password_unchanged: true,
+            action_required:
+              "Replit must update the owner identity in the Brain to use .net. Auth email will be flipped in the Cloud Users panel by the owner; password remains identical (linked to user_id, not email).",
+            db_trigger_status:
+              "VIP/owner DB trigger already accepts both .live and .net to avoid lockout during the flip.",
+          },
         },
       });
     } catch {
