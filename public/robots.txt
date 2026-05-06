@@ -22,4 +22,4 @@ Disallow: /messages
 Disallow: /my-listings
 Disallow: /owner-hq-7x
 
-Sitemap: https://hostflowai.live/sitemap.xml
+Sitemap: https://hostflowai.net/sitemap.xml

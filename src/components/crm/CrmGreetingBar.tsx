@@ -12,7 +12,7 @@ const WORLD_CLOCKS = [
 
 // VIP badge config
 const VIP_BADGES: Record<string, { emoji: string; label: string; color: string }> = {
-  "naumansherwani@hostflowai.live": { emoji: "👑", label: "Owner", color: "from-amber-400 to-yellow-500" },
+  "naumansherwani@hostflowai.net": { emoji: "👑", label: "Owner", color: "from-amber-400 to-yellow-500" },
   "raanamasood1962@gmail.com": { emoji: "👸", label: "Queen", color: "from-pink-400 to-rose-500" },
 };
 

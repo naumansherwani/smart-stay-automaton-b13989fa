@@ -366,7 +366,7 @@ const Settings = () => {
                   <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                     <div>
                       <p className="text-sm font-medium">Sender Domain</p>
-                      <p className="text-xs text-muted-foreground">hostflowai.live</p>
+                      <p className="text-xs text-muted-foreground">hostflowai.net</p>
                     </div>
                     <Badge className="bg-emerald-500/15 text-emerald-500 border-emerald-500/30">Active</Badge>
                   </div>

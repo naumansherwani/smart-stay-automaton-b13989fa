@@ -22,7 +22,7 @@ export default function Maintenance() {
 
         <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
           <Mail className="w-4 h-4" />
-          <span>support@hostflowai.live</span>
+          <span>support@hostflowai.net</span>
         </div>
 
         <div className="pt-4">

@@ -9,10 +9,10 @@ export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "
 export type MailIdentity = "advisor" | "enterprise" | "support" | "billing" | "general";
 
 export const MAIL_IDENTITIES: { id: MailIdentity; address: string; label: string }[] = [
-  { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)" },
-  { id: "advisor",    address: "connectai@hostflowai.live",      label: "AI Advisor" },
-  { id: "support",    address: "support@hostflowai.live",        label: "Support" },
-  { id: "billing",    address: "billing@hostflowai.live",        label: "Billing" },
+  { id: "general",    address: "naumansherwani@hostflowai.net", label: "Founder (Owner)" },
+  { id: "advisor",    address: "connectai@hostflowai.net",      label: "AI Advisor" },
+  { id: "support",    address: "support@hostflowai.net",        label: "Support" },
+  { id: "billing",    address: "billing@hostflowai.net",        label: "Billing" },
 ];
 
 export interface MailListItem {
@@ -69,13 +69,13 @@ export function useOwnerMailbox(folder: MailFolder, search: string) {
         // Owner direct address always top priority, then urgent/re: subjects, then unread
         list = list
           .filter((m) => {
-            const toOwner = m.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.live");
+            const toOwner = m.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.net");
             const subj = (m.subject || "").toLowerCase();
             return toOwner || m.unread || subj.includes("urgent") || subj.includes("re:");
           })
           .sort((a, b) => {
-            const aOwner = a.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.live") ? 1 : 0;
-            const bOwner = b.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.live") ? 1 : 0;
+            const aOwner = a.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.net") ? 1 : 0;
+            const bOwner = b.to?.some((t) => t.address?.toLowerCase() === "naumansherwani@hostflowai.net") ? 1 : 0;
             if (aOwner !== bOwner) return bOwner - aOwner;
             return new Date(b.date).getTime() - new Date(a.date).getTime();
           });

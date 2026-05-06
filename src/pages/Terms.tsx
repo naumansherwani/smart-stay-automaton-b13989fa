@@ -125,7 +125,7 @@ const Terms = () => (
           <ul className="list-disc pl-6 space-y-2">
             <li>Email: <a href="mailto:legal@hostflowai.com" className="text-primary hover:underline">legal@hostflowai.com</a></li>
             <li>Support: <a href="mailto:support@hostflowai.com" className="text-primary hover:underline">support@hostflowai.com</a></li>
-            <li>Website: <a href="https://hostflowai.live" className="text-primary hover:underline">hostflowai.live</a></li>
+            <li>Website: <a href="https://hostflowai.net" className="text-primary hover:underline">hostflowai.net</a></li>
           </ul>
         </section>
       </div>

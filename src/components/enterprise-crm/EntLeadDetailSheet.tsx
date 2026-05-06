@@ -33,7 +33,7 @@ interface AiInsight {
 const PACKAGE_TEMPLATES: Record<string, ComposeInitial> = {
   proposal: {
     subject: "HostFlow AI · Custom Enterprise Proposal",
-    body: "Hi {{name}},\n\nThank you for your interest in HostFlow AI. Based on your requirements ({{industry}}, {{team}} team), I've prepared a tailored proposal:\n\n• Multi-user workspace with SSO\n• Custom AI workflows for your operations\n• Dedicated async onboarding (no calls required)\n• Priority support with SLA\n• Invoice / contract billing in GBP\n\nI'll send the full PDF proposal in a follow-up email shortly. Let me know if you'd like any adjustments.\n\nBest regards,\nNauman Sherwani\nFounder, HostFlow AI Technologies\nconnectai@hostflowai.live",
+    body: "Hi {{name}},\n\nThank you for your interest in HostFlow AI. Based on your requirements ({{industry}}, {{team}} team), I've prepared a tailored proposal:\n\n• Multi-user workspace with SSO\n• Custom AI workflows for your operations\n• Dedicated async onboarding (no calls required)\n• Priority support with SLA\n• Invoice / contract billing in GBP\n\nI'll send the full PDF proposal in a follow-up email shortly. Let me know if you'd like any adjustments.\n\nBest regards,\nNauman Sherwani\nFounder, HostFlow AI Technologies\nconnectai@hostflowai.net",
     fromIdentity: "advisor",
   },
   pricing: {
@@ -48,12 +48,12 @@ const PACKAGE_TEMPLATES: Record<string, ComposeInitial> = {
   },
   invoice: {
     subject: "HostFlow AI · Invoice for {{company}}",
-    body: "Hi {{name}},\n\nPlease find your invoice attached.\n\nAmount due: £___\nDue date: Net 14\nPayment methods: Bank transfer or custom payment link (details below).\n\nLet me know once payment is initiated and we'll trigger account activation.\n\nBilling team\nbilling@hostflowai.live",
+    body: "Hi {{name}},\n\nPlease find your invoice attached.\n\nAmount due: £___\nDue date: Net 14\nPayment methods: Bank transfer or custom payment link (details below).\n\nLet me know once payment is initiated and we'll trigger account activation.\n\nBilling team\nbilling@hostflowai.net",
     fromIdentity: "billing",
   },
   bank_transfer: {
     subject: "HostFlow AI · Bank Transfer Details for {{company}}",
-    body: "Hi {{name}},\n\nFor bank transfer payment, please use the following details:\n\nBank: Clear Bank UK\nAccount Name: HostFlow AI Technologies Ltd\nSort Code: __-__-__\nAccount Number: ________\nIBAN: GB__ CLRB ____ ____ ____ __\nSWIFT/BIC: CLRBGB22\nReference: {{company}}-ENT\n\nKindly send the remittance confirmation to billing@hostflowai.live so we can match the payment quickly.\n\nThanks,\nBilling team",
+    body: "Hi {{name}},\n\nFor bank transfer payment, please use the following details:\n\nBank: Clear Bank UK\nAccount Name: HostFlow AI Technologies Ltd\nSort Code: __-__-__\nAccount Number: ________\nIBAN: GB__ CLRB ____ ____ ____ __\nSWIFT/BIC: CLRBGB22\nReference: {{company}}-ENT\n\nKindly send the remittance confirmation to billing@hostflowai.net so we can match the payment quickly.\n\nThanks,\nBilling team",
     fromIdentity: "billing",
   },
 };
@@ -346,7 +346,7 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
             <div className="text-[10px] text-muted-foreground space-y-0.5">
               <div>Submitted {new Date(lead.created_at).toLocaleString("en-GB")}</div>
               <div>Source: {lead.source}</div>
-              <div>Reply identity: <span className="text-amber-400">connectai@hostflowai.live</span></div>
+              <div>Reply identity: <span className="text-amber-400">connectai@hostflowai.net</span></div>
             </div>
           </div>
         </SheetContent>
