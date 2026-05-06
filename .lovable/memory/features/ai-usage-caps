@@ -1,0 +1,14 @@
+---
+name: AI Usage Caps Per Plan
+description: Per-plan AI message/voice/feature limits stored in plan_feature_limits table. Enforced via useTrialLimits + ai-tier edge fn.
+type: feature
+---
+Plans: trial / basic / standard / premium (pro renamed to premium May 2026).
+
+BASIC ($15): 50 AI msgs/day, 30/hr, 100 AI pricing, 50 follow-ups, 500 contacts, 50 bookings/mo, 1 industry. No voice/forecasting/conflict.
+STANDARD ($39): 200 AI msgs/day, 80/hr, 500 pricing, 300 follow-ups, 60 voice min/mo, demand forecasting + conflict resolution unlimited, 5000 contacts, 500 bookings, 3 industries.
+PREMIUM ($99): Unlimited AI msgs/pricing/follow-ups/calendar/scheduling, 200/hr fair-use cap, 500 voice min/mo, custom AI training, all 13 industries, multi-team, white-label, priority support.
+
+Storage: public.plan_feature_limits (plan, feature_key, limit_value, is_unlimited).
+Usage tracked: public.feature_usage (user_id, feature_key, usage_count).
+Hook: src/hooks/useTrialLimits.tsx reads both tables.
