@@ -99,7 +99,7 @@ const Settings = () => {
           <h1 className="text-2xl font-bold text-foreground">{t("settings.title")}</h1>
 
           {/* Subscription Management */}
-          {false && subscription && (
+          {subscription && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2"><CreditCard className="w-4 h-4" /> Subscription</CardTitle>
@@ -120,7 +120,7 @@ const Settings = () => {
                       Manage
                     </Button>
                     {!subscription.cancel_at_period_end && (
-                      <Button variant="ghost" size="sm" onClick={() => setRetentionOpen(true)} className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10">
+                      <Button variant="ghost" size="sm" onClick={handleCancelPlan} className="text-rose-500 hover:text-rose-600 hover:bg-rose-500/10">
                         Cancel
                       </Button>
                     )}
