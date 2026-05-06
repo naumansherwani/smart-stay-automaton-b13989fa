@@ -9,7 +9,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live").trim();
+const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.net").trim();
 // Zoho App Passwords are often shown with spaces — strip ALL whitespace.
 const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
 const FROM_NAME = "HostFlow AI";
@@ -18,7 +18,7 @@ const FROM_EMAIL = ZOHO_EMAIL;
 // AI Advisor identity — used by all automated AI Advisor / Autopilot emails.
 // Replies route back to the same Zoho mailbox so they appear in the Email Center.
 const ADVISOR_NAME = "HostFlow ConnectAI";
-const ADVISOR_EMAIL = "connectai@hostflowai.live";
+const ADVISOR_EMAIL = "connectai@hostflowai.net";
 
 // Premium signature appended to every AI Advisor email (HTML + plain text).
 export const ADVISOR_SIGNATURE_HTML = `
@@ -29,8 +29,8 @@ export const ADVISOR_SIGNATURE_HTML = `
     <div style="color:#3b82f6;font-size:13px;margin-top:2px">AI Growth &amp; Success Assistant</div>
     <div style="color:#64748b;font-size:13px">HostFlow AI Technologies</div>
     <div style="margin-top:12px;font-size:13px;color:#475569">
-      🌐 <a href="https://www.hostflowai.live" style="color:#3b82f6;text-decoration:none">www.hostflowai.live</a><br/>
-      ✉ <a href="mailto:connectai@hostflowai.live" style="color:#3b82f6;text-decoration:none">connectai@hostflowai.live</a>
+      🌐 <a href="https://www.hostflowai.net" style="color:#3b82f6;text-decoration:none">www.hostflowai.net</a><br/>
+      ✉ <a href="mailto:connectai@hostflowai.net" style="color:#3b82f6;text-decoration:none">connectai@hostflowai.net</a>
     </div>
     <div style="margin-top:14px;font-size:12px;color:#94a3b8;font-style:italic">Smart automation for modern businesses.</div>
   </td></tr>
@@ -44,8 +44,8 @@ HostFlow ConnectAI
 AI Growth & Success Assistant
 HostFlow AI Technologies
 
-🌐 www.hostflowai.live
-✉ connectai@hostflowai.live
+🌐 www.hostflowai.net
+✉ connectai@hostflowai.net
 
 Smart automation for modern businesses.`;
 
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Resolve identity — `advisor` routes via connectai@hostflowai.live.
+    // Resolve identity — `advisor` routes via connectai@hostflowai.net.
     const isAdvisor = identity === "advisor" || (fromAddress && String(fromAddress).toLowerCase() === ADVISOR_EMAIL);
     const resolvedFromName = isAdvisor ? ADVISOR_NAME : (fromName || FROM_NAME);
     const resolvedFromEmail = isAdvisor ? ADVISOR_EMAIL : (fromAddress || FROM_EMAIL);
