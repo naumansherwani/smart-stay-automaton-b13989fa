@@ -25,7 +25,7 @@
     "noCreditCard": "Sem cartão de crédito",
     "doubleBooking": "Guarda AI anti reserva dupla",
     "dynamicPricing": "Preços dinâmicos AI",
-    "industriesSupported": "7 indústrias suportadas",
+    "industriesSupported": "8 indústrias suportadas",
     "trustedAcross": "Confiável em indústrias mundiais"
   },
   "features": {
@@ -43,7 +43,7 @@
     "guestScoringDesc": "Avaliação de risco AI e detecção VIP.",
     "revenueOpt": "Otimização de Receita",
     "revenueOptDesc": "Preenchimento de lacunas em tempo real.",
-    "industriesTitle": "Para 7 Indústrias",
+    "industriesTitle": "Para 8 Indústrias",
     "industriesSubtitle": "Um AI. Cada indústria. Sem limites."
   },
   "pricing": {

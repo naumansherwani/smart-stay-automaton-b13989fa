@@ -540,7 +540,7 @@ Coming soon: Railway Admin, Station Master, Train Crew, Booking Agent roles.
 
 const SETTINGS_FEATURES = [
   "Profile — Update your display name, company, phone and personal details",
-  "Language — Switch between 13+ languages (English, Urdu, Hindi, Arabic, German, etc.)",
+  "Language — Switch between 14 languages (English, Urdu, Hindi, Arabic, German, etc.)",
   "Notifications — Control email, push, and marketing notification preferences",
   "Theme — Switch between Dark, Light and System themes",
   "Industry — View and change your industry type (Hospitality, Airlines, etc.)",
