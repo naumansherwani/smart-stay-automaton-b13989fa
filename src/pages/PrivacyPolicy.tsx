@@ -118,8 +118,7 @@ const PrivacyPolicy = () => (
           <h2 className="text-xl font-semibold text-white">14. Contact Us</h2>
           <p>For privacy-related inquiries or to exercise your data rights:</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Email: <a href="mailto:privacy@hostflowai.com" className="text-primary hover:underline">privacy@hostflowai.com</a></li>
-            <li>Support: <a href="mailto:support@hostflowai.com" className="text-primary hover:underline">support@hostflowai.com</a></li>
+            <li>Email: <a href="mailto:contact@hostflowai.net" className="text-primary hover:underline">contact@hostflowai.net</a></li>
             <li>Website: <a href="https://hostflowai.net" className="text-primary hover:underline">hostflowai.net</a></li>
           </ul>
         </section>
