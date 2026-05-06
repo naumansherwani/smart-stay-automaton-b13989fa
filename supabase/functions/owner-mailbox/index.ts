@@ -10,7 +10,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live").trim();
+const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.net").trim();
 // Zoho App Passwords are often shown with spaces — strip ALL whitespace.
 const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
 const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
@@ -21,11 +21,11 @@ const ZOHO_REGION = (Deno.env.get("ZOHO_REGION") || "").toLowerCase().trim();
 // based on the `To:` recipient so the Founder OS UI can filter by identity.
 // ---------------------------------------------------------------------------
 const IDENTITIES = [
-  { id: "general",    address: "naumansherwani@hostflowai.live", label: "Founder (Owner)", displayName: "Nauman Sherwani · HostFlow AI" },
-  { id: "advisor",    address: "connectai@hostflowai.live", label: "AI Advisor", displayName: "HostFlow ConnectAI" },
-  { id: "enterprise", address: "connectai@hostflowai.live", label: "Enterprise Sales", displayName: "HostFlow AI · Enterprise Sales" },
-  { id: "support",    address: "support@hostflowai.live",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
-  { id: "billing",    address: "billing@hostflowai.live",   label: "Billing",    displayName: "HostFlow AI · Billing" },
+  { id: "general",    address: "naumansherwani@hostflowai.net", label: "Founder (Owner)", displayName: "Nauman Sherwani · HostFlow AI" },
+  { id: "advisor",    address: "connectai@hostflowai.net", label: "AI Advisor", displayName: "HostFlow ConnectAI" },
+  { id: "enterprise", address: "connectai@hostflowai.net", label: "Enterprise Sales", displayName: "HostFlow AI · Enterprise Sales" },
+  { id: "support",    address: "support@hostflowai.net",   label: "Support",    displayName: "HostFlow AI · Customer Support" },
+  { id: "billing",    address: "billing@hostflowai.net",   label: "Billing",    displayName: "HostFlow AI · Billing" },
 ] as const;
 
 function identityFromRecipients(recipients: { address?: string }[] = []): string {

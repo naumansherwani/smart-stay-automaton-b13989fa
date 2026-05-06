@@ -8,7 +8,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.live").trim();
+const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.net").trim();
 const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
 const FROM_NAME = "HostFlow AI";
 const OWNER_EMAIL = ZOHO_EMAIL;
@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
           <div style="font-size:12px;color:#64748b;margin-bottom:6px">Your message:</div>
           <div style="white-space:pre-wrap;color:#0f172a;font-size:14px;line-height:1.5">${escapeHtml(message)}</div>
         </div>
-        <p style="color:#475569;font-size:14px">In the meantime, feel free to explore <a href="https://hostflowai.live" style="color:#3b82f6;text-decoration:none">hostflowai.live</a>.</p>
+        <p style="color:#475569;font-size:14px">In the meantime, feel free to explore <a href="https://hostflowai.net" style="color:#3b82f6;text-decoration:none">hostflowai.net</a>.</p>
         <p style="color:#0f172a;font-size:14px;margin-top:24px">— Nauman Sherwani<br/><span style="color:#64748b;font-size:12px">Founder, HostFlow AI Technologies</span></p>
       </div>`;
 

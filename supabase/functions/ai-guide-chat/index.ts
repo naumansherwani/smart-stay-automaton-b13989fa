@@ -267,7 +267,7 @@ const REFUND_POLICY_SUMMARY = `
 - **Technical issues**: if our team can't fix it in reasonable time, refund possible.
 - **7-day free trial** included on all plans — no card required to start.
 - **Cancel anytime** — access continues until end of paid period.
-- **Chargeback abuse** = account suspension. Always contact support@hostflowai.live first.
+- **Chargeback abuse** = account suspension. Always contact support@hostflowai.net first.
 `;
 
 const VOICE_AI_FEATURES = `
