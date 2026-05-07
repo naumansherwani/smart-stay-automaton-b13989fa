@@ -4,6 +4,7 @@
 HostFlow AI - multi-industry AI scheduling platform. Primary #168 70% 38% teal.
 3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
 8 industries: Travel/Tourism/Hospitality, Airlines, Car Rental, Healthcare, Education, Logistics, Events & Entertainment, Railways.
+Hospitality has 2 sub-types in profiles.business_subtype: hotel_property | travel_tours. Never blend.
 Plans: trial | basic | standard | premium. "pro" plan does NOT exist anywhere.
 Brain = Replit (all AI/payments/DB writes). Lovable = UI only. Replit base: https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api
 API contract: { ok, data, error:{code,message}, trace_id }. 429 AI_LIMIT_REACHED → upgrade modal. 403 INDUSTRY_MISMATCH → signout. All AI advisor calls go through src/lib/api.ts (streamAdvisor / streamOwnerAdvisor) — never call ai-guide-chat / founder-adviser edge fns from frontend.
@@ -25,3 +26,5 @@ Payments: Paddle FULLY REMOVED Apr 2026. No provider integrated. Checkout shows 
 - [Trial system](mem://features/trial-system) — Trial & subscription logic
 - [No payment provider](mem://constraints/no-paddle-stripe-lemon) — Paddle removed Apr 2026, no provider currently integrated
 - [AI usage caps](mem://features/ai-usage-caps) — Per-plan AI message/voice/feature limits (Basic/Standard/Premium)
+- [Never-mix rules](mem://constraints/never-mix-rules) — 6 strict server-side isolation rules (industry/plan/sub-type)
+- [Replit backend contract](mem://features/replit-backend-contract) — Auth, plan enforcement, industry isolation, SSE format
