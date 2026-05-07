@@ -1,4 +1,4 @@
-import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Search, Activity } from "lucide-react";
+import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Search, Activity, Bot } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
   | "overview" | "executive" | "revenue" | "customers" | "leads" | "crm"
-  | "emails" | "tasks" | "ai" | "sherlock" | "analytics" | "security" | "settings" | "profile"
+  | "emails" | "agents_email" | "tasks" | "ai" | "sherlock" | "analytics" | "security" | "settings" | "profile"
   | "revenue_intel";
 
 const SHERLOCK_USER_ID = "d089432d-5d6b-416e-bd29-abe913121d99";
@@ -20,6 +20,7 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "leads", label: "Leads", icon: Target },
   { id: "crm", label: "Enterprise CRM", icon: Briefcase },
   { id: "emails", label: "AI Email Center", icon: Mail },
+  { id: "agents_email", label: "AI Agents Email Center", icon: Bot },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
   { id: "sherlock", label: "Sherlock AI Advisor of Founder", icon: Search },
   { id: "analytics", label: "Analytics", icon: BarChart3 },

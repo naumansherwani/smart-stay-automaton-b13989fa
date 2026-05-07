@@ -5,7 +5,7 @@ import { FounderThemeProvider } from "./FounderTheme";
 
 const TITLES: Record<FounderSection, string> = {
   overview: "Overview", executive: "Executive HQ", revenue: "Revenue", customers: "Customers", leads: "Leads",
-  crm: "Enterprise CRM", emails: "AI Email Center",
+  crm: "Enterprise CRM", emails: "AI Email Center", agents_email: "AI Agents Email Center",
   security: "Security", tasks: "Tasks", ai: "AI Advisor", sherlock: "Sherlock",
   analytics: "Analytics", settings: "Settings", profile: "Founder Profile",
   revenue_intel: "AI Revenue Intelligence",
