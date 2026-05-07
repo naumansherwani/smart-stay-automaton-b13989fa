@@ -7,6 +7,7 @@ interface FeedItem {
   id: string;
   ts: number;
   text: string;
+  subtext?: string;
   tone: Tone;
 }
 
@@ -41,8 +42,8 @@ export default function LiveFeed({ active }: { active: boolean }) {
       const es = new EventSource(liveStreamUrl());
       esRef.current = es;
 
-      const push = (text: string, tone: Tone) => {
-        const item: FeedItem = { id: `${Date.now()}-${++idRef.current}`, ts: Date.now(), text, tone };
+      const push = (text: string, tone: Tone, subtext?: string) => {
+        const item: FeedItem = { id: `${Date.now()}-${++idRef.current}`, ts: Date.now(), text, subtext, tone };
         setItems((prev) => [item, ...prev].slice(0, MAX_ITEMS));
       };
 
@@ -52,7 +53,12 @@ export default function LiveFeed({ active }: { active: boolean }) {
       es.addEventListener("advisor.activity", (e: MessageEvent) => {
         try {
           const d = JSON.parse(e.data);
-          push(`[${d.advisor || advisorOf(d.industry)}] — ${d.action || "Activity"}${d.context ? ` · ${d.context}` : ""}`, "neutral");
+          const ctx = typeof d.context === "string" ? d.context.slice(0, 140) : "";
+          push(
+            `[${d.advisor || advisorOf(d.industry)}] — ${d.action || "Activity"}`,
+            "neutral",
+            ctx || undefined,
+          );
         } catch { /* ignore */ }
       });
       es.addEventListener("advisor.escalated", (e: MessageEvent) => {
@@ -128,6 +134,11 @@ export default function LiveFeed({ active }: { active: boolean }) {
           >
             <div className="text-[var(--fos-muted)] text-[9px]">{fmtTime(it.ts)}</div>
             <div className="text-[var(--fos-text)] leading-snug">{it.text}</div>
+            {it.subtext && (
+              <div className="text-[var(--fos-muted)] text-[10px] leading-snug mt-0.5 line-clamp-2 font-sans">
+                {it.subtext}
+              </div>
+            )}
           </div>
         ))}
       </div>
