@@ -166,7 +166,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
           apiIndustry,
           {
             message: text.trim(),
-            user_industry: profile?.industry ?? industry,
+            user_industry: apiIndustry,
             business_subtype: profile?.business_subtype ?? null,
           },
           {
