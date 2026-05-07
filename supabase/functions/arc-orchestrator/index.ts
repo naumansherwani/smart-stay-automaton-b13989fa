@@ -2,7 +2,7 @@
 // Cron-driven brain that:
 // 1. Recomputes user_health_scores for all users
 // 2. Evaluates arc_rules and creates arc_actions
-// 3. Dispatches actions (email via zoho-smtp-send / queues founder tasks)
+// 3. Dispatches actions (email via resend-send / queues founder tasks)
 // Runs every 30 min via pg_cron.
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -183,15 +183,15 @@ async function maybeQueueAction(rule: any, userRow: any, h: { phase: string; sig
 async function dispatchAction(action: any, userRow: any) {
   try {
     if (action.channel === "email" && userRow.email) {
-      // Use Zoho SMTP
-      const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/zoho-smtp-send`;
+      // Use Resend
+      const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/resend-send`;
       const resp = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
         },
-        body: JSON.stringify({ to: userRow.email, subject: action.title, html: `<p>${action.body}</p>` }),
+        body: JSON.stringify({ to: userRow.email, subject: action.title, html: `<p>${action.body}</p>`, fromIdentity: "advisor" }),
       });
       const ok = resp.ok;
       await supabase.from("arc_actions").update({

@@ -47,11 +47,11 @@ serve(async (req) => {
       if (action.action_type === "send_email" || action.action_type === "message_user") {
         const to = action.payload?.target_email;
         if (!to) throw new Error("Missing target_email");
-        const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/zoho-smtp-send`;
+        const url = `${Deno.env.get("SUPABASE_URL")}/functions/v1/resend-send`;
         const resp = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
-          body: JSON.stringify({ to, subject: action.title, html: `<p>${action.description ?? ""}</p>` }),
+          body: JSON.stringify({ to, subject: action.title, html: `<p>${action.description ?? ""}</p>`, fromIdentity: "advisor" }),
         });
         result = { http_status: resp.status, body: await resp.text() };
         if (!resp.ok) status = "failed";
