@@ -29,6 +29,7 @@ import RetentionWizard from "@/components/retention/RetentionWizard";
 import { cancelPlan } from "@/lib/api";
 import { handleApiError } from "@/lib/handleApiError";
 import BillingHistory from "@/components/settings/BillingHistory";
+import OTAChannelManager from "@/components/settings/OTAChannelManager";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -133,6 +134,8 @@ const Settings = () => {
 
           <BillingHistory />
 
+          <OTAChannelManager />
+
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2"><Palette className="w-4 h-4" /> Preferences</CardTitle>
@@ -234,7 +237,7 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="platform" className="space-y-6">
-          <TabsList className="w-full grid grid-cols-5">
+          <TabsList className="w-full grid grid-cols-6">
             <TabsTrigger value="platform" className="gap-1.5 text-xs">
               <Server className="w-3.5 h-3.5" /> Platform
             </TabsTrigger>
@@ -243,6 +246,9 @@ const Settings = () => {
             </TabsTrigger>
             <TabsTrigger value="email" className="gap-1.5 text-xs">
               <Mail className="w-3.5 h-3.5" /> Email
+            </TabsTrigger>
+            <TabsTrigger value="channels" className="gap-1.5 text-xs">
+              <Globe className="w-3.5 h-3.5" /> Channels
             </TabsTrigger>
             <TabsTrigger value="security" className="gap-1.5 text-xs">
               <Shield className="w-3.5 h-3.5" /> Security
@@ -429,6 +435,11 @@ const Settings = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* CHANNELS TAB */}
+          <TabsContent value="channels">
+            <OTAChannelManager />
           </TabsContent>
 
           {/* SECURITY TAB */}
