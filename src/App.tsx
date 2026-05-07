@@ -91,10 +91,9 @@ const BrainBridge = () => {
           },
           domain: {
             primary: "hostflowai.net",
-            removed: "hostflowai.live (fully purged everywhere)",
             owner_email: "naumansherwani@hostflowai.net",
-            contact_email: "contact@hostflowai.net",
-            removed_public_emails: ["support@hostflowai.live", "support@hostflowai.com", "any public support@ address"],
+            public_contact_email: "connectai@hostflowai.net",
+            removed_public_emails: ["contact@hostflowai.net", "support@hostflowai.net", "any public support@ address"],
           },
           industries: {
             count: 8,
@@ -279,10 +278,10 @@ const BrainBridge = () => {
             ],
           },
           frontend_changes_lovable_shipped: [
-            "Domain swap: every reference to hostflowai.live replaced with hostflowai.net (index.html, sitemap, robots, footer, login, maintenance, privacy, terms, refund, settings, founder, CRM greeting, retention wizard, owner notifications lib, owner mailbox hook, ComposeModal, EntLeadDetailSheet, etc.).",
+            "Domain: hostflowai.net is the only domain in the UI.",
             "Removed all public support@ email addresses from the website (footer, contact pages, policy pages, CTAs, settings).",
             "Removed 'Book Demo' CTA from Enterprise card on PricingSection and from EnterpriseContactDialog flow on the landing/pricing page.",
-            "Owner email migrated naumansherwani@hostflowai.live → naumansherwani@hostflowai.net (password unchanged; bound to user_id).",
+            "Owner email: naumansherwani@hostflowai.net (password unchanged; bound to user_id).",
             "Auth: Email + Google + Apple. No anonymous signups. Email verification required.",
             "BrainBridge in src/App.tsx: handshake on boot (/v1/health), syncManifest on every route/auth change (/v1/sync-manifest), one-shot changelog ping (/v1/changelog) per session — this payload.",
             "src/lib/backend.ts: single source of truth for Replit Brain URL + backendFetch + syncManifest + notifyChangelog helpers.",

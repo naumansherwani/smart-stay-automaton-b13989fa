@@ -1,4 +1,4 @@
-import { Construction, Mail } from "lucide-react";
+import { Construction } from "lucide-react";
 
 export default function Maintenance() {
   return (
@@ -19,11 +19,6 @@ export default function Maintenance() {
         <p className="text-muted-foreground text-base leading-relaxed">
           We're upgrading our systems to serve you better. This won't take long — we're working hard behind the scenes to bring you an even more powerful experience.
         </p>
-
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <Mail className="w-4 h-4" />
-          <span>contact@hostflowai.net</span>
-        </div>
 
         <div className="pt-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">

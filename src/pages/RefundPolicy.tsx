@@ -55,7 +55,7 @@ const RefundPolicy = () => (
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-white">Contact</h2>
-          <p>Email: <a href="mailto:contact@hostflowai.net" className="text-primary hover:underline">contact@hostflowai.net</a></p>
+          <p>Visit <a href="https://www.hostflowai.net" className="text-primary hover:underline">www.hostflowai.net</a> and use the in-app contact form to reach our team.</p>
           <p className="text-xs text-muted-foreground">We aim to respond to refund requests within 1 business day.</p>
         </section>
       </div>

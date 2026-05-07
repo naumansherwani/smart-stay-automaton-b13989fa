@@ -59,8 +59,8 @@ const Contact = () => {
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                 <Mail className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-semibold text-white">Email</h3>
-              <a href="mailto:contact@hostflow.ai" className="text-sm text-primary hover:underline">contact@hostflow.ai</a>
+              <h3 className="font-semibold text-white">Message Us</h3>
+              <p className="text-sm text-[hsl(213,97%,87%)]/70">Use the form below — we'll reply by email.</p>
             </CardContent>
           </Card>
           <Card className="bg-[hsl(222,40%,14%)] border-[hsl(217,91%,60%)]/20 text-center">
