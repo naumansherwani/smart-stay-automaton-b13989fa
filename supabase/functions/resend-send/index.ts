@@ -3,6 +3,8 @@
 // All outbound mail (founder, advisor, support, billing, automated) goes through here.
 // deno-lint-ignore-file no-explicit-any
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -110,7 +112,7 @@ Deno.serve(async (req) => {
     const {
       to, cc, bcc, subject, html, text, replyTo,
       fromIdentity, identity, fromName, appendSignature,
-      inReplyTo, references,
+      inReplyTo, references, logMailbox,
     } = body;
 
     if (!to || !subject || (!html && !text)) {
@@ -157,6 +159,32 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ ok: false, error: j?.message || "Resend send failed", details: j }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    if (logMailbox) {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (supabaseUrl && serviceRole) {
+        const supabase = createClient(supabaseUrl, serviceRole);
+        const recipient = toArray(to)[0] || "";
+        await supabase.from("email_send_log").insert({
+          message_id: j.id,
+          template_name: `founder_${idKey}`,
+          recipient_email: recipient,
+          status: "sent",
+          metadata: {
+            subject,
+            html: finalHtml,
+            text: finalText,
+            fromIdentity: idKey,
+            fromName: finalFromName,
+            fromEmail: FROM_EMAIL,
+            replyTo: finalReplyTo,
+            cc: ccArr,
+            bcc: bccArr,
+          },
+        });
+      }
+    }
+
     return new Response(JSON.stringify({ ok: true, messageId: j.id, data: { messageId: j.id } }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
