@@ -41,6 +41,7 @@ import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 import UsageCard from "@/components/dashboard/UsageCard";
+import ResolutionHub from "@/components/dashboard/ResolutionHub";
 
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
@@ -166,6 +167,8 @@ const Dashboard = () => {
         <IndustryKPIs config={config} />
 
         <UsageCard />
+
+        <ResolutionHub />
 
         <Tabs defaultValue={isRailways(currentIndustry) ? "railway" : isAirlines(currentIndustry) ? "flights" : isCarRental(currentIndustry) ? "fleet" : isEducation(currentIndustry) ? "timetable" : isLogistics(currentIndustry) ? "logistics" : isEvents(currentIndustry) ? "events" : isHealthcare(currentIndustry) ? "healthcare" : "calendar"} className="space-y-6">
           <TabsList className="flex flex-wrap w-full lg:w-auto gap-1 h-auto p-1">
