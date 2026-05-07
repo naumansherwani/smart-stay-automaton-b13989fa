@@ -28,6 +28,7 @@ import AiGuideChatbot from "@/components/AiGuideChatbot";
 import RetentionWizard from "@/components/retention/RetentionWizard";
 import { cancelPlan } from "@/lib/api";
 import { handleApiError } from "@/lib/handleApiError";
+import BillingHistory from "@/components/settings/BillingHistory";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -129,6 +130,8 @@ const Settings = () => {
             </Card>
           )}
           <RetentionWizard open={retentionOpen} onOpenChange={setRetentionOpen} />
+
+          <BillingHistory />
 
           <Card>
             <CardHeader>
