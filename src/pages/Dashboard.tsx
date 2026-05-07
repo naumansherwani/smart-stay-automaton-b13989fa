@@ -8,6 +8,7 @@ import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { toast as sonnerToast } from "sonner";
 
 import { useProfile } from "@/hooks/useProfile";
+import { useWelcomeAudio } from "@/hooks/useWelcomeAudio";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,6 +54,8 @@ const isHealthcare = (industry: IndustryType) => industry === "healthcare";
 const isRailways = (industry: IndustryType) => industry === "railways";
 
 const Dashboard = () => {
+  // Phase 7 — play welcome audio once per browser session
+  useWelcomeAudio();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, signOut } = useAuth();

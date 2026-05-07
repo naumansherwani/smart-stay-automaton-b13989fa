@@ -360,3 +360,70 @@ export const createPaymentsCheckout = (body: {
 export async function cancelPlan(): Promise<PlanMeData> {
   return request<PlanMeData>("DELETE", "/payments/cancel");
 }
+
+/* ──────────────────────────────────────────────────────────
+ * Phase 6 — Payment History
+ * GET /api/payments/me  → list of past payments (newest first server-side OK)
+ * Amount field is in pence/cents.
+ * ────────────────────────────────────────────────────────── */
+
+export interface PaymentHistoryItem {
+  id?: string;
+  date: string;          // ISO timestamp
+  plan: string;          // plan label
+  amount: number;        // pence
+  currency?: string;     // "gbp" | "usd" etc.
+  status: "paid" | "pending" | "failed" | string;
+}
+
+export interface PaymentsMeResponse {
+  payments: PaymentHistoryItem[];
+}
+
+export const fetchPaymentHistory = () =>
+  apiGet<PaymentsMeResponse>("/payments/me");
+
+/* ──────────────────────────────────────────────────────────
+ * Phase 7 — Voice (ElevenLabs TTS via Replit)
+ * GET  /api/voice/config   (no auth)  → settings
+ * GET  /api/voice/welcome  (no auth)  → welcome audio buffer (mp3)
+ * POST /api/voice/speak    (auth)     → audio buffer (mp3) for given text
+ * Voice errors are silent — UI hides icon, never toasts.
+ * ────────────────────────────────────────────────────────── */
+
+function voiceUrl(path: string) {
+  return `${API_BASE}${path}`;
+}
+
+/** Fetch welcome audio buffer. Returns null on any failure (silent). */
+export async function fetchVoiceWelcomeBuffer(): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(voiceUrl("/voice/welcome"));
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
+}
+
+/** POST /voice/speak — returns audio buffer or null on any failure. */
+export async function fetchVoiceSpeakBuffer(
+  text: string,
+  voiceId?: string
+): Promise<ArrayBuffer | null> {
+  try {
+    const auth = await getAuthHeader();
+    const res = await fetch(voiceUrl("/voice/speak"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...auth,
+      },
+      body: JSON.stringify(voiceId ? { text, voice_id: voiceId } : { text }),
+    });
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
+}

@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { toast } from "@/hooks/use-toast";
 import { streamOwnerAdvisor, ApiError } from "@/lib/api";
 import { useConversationCap } from "@/hooks/useConversationCap";
+import ChatSpeakerButton from "@/components/chat/ChatSpeakerButton";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -102,6 +103,11 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
                   : "bg-[var(--fos-card)] text-[var(--fos-text)]"
               }`}>
                 <ReactMarkdown>{m.content || (loading && i === messages.length - 1 ? "…" : "")}</ReactMarkdown>
+                {m.role === "assistant" && m.content?.trim() && (
+                  <div className="mt-1">
+                    <ChatSpeakerButton text={m.content} />
+                  </div>
+                )}
               </div>
             </div>
           ))}

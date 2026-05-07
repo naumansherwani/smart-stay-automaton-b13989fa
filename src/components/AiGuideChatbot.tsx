@@ -10,6 +10,7 @@ import { streamAdvisor, API_BASE, ApiError } from "@/lib/api";
 import { handleApiError } from "@/lib/handleApiError";
 import { useProfile } from "@/hooks/useProfile";
 import { useConversationCap } from "@/hooks/useConversationCap";
+import ChatSpeakerButton from "@/components/chat/ChatSpeakerButton";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -340,8 +341,13 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
                   }`}
                 >
                   {msg.role === "assistant" ? (
-                    <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    <div className="space-y-1.5">
+                      <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                      {msg.content?.trim() && (
+                        <ChatSpeakerButton text={msg.content} className="-ml-1" />
+                      )}
                     </div>
                   ) : (
                     msg.content
