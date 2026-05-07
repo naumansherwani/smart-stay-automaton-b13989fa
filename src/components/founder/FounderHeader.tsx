@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, Mail, Crown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import FounderNotifications from "./FounderNotifications";
 
@@ -15,22 +14,7 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
   const { user } = useAuth();
   const navigate = useNavigate();
   const [now, setNow] = useState(new Date());
-  const [unreadMail, setUnreadMail] = useState<number>(0);
   useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id); }, []);
-
-  // Live unread mailbox count from Zoho via owner-mailbox edge function
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const { data } = await supabase.functions.invoke("owner-mailbox", { body: { action: "counts" } });
-        if (!cancelled && data?.ok && data?.data?.inbox?.unread != null) setUnreadMail(data.data.inbox.unread);
-      } catch {}
-    };
-    load();
-    const id = setInterval(load, 60000);
-    return () => { cancelled = true; clearInterval(id); };
-  }, []);
 
   return (
     <header className="founder-header sticky top-0 z-30 h-[72px] flex items-center justify-between px-6 gap-4">
@@ -62,15 +46,10 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
         <button
           onClick={() => onSelect ? onSelect("emails") : navigate("/owner/email")}
           className="relative w-9 h-9 rounded-lg bg-[var(--fos-card)] border border-[var(--fos-border)] hover:border-[var(--fos-accent)]/40 flex items-center justify-center text-[var(--fos-muted)] hover:text-[var(--fos-text)] transition-colors"
-          aria-label="Owner Inbox"
-          title="Owner Inbox"
+          aria-label="Compose Email"
+          title="Compose Email"
         >
           <Mail className="w-4 h-4" />
-          {unreadMail > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-[var(--fos-accent)] text-[#0B1120] text-[9px] font-bold flex items-center justify-center tabular-nums">
-              {unreadMail > 99 ? "99+" : unreadMail}
-            </span>
-          )}
         </button>
 
         <FounderNotifications />
