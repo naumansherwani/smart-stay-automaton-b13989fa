@@ -3,6 +3,7 @@ import { Plus, Search, Mail, Crown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import FounderNotifications from "./FounderNotifications";
+import { useOwnerMailbox } from "@/hooks/useOwnerMailbox";
 
 const TZ = [
   { city: "London", tz: "Europe/London" },
@@ -14,6 +15,8 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
   const { user } = useAuth();
   const navigate = useNavigate();
   const [now, setNow] = useState(new Date());
+  const mailbox = useOwnerMailbox("inbox", "");
+  const unread = mailbox.counts.inbox?.unread || 0;
   useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id); }, []);
 
   return (
@@ -50,6 +53,11 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
           title="Compose Email"
         >
           <Mail className="w-4 h-4" />
+          {unread > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[var(--fos-accent)] text-[#0B1120] text-[10px] font-bold flex items-center justify-center">
+              {unread > 9 ? "9+" : unread}
+            </span>
+          )}
         </button>
 
         <FounderNotifications />
