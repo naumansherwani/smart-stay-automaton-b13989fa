@@ -461,3 +461,116 @@ export const getWhatsAppConnection = () =>
 
 export const disconnectWhatsApp = () =>
   request<{ disconnected: boolean }>("DELETE", "/crm/whatsapp/connection");
+
+/* ──────────────────────────────────────────────────────────
+ * Revenue Intelligence — founder-only.
+ * All requests use surface=dashboard. 403 → hide page.
+ * ────────────────────────────────────────────────────────── */
+
+export interface IntelligenceReport {
+  id: string;
+  periodLabel: string;
+  periodType: string;
+  status: "generating" | "ready" | "failed";
+  confidenceScore: number;
+  createdAt: string;
+  s1_executive_summary: string;
+  s2_revenue_impact: {
+    revenueGrowthEstimate?: string;
+    conversionImprovements?: string;
+    bookingIncreases?: string;
+    occupancyImprovements?: string;
+    repeatCustomerGrowth?: string;
+    aiAssistedUpsells?: string;
+    abandonedRecoveries?: string;
+    totalRevenueImpact?: string;
+    confidenceNote?: string;
+  };
+  s3_cost_savings: {
+    vsMarketplaceFees?: string;
+    vsManualSupport?: string;
+    vsExternalAICRM?: string;
+    operationalEfficiency?: string;
+    automationImpact?: string;
+    totalSavingsEstimate?: string;
+    savingsConfidence?: number;
+  };
+  s4_ai_resolution_metrics: {
+    totalAiCallsThisPeriod?: number;
+    avgResolutionTime?: string;
+    aiFirstResolutionRate?: string;
+    sherlockEscalationRate?: string;
+    automationPercentage?: string;
+    engagementTrend?: string;
+    topEndpoints?: { endpoint: string; count: number }[];
+    channelBreakdown?: { chat?: number | string; email?: number | string; whatsapp?: number | string };
+    advisorEffectiveness?: { advisor: string; interactions: number; industry: string }[];
+  };
+  s5_recovery_engine: {
+    paymentRecoveries?: string;
+    abandonedWorkflows?: string;
+    customerRetentionSaves?: string;
+    aiInterventionCount?: number;
+    recoveredRevenueEstimate?: string;
+    preventedChurnValue?: string;
+    operationalContinuity?: string;
+  };
+  s6_industry_advisor_insights: {
+    industry: string;
+    advisor: string;
+    interactions: number;
+    memoriesExtracted: number;
+    topInsight: string;
+    performanceNote: string;
+  }[];
+  s7_sherlock_strategic_notes: string;
+  s8_growth_recommendations: {
+    strategicGrowthRec?: { title: string; detail: string; estimatedImpact: string };
+    operationalWarning?: { title: string; detail: string; urgency: "immediate" | "this_week" | "this_month" };
+    missedOpportunity?: { title: string; detail: string; potentialValue: string };
+    revenueOptimization?: { title: string; prediction: string; triggerCondition: string };
+  };
+  s9_forecast_next_month: {
+    expectedGrowthRange?: string;
+    keyDrivers?: string[];
+    watchItems?: string[];
+    recommendedActions?: string[];
+    confidenceLevel?: number | string;
+  };
+  s10_net_business_impact: {
+    totalRevenueImpact?: string;
+    totalCostSavings?: string;
+    totalROIEstimate?: string;
+    hostflowValueScore?: number;
+    verdictOneLiner?: string;
+  };
+}
+
+export interface RevenueSummary {
+  [k: string]: unknown;
+}
+
+export const fetchLatestIntelligenceReport = () =>
+  apiGet<IntelligenceReport>("/intelligence-reports/latest");
+
+export const fetchIntelligenceReportById = (id: string) =>
+  apiGet<IntelligenceReport>(`/intelligence-reports/${id}`);
+
+export const generateIntelligenceReport = () =>
+  apiPost<{ id: string; status: string; period?: string }>(
+    "/intelligence-reports/generate",
+    { sendEmail: false }
+  );
+
+export const emailIntelligenceReport = (id: string) =>
+  apiPost<{ sent: boolean }>(`/intelligence-reports/${id}/email`, {});
+
+export const fetchRevenueReportsSummary = () =>
+  apiGet<RevenueSummary>("/revenue-reports/summary");
+
+/** Build SSE URL for live intelligence feed. Use with `new EventSource(url)`. */
+export function liveStreamUrl(): string {
+  // /v1/stream lives at the Replit origin (sibling of /api).
+  const origin = API_BASE.replace(/\/api\/?$/, "");
+  return `${origin}/v1/stream`;
+}
