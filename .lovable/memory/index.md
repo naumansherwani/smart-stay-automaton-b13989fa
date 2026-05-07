@@ -28,3 +28,5 @@ Payments: Paddle FULLY REMOVED Apr 2026. No provider integrated. Checkout shows 
 - [AI usage caps](mem://features/ai-usage-caps) — Per-plan AI message/voice/feature limits (Basic/Standard/Premium)
 - [Never-mix rules](mem://constraints/never-mix-rules) — 6 strict server-side isolation rules (industry/plan/sub-type)
 - [Replit backend contract](mem://features/replit-backend-contract) — Auth, plan enforcement, industry isolation, SSE format
+
+- [Revenue Intelligence contract](mem://features/revenue-intelligence-contract) — Exact Replit API endpoints, JSON keys, SSE events for Revenue Intelligence section
