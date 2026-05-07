@@ -48,19 +48,6 @@ type MailboxLogRow = {
   created_at: string;
 };
 
-const FOLDER_STATUS_MAP: Record<MailFolder, string[] | null> = {
-  inbox: ["sent", "pending", "failed", "suppressed", "bounced", "complained", "dlq"],
-  priority: ["failed", "bounced", "complained", "dlq"],
-  unread: ["pending", "failed", "bounced", "complained", "dlq"],
-  sent: ["sent"],
-  drafts: null,
-  scheduled: ["pending"],
-  starred: null,
-  archive: [],
-  spam: ["complained", "suppressed"],
-  trash: [],
-};
-
 function titleCase(input: string) {
   return input
     .replace(/[_-]+/g, " ")
