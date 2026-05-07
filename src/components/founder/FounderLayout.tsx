@@ -8,6 +8,7 @@ const TITLES: Record<FounderSection, string> = {
   crm: "Enterprise CRM", emails: "AI Email Center",
   security: "Security", tasks: "Tasks", ai: "AI Advisor", sherlock: "Sherlock",
   analytics: "Analytics", settings: "Settings", profile: "Founder Profile",
+  revenue_intel: "Revenue Intelligence",
 };
 
 export default function FounderLayout({ active, onSelect, children }: { active: FounderSection; onSelect: (s: FounderSection) => void; children: ReactNode }) {
