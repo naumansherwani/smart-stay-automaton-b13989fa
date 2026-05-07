@@ -12,6 +12,8 @@ import Emails from "@/components/founder/sections/Emails";
 import Security from "@/components/founder/sections/Security";
 import Tasks from "@/components/founder/sections/Tasks";
 import AIAdviser from "@/components/founder/sections/AIAdviser";
+import Sherlock from "@/components/founder/sections/Sherlock";
+import { useAuth } from "@/hooks/useAuth";
 import Analytics from "@/components/founder/sections/Analytics";
 import Settings from "@/components/founder/sections/Settings";
 import FounderProfile from "@/components/founder/sections/FounderProfile";
@@ -19,7 +21,11 @@ import FounderProfile from "@/components/founder/sections/FounderProfile";
 export default function FounderOS() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const validSections: FounderSection[] = ["overview","executive","revenue","customers","leads","crm","emails","tasks","ai","analytics","security","settings","profile"];
+  const { user } = useAuth();
+  const SHERLOCK_USER_ID = "d089432d-5d6b-416e-bd29-abe913121d99";
+  const [sherlockHidden, setSherlockHidden] = useState(false);
+  const sherlockAllowed = user?.id === SHERLOCK_USER_ID && !sherlockHidden;
+  const validSections: FounderSection[] = ["overview","executive","revenue","customers","leads","crm","emails","tasks","ai","sherlock","analytics","security","settings","profile"];
   const rawSection = searchParams.get("section");
   // Backward-compat: old "arc" links open the AI Co-Owner (Autopilot lives inside it)
   const sectionParam = (rawSection === "arc" ? "ai" : rawSection) as FounderSection | null;
@@ -42,6 +48,9 @@ export default function FounderOS() {
       {active === "security" && <Security />}
       {active === "tasks" && <Tasks />}
       {active === "ai" && <AIAdviser />}
+      {active === "sherlock" && sherlockAllowed && (
+        <Sherlock onForbidden={() => setSherlockHidden(true)} />
+      )}
       {active === "analytics" && <Analytics />}
       {active === "settings" && <Settings />}
       {active === "profile" && <FounderProfile />}
