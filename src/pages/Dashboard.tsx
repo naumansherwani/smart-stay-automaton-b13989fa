@@ -41,6 +41,7 @@ import { useTrialLimits } from "@/hooks/useTrialLimits";
 import AppLayout from "@/components/app/AppLayout";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 import UsageCard from "@/components/dashboard/UsageCard";
+import ResolutionHub from "@/components/dashboard/ResolutionHub";
 
 
 const isAirlines = (industry: IndustryType) => industry === "airlines";
