@@ -10,6 +10,7 @@ import { streamAdvisor, API_BASE, ApiError } from "@/lib/api";
 import { handleApiError } from "@/lib/handleApiError";
 import { useProfile } from "@/hooks/useProfile";
 import { useConversationCap } from "@/hooks/useConversationCap";
+import ChatSpeakerButton from "@/components/chat/ChatSpeakerButton";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
