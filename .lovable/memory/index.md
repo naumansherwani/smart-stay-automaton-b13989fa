@@ -29,3 +29,4 @@ Backend split: Lovable Cloud = DB of record + auth + storage + email (Resend) + 
 - [Advisor architecture](mem://features/advisor-architecture) — platform-knowledge.ts → 8 industry advisors → Sherlock auto-import chain
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
+- [AI Email Center hands-off](mem://constraints/ai-email-center-handsoff) — Lovable must not touch email backend/data; Replit owns it. UI/UX only on request.
