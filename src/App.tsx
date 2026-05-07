@@ -293,9 +293,8 @@ const BrainBridge = () => {
             "supabase/functions/ai-guide-chat/index.ts — domain refs updated.",
             "supabase/functions/contact-form/index.ts — sends to naumankhansherwani@gmail.com & naumansherwani@hostflowai.net; no public support@.",
             "supabase/functions/founder-adviser/index.ts — domain + owner email refs updated.",
-            "supabase/functions/owner-mailbox/index.ts — owner identity bound to .net.",
             "supabase/functions/send-transactional-email/index.ts — from/reply-to addresses updated to .net.",
-            "supabase/functions/zoho-smtp-send/index.ts — SMTP identity updated to .net.",
+            "supabase/functions/resend-send/index.ts — Resend-only sender (Zoho fully removed May 2026).",
             "All other edge functions untouched until Replit migrates them.",
           ],
           notification_routing: {

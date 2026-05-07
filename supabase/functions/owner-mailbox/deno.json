@@ -1,8 +1,0 @@
-{
-  "nodeModulesDir": "auto",
-  "imports": {
-    "imapflow": "npm:imapflow@1.0.164",
-    "nodemailer": "npm:nodemailer@6.9.14",
-    "mailparser": "npm:mailparser@3.7.1"
-  }
-}
