@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { REPLIT_INBOX_URL, type ReplitInboxEmail } from "@/lib/replitInbox";
-
-async function getJwt(): Promise<string | null> {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? null;
-}
+import { type ReplitInboxEmail } from "@/lib/replitInbox";
+import { REPLIT_URL, getAuthToken } from "@/lib/replitAuth";
 
 export function useAgentInbox(toFilter?: string) {
   const [emails, setEmails] = useState<ReplitInboxEmail[]>([]);
@@ -20,7 +16,7 @@ export function useAgentInbox(toFilter?: string) {
     try {
       const jwt = await getJwt();
       if (!jwt) throw new Error("Not authenticated");
-      const url = new URL(`${REPLIT_INBOX_URL}/api/email/inbox`);
+      const url = new URL(`${REPLIT_URL}/api/email/inbox`);
       if (toFilter) url.searchParams.set("to", toFilter);
       const res = await fetch(url.toString(), {
         headers: { Authorization: `Bearer ${jwt}` },
@@ -49,7 +45,7 @@ export function useAgentInbox(toFilter?: string) {
       try {
         esRef.current?.close();
         const src = new EventSource(
-          `${REPLIT_INBOX_URL}/api/email/inbox/stream?token=${encodeURIComponent(jwt)}`
+          `${REPLIT_URL}/api/email/inbox/stream?token=${encodeURIComponent(jwt)}`
         );
         esRef.current = src;
         src.addEventListener("inbox.new_email", (e: MessageEvent) => {
@@ -95,7 +91,7 @@ export function useAgentInbox(toFilter?: string) {
     setEmails((prev) => prev.map((m) => (m.id === id ? { ...m, isRead: true } : m)));
     try {
       const jwt = await getJwt();
-      await fetch(`${REPLIT_INBOX_URL}/api/email/inbox/${id}/read`, {
+      await fetch(`${REPLIT_URL}/api/email/inbox/${id}/read`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${jwt}` },
       });
@@ -108,7 +104,7 @@ export function useAgentInbox(toFilter?: string) {
     async (payload: { to: string; subject: string; text: string; from_name: string; from_email: string }) => {
       const jwt = await getJwt();
       if (!jwt) throw new Error("Not authenticated");
-      const res = await fetch(`${REPLIT_INBOX_URL}/api/email/send`, {
+      const res = await fetch(`${REPLIT_URL}/api/email/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
