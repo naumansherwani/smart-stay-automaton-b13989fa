@@ -379,6 +379,7 @@ export default function AIAdviser() {
       setBackendHealthy(false);
       // Standard global handler — toasts via sonner per spec.
       handleApiError(e);
+      const friendly = (e as any)?.message || "Connection hiccup — please try again in a moment.";
       await supabase.from("founder_ai_messages").insert({
         conversation_id: convId,
         user_id: user.id,
