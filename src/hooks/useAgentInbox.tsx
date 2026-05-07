@@ -13,6 +13,7 @@ export function useAgentInbox(toFilter?: string) {
   const [error, setError] = useState<string | null>(null);
   const esRef = useRef<EventSource | null>(null);
   const pollRef = useRef<number | null>(null);
+  const reconnectRef = useRef<number | null>(null);
 
   const fetchInbox = useCallback(async () => {
     setError(null);
@@ -39,34 +40,54 @@ export function useAgentInbox(toFilter?: string) {
     setLoading(true);
     void fetchInbox();
 
-    // SSE realtime stream (only for "All Inboxes" view; per-tab still gets stream-wide events but filters client-side)
-    try {
-      const src = new EventSource(`${REPLIT_INBOX_URL}/api/email/inbox/stream`);
-      esRef.current = src;
-      src.addEventListener("inbox.new_email", (e: MessageEvent) => {
-        try {
-          const email: ReplitInboxEmail = JSON.parse(e.data);
-          if (toFilter && email.toAddress?.toLowerCase() !== toFilter.toLowerCase()) return;
-          setEmails((prev) => [email, ...prev.filter((m) => m.id !== email.id)]);
-        } catch {
-          /* ignore malformed */
-        }
-      });
-      src.onerror = () => {
-        // allow browser auto-reconnect; do not surface as fatal
-      };
-    } catch {
-      /* SSE not available */
-    }
+    // SSE realtime stream — JWT-protected via ?token= query param.
+    let cancelled = false;
+    const connect = async () => {
+      if (cancelled) return;
+      const jwt = await getJwt();
+      if (!jwt || cancelled) return;
+      try {
+        esRef.current?.close();
+        const src = new EventSource(
+          `${REPLIT_INBOX_URL}/api/email/inbox/stream?token=${encodeURIComponent(jwt)}`
+        );
+        esRef.current = src;
+        src.addEventListener("inbox.new_email", (e: MessageEvent) => {
+          try {
+            const email: ReplitInboxEmail = JSON.parse(e.data);
+            if (toFilter && email.toAddress?.toLowerCase() !== toFilter.toLowerCase()) return;
+            setEmails((prev) => [email, ...prev.filter((m) => m.id !== email.id)]);
+          } catch {
+            /* ignore malformed */
+          }
+        });
+        src.onerror = () => {
+          // Token may have expired — close and reconnect with a fresh session token.
+          src.close();
+          if (cancelled) return;
+          if (reconnectRef.current) window.clearTimeout(reconnectRef.current);
+          reconnectRef.current = window.setTimeout(() => {
+            // Force-refresh session so we don't reuse a stale token.
+            supabase.auth.getSession().then(() => connect());
+          }, 2000);
+        };
+      } catch {
+        /* SSE not available */
+      }
+    };
+    void connect();
 
     // Fallback periodic refresh (60s) in case SSE drops silently
     pollRef.current = window.setInterval(() => void fetchInbox(), 60_000);
 
     return () => {
+      cancelled = true;
       esRef.current?.close();
       esRef.current = null;
       if (pollRef.current) window.clearInterval(pollRef.current);
       pollRef.current = null;
+      if (reconnectRef.current) window.clearTimeout(reconnectRef.current);
+      reconnectRef.current = null;
     };
   }, [fetchInbox, toFilter]);
 
