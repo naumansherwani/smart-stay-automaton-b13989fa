@@ -175,7 +175,7 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
   }
 
   async function handleSend(payload: any) {
-    const { data, error } = await supabase.functions.invoke("owner-mailbox", { body: { action: "send", ...payload } });
+    const { data, error } = await supabase.functions.invoke("resend-send", { body: { action: "send", ...payload } });
     if (error) throw new Error(error.message);
     if (!data?.ok) throw new Error(data?.error || "Send failed");
     if (lead) {

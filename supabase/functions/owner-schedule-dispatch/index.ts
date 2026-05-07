@@ -1,5 +1,5 @@
 // Owner Scheduled Email Dispatcher — runs every minute via pg_cron
-// Picks pending owner_scheduled_emails that are due and sends them via owner-mailbox
+// Picks pending owner_scheduled_emails that are due and sends them via resend-send
 import { createClient } from "npm:@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     let sent = 0, failed = 0;
     for (const m of due) {
       try {
-        const r = await fetch(`${SUPABASE_URL}/functions/v1/owner-mailbox`, {
+        const r = await fetch(`${SUPABASE_URL}/functions/v1/resend-send`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${SERVICE_ROLE}` },
           body: JSON.stringify({
@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
             to: m.to_addr, cc: m.cc || undefined, bcc: m.bcc || undefined,
             subject: m.subject, html: m.html,
             inReplyTo: m.in_reply_to || undefined, references: m.ref_headers || undefined,
+            fromIdentity: m.from_identity || "general",
           }),
         });
         const j = await r.json();

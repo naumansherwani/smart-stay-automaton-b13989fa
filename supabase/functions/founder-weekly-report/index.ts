@@ -52,8 +52,8 @@ serve(async (req) => {
       const { report } = await reportRes.json();
       if (!report?.subject) continue;
 
-      // Send via existing transactional email pipeline (zoho-smtp-send)
-      const sendRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/zoho-smtp-send`, {
+      // Send via Resend
+      const sendRes = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/resend-send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,6 +64,7 @@ serve(async (req) => {
           subject: report.subject,
           html: report.body_html || `<pre>${report.body_text || ""}</pre>`,
           text: report.body_text || "",
+          fromIdentity: "general",
         }),
       });
       if (sendRes.ok) {

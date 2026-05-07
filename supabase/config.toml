@@ -17,9 +17,6 @@ verify_jwt = false
 [functions.founder-adviser]
 verify_jwt = false
 
-[functions.owner-mailbox]
-verify_jwt = false
-
 [functions.owner-email-ai]
 verify_jwt = false
 
@@ -29,7 +26,7 @@ verify_jwt = false
 [functions.polar-create-checkout]
 verify_jwt = true
 
-[functions.zoho-smtp-send]
+[functions.resend-send]
 verify_jwt = false
 
 [functions.contact-form]

@@ -1,6 +1,5 @@
-// Contact form handler: notifies owner + auto-replies to lead via Zoho SMTP.
+// Contact form handler: notifies owner + auto-replies to lead via Resend.
 // deno-lint-ignore-file no-explicit-any
-import nodemailer from "npm:nodemailer@6.9.14";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,19 +7,28 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const ZOHO_EMAIL = (Deno.env.get("ZOHO_EMAIL") || "naumansherwani@hostflowai.net").trim();
-const ZOHO_APP_PASSWORD = (Deno.env.get("ZOHO_APP_PASSWORD") || "").replace(/\s+/g, "");
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
+const FROM_EMAIL = "noreply@hostflowai.net";
 const FROM_NAME = "HostFlow AI";
-const OWNER_EMAIL = ZOHO_EMAIL;
+const OWNER_EMAIL = "naumansherwani@hostflowai.net";
+const NOTIFY_GMAIL = "naumankhansherwani@gmail.com";
 
-function buildTransport() {
-  return nodemailer.createTransport({
-    host: "smtp.zoho.com",
-    port: 465,
-    secure: true,
-    auth: { user: ZOHO_EMAIL, pass: ZOHO_APP_PASSWORD },
-    tls: { minVersion: "TLSv1.2" },
+async function resendSend(payload: { to: string | string[]; subject: string; html: string; text?: string; replyTo?: string }) {
+  const r = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: `${FROM_NAME} <${FROM_EMAIL}>`,
+      to: Array.isArray(payload.to) ? payload.to : [payload.to],
+      subject: payload.subject,
+      html: payload.html,
+      text: payload.text,
+      reply_to: payload.replyTo,
+    }),
   });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j?.message || "Resend send failed");
+  return j;
 }
 
 function escapeHtml(s: string): string {
@@ -31,9 +39,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    if (!ZOHO_APP_PASSWORD) {
+    if (!RESEND_API_KEY) {
       return new Response(
-        JSON.stringify({ ok: false, error: "Email service is not configured (missing ZOHO_APP_PASSWORD)" }),
+        JSON.stringify({ ok: false, error: "Email service is not configured (missing RESEND_API_KEY)" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -57,8 +65,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    const transport = buildTransport();
-
     // 1) Notify owner
     const ownerHtml = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:24px;border-radius:12px">
@@ -75,15 +81,14 @@ Deno.serve(async (req) => {
     let ownerOk = false;
     let ownerError: string | null = null;
     try {
-      const info = await transport.sendMail({
-        from: `"${FROM_NAME}" <${ZOHO_EMAIL}>`,
-        to: OWNER_EMAIL,
-        replyTo: `"${name}" <${email}>`,
+      const info = await resendSend({
+        to: [OWNER_EMAIL, NOTIFY_GMAIL],
+        replyTo: email,
         subject: `[Contact] ${subject}`,
         html: ownerHtml,
         text: `New contact from ${name} <${email}>\nSubject: ${subject}\n\n${message}`,
       });
-      ownerOk = !!info.messageId;
+      ownerOk = !!info.id;
     } catch (e: any) {
       ownerError = e?.message || String(e);
     }
@@ -104,15 +109,14 @@ Deno.serve(async (req) => {
     let replyOk = false;
     let replyError: string | null = null;
     try {
-      const info = await transport.sendMail({
-        from: `"${FROM_NAME}" <${ZOHO_EMAIL}>`,
+      const info = await resendSend({
         to: email,
-        replyTo: ZOHO_EMAIL,
+        replyTo: OWNER_EMAIL,
         subject: `We received your message · HostFlow AI`,
         html: replyHtml,
         text: `Hi ${name},\n\nThanks for reaching out! We received your message and will respond within 24 hours.\n\nYour message:\n${message}\n\n— Nauman Sherwani\nFounder, HostFlow AI Technologies`,
       });
-      replyOk = !!info.messageId;
+      replyOk = !!info.id;
     } catch (e: any) {
       replyError = e?.message || String(e);
     }

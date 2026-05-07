@@ -14,11 +14,11 @@ export default function Settings() {
     setTesting(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("zoho-smtp-send", {
+      const { data, error } = await supabase.functions.invoke("resend-send", {
         body: { action: "test", to: testEmail },
       });
       if (error) throw new Error(error.message);
-      if (!data?.ok) throw new Error(data?.error || "SMTP send failed");
+      if (!data?.ok) throw new Error(data?.error || "Resend send failed");
       setResult({ ok: true, msg: `✓ Test email sent to ${testEmail} (id: ${data.messageId || "n/a"})` });
       toast.success("Test email sent successfully");
     } catch (e: any) {
@@ -49,10 +49,10 @@ export default function Settings() {
 
       <div className="founder-card p-6">
         <h3 className="text-[var(--fos-text)] font-semibold text-sm mb-1 flex items-center gap-2">
-          <Mail className="w-4 h-4 text-[var(--fos-accent)]" /> Email System (Zoho SMTP)
+          <Mail className="w-4 h-4 text-[var(--fos-accent)]" /> Email System (Resend)
         </h3>
         <p className="text-[var(--fos-muted)] text-xs mb-4">
-          smtp.zoho.com:587 · STARTTLS · From: <span className="text-[var(--fos-text)] font-semibold">Founder Mailbox</span>
+          api.resend.com · From: <span className="text-[var(--fos-text)] font-semibold">noreply@hostflowai.net</span> · Domain: hostflowai.net (DNS verified)
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <input
