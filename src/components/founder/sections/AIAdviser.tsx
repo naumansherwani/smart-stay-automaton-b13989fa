@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import ArcEngine from "./ArcEngine";
 import { toast } from "@/hooks/use-toast";
 import { streamOwnerAdvisor, ApiError } from "@/lib/api";
+import { handleApiError } from "@/lib/handleApiError";
 
 const QUICK = [
   "What should I focus on today?",
@@ -375,16 +376,9 @@ export default function AIAdviser() {
       if (ticket.cancelled) return;
       if ((e as any)?.name === "AbortError") return;
       if (e instanceof ApiError && (e.code === "AI_LIMIT_REACHED" || e.code === "INDUSTRY_MISMATCH")) return;
-      console.error(e);
       setBackendHealthy(false);
-      const status = (e as any)?.status;
-      const friendly =
-        status === 429
-          ? "⏱️ A bit too fast — wait ~30 seconds and ask again."
-          : status === 403
-          ? "🔒 Auth issue. Please refresh the page and sign in again."
-          : (e as any)?.message || "Connection hiccup — please try again in a moment.";
-      toast({ title: "Advisor error", description: friendly, variant: "destructive" });
+      // Standard global handler — toasts via sonner per spec.
+      handleApiError(e);
       await supabase.from("founder_ai_messages").insert({
         conversation_id: convId,
         user_id: user.id,
