@@ -62,6 +62,20 @@ function buildUrl(path: string): string {
   return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/**
+ * Detect the current surface from the URL path.
+ * Backend uses this to enforce dashboard-vs-CRM access:
+ *   X-HostFlow-Surface: dashboard → all plans allowed
+ *   X-HostFlow-Surface: crm       → Premium plan only (else CRM_PREMIUM_ONLY 403)
+ * Wrong surface → SURFACE_MISMATCH 403. Header missing = fail-open (backwards compat).
+ */
+function detectSurface(): "dashboard" | "crm" {
+  if (typeof window === "undefined") return "dashboard";
+  const p = window.location.pathname;
+  if (p.startsWith("/crm") || p.startsWith("/owner-crm")) return "crm";
+  return "dashboard";
+}
+
 /** Handle 429 / 403 globally so callers don't have to repeat the logic. */
 async function handleStatusErrors(envelope: ApiEnvelope<unknown>, status: number) {
   const code = envelope.error?.code || "UNKNOWN";
@@ -71,6 +85,22 @@ async function handleStatusErrors(envelope: ApiEnvelope<unknown>, status: number
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("hf:ai-limit", {
         detail: { upgrade_to: upgradeTo, message: envelope.error?.message, trace_id: envelope.trace_id },
+      }));
+    }
+  }
+
+  if (status === 403 && code === "CRM_PREMIUM_ONLY") {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("hf:crm-premium-only", {
+        detail: { message: envelope.error?.message, trace_id: envelope.trace_id },
+      }));
+    }
+  }
+
+  if (status === 403 && code === "SURFACE_MISMATCH") {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("hf:surface-mismatch", {
+        detail: { message: envelope.error?.message, trace_id: envelope.trace_id },
       }));
     }
   }
@@ -104,7 +134,10 @@ async function parseEnvelope<T>(resp: Response): Promise<ApiEnvelope<T>> {
 
 async function request<T>(method: string, path: string, body?: unknown, opts: { auth?: boolean } = {}): Promise<T> {
   const auth = opts.auth !== false;
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "X-HostFlow-Surface": detectSurface(),
+  };
   if (auth) Object.assign(headers, await getAuthHeader());
 
   const resp = await fetch(buildUrl(path), {
@@ -181,6 +214,7 @@ async function streamSSE(path: string, body: unknown, handlers: StreamHandlers) 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "text/event-stream",
+    "X-HostFlow-Surface": detectSurface(),
     ...(await getAuthHeader()),
   };
 
