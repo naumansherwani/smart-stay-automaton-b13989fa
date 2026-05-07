@@ -44,9 +44,13 @@ type MailboxLogRow = {
   template_name: string;
   status: string;
   error_message: string | null;
-  metadata: any;
+  metadata: Record<string, unknown> | null;
   created_at: string;
 };
+
+function getMetadata(row: MailboxLogRow): Record<string, unknown> {
+  return row.metadata && typeof row.metadata === "object" && !Array.isArray(row.metadata) ? row.metadata : {};
+}
 
 function titleCase(input: string) {
   return input
@@ -55,7 +59,7 @@ function titleCase(input: string) {
 }
 
 function inferIdentity(row: MailboxLogRow): MailIdentity {
-  const metadata = row.metadata && typeof row.metadata === "object" ? row.metadata : {};
+  const metadata = getMetadata(row);
   const raw = String(metadata.fromIdentity || metadata.identity || "").toLowerCase();
   if (["advisor", "enterprise", "support", "billing", "general"].includes(raw)) {
     return raw as MailIdentity;
@@ -68,12 +72,12 @@ function inferIdentity(row: MailboxLogRow): MailIdentity {
 }
 
 function inferSubject(row: MailboxLogRow) {
-  const metadata = row.metadata && typeof row.metadata === "object" ? row.metadata : {};
+  const metadata = getMetadata(row);
   return String(metadata.subject || metadata.title || titleCase(row.template_name || row.status || "Email"));
 }
 
 function inferPreview(row: MailboxLogRow) {
-  const metadata = row.metadata && typeof row.metadata === "object" ? row.metadata : {};
+  const metadata = getMetadata(row);
   const raw = String(metadata.preview || metadata.text || metadata.body || row.error_message || "");
   const collapsed = raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   return collapsed || `${titleCase(row.status)} · ${row.recipient_email}`;
@@ -82,7 +86,7 @@ function inferPreview(row: MailboxLogRow) {
 function rowToListItem(row: MailboxLogRow): MailListItem {
   const identity = inferIdentity(row);
   const fromIdentity = MAIL_IDENTITIES.find((item) => item.id === identity) || MAIL_IDENTITIES[0];
-  const metadata = row.metadata && typeof row.metadata === "object" ? row.metadata : {};
+  const metadata = getMetadata(row);
 
   return {
     uid: Number.parseInt(row.id.replace(/-/g, "").slice(0, 12), 16),
@@ -103,7 +107,7 @@ function rowToListItem(row: MailboxLogRow): MailListItem {
 
 function rowToDetail(row: MailboxLogRow): MailDetail {
   const base = rowToListItem(row);
-  const metadata = row.metadata && typeof row.metadata === "object" ? row.metadata : {};
+  const metadata = getMetadata(row);
   const html = typeof metadata.html === "string" ? metadata.html : null;
   const text = String(metadata.text || metadata.body || row.error_message || "");
 
@@ -134,9 +138,9 @@ export function useOwnerMailbox(folder: MailFolder, search: string) {
       if (err) throw new Error(err.message);
       if (!data?.ok) throw new Error(data?.error || "Failed to load inbox");
       setRows(Array.isArray(data.data?.messages) ? data.data.messages : []);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setRows([]);
-      setError(e?.message || "Failed to load inbox");
+      setError(e instanceof Error ? e.message : "Failed to load inbox");
     } finally {
       setLoading(false);
     }
