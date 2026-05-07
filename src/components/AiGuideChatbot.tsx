@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { streamAdvisor, API_BASE, ApiError } from "@/lib/api";
 import { handleApiError } from "@/lib/handleApiError";
 import { useProfile } from "@/hooks/useProfile";
+import { useConversationCap } from "@/hooks/useConversationCap";
 
 type PageContext = "dashboard" | "crm" | "settings";
 type Msg = { role: "user" | "assistant"; content: string };
@@ -64,6 +65,7 @@ const QUICK_TOPICS: Record<PageContext, { label: string; question: string }[]> =
 
 export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProps) {
   const { profile } = useProfile();
+  const { remaining, showRemaining, increment } = useConversationCap();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -141,6 +143,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
       setMessages(allMessages);
       setInput("");
       setIsLoading(true);
+      increment();
 
       let assistantSoFar = "";
       const controller = new AbortController();
@@ -385,6 +388,11 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
             <p className="text-[10px] text-muted-foreground/50 text-center mt-2">
               AI-powered by HostFlow AI • {contextLabel} Guide
             </p>
+          {showRemaining && (
+            <p className="text-[10px] text-amber-600 dark:text-amber-400 text-center mt-1">
+              {remaining.toLocaleString()} conversations remaining
+            </p>
+          )}
           </form>
         </SheetContent>
       </Sheet>
