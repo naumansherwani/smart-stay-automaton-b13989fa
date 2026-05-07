@@ -282,7 +282,7 @@ serve(async (req) => {
       launch_caps_per_plan: launchCaps,
     };
 
-    // Owner email identities (Zoho-routed). All inboxes land in the founder mailbox.
+    // Owner email identities (Resend-routed). Single sender, replies route to founder mailbox.
     const ownerEmailIdentities = {
       primary_owner: "naumansherwani@hostflowai.net",
       ai_advisor_outbound: "connectai@hostflowai.net",
