@@ -3,6 +3,7 @@ import { Send, Loader2, Square, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "@/hooks/use-toast";
 import { streamOwnerAdvisor, ApiError } from "@/lib/api";
+import { useConversationCap } from "@/hooks/useConversationCap";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -27,6 +28,7 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
   const sessionId = useMemo(() => uuid(), []);
   const endRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const { remaining, showRemaining, increment } = useConversationCap();
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
 
@@ -36,6 +38,7 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     setLoading(true);
+    increment();
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -73,7 +76,7 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
       setLoading(false);
       abortRef.current = null;
     }
-  }, [input, loading, sessionId, onForbidden]);
+  }, [input, loading, sessionId, onForbidden, increment]);
 
   const stop = () => { try { abortRef.current?.abort(); } catch { /* noop */ } setLoading(false); };
 
@@ -138,6 +141,11 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
             </button>
           )}
         </div>
+        {showRemaining && (
+          <p className="text-[10px] text-amber-500 text-center mt-2">
+            {remaining.toLocaleString()} conversations remaining
+          </p>
+        )}
       </div>
     </div>
   );
