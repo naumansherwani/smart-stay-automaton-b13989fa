@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchPlanLimits, fetchMyPlan, type PlanLimitsResponse, type PlanMeResponse, type PlanKey } from "@/lib/api";
+import { handleApiError } from "@/lib/handleApiError";
 import { useAuth } from "./useAuth";
 
 /**
@@ -18,7 +19,7 @@ async function loadAllPlans(): Promise<PlanLimitsResponse | null> {
   if (inflightAllPlans) return inflightAllPlans;
   inflightAllPlans = fetchPlanLimits()
     .then((d) => { cachedAllPlans = d; return d; })
-    .catch(() => null)
+    .catch((e) => { handleApiError(e, { silent: true }); return null; })
     .finally(() => { inflightAllPlans = null; });
   return inflightAllPlans;
 }
@@ -41,7 +42,7 @@ export function usePlanLimits() {
       try {
         const meData = await fetchMyPlan();
         if (!cancelled) setMe(meData);
-      } catch { /* keep null */ }
+      } catch (e) { handleApiError(e, { silent: true }); }
       finally { if (!cancelled) setLoading(false); }
     })();
     return () => { cancelled = true; };
