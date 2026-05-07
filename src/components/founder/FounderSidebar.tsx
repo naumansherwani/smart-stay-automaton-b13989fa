@@ -15,7 +15,7 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "executive", label: "Executive HQ", icon: Crown },
   { id: "revenue", label: "Revenue", icon: TrendingUp },
-  { id: "revenue_intel", label: "Revenue Intelligence", icon: Activity },
+  { id: "revenue_intel", label: "AI Revenue Intelligence", icon: Activity },
   { id: "customers", label: "Customers", icon: Users },
   { id: "leads", label: "Leads", icon: Target },
   { id: "crm", label: "Enterprise CRM", icon: Briefcase },
