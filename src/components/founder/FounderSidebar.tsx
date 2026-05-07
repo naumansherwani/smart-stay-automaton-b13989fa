@@ -1,4 +1,4 @@
-import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail } from "lucide-react";
+import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Search } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
@@ -6,7 +6,9 @@ import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
   | "overview" | "executive" | "revenue" | "customers" | "leads" | "crm"
-  | "emails" | "tasks" | "ai" | "analytics" | "security" | "settings" | "profile";
+  | "emails" | "tasks" | "ai" | "sherlock" | "analytics" | "security" | "settings" | "profile";
+
+const SHERLOCK_USER_ID = "d089432d-5d6b-416e-bd29-abe913121d99";
 
 const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -18,6 +20,7 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
   { id: "emails", label: "AI Email Center", icon: Mail },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
   { id: "ai", label: "AI Advisor", icon: Sparkles },
+  { id: "sherlock", label: "Sherlock", icon: Search },
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "security", label: "Security", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Settings },
@@ -26,8 +29,10 @@ const items: { id: FounderSection; label: string; icon: any }[] = [
 
 export default function FounderSidebar({ active, onSelect }: { active: FounderSection; onSelect: (s: FounderSection) => void }) {
   const { mode, toggle } = useFounderTheme();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
+
+  const visibleItems = items.filter((it) => it.id !== "sherlock" || user?.id === SHERLOCK_USER_ID);
 
   return (
     <aside className="founder-sidebar fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40">
@@ -44,7 +49,7 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {items.map((it, i) => {
+        {visibleItems.map((it, i) => {
           const Icon = it.icon;
           const isActive = active === it.id;
           return (
