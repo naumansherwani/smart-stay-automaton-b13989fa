@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { streamAdvisor, API_BASE, ApiError } from "@/lib/api";
+import { handleApiError } from "@/lib/handleApiError";
 import { useProfile } from "@/hooks/useProfile";
 
 type PageContext = "dashboard" | "crm" | "settings";
@@ -210,7 +211,7 @@ export default function AiGuideChatbot({ context, industry }: AiGuideChatbotProp
           // Already handled by global handler in api.ts
           return;
         }
-        console.error("AI Guide error:", e);
+        handleApiError(e, { silent: true });
         setMessages((prev) => [
           ...prev,
           {

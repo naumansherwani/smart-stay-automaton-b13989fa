@@ -13,10 +13,10 @@ import EnterpriseContactDialog from "@/components/pricing/EnterpriseContactDialo
 import {
   fetchPaymentProducts,
   createPaymentsCheckout,
-  ApiError,
   type PaymentProduct,
   type PaymentsPlanKey,
 } from "@/lib/api";
+import { handleApiError } from "@/lib/handleApiError";
 
 type PlanMeta = {
   plan: PaymentsPlanKey;
@@ -138,7 +138,10 @@ export default function Pricing() {
     let cancelled = false;
     fetchPaymentProducts()
       .then((d) => { if (!cancelled) setProducts(d.products); })
-      .catch(() => { if (!cancelled) setProductsError("Pricing temporarily unavailable. Please refresh."); });
+      .catch((e) => {
+        if (!cancelled) setProductsError("Pricing temporarily unavailable. Please refresh.");
+        handleApiError(e, { silent: true });
+      });
     return () => { cancelled = true; };
   }, []);
 
@@ -166,13 +169,7 @@ export default function Pricing() {
       });
       window.location.href = data.checkout_url;
     } catch (e) {
-      const err = e as ApiError;
-      if (err?.status === 401) {
-        navigate("/login");
-        return;
-      }
-      if (err?.status === 429) toast.error("Too many requests, please wait a moment");
-      else toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
+      handleApiError(e);
     } finally {
       setLoadingPlan(null);
     }

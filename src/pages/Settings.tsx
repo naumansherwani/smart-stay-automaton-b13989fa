@@ -26,7 +26,8 @@ import { LANGUAGES } from "@/i18n";
 import { getUserAvatarUrl, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import AiGuideChatbot from "@/components/AiGuideChatbot";
 import RetentionWizard from "@/components/retention/RetentionWizard";
-import { cancelPlan, ApiError } from "@/lib/api";
+import { cancelPlan } from "@/lib/api";
+import { handleApiError } from "@/lib/handleApiError";
 
 const Settings = () => {
   const { t, i18n } = useTranslation();
@@ -85,9 +86,7 @@ const Settings = () => {
       const end = res?.current_period_end ? new Date(res.current_period_end).toLocaleDateString() : "your period end";
       toast.success(`Your plan will remain active until ${end}. After that it will revert to Trial.`);
     } catch (e) {
-      const err = e as ApiError;
-      if (err?.status === 401) { window.location.href = "/login"; return; }
-      toast.error("Something went wrong. Contact support: connectai@hostflowai.net");
+      handleApiError(e);
     }
   };
 
