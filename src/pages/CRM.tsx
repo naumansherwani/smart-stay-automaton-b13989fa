@@ -19,6 +19,7 @@ import CrmAdminPanel from "@/components/crm/CrmAdminPanel";
 import CrmBreakGames from "@/components/crm/CrmBreakGames";
 import CrmIndustryConnect from "@/components/crm/CrmIndustryConnect";
 import CrmToolPanel from "@/components/crm/CrmToolPanel";
+import WhatsAppConnect from "@/components/crm/WhatsAppConnect";
 import CrmVoiceAssistant from "@/components/crm/CrmVoiceAssistant";
 import CrmAiEmailComposer from "@/components/crm/CrmAiEmailComposer";
 import CrmPredictiveRevenue from "@/components/crm/CrmPredictiveRevenue";
@@ -28,7 +29,7 @@ import CrmSmartMeetingScheduler from "@/components/crm/CrmSmartMeetingScheduler"
 import CrmPerformanceTab from "@/components/crm/CrmPerformanceTab";
 import CrmSecurityPanel from "@/components/crm/CrmSecurityPanel";
 import CrmFlightOpsCalendar from "@/components/crm/CrmFlightOpsCalendar";
-import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2, Plane } from "lucide-react";
+import { Users, TicketCheck, TrendingUp, Clock, Sparkles, Crown, LayoutDashboard, AlertTriangle, BarChart3, Mail, Globe, Heart, CalendarClock, Gauge, Shield, Building2, Gamepad2, Plane, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -185,6 +186,9 @@ export default function CRM() {
               <TabsTrigger value="industry-connect" className="flex items-center gap-1.5">
                 <Building2 className="h-4 w-4" /><span className="hidden sm:inline">Connect</span>
               </TabsTrigger>
+              <TabsTrigger value="whatsapp" className="flex items-center gap-1.5">
+                <MessageCircle className="h-4 w-4" /><span className="hidden sm:inline">WhatsApp</span>
+              </TabsTrigger>
               {toolTabs.map(tt => (
                 <TabsTrigger key={tt.id} value={tt.id} className="flex items-center gap-1.5">
                   <span className="text-sm">{tt.icon}</span><span className="hidden sm:inline">{tt.label}</span>
@@ -214,6 +218,7 @@ export default function CRM() {
           <TabsContent value="performance"><CrmPerformanceTab industry={industry} /></TabsContent>
           <TabsContent value="security"><CrmSecurityPanel /></TabsContent>
           <TabsContent value="industry-connect"><CrmIndustryConnect /></TabsContent>
+          <TabsContent value="whatsapp"><WhatsAppConnect /></TabsContent>
           {toolTabs.map(tt => (
             <TabsContent key={tt.id} value={tt.id}>
               <CrmToolPanel toolId={tt.tool.id} industry={industry} tool={tt.tool} />
