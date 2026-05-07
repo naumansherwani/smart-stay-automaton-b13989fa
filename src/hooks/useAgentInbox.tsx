@@ -14,7 +14,7 @@ export function useAgentInbox(toFilter?: string) {
   const fetchInbox = useCallback(async () => {
     setError(null);
     try {
-      const jwt = await getJwt();
+      const jwt = await getAuthToken();
       if (!jwt) throw new Error("Not authenticated");
       const url = new URL(`${REPLIT_URL}/api/email/inbox`);
       if (toFilter) url.searchParams.set("to", toFilter);
@@ -40,7 +40,7 @@ export function useAgentInbox(toFilter?: string) {
     let cancelled = false;
     const connect = async () => {
       if (cancelled) return;
-      const jwt = await getJwt();
+      const jwt = await getAuthToken();
       if (!jwt || cancelled) return;
       try {
         esRef.current?.close();
@@ -90,7 +90,7 @@ export function useAgentInbox(toFilter?: string) {
   const markRead = useCallback(async (id: number) => {
     setEmails((prev) => prev.map((m) => (m.id === id ? { ...m, isRead: true } : m)));
     try {
-      const jwt = await getJwt();
+      const jwt = await getAuthToken();
       await fetch(`${REPLIT_URL}/api/email/inbox/${id}/read`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${jwt}` },
@@ -102,7 +102,7 @@ export function useAgentInbox(toFilter?: string) {
 
   const sendEmail = useCallback(
     async (payload: { to: string; subject: string; text: string; from_name: string; from_email: string }) => {
-      const jwt = await getJwt();
+      const jwt = await getAuthToken();
       if (!jwt) throw new Error("Not authenticated");
       const res = await fetch(`${REPLIT_URL}/api/email/send`, {
         method: "POST",
