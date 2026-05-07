@@ -427,3 +427,37 @@ export async function fetchVoiceSpeakBuffer(
     return null;
   }
 }
+
+/* ──────────────────────────────────────────────────────────
+ * CRM — WhatsApp connection (Premium only)
+ * Surface header is auto-applied via detectSurface() since path /crm.
+ * ────────────────────────────────────────────────────────── */
+
+export interface WhatsAppConnection {
+  connected: boolean;
+  phone?: string;
+  connectedAt?: string;
+}
+
+export interface WhatsAppOtpRequestResp {
+  sent: boolean;
+  phone: string;
+  expiresIn: number;
+}
+
+export interface WhatsAppOtpVerifyResp {
+  connected: boolean;
+  phone: string;
+}
+
+export const requestWhatsAppOtp = (phone: string) =>
+  apiPost<WhatsAppOtpRequestResp>("/crm/whatsapp/connect/request", { phone });
+
+export const verifyWhatsAppOtp = (code: string) =>
+  apiPost<WhatsAppOtpVerifyResp>("/crm/whatsapp/connect/verify", { code });
+
+export const getWhatsAppConnection = () =>
+  apiGet<WhatsAppConnection>("/crm/whatsapp/connection");
+
+export const disconnectWhatsApp = () =>
+  request<{ disconnected: boolean }>("DELETE", "/crm/whatsapp/connection");
