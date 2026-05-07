@@ -102,6 +102,11 @@ export default function Sherlock({ onForbidden }: SherlockProps) {
                   : "bg-[var(--fos-card)] text-[var(--fos-text)]"
               }`}>
                 <ReactMarkdown>{m.content || (loading && i === messages.length - 1 ? "…" : "")}</ReactMarkdown>
+                {m.role === "assistant" && m.content?.trim() && (
+                  <div className="mt-1">
+                    <ChatSpeakerButton text={m.content} />
+                  </div>
+                )}
               </div>
             </div>
           ))}
