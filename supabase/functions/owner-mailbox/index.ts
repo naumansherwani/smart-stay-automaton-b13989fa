@@ -121,8 +121,10 @@ Deno.serve(async (req) => {
       if (r.ok) {
         const j = await r.json().catch(() => ({}));
         const emails = j?.data?.emails || j?.emails || [];
-        replitMessages = (Array.isArray(emails) ? emails : []).map((e: any) => ({
-          id: `replit-${e.id}`,
+        replitMessages = (Array.isArray(emails) ? emails : []).map((e: any) => {
+          const hex = Number(e.id || 0).toString(16).padStart(8, "0");
+          return ({
+          id: `ffff${hex}-0000-0000-0000-000000000000`,
           message_id: String(e.id),
           recipient_email: e.toAddress || "",
           template_name: e.subject || "Inbound email",
@@ -144,7 +146,8 @@ Deno.serve(async (req) => {
             source: "replit-inbound",
           },
           created_at: e.receivedAt || new Date().toISOString(),
-        }));
+        });
+        });
       }
     } catch (_err) {
       // Replit unreachable — fall back to log only
