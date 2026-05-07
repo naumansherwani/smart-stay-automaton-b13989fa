@@ -173,7 +173,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Rev/Journey", key: "revJourney", format: "currency" },
       { label: "Journeys/Day", key: "journeysDay", format: "number" },
     ],
-    color: "hsl(200, 70%, 50%)",
+    color: "hsl(180, 65%, 45%)",
   },
 };
 
