@@ -54,27 +54,17 @@ export function handleApiError(err: unknown, opts: HandleApiErrorOptions = {}): 
   const { status, code, message, trace_id } = err;
 
   // Already handled globally inside api.ts (modal / re-onboarding).
-  if (code === "AI_LIMIT_REACHED" || code === "INDUSTRY_MISMATCH") {
+  // AI_LIMIT_REACHED → upgrade modal (already dispatched globally).
+  // CRM_PREMIUM_ONLY / SURFACE_MISMATCH / INDUSTRY_MISMATCH events are
+  // dispatched by api.ts and handled by global listeners (AiLimitModal,
+  // SurfaceGuard). We just mark them handled here so callers don't double-toast.
+  if (
+    code === "AI_LIMIT_REACHED" ||
+    code === "CRM_PREMIUM_ONLY" ||
+    code === "SURFACE_MISMATCH" ||
+    code === "INDUSTRY_MISMATCH"
+  ) {
     if (trace_id) console.debug("[api] trace_id:", trace_id);
-    return true;
-  }
-
-  // Surface guard codes (Phase 6) — show targeted UX, then mark handled.
-  if (code === "CRM_PREMIUM_ONLY") {
-    if (!opts.silent) {
-      toast.error("CRM is a Premium feature. Upgrade to unlock.", {
-        action: {
-          label: "Upgrade",
-          onClick: () => {
-            if (typeof window !== "undefined") window.location.href = "/pricing";
-          },
-        },
-      });
-    }
-    return true;
-  }
-  if (code === "SURFACE_MISMATCH") {
-    if (!opts.silent) toast.error("This action isn't available on this page.");
     return true;
   }
 

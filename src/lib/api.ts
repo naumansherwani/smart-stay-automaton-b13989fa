@@ -106,13 +106,10 @@ async function handleStatusErrors(envelope: ApiEnvelope<unknown>, status: number
   }
 
   if (status === 403 && code === "INDUSTRY_MISMATCH") {
-    try { await supabase.auth.signOut(); } catch { /* noop */ }
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("hf:industry-mismatch", {
         detail: { message: envelope.error?.message, trace_id: envelope.trace_id },
       }));
-      // Hard redirect so any cached state is wiped before re-onboarding.
-      window.location.href = "/login?reason=industry_mismatch";
     }
   }
 }
