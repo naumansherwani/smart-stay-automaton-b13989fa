@@ -57,6 +57,24 @@ serve(async (req) => {
       userId = userData?.user?.id ?? null;
     }
 
+    // Admin gate — this function exposes business-wide metrics + PII into the
+    // AI system prompt. Only admins (founder) may invoke it.
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    {
+      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+
     const since30d = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString();
     const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
     const since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
