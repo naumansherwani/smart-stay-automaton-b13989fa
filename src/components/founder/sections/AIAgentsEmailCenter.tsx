@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Inbox, Mail, MailOpen, Pencil, RefreshCw, Send, Sparkles, X, AlertTriangle } from "lucide-react";
 import { useAgentInbox } from "@/hooks/useAgentInbox";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type Advisor = {
   id: string;
@@ -260,34 +261,56 @@ export default function AIAgentsEmailCenter() {
           </div>
         </div>
 
-        {/* Mobile detail drawer */}
-        {selected && (
-          <div className="xl:hidden founder-card p-5 space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="text-[var(--fos-text)] text-base font-semibold">{selected.subject}</h3>
-              <button onClick={() => setSelectedId(null)} className="text-[var(--fos-muted)] hover:text-[var(--fos-text)]">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="text-[11px] text-[var(--fos-muted)] space-y-0.5">
-              <div>From: <span className="text-[var(--fos-text)]">{selected.fromName} &lt;{selected.fromEmail}&gt;</span></div>
-              <div>To: <span className="text-[var(--fos-text)]">{selected.toAddress}</span></div>
-            </div>
-            <div className="text-[var(--fos-text)] text-sm whitespace-pre-wrap break-words">{selected.body || selected.preview}</div>
-            {selected.aiReply && (
-              <div className="rounded-lg border border-[var(--fos-accent)]/40 bg-[var(--fos-accent)]/5 p-3">
-                <div className="text-[var(--fos-accent)] text-[10px] font-bold uppercase mb-1">AI Response</div>
-                <div className="text-[var(--fos-text)] text-xs whitespace-pre-wrap">{selected.aiReply}</div>
+        {/* Modal detail view (shown on screens < xl, where the right pane is hidden) */}
+        <Dialog
+          open={!!selected}
+          onOpenChange={(o) => { if (!o) setSelectedId(null); }}
+        >
+          <DialogContent className="xl:hidden max-w-2xl bg-[var(--fos-card)] border-[var(--fos-border)] text-[var(--fos-text)]">
+            {selected && (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-[var(--fos-text)] text-lg font-semibold tracking-tight break-words pr-6">{selected.subject}</h3>
+                  <div className="mt-2 space-y-0.5 text-[11px] text-[var(--fos-muted)]">
+                    <div>From: <span className="text-[var(--fos-text)]">{selected.fromName} &lt;{selected.fromEmail}&gt;</span></div>
+                    <div>To: <span className="text-[var(--fos-text)]">{selected.toAddress}</span> · <span className="text-[var(--fos-accent)]">{selected.advisorName}</span></div>
+                    <div>{new Date(selected.receivedAt).toLocaleString()}</div>
+                  </div>
+                </div>
+                <div className="rounded-lg border border-[var(--fos-border)] bg-[var(--fos-bg)]/50 p-4 max-h-[50vh] overflow-y-auto">
+                  <div className="text-[var(--fos-text)] text-sm whitespace-pre-wrap break-words">
+                    {selected.body || selected.preview}
+                  </div>
+                </div>
+                {selected.aiReply && (
+                  <div className="rounded-lg border border-[var(--fos-accent)]/40 bg-[var(--fos-accent)]/5 p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Sparkles className="w-3.5 h-3.5 text-[var(--fos-accent)]" />
+                      <span className="text-[var(--fos-accent)] text-[10px] font-bold uppercase tracking-wider">AI Response Sent</span>
+                    </div>
+                    <div className="text-[var(--fos-text)] text-xs whitespace-pre-wrap break-words">{selected.aiReply}</div>
+                  </div>
+                )}
+                <div className="flex items-center justify-end gap-2">
+                  {!selected.isRead && (
+                    <button
+                      onClick={() => void markRead(selected.id)}
+                      className="px-3 py-2 rounded-lg border border-[var(--fos-border)] text-[var(--fos-text)] text-xs font-semibold hover:border-[var(--fos-accent)]/40"
+                    >
+                      Mark Read
+                    </button>
+                  )}
+                  <button
+                    onClick={() => openReply(selected)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--fos-accent)] text-[#0B1120] text-xs font-semibold hover:opacity-90"
+                  >
+                    <Send className="w-3.5 h-3.5" /> Reply
+                  </button>
+                </div>
               </div>
             )}
-            <button
-              onClick={() => openReply(selected)}
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[var(--fos-accent)] text-[#0B1120] text-xs font-semibold"
-            >
-              <Send className="w-3.5 h-3.5" /> Reply
-            </button>
-          </div>
-        )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       <ComposeAgentEmailModal
