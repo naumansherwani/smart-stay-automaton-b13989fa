@@ -36,7 +36,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.arc-event-ingest]
-verify_jwt = true
+verify_jwt = false
 
 [functions.arc-orchestrator]
 verify_jwt = false
