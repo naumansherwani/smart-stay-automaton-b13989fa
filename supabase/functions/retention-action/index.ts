@@ -110,6 +110,10 @@ Deno.serve(async (req) => {
       }
     } else if (action === 'downgraded' && downgradeTo) {
       if (sub?.id) {
+        const VALID_DOWNGRADES = ['basic', 'trial'];
+        if (!VALID_DOWNGRADES.includes(downgradeTo)) {
+          return new Response(JSON.stringify({ error: 'Invalid downgrade plan' }), { status: 400, headers: corsHeaders });
+        }
         await supabase.from('subscriptions').update({ plan: downgradeTo }).eq('id', sub.id);
       }
     }
