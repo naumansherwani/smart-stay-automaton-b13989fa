@@ -23,8 +23,14 @@ export function useAgentInbox(toFilter?: string) {
       });
       if (!res.ok) throw new Error(`Inbox HTTP ${res.status}`);
       const json = await res.json();
-      const list: ReplitInboxEmail[] = Array.isArray(json) ? json : json.emails || json.data || [];
-      setEmails(list);
+      const raw = Array.isArray(json)
+        ? json
+        : Array.isArray(json?.emails)
+          ? json.emails
+          : Array.isArray(json?.data)
+            ? json.data
+            : [];
+      setEmails(raw as ReplitInboxEmail[]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load inbox");
     } finally {
