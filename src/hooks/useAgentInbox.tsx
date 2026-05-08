@@ -27,9 +27,11 @@ export function useAgentInbox(toFilter?: string) {
         ? json
         : Array.isArray(json?.emails)
           ? json.emails
-          : Array.isArray(json?.data)
-            ? json.data
-            : [];
+          : Array.isArray(json?.data?.emails)
+            ? json.data.emails
+            : Array.isArray(json?.data)
+              ? json.data
+              : [];
       setEmails(raw as ReplitInboxEmail[]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load inbox");
