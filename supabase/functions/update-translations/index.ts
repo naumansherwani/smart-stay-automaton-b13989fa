@@ -22,6 +22,17 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Cron/service-role only — this function performs AI calls and writes
+    // to the translations table. Reject any caller without the service role token.
+    const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "");
+    if (!token || token !== Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");

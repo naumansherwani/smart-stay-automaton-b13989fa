@@ -41,19 +41,20 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
-    // Admin-only (cron also uses service role)
+    // Admin-only (cron also uses service role). Auth is always required.
     const authHeader = req.headers.get('authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
+    }
     let isCron = false;
-    if (authHeader) {
-      const token = authHeader.replace('Bearer ', '');
-      // Service role bypasses
-      if (token === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) isCron = true;
-      else {
-        const { data: { user } } = await supabase.auth.getUser(token);
-        if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
-        const { data: roleOk } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
-        if (!roleOk) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: corsHeaders });
-      }
+    const token = authHeader.replace('Bearer ', '');
+    if (token === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) {
+      isCron = true;
+    } else {
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
+      const { data: roleOk } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      if (!roleOk) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: corsHeaders });
     }
 
     // Fetch all users
