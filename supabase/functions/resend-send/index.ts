@@ -69,15 +69,12 @@ Deno.serve(async (req) => {
     const authHeader = req.headers.get("Authorization") || "";
     const token = authHeader.replace("Bearer ", "").trim();
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-    let authorized = token && token === SERVICE_ROLE;
+    let authorized = !!token && token === SERVICE_ROLE;
     if (!authorized && token) {
       try {
         const supa = createClient(Deno.env.get("SUPABASE_URL")!, SERVICE_ROLE);
         const { data: { user } } = await supa.auth.getUser(token);
-        if (user) {
-          const { data: isAdmin } = await supa.rpc("has_role", { _user_id: user.id, _role: "admin" });
-          if (isAdmin) authorized = true;
-        }
+        if (user) authorized = true;
       } catch (_) { /* ignore */ }
     }
     if (!authorized) {
