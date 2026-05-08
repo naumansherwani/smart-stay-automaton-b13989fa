@@ -262,47 +262,69 @@ export default function AIAgentsEmailCenter() {
         </div>
 
         {/* Modal detail view (shown on screens < xl, where the right pane is hidden) */}
+        {/* Modal detail view (shown on screens < xl, where the right pane is hidden).
+            Note: Dialog renders via a Portal outside `.founder-os`, so --fos-* CSS vars
+            don't resolve there. Use explicit solid colors so the modal stays opaque. */}
         <Dialog
           open={!!selected}
           onOpenChange={(o) => { if (!o) setSelectedId(null); }}
         >
-          <DialogContent className="xl:hidden max-w-2xl bg-[var(--fos-card)] border-[var(--fos-border)] text-[var(--fos-text)]">
+          <DialogContent
+            className="xl:hidden max-w-2xl border p-0 overflow-hidden shadow-2xl"
+            style={{
+              backgroundColor: "#06090f",
+              borderColor: "#1F2937",
+              color: "#F9FAFB",
+            }}
+          >
             {selected && (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-[var(--fos-text)] text-lg font-semibold tracking-tight break-words pr-6">{selected.subject}</h3>
-                  <div className="mt-2 space-y-0.5 text-[11px] text-[var(--fos-muted)]">
-                    <div>From: <span className="text-[var(--fos-text)]">{selected.fromName} &lt;{selected.fromEmail}&gt;</span></div>
-                    <div>To: <span className="text-[var(--fos-text)]">{selected.toAddress}</span> · <span className="text-[var(--fos-accent)]">{selected.advisorName}</span></div>
+              <div className="flex flex-col max-h-[85vh]">
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 border-b" style={{ borderColor: "#1F2937", backgroundColor: "#0B1120" }}>
+                  <h3 className="text-[17px] font-semibold tracking-tight break-words pr-8 leading-snug" style={{ color: "#F9FAFB" }}>
+                    {selected.subject}
+                  </h3>
+                  <div className="mt-3 space-y-1 text-[11px] leading-relaxed" style={{ color: "#94A3B8" }}>
+                    <div>From: <span style={{ color: "#F9FAFB" }}>{selected.fromName} &lt;{selected.fromEmail}&gt;</span></div>
+                    <div>To: <span style={{ color: "#F9FAFB" }}>{selected.toAddress}</span> · <span style={{ color: "#22D3EE" }}>{selected.advisorName}</span></div>
                     <div>{new Date(selected.receivedAt).toLocaleString()}</div>
                   </div>
                 </div>
-                <div className="rounded-lg border border-[var(--fos-border)] bg-[var(--fos-bg)]/50 p-4 max-h-[50vh] overflow-y-auto">
-                  <div className="text-[var(--fos-text)] text-sm whitespace-pre-wrap break-words">
-                    {selected.body || selected.preview}
-                  </div>
-                </div>
-                {selected.aiReply && (
-                  <div className="rounded-lg border border-[var(--fos-accent)]/40 bg-[var(--fos-accent)]/5 p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="w-3.5 h-3.5 text-[var(--fos-accent)]" />
-                      <span className="text-[var(--fos-accent)] text-[10px] font-bold uppercase tracking-wider">AI Response Sent</span>
+
+                {/* Body — scrollable */}
+                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4" style={{ backgroundColor: "#06090f" }}>
+                  <div className="rounded-lg border p-4" style={{ borderColor: "#1F2937", backgroundColor: "#0B1120" }}>
+                    <div className="text-[13px] leading-relaxed whitespace-pre-wrap break-words" style={{ color: "#F9FAFB" }}>
+                      {selected.body || selected.preview}
                     </div>
-                    <div className="text-[var(--fos-text)] text-xs whitespace-pre-wrap break-words">{selected.aiReply}</div>
                   </div>
-                )}
-                <div className="flex items-center justify-end gap-2">
+
+                  {selected.aiReply && (
+                    <div className="rounded-lg border p-4" style={{ borderColor: "rgba(34,211,238,0.4)", backgroundColor: "rgba(34,211,238,0.06)" }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: "#22D3EE" }} />
+                        <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#22D3EE" }}>AI Response Sent</span>
+                      </div>
+                      <div className="text-[12.5px] leading-relaxed whitespace-pre-wrap break-words" style={{ color: "#F9FAFB" }}>{selected.aiReply}</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t flex items-center justify-end gap-2" style={{ borderColor: "#1F2937", backgroundColor: "#0B1120" }}>
                   {!selected.isRead && (
                     <button
                       onClick={() => void markRead(selected.id)}
-                      className="px-3 py-2 rounded-lg border border-[var(--fos-border)] text-[var(--fos-text)] text-xs font-semibold hover:border-[var(--fos-accent)]/40"
+                      className="px-3 py-2 rounded-lg border text-xs font-semibold transition-colors"
+                      style={{ borderColor: "#1F2937", color: "#F9FAFB" }}
                     >
                       Mark Read
                     </button>
                   )}
                   <button
                     onClick={() => openReply(selected)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--fos-accent)] text-[#0B1120] text-xs font-semibold hover:opacity-90"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold hover:opacity-90"
+                    style={{ backgroundColor: "#22D3EE", color: "#0B1120" }}
                   >
                     <Send className="w-3.5 h-3.5" /> Reply
                   </button>
