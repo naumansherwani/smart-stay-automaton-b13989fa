@@ -65,6 +65,24 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    // Auth: only service-role callers or authenticated admins
+    const authHeader = req.headers.get("Authorization") || "";
+    const token = authHeader.replace("Bearer ", "").trim();
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    let authorized = !!token && token === SERVICE_ROLE;
+    if (!authorized && token) {
+      try {
+        const supa = createClient(Deno.env.get("SUPABASE_URL")!, SERVICE_ROLE);
+        const { data: { user } } = await supa.auth.getUser(token);
+        if (user) authorized = true;
+      } catch (_) { /* ignore */ }
+    }
+    if (!authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (!RESEND_API_KEY) {
       return new Response(
         JSON.stringify({ ok: false, error: "RESEND_API_KEY is not configured" }),
