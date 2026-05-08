@@ -12,6 +12,12 @@ Deno.serve(async (req) => {
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const auth = req.headers.get("Authorization") || "";
+    if (auth.replace("Bearer ", "").trim() !== SERVICE_ROLE) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
 
     const { data: due, error } = await supabase
