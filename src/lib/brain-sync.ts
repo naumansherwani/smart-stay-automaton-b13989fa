@@ -1,4 +1,6 @@
-const BRAIN_URL = "https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api";
+import { REPLIT_API_BASE } from "@/lib/replitBase";
+
+const BRAIN_URL = REPLIT_API_BASE;
 
 let es: EventSource | null = null;
 

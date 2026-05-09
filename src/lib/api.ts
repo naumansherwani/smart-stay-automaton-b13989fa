@@ -15,15 +15,9 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
+import { REPLIT_API_BASE } from "@/lib/replitBase";
 
-const FALLBACK_BASE =
-  "https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api";
-
-const RAW_BASE =
-  (import.meta.env.VITE_REPLIT_ADVISOR_URL as string | undefined)?.trim() || "";
-
-// VITE_REPLIT_ADVISOR_URL is the Replit origin (no /api). Append /api once.
-export const API_BASE = (RAW_BASE ? `${RAW_BASE.replace(/\/+$/, "")}/api` : FALLBACK_BASE);
+export const API_BASE = REPLIT_API_BASE;
 
 export interface ApiEnvelope<T> {
   ok: boolean;
