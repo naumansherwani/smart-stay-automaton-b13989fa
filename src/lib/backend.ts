@@ -1,3 +1,5 @@
+import { REPLIT_API_BASE } from "@/lib/replitBase";
+
 /**
  * Replit Backend (Brain) endpoint.
  *
@@ -11,14 +13,7 @@
  * helper. Existing UI, flows, and pages are untouched.
  */
 
-const FALLBACK_BACKEND =
-  "https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api";
-
-// Prefer VITE_BACKEND_URL when provided. Strip trailing slash for clean joins.
-const RAW_BACKEND =
-  (import.meta.env.VITE_BACKEND_URL as string | undefined)?.trim() || FALLBACK_BACKEND;
-
-export const BACKEND_URL = RAW_BACKEND.replace(/\/+$/, "");
+export const BACKEND_URL = REPLIT_API_BASE;
 
 /**
  * Thin fetch wrapper that prepends BACKEND_URL to a path.
