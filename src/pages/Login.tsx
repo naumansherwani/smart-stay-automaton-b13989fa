@@ -26,9 +26,10 @@ export default function Login() {
     if (localStorage.getItem("hf_owner") === "true") {
       setIsOwner(true);
     }
-    // Also check active session
+    // Also check active session (case-insensitive)
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user?.email === OWNER_EMAIL) {
+      const sessionEmail = data.session?.user?.email?.toLowerCase();
+      if (sessionEmail === OWNER_EMAIL) {
         setIsOwner(true);
         localStorage.setItem("hf_owner", "true");
       }
