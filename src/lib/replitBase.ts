@@ -3,7 +3,23 @@ const DEFAULT_REPLIT_ORIGIN = "https://hostflowai-brain--naumansherwani.replit.a
 function normalizeOrigin(value?: string): string {
   const raw = (value ?? "").trim();
   if (!raw) return "";
-  return raw.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+
+  const sanitized = raw.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+
+  try {
+    const url = new URL(sanitized);
+    const host = url.hostname.toLowerCase();
+
+    // Hard block legacy Replit dev hosts that were causing auth/session drift.
+    if (host.endsWith(".riker.replit.dev")) return "";
+
+    // Only allow stable Replit app domains as overrides.
+    if (!host.endsWith(".replit.app")) return "";
+
+    return url.origin;
+  } catch {
+    return "";
+  }
 }
 
 const envOrigins = [
