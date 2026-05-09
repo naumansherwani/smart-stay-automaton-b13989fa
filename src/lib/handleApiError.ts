@@ -11,7 +11,7 @@
  *      standard HTTP statuses with a single, consistent UX:
  *
  *   400 → toast(error.message)
- *   401 → clear session + redirect to /login
+ *   401 → only redirect to /login when local auth session is actually missing
  *   403 → toast: "You don't have access to this feature"
  *   404 → toast: "Not found"
  *   429 → toast: "You've reached your usage limit…" (link → /pricing)
@@ -76,10 +76,24 @@ export function handleApiError(err: unknown, opts: HandleApiErrorOptions = {}): 
       if (!opts.silent) toast.error(message || opts.fallback400 || "Invalid request");
       return true;
     case 401:
-      // Clear session and bounce to login.
-      void supabase.auth.signOut().catch(() => { /* noop */ });
-      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-        window.location.href = "/login";
+      // Do NOT destroy a valid local session just because the external Brain/API
+      // rejected a token. That caused valid users to get auto-logged-out.
+      // Only bounce to /login when the local auth session is actually gone.
+      void supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+          if (!session && typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+            window.location.href = "/login";
+          }
+        })
+        .catch(() => {
+          if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+            window.location.href = "/login";
+          }
+        });
+
+      if (!opts.silent && code === "TOKEN_INVALID") {
+        toast.error("Session sync issue. Please try again.");
       }
       return true;
     case 403:
