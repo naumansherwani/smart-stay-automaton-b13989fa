@@ -2,6 +2,8 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
+const AUTH_STORAGE_KEY = "sb-uapvdzphibxoomokahjh-auth-token";
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     let lastLoggedUserId: string | null = null;
+    let recoveredInvalidRefresh = false;
     const fireLogin = (uid: string) => {
       if (lastLoggedUserId === uid) return;
       lastLoggedUserId = uid;
@@ -40,12 +43,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (session?.user) fireLogin(session.user.id);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+        if (session?.user) fireLogin(session.user.id);
+      })
+      .catch((error) => {
+        const code = (error as { code?: string } | null)?.code;
+        const message = (error as { message?: string } | null)?.message ?? "";
+        const isInvalidRefresh =
+          code === "refresh_token_not_found" || message.toLowerCase().includes("invalid refresh token");
+
+        if (isInvalidRefresh && !recoveredInvalidRefresh) {
+          recoveredInvalidRefresh = true;
+          try {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+          } catch {
+            /* ignore storage cleanup failure */
+          }
+          void supabase.auth.signOut({ scope: "local" }).catch(() => {});
+        }
+
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+      });
 
     return () => subscription.unsubscribe();
   }, []);
