@@ -272,11 +272,11 @@ export function GhostSidebar() {
         "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg overflow-hidden",
         "transition-[width] duration-300 ease-in-out",
         "shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]",
-        expanded ? "px-3 py-4" : "px-2 py-4"
+        expanded ? "px-3 py-4" : "px-0 py-3 items-center"
       )}
     >
       {/* Header */}
-      <div className={cn("flex items-center mb-5 min-h-[36px]", expanded ? "justify-between px-1" : "justify-center")}>
+      <div className={cn("flex items-center min-h-[48px]", expanded ? "justify-between px-1 mb-5" : "justify-center w-full mb-3 h-[48px]")}>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-public-view"))}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -298,12 +298,15 @@ export function GhostSidebar() {
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden -mx-1 px-1">
-        <nav className="flex flex-col gap-0.5">
+      <div className={cn(
+        "flex-1 overflow-y-auto overflow-x-hidden",
+        expanded ? "-mx-1 px-1 w-full" : "w-full flex flex-col items-center"
+      )}>
+        <nav className={cn("flex flex-col w-full", expanded ? "gap-0.5" : "items-center gap-2")}>
           {primaryNav.map(renderNavItem)}
         </nav>
         {renderCrmGroup()}
-        <nav className="flex flex-col gap-0.5 mt-1">
+        <nav className={cn("flex flex-col w-full mt-1", expanded ? "gap-0.5" : "items-center gap-2")}>
           {tailNav.map(renderNavItem)}
         </nav>
 
@@ -312,7 +315,7 @@ export function GhostSidebar() {
             {expanded && (
               <div className="text-[10px] uppercase tracking-widest text-white/30 mt-5 mb-1 px-3">Industry</div>
             )}
-            <nav className={cn("flex flex-col gap-0.5", !expanded && "mt-3")}>
+            <nav className={cn("flex flex-col w-full", expanded ? "gap-0.5" : "items-center gap-2 mt-3")}>
               {visibleConditional.map(renderNavItem)}
             </nav>
           </>
