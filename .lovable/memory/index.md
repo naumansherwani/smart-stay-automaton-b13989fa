@@ -31,3 +31,4 @@ Backend split: Lovable Cloud = DB of record + auth + storage + email (Resend) + 
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
 - [AI Email Center hands-off](mem://constraints/ai-email-center-handsoff) — Lovable must not touch email backend/data; Replit owns it. UI/UX only on request.
+- [Resolution Hub flow locked](mem://features/resolution-hub-flow-locked) — 6 locked stages: Customer message received → Aria analyzed → Issue created → Sherlock reviewed → Pricing updated → Revenue protected
