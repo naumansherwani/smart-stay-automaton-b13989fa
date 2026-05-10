@@ -52,6 +52,7 @@ const ReviewForm = ({ existingReview, onSuccess }: ReviewFormProps) => {
       } else {
         // Direct DB insert — admin approves manually (AI filter removed)
         const { error } = await supabase.from("reviews").insert({
+          user_id: user.id,
           reviewer_name: name.trim(),
           rating,
           review_text: text.trim(),
