@@ -112,24 +112,22 @@ export function GhostSidebar() {
     const hubBadgeNum = hubCount?.total_open ?? 0;
     const hubBadgeRed = (hubCount?.sherlock_active ?? 0) > 0;
     const showBadge = isHub && hubBadgeNum > 0;
+    const active = isActive(item.url);
 
     const link = (
       <NavLink
         to={item.url}
         end
         className={cn(
-          "relative text-sm transition-all duration-200 hover:bg-white/10",
+          "relative text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_rgba(45,212,191,0.12)]",
           labelsVisible
             ? "flex items-center gap-3 px-3 py-2.5 rounded-lg"
-            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
-          isActive(item.url) && "ghost-sidebar-active"
+            : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
+          active && "ghost-sidebar-active"
         )}
         activeClassName=""
         onClick={() => isMobile && setMobileOpen(false)}
       >
-        {isActive(item.url) && !labelsVisible && (
-          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-cyan-400" />
-        )}
         <item.icon className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
         <span className={cn(
           "whitespace-nowrap transition-opacity duration-200",
@@ -172,10 +170,10 @@ export function GhostSidebar() {
       <button
         onClick={() => labelsVisible ? setCrmOpen(o => !o) : setPinned(true)}
         className={cn(
-          "text-sm transition-all duration-200 hover:bg-white/10",
+          "text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_rgba(45,212,191,0.12)]",
           labelsVisible
             ? "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg"
-            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
+            : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
           currentPath === "/crm" && "ghost-sidebar-active"
         )}
       >
@@ -272,11 +270,11 @@ export function GhostSidebar() {
         "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg overflow-hidden",
         "transition-[width] duration-300 ease-in-out",
         "shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]",
-        expanded ? "px-3 py-4" : "px-0 py-3 items-center"
+        expanded ? "px-3 py-4" : "px-0 py-0 items-center"
       )}
     >
       {/* Header */}
-      <div className={cn("flex items-center min-h-[48px]", expanded ? "justify-between px-1 mb-5" : "justify-center w-full mb-3 h-[48px]")}>
+      <div className={cn("flex items-center shrink-0", expanded ? "h-14 justify-between px-1 mb-4" : "h-[72px] justify-center w-full")}>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-public-view"))}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -299,8 +297,8 @@ export function GhostSidebar() {
       </div>
 
       <div className={cn(
-        "flex-1 overflow-y-auto overflow-x-hidden",
-        expanded ? "-mx-1 px-1 w-full" : "w-full flex flex-col items-center"
+        "flex-1 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+        expanded ? "-mx-1 px-1 w-full" : "w-full flex flex-col items-center pb-6"
       )}>
         <nav className={cn("flex flex-col w-full", expanded ? "gap-0.5" : "items-center gap-2")}>
           {primaryNav.map(renderNavItem)}
