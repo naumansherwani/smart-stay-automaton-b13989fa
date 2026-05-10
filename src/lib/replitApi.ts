@@ -160,3 +160,57 @@ export function callAdvisor<T = any>(
   const ind = encodeURIComponent(industry || "general");
   return replitCall<T>(`/advisor/${ind}`, body);
 }
+
+/**
+ * Drop-in shim mirroring `supabase.functions.invoke(name, { body })`.
+ * Maps legacy edge-function names to their Replit Brain routes so we
+ * can migrate callsites with a single import/name change.
+ */
+export async function invokeShim<T = any>(
+  name: string,
+  opts: { body?: any } = {},
+): Promise<ReplitResult<T>> {
+  const body = opts.body ?? {};
+  switch (name) {
+    case "crm-ai-assistant":
+    case "crm-daily-planner":
+    case "crm-performance-report":
+      return callAdvisor<T>(body?.industry || "general", body);
+
+    case "ai-smart-pricing":
+      return replitCall<T>("/pricing/suggest", body);
+    case "ai-auto-schedule":
+      return replitCall<T>("/calendar/suggest", body);
+    case "validate-booking":
+      return replitCall<T>("/bookings", body);
+    case "ai-onboarding-guide":
+      return replitCall<T>("/onboarding/answer", body);
+
+    case "founder-adviser":
+      return replitCall<T>("/founder/adviser", body);
+    case "founder-intelligence":
+    case "mrr-ai-insights":
+      return replitCall<T>("/intelligence-reports/latest", body, { method: "GET" });
+    case "owner-email-ai":
+      return replitCall<T>("/email", body);
+    case "owner-mailbox":
+      return replitCall<T>("/email/inbox", body, { method: "GET" });
+    case "churn-risk-score":
+      return replitCall<T>("/health-scores/admin", body, { method: "GET" });
+    case "retention-action":
+      return replitCall<T>("/health-scores/admin/critical", body, { method: "GET" });
+    case "arc-event-ingest":
+      return replitCall<T>("/v1/sync-manifest", body);
+    case "arc-orchestrator":
+      return replitCall<T>("/signals", body);
+
+    case "contact-form":
+      return replitCall<T>("/email/contact", body);
+
+    default:
+      return {
+        data: null,
+        error: { message: `No Replit route mapped for "${name}"` },
+      };
+  }
+}
