@@ -59,6 +59,19 @@ export default function AppLayout({ children }: AppLayoutProps) {
     });
   }, [user]);
 
+  // Auto-heal: if activeWorkspace.industry diverges from profile.industry,
+  // sync profile to match workspace (single source of truth = active workspace).
+  // Prevents header/tabs/sidebar showing different industries.
+  useEffect(() => {
+    if (!user || !activeWorkspace?.industry || !profile) return;
+    if (profile.industry !== activeWorkspace.industry) {
+      supabase.from("profiles")
+        .update({ industry: activeWorkspace.industry })
+        .eq("user_id", user.id)
+        .then(() => {});
+    }
+  }, [user, activeWorkspace?.industry, profile?.industry]);
+
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
     if (!user) return;
     // Skip if already on this industry (check workspace, not just profile)

@@ -59,13 +59,18 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, signOut } = useAuth();
-  const { createWorkspace } = useWorkspaces();
+  const { createWorkspace, activeWorkspace } = useWorkspaces();
   const { isPaid, isTrial, isExpired } = useTrialLimits();
   
   const { profile } = useProfile();
   const newIndustryHandled = useRef(false);
   
-  const currentIndustry: IndustryType = (profile?.industry as IndustryType) || "hospitality";
+  // SINGLE source of truth: matches AppLayout — activeWorkspace wins, profile is fallback.
+  // Prevents header/tabs mismatch (e.g. header shows Education but tabs show Railways).
+  const currentIndustry: IndustryType =
+    (activeWorkspace?.industry as IndustryType) ||
+    (profile?.industry as IndustryType) ||
+    "hospitality";
   const [calendarBookings, setCalendarBookings] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
 
