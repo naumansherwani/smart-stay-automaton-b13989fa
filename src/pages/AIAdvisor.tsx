@@ -84,11 +84,7 @@ export default function AIAdvisor() {
         {/* Hero card — single advisor */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/30 backdrop-blur-xl p-8 mb-6">
           <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-          <button
-            type="button"
-            onClick={() => setChatOpen(true)}
-            className="relative flex flex-col md:flex-row md:items-center gap-6 w-full text-left hover:opacity-95 transition"
-          >
+          <div className="relative flex flex-col md:flex-row md:items-center gap-6">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-xl shrink-0">
               <Sparkles className="w-9 h-9 text-primary-foreground" />
             </div>
@@ -98,13 +94,11 @@ export default function AIAdvisor() {
               <p className="text-sm text-muted-foreground mt-1.5">{advisor.designation}</p>
               <p className="text-xs text-muted-foreground/80 italic mt-2">{advisor.vibe}</p>
             </div>
-            <Button size="lg" className="gap-2 shrink-0" asChild>
-              <span>
+            <Button size="lg" className="gap-2 shrink-0" onClick={() => setChatOpen(true)}>
               <MessageSquare className="w-4 h-4" />
               Open Chat
-              </span>
             </Button>
-          </button>
+          </div>
         </div>
 
         {/* Capabilities */}
