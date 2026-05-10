@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { replitCall } from "@/lib/replitApi";
 import { supportsAutoPricing } from "@/lib/industryFeatures";
 import type { IndustryType } from "@/lib/industryConfig";
@@ -29,6 +29,22 @@ export function useAiPricing({ industry }: UseAiPricingOptions) {
   const [data, setData] = useState<AiPricingResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [policyVersion, setPolicyVersion] = useState(0);
+
+  // Phase 2 — listen for policy/pricing config sync events from LiveFeed SSE
+  // bridge. When founder updates rules in /settings or /founder/pricing, the
+  // backend emits and the next call uses the fresh config.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail || {};
+      if (!detail.industry || detail.industry === industry || detail.scope === "global") {
+        setPolicyVersion((v) => v + 1);
+        toast.info("Pricing rules updated — refresh to apply");
+      }
+    };
+    window.addEventListener("hf:policy-updated", handler as EventListener);
+    return () => window.removeEventListener("hf:policy-updated", handler as EventListener);
+  }, [industry]);
 
   const fetchPricing = useCallback(async (
     resources: { name: string; basePrice: number; occupancy?: number }[],
@@ -88,5 +104,5 @@ export function useAiPricing({ industry }: UseAiPricingOptions) {
     }
   }, [industry]);
 
-  return { data, loading, error, fetchPricing };
+  return { data, loading, error, fetchPricing, policyVersion };
 }
