@@ -50,27 +50,15 @@ const ReviewForm = ({ existingReview, onSuccess }: ReviewFormProps) => {
         if (error) throw error;
         toast.success("Review updated! It will appear after approval.");
       } else {
-        // New reviews go through AI filter edge function
-        const { data, error } = await supabase.functions.invoke("review-ai-filter", {
-          body: {
-            reviewer_name: name.trim(),
-            rating,
-            review_text: text.trim(),
-          },
+        // Direct DB insert — admin approves manually (AI filter removed)
+        const { error } = await supabase.from("reviews").insert({
+          reviewer_name: name.trim(),
+          rating,
+          review_text: text.trim(),
+          status: "pending",
         });
-
         if (error) throw error;
-
-        if (data?.error) {
-          toast.error(data.error);
-          return;
-        }
-
-        if (data?.status === "approved") {
-          toast.success("🎉 Your review has been published!");
-        } else {
-          toast.success("Review submitted! It will appear after approval.");
-        }
+        toast.success("Review submitted! It will appear after approval.");
       }
       onSuccess?.();
     } catch (err: any) {
