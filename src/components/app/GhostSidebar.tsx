@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useCallback, useRef } from "react";
 import { useProfile } from "@/hooks/useProfile";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -51,10 +52,11 @@ export function GhostSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile } = useProfile();
+  const { activeWorkspace } = useWorkspaces();
   const isMobile = useIsMobile();
   const currentPath = location.pathname;
 
-  const userIndustry = profile?.industry || "";
+  const userIndustry = (activeWorkspace?.industry as string) || profile?.industry || "";
   const visibleConditional = conditionalNav.filter(i => i.industries.includes(userIndustry));
 
   const isActive = (url: string) => {
