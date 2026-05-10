@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Brain, Sparkles, Calendar, Zap, Clock, TrendingUp, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { replitCall } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import type { IndustryConfig } from "@/lib/industryConfig";
@@ -55,9 +56,10 @@ const AIAutoSchedule = ({ config }: AIAutoScheduleProps) => {
         .select("*")
         .eq("user_id", user.id);
 
-      // Call AI edge function
-      const { data, error } = await supabase.functions.invoke("ai-auto-schedule", {
-        body: {
+      // Call Replit Brain
+      const { data, error } = await replitCall<{ suggestions: ScheduleSuggestion[] }>(
+        "/calendar/suggest",
+        {
           resources: resources || [],
           existing_bookings: existingBookings || [],
           schedule_settings: scheduleSettings || [],
@@ -68,9 +70,9 @@ const AIAutoSchedule = ({ config }: AIAutoScheduleProps) => {
           period,
           optimize_for: optimizeFor,
         },
-      });
+      );
 
-      if (error) throw error;
+      if (error) throw new Error(error.message);
 
       if (data?.suggestions) {
         setSuggestions(data.suggestions);

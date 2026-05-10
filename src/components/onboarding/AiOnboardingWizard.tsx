@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { replitCall } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES } from "@/i18n";
@@ -80,16 +81,17 @@ export default function AiOnboardingWizard({ industry, userName, companyName, on
   const generatePlan = async (lang: string, steps: any[]) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-onboarding-guide", {
-        body: {
+      const { data, error } = await replitCall<AiPlan>(
+        "/onboarding/answer",
+        {
           industry,
           language: lang,
           steps,
           user_name: userName,
           company_name: companyName,
         },
-      });
-      if (error) throw error;
+      );
+      if (error) throw new Error(error.message);
       if (!data || !data.steps) throw new Error("Empty AI response");
       setPlan(data as AiPlan);
     } catch (e: any) {

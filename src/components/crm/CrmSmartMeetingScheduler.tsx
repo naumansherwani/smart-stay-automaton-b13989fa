@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CalendarClock, Sparkles, Loader2, Clock, Users, MapPin, Video, Phone, Coffee } from "lucide-react";
 import { useCrmContacts } from "@/hooks/useCrm";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 import type { IndustryType } from "@/lib/industryConfig";
 
@@ -43,7 +44,7 @@ export default function CrmSmartMeetingScheduler({ industry }: Props) {
     setLoading(true);
     try {
       const contact = contacts.find(c => c.id === selectedContact);
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "suggest_meeting",
           data: {

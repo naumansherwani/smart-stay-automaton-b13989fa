@@ -8,6 +8,7 @@ import { useCrmContacts, useCrmTickets, useCrmDeals } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 
 interface Props { industry: IndustryType; isPremium: boolean; }
@@ -62,7 +63,7 @@ export default function CrmAiInsightsTab({ industry, isPremium }: Props) {
     if (contacts.length === 0) { toast.error("No contacts to analyze"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "predict_churn",
           data: {
@@ -88,7 +89,7 @@ export default function CrmAiInsightsTab({ industry, isPremium }: Props) {
     if (contacts.length === 0) { toast.error("No contacts to score"); return; }
     setScoreLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "score_contacts",
           data: {

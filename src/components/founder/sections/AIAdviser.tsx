@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import ArcEngine from "./ArcEngine";
 import { toast } from "@/hooks/use-toast";
@@ -112,7 +113,7 @@ export default function AIAdviser() {
       if (!text) return;
       // Try intent parse; on any failure, just put the text in the input box.
       try {
-        const { data } = await supabase.functions.invoke("founder-adviser", { body: { action: "voice_intent", voiceText: text } });
+        const { data } = await invokeShim("founder-adviser", { body: { action: "voice_intent", voiceText: text } });
         const v = data?.voice;
         if (v && v.intent && v.intent !== "chat") {
           // Send a structured prompt so the chat handles the action with full context
@@ -194,7 +195,7 @@ export default function AIAdviser() {
   const loadInsights = useCallback(async () => {
     setInsightsLoading(true);
     try {
-      const { data } = await supabase.functions.invoke("founder-adviser", { body: { mode: "insights" } });
+      const { data } = await invokeShim("founder-adviser", { body: { mode: "insights" } });
       if (data?.insights) setInsights(data.insights);
     } catch (e) { console.error(e); }
     finally { setInsightsLoading(false); }

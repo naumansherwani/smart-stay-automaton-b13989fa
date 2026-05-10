@@ -15,6 +15,7 @@ import { getIndustryConfig } from "@/lib/industryConfig";
 import { getCrmConfig } from "@/lib/crmConfig";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 
 interface Props {
   industry: IndustryType;
@@ -59,7 +60,7 @@ export default function CrmTasksPanel({ industry }: Props) {
   const handleAiOrganize = async () => {
     setAiLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-daily-planner", {
+      const { data, error } = await invokeShim("crm-daily-planner", {
         body: { action: "organize_tasks", industry, tasks: pendingTasks.slice(0, 20) },
       });
       if (error) throw error;

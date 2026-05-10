@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "./useAuth";
 
 /**
@@ -24,7 +25,7 @@ export function useArcTracking() {
 
 export async function trackArcFeature(feature_key: string, metadata: Record<string, any> = {}) {
   try {
-    await supabase.functions.invoke("arc-event-ingest", {
+    await invokeShim("arc-event-ingest", {
       body: {
         event_type: "feature_used",
         event_category: "activity",

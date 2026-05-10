@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Globe, TrendingUp, TrendingDown, Minus, Shield, Eye, Plus, X, DollarSign, Plane } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 import type { IndustryType } from "@/lib/industryConfig";
 
@@ -49,7 +50,7 @@ export default function CrmCompetitorIntelligence({ industry }: Props) {
     if (names.length === 0) { toast.error("Enter at least one competitor"); return; }
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "competitor_analysis",
           data: {

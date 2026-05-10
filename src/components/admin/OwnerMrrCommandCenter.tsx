@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -287,7 +288,7 @@ const OwnerMrrCommandCenter = () => {
   const generateAiInsights = async () => {
     setAiLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("mrr-ai-insights", {
+      const { data, error } = await invokeShim("mrr-ai-insights", {
         body: {
           mrr: metrics.mrr, arr: metrics.arr, churnRate: metrics.churnRate,
           trialConversion: metrics.trialConversion, netGrowth: metrics.netGrowth,

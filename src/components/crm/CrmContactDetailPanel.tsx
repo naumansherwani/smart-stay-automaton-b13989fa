@@ -22,6 +22,7 @@ import type { CrmContact, CrmTicket, CrmDeal, CrmActivity } from "@/hooks/useCrm
 import { getCrmConfig } from "@/lib/crmConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -175,7 +176,7 @@ export default function CrmContactDetailPanel({ contact, industry, onBack, onUpd
   const generateAiSummary = async () => {
     setAiSummaryLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "score_contact",
           data: {

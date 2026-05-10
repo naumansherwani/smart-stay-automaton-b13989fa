@@ -16,6 +16,7 @@ import {
   Calendar, RefreshCw
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { replitCall } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import type { IndustryConfig } from "@/lib/industryConfig";
@@ -269,15 +270,16 @@ const FlightManager = ({ config }: FlightManagerProps) => {
 
     // Server-side validation
     try {
-      const { data: validation, error: valError } = await supabase.functions.invoke("validate-booking", {
-        body: {
+      const { data: validation, error: valError } = await replitCall<any>(
+        "/bookings",
+        {
           resource_id: selectedFlightForBook,
           check_in: meta.departure_time || new Date().toISOString(),
           check_out: meta.arrival_time || new Date().toISOString(),
           group_size: seats,
           business_type: "flight",
         },
-      });
+      );
 
       if (valError || (validation && !validation.allowed)) {
         toast.error(`🛡️ AI Declined: ${validation?.reason || "Selected flight is no longer available."}`, { duration: 5000 });

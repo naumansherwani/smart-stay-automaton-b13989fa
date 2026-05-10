@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ const Contact = () => {
         subject: String(fd.get("subject") || ""),
         message: String(fd.get("message") || ""),
       };
-      const { data, error } = await supabase.functions.invoke("contact-form", { body: payload });
+      const { data, error } = await invokeShim<{ ok?: boolean; error?: string }>("contact-form", { body: payload });
       if (error) throw new Error(error.message);
       if (!data?.ok) throw new Error(data?.error || "Failed to send message");
       setSubmitted(true);

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "./useAuth";
 import { useProfile } from "./useProfile";
 
@@ -135,10 +136,10 @@ export function useCrmPerformance() {
     if (!user) return;
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-performance-report", {
+      const { error } = await invokeShim("crm-performance-report", {
         body: { industry },
       });
-      if (error) throw error;
+      if (error) throw new Error(error.message);
       await fetchReports();
     } catch (e) {
       console.error("Failed to generate report:", e);
