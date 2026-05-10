@@ -1,4 +1,8 @@
-import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff, CalendarDays, ListTodo, Menu, X } from "lucide-react";
+import {
+  LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff,
+  CalendarDays, ListTodo, Menu, X, Sparkles, TrendingUp, ShieldCheck,
+  Workflow, Plug, CreditCard, LifeBuoy, ChevronRight, UserPlus, UserCheck, GitBranch,
+} from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -10,11 +14,27 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 const primaryNav = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Advanced AI CRM", url: "/crm", icon: Users },
-  { title: "Bookings", url: "/dashboard?tab=bookings", icon: ClipboardList },
+  { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
+  { title: "AI Advisor", url: "/advisor", icon: Sparkles },
+  { title: "Revenue Intelligence", url: "/revenue-intel", icon: TrendingUp },
+  { title: "AI Resolution Hub", url: "/resolution-hub", icon: ShieldCheck },
+];
+
+const crmSub = [
+  { title: "Leads", url: "/crm?tab=leads", icon: UserPlus },
+  { title: "Customers", url: "/crm?tab=customers", icon: UserCheck },
+  { title: "Bookings", url: "/crm?tab=bookings", icon: ClipboardList },
+  { title: "Pipeline", url: "/crm?tab=pipeline", icon: GitBranch },
+  { title: "Tasks", url: "/crm?tab=tasks", icon: ListTodo },
+];
+
+const tailNav = [
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Automations", url: "/automations", icon: Workflow },
+  { title: "Integrations", url: "/integrations", icon: Plug },
+  { title: "Billing", url: "/billing", icon: CreditCard },
   { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Support", url: "/support", icon: LifeBuoy },
 ];
 
 const conditionalNav = [
@@ -26,6 +46,7 @@ export function GhostSidebar() {
   const [expanded, setExpanded] = useState(false);
   const [pinned, setPinned] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [crmOpen, setCrmOpen] = useState(false);
   const hideTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -94,6 +115,38 @@ export function GhostSidebar() {
     </TooltipProvider>
   );
 
+  const renderCrmGroup = () => (
+    <div className="min-w-[200px]">
+      <button
+        onClick={() => setCrmOpen(o => !o)}
+        className={cn(
+          "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 hover:bg-white/10",
+          currentPath === "/crm" && "ghost-sidebar-active"
+        )}
+      >
+        <Users className="h-[18px] w-[18px] shrink-0" />
+        <span className={cn("flex-1 text-left whitespace-nowrap transition-all", isOpen ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>CRM</span>
+        {isOpen && <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", crmOpen && "rotate-90")} />}
+      </button>
+      {isOpen && crmOpen && (
+        <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
+          {crmSub.map((s) => (
+            <NavLink
+              key={s.title}
+              to={s.url}
+              className="flex items-center gap-2 px-2 py-1.5 text-xs text-white/60 hover:text-white hover:bg-white/10 rounded-md transition"
+              activeClassName="text-white"
+              onClick={() => isMobile && setMobileOpen(false)}
+            >
+              <s.icon className="w-3.5 h-3.5" />
+              <span>{s.title}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   // Mobile: hamburger button rendered separately
   if (isMobile) {
     return (
@@ -132,6 +185,8 @@ export function GhostSidebar() {
             <span className="text-base font-bold text-white/90">HostFlow AI</span>
           </button>
           <nav className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</nav>
+          {renderCrmGroup()}
+          <nav className="flex flex-col gap-0.5 mt-1">{tailNav.map(renderNavItem)}</nav>
           {visibleConditional.length > 0 && (
             <>
               <div className="text-[10px] uppercase tracking-widest text-white/30 mt-4 mb-1 px-3">Industry</div>
@@ -189,6 +244,10 @@ export function GhostSidebar() {
         {/* Nav */}
         <nav className="flex flex-col gap-0.5 min-w-[200px]">
           {primaryNav.map(renderNavItem)}
+        </nav>
+        {renderCrmGroup()}
+        <nav className="flex flex-col gap-0.5 min-w-[200px] mt-1">
+          {tailNav.map(renderNavItem)}
         </nav>
 
         {visibleConditional.length > 0 && (
