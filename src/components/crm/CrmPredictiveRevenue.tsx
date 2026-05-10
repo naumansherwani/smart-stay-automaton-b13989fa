@@ -6,6 +6,7 @@ import { TrendingUp, DollarSign, Loader2, Sparkles, ArrowUp, ArrowDown, Target, 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Legend } from "recharts";
 import { useCrmDeals } from "@/hooks/useCrm";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 import type { IndustryType } from "@/lib/industryConfig";
 
@@ -41,7 +42,7 @@ export default function CrmPredictiveRevenue({ industry }: Props) {
   const runForecast = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "revenue_forecast",
           data: {

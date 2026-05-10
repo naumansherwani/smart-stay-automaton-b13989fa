@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Mail, Sparkles, Loader2, Copy, Send, RefreshCw, Wand2, Globe, Crown, Ticket, AlertTriangle } from "lucide-react";
 import { useCrmContacts } from "@/hooks/useCrm";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 import type { IndustryType } from "@/lib/industryConfig";
 
@@ -109,7 +110,7 @@ export default function CrmAiEmailComposer({ industry, preselectedContactId }: P
       const contact = selectedContactData;
       const voucher = includeVoucher ? { code: voucherCode || generateVoucherCode(), type: voucherType } : null;
 
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: {
           action: "compose_email",
           data: {

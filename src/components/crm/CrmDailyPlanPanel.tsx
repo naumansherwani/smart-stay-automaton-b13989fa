@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Sun, Coffee, Brain, Target, TrendingUp, RefreshCw, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useCrmTasks } from "@/hooks/useCrmTasks";
 import { toast } from "sonner";
@@ -52,7 +53,7 @@ export default function CrmDailyPlanPanel({ industry }: Props) {
   const generatePlan = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-daily-planner", {
+      const { data, error } = await invokeShim("crm-daily-planner", {
         body: {
           action: "generate_daily_plan",
           industry,

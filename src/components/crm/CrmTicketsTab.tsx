@@ -12,6 +12,7 @@ import { useCrmTickets, useCrmContacts } from "@/hooks/useCrm";
 import { getCrmConfig } from "@/lib/crmConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 
 interface Props { industry: IndustryType; isPremium: boolean; }
@@ -56,7 +57,7 @@ export default function CrmTicketsTab({ industry, isPremium }: Props) {
     if (!isPremium) { toast.error("AI features require Premium subscription"); return; }
     setAiLoading(ticket.id);
     try {
-      const { data, error } = await supabase.functions.invoke("crm-ai-assistant", {
+      const { data, error } = await invokeShim("crm-ai-assistant", {
         body: { action: "analyze_ticket", data: { subject: ticket.subject, description: ticket.description || "", industry, category: ticket.category } },
       });
       if (error) throw error;
