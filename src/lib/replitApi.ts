@@ -37,7 +37,12 @@ async function getAuthHeader(): Promise<Record<string, string>> {
 export async function replitCall<T = any>(
   path: string,
   body?: unknown,
-  init: { method?: string; signal?: AbortSignal } = {},
+  init: {
+    method?: string;
+    signal?: AbortSignal;
+    surface?: "dashboard" | "crm";
+    headers?: Record<string, string>;
+  } = {},
 ): Promise<ReplitResult<T>> {
   const method = init.method ?? (body !== undefined ? "POST" : "GET");
   const url = path.startsWith("http")
@@ -46,11 +51,16 @@ export async function replitCall<T = any>(
 
   try {
     const auth = await getAuthHeader();
+    const surfaceHeader = init.surface
+      ? { "X-HostFlow-Surface": init.surface }
+      : {};
     const res = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
         ...auth,
+        ...surfaceHeader,
+        ...(init.headers ?? {}),
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
       signal: init.signal,

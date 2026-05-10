@@ -1,4 +1,5 @@
-const DEFAULT_REPLIT_ORIGIN = "https://hostflowai-brain--naumansherwani.replit.app";
+// Production Brain (per BACKEND_API_BRIEF.md, May 2026 — Tiger).
+const DEFAULT_REPLIT_ORIGIN = "https://data-migration-master.replit.app";
 
 function normalizeOrigin(value?: string): string {
   const raw = (value ?? "").trim();
