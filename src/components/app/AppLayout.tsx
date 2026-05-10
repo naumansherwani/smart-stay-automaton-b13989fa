@@ -12,7 +12,6 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useProfile } from "@/hooks/useProfile";
 import TrialBanner from "@/components/TrialBanner";
 import PublicView from "./PublicView";
-import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
@@ -128,16 +127,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
+    <div
+      className="min-h-screen flex flex-col w-full transition-[padding] duration-300"
+      style={{ paddingLeft: "var(--app-sidebar-w, 0px)" }}
+    >
       <AnimatedTopBorder />
       <GhostSidebar />
 
       <header className="sticky top-0 z-50 h-14 flex items-center justify-between border-b border-border/50 bg-card/60 backdrop-blur-xl px-4 md:pl-6">
-        <div className="flex items-center gap-3 ml-8 md:ml-14">
-          <div className="hidden sm:block">
-            <WorkspaceSlidePanel />
-          </div>
-        </div>
+        <div className="flex items-center gap-3 ml-12 md:ml-0" />
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />

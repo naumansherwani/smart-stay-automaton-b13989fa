@@ -4,15 +4,20 @@ import {
   Workflow, Plug, CreditCard, LifeBuoy, ChevronRight, UserPlus, UserCheck, GitBranch,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useResolutionHubCount } from "@/hooks/useResolutionHubCount";
 import { cn } from "@/lib/utils";
+
+const STORAGE_KEY = "hostflow_sidebar_pinned";
+const W_EXPANDED = 280;
+const W_COLLAPSED = 72;
 
 const primaryNav = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
@@ -44,20 +49,45 @@ const conditionalNav = [
 ];
 
 export function GhostSidebar() {
-  const [expanded, setExpanded] = useState(false);
-  const [pinned, setPinned] = useState(false);
+  const isMobile = useIsMobile();
+  const [pinned, setPinned] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    const v = localStorage.getItem(STORAGE_KEY);
+    return v === null ? true : v === "true";
+  });
+  const [hovered, setHovered] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [crmOpen, setCrmOpen] = useState(false);
   const hideTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
-  const navigate = useNavigate();
   const { profile } = useProfile();
   const { activeWorkspace } = useWorkspaces();
-  const isMobile = useIsMobile();
+  const hubCount = useResolutionHubCount();
   const currentPath = location.pathname;
 
   const userIndustry = (activeWorkspace?.industry as string) || profile?.industry || "";
   const visibleConditional = conditionalNav.filter(i => i.industries.includes(userIndustry));
+
+  // Expanded when: mobile drawer open, pinned, or hovered (desktop unpinned)
+  const expanded = isMobile ? mobileOpen : (pinned || hovered);
+  const labelsVisible = expanded;
+
+  // Sync CSS var so main content can shift
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isMobile) {
+      document.documentElement.style.setProperty("--app-sidebar-w", "0px");
+    } else {
+      document.documentElement.style.setProperty(
+        "--app-sidebar-w",
+        `${pinned ? W_EXPANDED : W_COLLAPSED}px`
+      );
+    }
+  }, [pinned, isMobile]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, String(pinned));
+  }, [pinned]);
 
   const isActive = (url: string) => {
     if (url.includes("?")) return false;
@@ -65,113 +95,140 @@ export function GhostSidebar() {
   };
 
   const handleMouseEnter = useCallback(() => {
-    if (isMobile) return;
+    if (isMobile || pinned) return;
     if (hideTimeout.current) clearTimeout(hideTimeout.current);
-    setExpanded(true);
-  }, [isMobile]);
+    setHovered(true);
+  }, [isMobile, pinned]);
 
   const handleMouseLeave = useCallback(() => {
     if (isMobile || pinned) return;
-    hideTimeout.current = setTimeout(() => setExpanded(false), 250);
+    hideTimeout.current = setTimeout(() => setHovered(false), 180);
   }, [isMobile, pinned]);
 
-  const togglePin = () => {
-    setPinned(prev => {
-      if (prev) setExpanded(false);
-      return !prev;
-    });
+  const togglePin = () => setPinned(p => !p);
+
+  const renderNavItem = (item: typeof primaryNav[0]) => {
+    const isHub = item.url === "/resolution-hub";
+    const hubBadgeNum = hubCount?.total_open ?? 0;
+    const hubBadgeRed = (hubCount?.sherlock_active ?? 0) > 0;
+    const showBadge = isHub && hubBadgeNum > 0;
+
+    const link = (
+      <NavLink
+        to={item.url}
+        end
+        className={cn(
+          "relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
+          "hover:bg-white/10",
+          isActive(item.url) && "ghost-sidebar-active",
+          !labelsVisible && "justify-center px-0"
+        )}
+        activeClassName=""
+        onClick={() => isMobile && setMobileOpen(false)}
+      >
+        <item.icon className="h-[18px] w-[18px] shrink-0" />
+        <span className={cn(
+          "whitespace-nowrap transition-opacity duration-200",
+          labelsVisible ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
+        )}>
+          {item.title}
+        </span>
+        {showBadge && labelsVisible && (
+          <span className={cn(
+            "ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold tabular-nums text-white",
+            hubBadgeRed ? "bg-red-500 animate-pulse" : "bg-cyan-500"
+          )}>{hubBadgeNum}</span>
+        )}
+        {showBadge && !labelsVisible && (
+          <span className={cn(
+            "absolute top-1 right-2 w-2 h-2 rounded-full ring-2 ring-[hsl(var(--background))]",
+            hubBadgeRed ? "bg-red-500 animate-pulse" : "bg-cyan-500"
+          )} />
+        )}
+      </NavLink>
+    );
+
+    if (!labelsVisible && !isMobile) {
+      return (
+        <TooltipProvider key={item.title} delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>{link}</TooltipTrigger>
+            <TooltipContent side="right" className="bg-card text-foreground border-border">
+              {item.title}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+    return <div key={item.title}>{link}</div>;
   };
 
-  const isOpen = pinned || expanded || mobileOpen;
-
-  const renderNavItem = (item: typeof primaryNav[0]) => (
-    <TooltipProvider key={item.title} delayDuration={0}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <NavLink
-            to={item.url}
-            end
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
-              "hover:bg-white/10",
-              isActive(item.url) && "ghost-sidebar-active"
-            )}
-            activeClassName=""
-            onClick={() => isMobile && setMobileOpen(false)}
-          >
-            <item.icon className="h-[18px] w-[18px] shrink-0" />
-            <span className={cn(
-              "whitespace-nowrap transition-all duration-200",
-              isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 overflow-hidden"
-            )}>
-              {item.title}
-            </span>
-          </NavLink>
-        </TooltipTrigger>
-        {!isOpen && !isMobile && (
-          <TooltipContent side="right" className="bg-card text-foreground border-border">
-            {item.title}
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
-  );
-
-  const renderCrmGroup = () => (
-    <div className="min-w-[200px]">
+  const renderCrmGroup = () => {
+    const crmBtn = (
       <button
-        onClick={() => setCrmOpen(o => !o)}
+        onClick={() => labelsVisible ? setCrmOpen(o => !o) : setPinned(true)}
         className={cn(
           "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 hover:bg-white/10",
-          currentPath === "/crm" && "ghost-sidebar-active"
+          currentPath === "/crm" && "ghost-sidebar-active",
+          !labelsVisible && "justify-center px-0"
         )}
       >
         <Users className="h-[18px] w-[18px] shrink-0" />
-        <span className={cn("flex-1 text-left whitespace-nowrap transition-all", isOpen ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>CRM</span>
-        {isOpen && <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", crmOpen && "rotate-90")} />}
+        <span className={cn("flex-1 text-left whitespace-nowrap transition-opacity", labelsVisible ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>CRM</span>
+        {labelsVisible && <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", crmOpen && "rotate-90")} />}
       </button>
-      {isOpen && crmOpen && (
-        <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
-          {crmSub.map((s) => (
-            <NavLink
-              key={s.title}
-              to={s.url}
-              className="flex items-center gap-2 px-2 py-1.5 text-xs text-white/60 hover:text-white hover:bg-white/10 rounded-md transition"
-              activeClassName="text-white"
-              onClick={() => isMobile && setMobileOpen(false)}
-            >
-              <s.icon className="w-3.5 h-3.5" />
-              <span>{s.title}</span>
-            </NavLink>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+    );
+    return (
+      <div>
+        {!labelsVisible && !isMobile ? (
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>{crmBtn}</TooltipTrigger>
+              <TooltipContent side="right" className="bg-card text-foreground border-border">CRM</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : crmBtn}
+        {labelsVisible && crmOpen && (
+          <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-2">
+            {crmSub.map((s) => (
+              <NavLink
+                key={s.title}
+                to={s.url}
+                className="flex items-center gap-2 px-2 py-1.5 text-xs text-white/60 hover:text-white hover:bg-white/10 rounded-md transition"
+                activeClassName="text-white"
+                onClick={() => isMobile && setMobileOpen(false)}
+              >
+                <s.icon className="w-3.5 h-3.5" />
+                <span>{s.title}</span>
+              </NavLink>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
-  // Mobile: hamburger button rendered separately
+  // Mobile: hamburger + drawer
   if (isMobile) {
     return (
       <>
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-3 left-3 z-[60] rounded-full"
+          className="fixed top-3 left-3 z-[60] rounded-full bg-card/80 backdrop-blur"
           onClick={() => setMobileOpen(o => !o)}
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </Button>
 
-        {/* Overlay */}
         {mobileOpen && (
           <div className="fixed inset-0 bg-black/40 z-[54] backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
         )}
 
-        {/* Sidebar panel */}
         <aside
           className={cn(
-            "fixed top-0 left-0 h-full z-[55] w-64 ghost-sidebar-bg p-4 flex flex-col gap-1",
-            "transition-transform duration-250 ease-in-out",
+            "fixed top-0 left-0 h-full z-[55] w-[280px] ghost-sidebar-bg p-4 flex flex-col gap-1 overflow-y-auto",
+            "transition-transform duration-300 ease-in-out",
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
@@ -181,7 +238,6 @@ export function GhostSidebar() {
               window.dispatchEvent(new CustomEvent("toggle-public-view"));
             }}
             className="flex items-center gap-2 mb-6 mt-1 px-1 hover:opacity-80 transition-opacity"
-            title="Switch to Public View"
           >
             <Logo size="sm" />
             <span className="text-base font-bold text-white/90">HostFlow AI</span>
@@ -200,67 +256,62 @@ export function GhostSidebar() {
     );
   }
 
-  // Desktop: ghost sidebar
+  // Desktop
   return (
-    <>
-      {/* Thin edge hint — always visible when not expanded */}
-      <div
-        className={cn(
-          "fixed top-0 left-0 h-full z-[55] transition-opacity duration-300",
-          isOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-        )}
-        onMouseEnter={handleMouseEnter}
-      >
-        <div className="w-[4px] h-full ghost-edge-glow" />
-      </div>
-
-      {/* Sidebar panel */}
-      <aside
-        className={cn(
-          "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg",
-          "transition-all duration-250 ease-in-out",
-          "shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]",
-          isOpen ? "w-56 px-3 py-4 opacity-100 translate-x-0" : "w-0 px-0 py-4 opacity-0 -translate-x-2"
-        )}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5 px-1 min-w-[200px]">
-          <button
-            onClick={() => {
-              // Dispatch custom event to toggle public view
-              window.dispatchEvent(new CustomEvent("toggle-public-view"));
-            }}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-            title="Switch to Public View"
+    <aside
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{ width: expanded ? W_EXPANDED : W_COLLAPSED }}
+      className={cn(
+        "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg overflow-hidden",
+        "transition-[width] duration-300 ease-in-out",
+        "shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]",
+        expanded ? "px-3 py-4" : "px-2 py-4"
+      )}
+    >
+      {/* Header */}
+      <div className={cn("flex items-center mb-5 min-h-[36px]", expanded ? "justify-between px-1" : "justify-center")}>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("toggle-public-view"))}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          title="Switch to Public View"
+        >
+          <Logo size="sm" />
+          {expanded && <span className="text-sm font-bold text-white/90 whitespace-nowrap">HostFlow AI</span>}
+        </button>
+        {expanded && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-white/50 hover:text-white hover:bg-white/10"
+            onClick={togglePin}
+            title={pinned ? "Unpin sidebar" : "Pin sidebar"}
           >
-            <Logo size="sm" />
-            <span className="text-sm font-bold text-white/90 whitespace-nowrap">HostFlow AI</span>
-          </button>
-          <Button variant="ghost" size="icon" className="h-7 w-7 text-white/50 hover:text-white hover:bg-white/10" onClick={togglePin}>
             {pinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
           </Button>
-        </div>
+        )}
+      </div>
 
-        {/* Nav */}
-        <nav className="flex flex-col gap-0.5 min-w-[200px]">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden -mx-1 px-1">
+        <nav className="flex flex-col gap-0.5">
           {primaryNav.map(renderNavItem)}
         </nav>
         {renderCrmGroup()}
-        <nav className="flex flex-col gap-0.5 min-w-[200px] mt-1">
+        <nav className="flex flex-col gap-0.5 mt-1">
           {tailNav.map(renderNavItem)}
         </nav>
 
         {visibleConditional.length > 0 && (
           <>
-            <div className="text-[10px] uppercase tracking-widest text-white/30 mt-5 mb-1 px-3 min-w-[200px]">Industry</div>
-            <nav className="flex flex-col gap-0.5 min-w-[200px]">
+            {expanded && (
+              <div className="text-[10px] uppercase tracking-widest text-white/30 mt-5 mb-1 px-3">Industry</div>
+            )}
+            <nav className={cn("flex flex-col gap-0.5", !expanded && "mt-3")}>
               {visibleConditional.map(renderNavItem)}
             </nav>
           </>
         )}
-      </aside>
-    </>
+      </div>
+    </aside>
   );
 }
