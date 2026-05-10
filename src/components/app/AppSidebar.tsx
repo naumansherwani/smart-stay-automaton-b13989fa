@@ -25,6 +25,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useState, useCallback } from "react";
 import { useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useResolutionHubCount } from "@/hooks/useResolutionHubCount";
