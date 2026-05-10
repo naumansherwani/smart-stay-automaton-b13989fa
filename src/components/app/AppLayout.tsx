@@ -15,6 +15,9 @@ import PublicView from "./PublicView";
 import WorkspaceSlidePanel from "@/components/dashboard/WorkspaceSlidePanel";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
+import { useWorkspaces } from "@/hooks/useWorkspaces";
+import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
+import { toast } from "sonner";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
   hospitality: "Travel, Tourism & Hospitality",
@@ -35,6 +38,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
+  const { workspaces, createWorkspace, switchWorkspace } = useWorkspaces();
   const [isAdmin, setIsAdmin] = useState(false);
   const [publicMode, setPublicMode] = useState(false);
   const [adminChecked, setAdminChecked] = useState(false);
@@ -53,8 +57,29 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
     if (!user) return;
+    // Skip if already on this industry
+    if (profile?.industry === industry) {
+      setPublicMode(false);
+      navigate("/dashboard");
+      return;
+    }
+    // 1. Update profile industry
     await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
-  }, [user]);
+
+    // 2. Sync workspace — switch if exists, otherwise create
+    const existing = workspaces.find(w => w.industry === industry);
+    if (existing) {
+      await switchWorkspace(existing.id);
+    } else {
+      const label = INDUSTRY_CONFIGS[industry]?.label || industry;
+      await createWorkspace(label, industry);
+    }
+
+    // 3. Close public view + go to that industry's dashboard
+    setPublicMode(false);
+    toast.success(`Switched to ${INDUSTRY_CONFIGS[industry]?.label || industry}`);
+    navigate("/dashboard");
+  }, [user, profile?.industry, workspaces, switchWorkspace, createWorkspace, navigate]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
