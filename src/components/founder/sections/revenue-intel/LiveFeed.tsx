@@ -135,7 +135,7 @@ export default function LiveFeed({ active }: { active: boolean }) {
             Live Intelligence
           </span>
         </div>
-        <span className="text-[10px] text-[var(--fos-muted)]">{items.length}/50</span>
+        <span className="text-[10px] text-[var(--fos-muted)]">{items.length}/{MAX_ITEMS}</span>
       </div>
       <div className="flex-1 overflow-y-auto space-y-1.5 font-mono text-[11px]">
         {!active && (
