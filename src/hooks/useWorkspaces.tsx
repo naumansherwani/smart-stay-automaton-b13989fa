@@ -69,6 +69,8 @@ export function useWorkspaces() {
   const switchWorkspace = async (workspaceId: string) => {
     if (!user) return;
 
+    const target = workspaces.find(w => w.id === workspaceId);
+
     await supabase
       .from("workspaces")
       .update({ is_active: false })
@@ -78,6 +80,15 @@ export function useWorkspaces() {
       .from("workspaces")
       .update({ is_active: true })
       .eq("id", workspaceId);
+
+    // CRITICAL: keep profiles.industry in sync with the active workspace.
+    // Prevents header/sidebar showing different industries (never-mix rule).
+    if (target) {
+      await supabase
+        .from("profiles")
+        .update({ industry: target.industry })
+        .eq("user_id", user.id);
+    }
 
     setWorkspaces(prev =>
       prev.map(w => ({ ...w, is_active: w.id === workspaceId }))
