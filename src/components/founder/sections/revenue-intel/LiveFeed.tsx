@@ -123,6 +123,25 @@ export default function LiveFeed({ active }: { active: boolean }) {
           push(`[System] — Payment received${d.amount ? ` · ${d.amount}` : ""}`, "green", "system", undefined, d);
         } catch { /* ignore */ }
       });
+      // Phase 2 — policy/pricing config sync. Backend emits when /settings or
+      // /founder/pricing rules change so live advisors can pick up new rules
+      // without a refresh.
+      const handlePolicyUpdate = (e: MessageEvent) => {
+        try {
+          const d = JSON.parse(e.data);
+          push(
+            `[Policy] — ${d.scope || "Config"} updated${d.industry ? ` · ${d.industry}` : ""}`,
+            "cyan",
+            "system",
+            typeof d.summary === "string" ? d.summary.slice(0, 140) : undefined,
+            d,
+          );
+          // Broadcast for any open advisor / pricing panel to refetch.
+          window.dispatchEvent(new CustomEvent("hf:policy-updated", { detail: d }));
+        } catch { /* ignore */ }
+      };
+      es.addEventListener("policy.updated", handlePolicyUpdate);
+      es.addEventListener("pricing.config_updated", handlePolicyUpdate);
 
       es.onerror = () => {
         es.close();
