@@ -29,6 +29,7 @@ Backend split: Lovable Cloud = DB of record + auth + storage + email (Resend) + 
 - [Advisor architecture](mem://features/advisor-architecture) — platform-knowledge.ts → 8 industry advisors → Sherlock auto-import chain
 - [Advisor names locked](mem://features/advisor-names-locked) — Full C-suite designations for Aria, Captain Orion, Rex, Dr. Lyra, Professor Sage, Atlas, Vega, Conductor Kai, Sherlock — EXACT, case-sensitive
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
+- [Industry isolation locked](mem://constraints/industry-isolation-locked) — LOCKED: activeWorkspace.industry is single source of truth; per-industry subdomain plan
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
 - [AI Email Center hands-off](mem://constraints/ai-email-center-handsoff) — Lovable must not touch email backend/data; Replit owns it. UI/UX only on request.
 - [Resolution Hub flow locked](mem://features/resolution-hub-flow-locked) — 6 locked stages: Customer message received → Aria analyzed → Issue created → Sherlock reviewed → Pricing updated → Revenue protected
