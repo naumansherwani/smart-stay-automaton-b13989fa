@@ -168,7 +168,7 @@ export function callAdvisor<T = any>(
  */
 export async function invokeShim<T = any>(
   name: string,
-  opts: { body?: any } = {},
+  opts: { body?: any; headers?: Record<string, string> } = {},
 ): Promise<ReplitResult<T>> {
   const body = opts.body ?? {};
   switch (name) {
