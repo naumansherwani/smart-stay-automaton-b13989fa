@@ -5,6 +5,13 @@ import { apiGet, ApiError } from "@/lib/api";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 
 type Stage =
+  | "customer_message_received"
+  | "advisor_analyzed"
+  | "issue_created"
+  | "sherlock_reviewed"
+  | "pricing_updated"
+  | "revenue_protected"
+  // legacy aliases still tolerated from older backend payloads
   | "issue_received"
   | "ai_analyzing"
   | "recovery_engine"
@@ -33,13 +40,21 @@ interface ResolutionIssue {
   summary?: string | null;
 }
 
-const STEPS: { key: Stage; label: string }[] = [
-  { key: "issue_received", label: "STEP 1: RECEIVED" },
-  { key: "ai_analyzing", label: "STEP 2: ANALYZING" },
-  { key: "recovery_engine", label: "STEP 3: RECOVERY ACTIVE" },
-  { key: "sherlock_reviewing", label: "STEP 4: SHERLOCK REVIEWING" },
-  { key: "resolved", label: "STEP 5: RESOLVED ✓" },
+// LOCKED 6-stage Resolution Hub pipeline. Do not rename, reorder, merge, or remove.
+// See mem://features/resolution-hub-flow-locked
+const STEPS: { key: Stage; label: string; aliases?: Stage[] }[] = [
+  { key: "customer_message_received", label: "1. Customer message received", aliases: ["issue_received"] },
+  { key: "advisor_analyzed", label: "2. Aria analyzed issue", aliases: ["ai_analyzing"] },
+  { key: "issue_created", label: "3. Resolution Hub issue created" },
+  { key: "sherlock_reviewed", label: "4. Sherlock reviewed", aliases: ["sherlock_reviewing", "recovery_engine"] },
+  { key: "pricing_updated", label: "5. Pricing updated" },
+  { key: "revenue_protected", label: "6. Revenue protected", aliases: ["resolved"] },
 ];
+
+function stageIndex(stage: Stage | undefined): number {
+  if (!stage) return -1;
+  return STEPS.findIndex((s) => s.key === stage || s.aliases?.includes(stage));
+}
 
 const CURRENCY_SYMBOL: Record<string, string> = {
   GBP: "£",
@@ -83,7 +98,7 @@ function IssueCard({ issue }: { issue: ResolutionIssue }) {
 
   const stageList = issue.stages?.length ? issue.stages : [issue.current_stage].filter(Boolean) as Stage[];
   const currentStage = issue.current_stage || stageList[stageList.length - 1];
-  const currentIdx = STEPS.findIndex((s) => s.key === currentStage);
+  const currentIdx = stageIndex(currentStage);
 
   const advisor = issue.advisor_name?.toUpperCase();
   const industryLabel = issue.industry
@@ -139,7 +154,7 @@ function IssueCard({ issue }: { issue: ResolutionIssue }) {
       </div>
 
       {/* Live progress steps */}
-      <ol className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+      <ol className="grid grid-cols-1 sm:grid-cols-6 gap-2">
         {STEPS.map((step, idx) => {
           const reached = currentIdx >= 0 && idx <= currentIdx;
           const isCurrent = idx === currentIdx;
