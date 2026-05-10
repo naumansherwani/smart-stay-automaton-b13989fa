@@ -27,6 +27,7 @@ import { useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useResolutionHubCount } from "@/hooks/useResolutionHubCount";
 
 const primaryNav = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
@@ -72,6 +73,7 @@ export function AppSidebar() {
   const { profile } = useProfile();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const hubCount = useResolutionHubCount();
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
@@ -107,16 +109,40 @@ export function AppSidebar() {
   };
 
   const renderNavItem = (item: typeof primaryNav[0]) => {
+    const isHub = item.url === "/resolution-hub";
+    const hubBadgeNum = hubCount?.total_open ?? 0;
+    const hubBadgeRed = (hubCount?.sherlock_active ?? 0) > 0;
+    const showHubBadge = isHub && hubBadgeNum > 0;
+
     const button = (
       <SidebarMenuButton asChild isActive={isActive(item.url)}>
         <NavLink
           to={item.url}
           end
-          className="hover:bg-muted/50"
+          className="hover:bg-muted/50 relative"
           activeClassName="bg-muted text-primary font-medium"
         >
           <item.icon className="mr-2 h-4 w-4" />
-          {!collapsed && <span>{item.title}</span>}
+          {!collapsed && <span className="flex-1">{item.title}</span>}
+          {showHubBadge && !collapsed && (
+            <span
+              className={`ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold tabular-nums text-white ${
+                hubBadgeRed
+                  ? "bg-red-500 animate-pulse"
+                  : "bg-cyan-500"
+              }`}
+              aria-label={hubBadgeRed ? "Sherlock escalations active" : "Active issues"}
+            >
+              {hubBadgeNum}
+            </span>
+          )}
+          {showHubBadge && collapsed && (
+            <span
+              className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ring-2 ring-background ${
+                hubBadgeRed ? "bg-red-500 animate-pulse" : "bg-cyan-500"
+              }`}
+            />
+          )}
         </NavLink>
       </SidebarMenuButton>
     );
