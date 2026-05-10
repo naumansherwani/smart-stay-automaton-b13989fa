@@ -116,11 +116,11 @@ function HealthcareKPIs() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* 1. Patient Triage Status */}
-      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+      <Card className="bg-card/80 border-border/50 shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-[hsl(204,100%,88%)] flex items-center justify-center">
-              <Activity className="w-4 h-4 text-[hsl(204,80%,40%)]" />
+            <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Activity className="w-4 h-4 text-primary" />
             </div>
             <p className="text-sm font-semibold text-foreground">Patient Triage</p>
           </div>
@@ -131,12 +131,12 @@ function HealthcareKPIs() {
             </div>
             <div className="w-px h-8 bg-border" />
             <div className="text-center flex-1">
-              <p className="text-xl font-bold text-[hsl(35,90%,50%)]">{triageCounts.urgent}</p>
+              <p className="text-xl font-bold text-warning">{triageCounts.urgent}</p>
               <p className="text-[10px] text-muted-foreground font-medium">Urgent</p>
             </div>
             <div className="w-px h-8 bg-border" />
             <div className="text-center flex-1">
-              <p className="text-xl font-bold text-[hsl(152,60%,42%)]">{triageCounts.routine}</p>
+              <p className="text-xl font-bold text-success">{triageCounts.routine}</p>
               <p className="text-[10px] text-muted-foreground font-medium">Routine</p>
             </div>
           </div>
@@ -144,11 +144,11 @@ function HealthcareKPIs() {
       </Card>
 
       {/* 2. Live Bed Occupancy — Circular Progress */}
-      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+      <Card className="bg-card/80 border-border/50 shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-[hsl(174,60%,88%)] flex items-center justify-center">
-              <Heart className="w-4 h-4 text-[hsl(174,60%,35%)]" />
+            <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Heart className="w-4 h-4 text-primary" />
             </div>
             <p className="text-sm font-semibold text-foreground">Bed Occupancy</p>
           </div>
@@ -173,32 +173,32 @@ function HealthcareKPIs() {
       </Card>
 
       {/* 3. Avg Wait Time */}
-      <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm">
+      <Card className="bg-card/80 border-border/50 shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-[hsl(204,100%,88%)] flex items-center justify-center">
-              <Clock className="w-4 h-4 text-[hsl(204,80%,40%)]" />
+            <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Clock className="w-4 h-4 text-primary" />
             </div>
             <p className="text-sm font-semibold text-foreground">Avg. Wait Time</p>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <Timer className="w-6 h-6 text-[hsl(204,80%,50%)]" />
+            <Timer className="w-6 h-6 text-primary" />
             <span className="text-3xl font-bold text-foreground">{avgWaitMinutes}</span>
             <span className="text-sm text-muted-foreground font-medium">Mins</span>
           </div>
           <div className="flex items-center justify-center gap-1 mt-2">
-            <ArrowDownRight className="w-3 h-3 text-[hsl(152,60%,42%)]" />
-            <span className="text-[10px] text-[hsl(152,60%,42%)] font-medium">-3 min from yesterday</span>
+            <ArrowDownRight className="w-3 h-3 text-success" />
+            <span className="text-[10px] text-success font-medium">-3 min from yesterday</span>
           </div>
         </CardContent>
       </Card>
 
       {/* 4. AI Critical Alerts — Pulse */}
-      <Card className={`border shadow-sm relative overflow-hidden ${criticalAlerts.length > 0 ? "bg-destructive/5 border-destructive/20 animate-[pulse_3s_ease-in-out_infinite]" : "bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60"}`}>
+      <Card className={`border shadow-sm relative overflow-hidden ${criticalAlerts.length > 0 ? "bg-destructive/5 border-destructive/20 animate-[pulse_3s_ease-in-out_infinite]" : "bg-card/80 border-border/50"}`}>
         <CardContent className="p-4 relative z-10">
           <div className="flex items-center gap-2 mb-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${criticalAlerts.length > 0 ? "bg-destructive/15" : "bg-[hsl(152,60%,88%)]"}`}>
-              <AlertTriangle className={`w-4 h-4 ${criticalAlerts.length > 0 ? "text-destructive" : "text-[hsl(152,60%,42%)]"}`} />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${criticalAlerts.length > 0 ? "bg-destructive/15" : "bg-success/15"}`}>
+              <AlertTriangle className={`w-4 h-4 ${criticalAlerts.length > 0 ? "text-destructive" : "text-success"}`} />
             </div>
             <p className="text-sm font-semibold text-foreground">AI Critical Alerts</p>
             {criticalAlerts.length > 0 && (
@@ -217,7 +217,7 @@ function HealthcareKPIs() {
             </div>
           ) : (
             <div className="text-center py-2">
-              <CheckCircle2 className="w-6 h-6 text-[hsl(152,60%,42%)] mx-auto mb-1" />
+              <CheckCircle2 className="w-6 h-6 text-success mx-auto mb-1" />
               <p className="text-xs text-muted-foreground">All vitals normal</p>
             </div>
           )}
@@ -760,10 +760,10 @@ function AdmissionForecast() {
   const bandBottom = [...forecastLinePts].reverse().map(p => `${p.x},${Math.min(chartH - padY, p.y + 12)}`).join(" L");
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
-          <Brain className="w-4 h-4 text-[hsl(174,60%,42%)]" />
+          <Brain className="w-4 h-4 text-primary" />
           AI Admission Forecast
           <Badge variant="outline" className="text-[10px] ml-auto">AI Powered</Badge>
         </CardTitle>
@@ -801,7 +801,7 @@ function AdmissionForecast() {
         </svg>
         <div className="flex items-center justify-center gap-4 mt-2 pt-2 border-t border-border/50">
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-0.5 rounded-full bg-[hsl(174,60%,42%)]" />
+            <div className="w-4 h-0.5 rounded-full bg-primary" />
             <span className="text-[10px] text-muted-foreground">Actual</span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -813,8 +813,8 @@ function AdmissionForecast() {
             <span className="text-[10px] text-muted-foreground">Confidence Band</span>
           </div>
           <div className="flex items-center gap-1 ml-2">
-            <ArrowUpRight className="w-3 h-3 text-[hsl(35,90%,50%)]" />
-            <span className="text-[10px] text-[hsl(35,90%,50%)] font-medium">+22% expected (flu season)</span>
+            <ArrowUpRight className="w-3 h-3 text-warning" />
+            <span className="text-[10px] text-warning font-medium">+22% expected (flu season)</span>
           </div>
         </div>
       </CardContent>
@@ -838,7 +838,7 @@ function SentimentHeatmap() {
   let offset = 0;
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Heart className="w-4 h-4 text-[hsl(0,70%,60%)]" />
@@ -920,7 +920,7 @@ function CriticalPatientMonitor() {
   ];
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
@@ -951,7 +951,7 @@ function CriticalPatientMonitor() {
             <div
               key={p.name}
               className={`grid grid-cols-12 gap-2 px-3 py-3 items-center transition-colors ${
-                p.critical ? "bg-[hsl(0,86%,97%)] dark:bg-destructive/5" : "hover:bg-muted/30"
+                p.critical ? "bg-destructive/10 dark:bg-destructive/5" : "hover:bg-muted/30"
               }`}
             >
               {/* Patient Name */}
@@ -975,7 +975,7 @@ function CriticalPatientMonitor() {
               {/* AI Score */}
               <div className="col-span-1 text-center">
                 <span className={`text-sm font-bold ${
-                  p.score >= 90 ? "text-destructive" : p.score >= 60 ? "text-[hsl(35,90%,50%)]" : "text-[hsl(152,60%,42%)]"
+                  p.score >= 90 ? "text-destructive" : p.score >= 60 ? "text-warning" : "text-success"
                 }`}>
                   {p.score}
                 </span>
@@ -1032,16 +1032,16 @@ function BedDischargePredictor() {
   const bedsFreeing = dischargePatients.filter(p => p.probability >= 75).length;
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[hsl(174,60%,42%)]" />
+            <Activity className="w-4 h-4 text-primary" />
             AI Bed-Traffic & Discharge Predictor
             <Badge variant="outline" className="text-[10px]">Next 24h</Badge>
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge className="bg-[hsl(174,60%,42%)]/15 text-[hsl(174,60%,35%)] border-[hsl(174,60%,42%)]/20 text-[10px]">
+            <Badge className="bg-primary/15 text-primary border-[hsl(174,60%,42%)]/20 text-[10px]">
               ~{bedsFreeing} beds freeing soon
             </Badge>
           </div>
@@ -1051,7 +1051,7 @@ function BedDischargePredictor() {
       <CardContent className="space-y-2.5">
         {dischargePatients.map(p => (
           <div key={p.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-background/60 border border-border/30">
-            <div className="w-7 h-7 rounded-full bg-[hsl(174,60%,42%)]/10 flex items-center justify-center text-xs font-bold text-[hsl(174,60%,42%)]">
+            <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
               {p.name.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
@@ -1066,7 +1066,7 @@ function BedDischargePredictor() {
               <div className="flex items-center justify-between mb-0.5">
                 <span className="text-[9px] text-muted-foreground">Discharge</span>
                 <span className={`text-xs font-bold ${
-                  p.probability >= 80 ? "text-[hsl(152,60%,42%)]" : p.probability >= 60 ? "text-[hsl(35,90%,50%)]" : "text-muted-foreground"
+                  p.probability >= 80 ? "text-success" : p.probability >= 60 ? "text-warning" : "text-muted-foreground"
                 }`}>{p.probability}%</span>
               </div>
               <div className="h-1.5 rounded-full bg-muted overflow-hidden">
@@ -1096,14 +1096,14 @@ function AmbulanceAlerts() {
   ];
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Zap className="w-4 h-4 text-destructive" />
           Incoming Emergency Alerts
           <span className="relative flex h-2.5 w-2.5 ml-1">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
           </span>
           <Badge variant="outline" className="text-[10px] ml-auto">Live</Badge>
         </CardTitle>
@@ -1112,10 +1112,10 @@ function AmbulanceAlerts() {
       <CardContent className="space-y-2">
         {alerts.map(a => (
           <div key={a.id} className={`flex items-center gap-3 p-2.5 rounded-lg border ${
-            a.severity === "critical" ? "bg-[hsl(0,86%,97%)] border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
+            a.severity === "critical" ? "bg-destructive/10 border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
           }`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-              a.severity === "critical" ? "bg-destructive/15 text-destructive" : a.severity === "high" ? "bg-[hsl(35,90%,50%)]/15 text-[hsl(35,90%,50%)]" : "bg-primary/10 text-primary"
+              a.severity === "critical" ? "bg-destructive/15 text-destructive" : a.severity === "high" ? "bg-warning/15 text-warning" : "bg-primary/10 text-primary"
             }`}>
               {a.eta.split(" ")[0]}m
             </div>
@@ -1150,15 +1150,15 @@ function StaffingOptimizer() {
   const understaffed = departments.filter(d => d.status === "understaffed").length;
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Users className="w-4 h-4 text-primary" />
             AI Staffing Optimizer
             <span className="relative flex h-2.5 w-2.5 ml-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
             </span>
           </CardTitle>
           {understaffed > 0 && (
@@ -1170,7 +1170,7 @@ function StaffingOptimizer() {
       <CardContent className="space-y-2.5">
         {departments.map(d => (
           <div key={d.name} className={`p-2.5 rounded-lg border ${
-            d.status === "understaffed" ? "bg-[hsl(0,86%,97%)] border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
+            d.status === "understaffed" ? "bg-destructive/10 border-destructive/15 dark:bg-destructive/5" : "bg-background/60 border-border/30"
           }`}>
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
@@ -1194,7 +1194,7 @@ function StaffingOptimizer() {
                   }}
                 />
               </div>
-              <span className={`text-xs font-bold ${d.nurses >= d.needed ? "text-[hsl(152,60%,42%)]" : "text-destructive"}`}>
+              <span className={`text-xs font-bold ${d.nurses >= d.needed ? "text-success" : "text-destructive"}`}>
                 {d.nurses}/{d.needed}
               </span>
             </div>
@@ -1222,14 +1222,14 @@ function GlobalAISummary() {
   ];
 
   return (
-    <div className="rounded-lg border border-[hsl(204,100%,86%)]/60 bg-background/90 backdrop-blur-sm shadow-sm overflow-hidden">
+    <div className="rounded-lg border border-border/50 bg-background/90 backdrop-blur-sm shadow-sm overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-2.5">
         <div className="flex items-center gap-1.5 shrink-0">
           <Brain className="w-4 h-4 text-primary" />
           <span className="text-xs font-semibold text-primary">AI LIVE</span>
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(152,70%,45%)]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
           </span>
         </div>
         <div className="overflow-hidden flex-1">
@@ -1277,18 +1277,18 @@ function WardMapHeatmap() {
   const totalCritical = wards.reduce((s, w) => s + w.critical, 0);
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <LayoutGrid className="w-4 h-4 text-primary" />
             AI Ward-Map Heatmap
             <span className="relative flex h-2.5 w-2.5 ml-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
             </span>
           </CardTitle>
-          <Badge className="bg-[hsl(204,100%,94%)] text-primary border-primary/20 text-[10px]">
+          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">
             {totalCritical} critical zones
           </Badge>
         </div>
@@ -1454,14 +1454,14 @@ function MedicationSafetyWall() {
 
   const severityStyle = (s: string) =>
     s === "critical"
-      ? { bg: "bg-[hsl(0,86%,97%)]", border: "border-destructive/20", badge: "bg-destructive text-destructive-foreground", dot: "hsl(0,70%,55%)" }
+      ? { bg: "bg-destructive/10", border: "border-destructive/20", badge: "bg-destructive text-destructive-foreground", dot: "hsl(0,70%,55%)" }
       : { bg: "bg-[hsl(45,100%,96%)]", border: "border-[hsl(45,90%,50%)]/20", badge: "bg-[hsl(45,90%,50%)] text-foreground", dot: "hsl(45,90%,50%)" };
 
   const typeIcon = (t: string) =>
     t === "allergy" ? "🚫" : t === "interaction" ? "⚠️" : "💊";
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
@@ -1557,15 +1557,15 @@ function SupplyTracker() {
   };
 
   return (
-    <Card className="bg-[hsl(204,100%,94%)]/40 border-[hsl(204,100%,86%)]/60 shadow-sm backdrop-blur-sm">
+    <Card className="bg-card/80 border-border/50 shadow-sm backdrop-blur-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base flex items-center gap-2">
             <Package className="w-4 h-4 text-primary" />
             Critical Medicine Supply Tracker
             <span className="relative flex h-2.5 w-2.5 ml-1">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(152,70%,45%)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(152,70%,45%)]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success" />
             </span>
           </CardTitle>
           {lowCount > 0 && (
@@ -1580,7 +1580,7 @@ function SupplyTracker() {
           const isLow = s.current <= s.reorderAt;
           const color = barColor(s);
           return (
-            <div key={s.name} className={`p-2.5 rounded-lg border ${isLow ? "bg-[hsl(0,86%,97%)] border-destructive/15" : "bg-background/60 border-border/30"}`}>
+            <div key={s.name} className={`p-2.5 rounded-lg border ${isLow ? "bg-destructive/10 border-destructive/15" : "bg-background/60 border-border/30"}`}>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-foreground">{s.name}</span>
@@ -1632,7 +1632,7 @@ function GlobalVoiceCommandBar() {
   };
 
   return (
-    <div className="rounded-lg border border-[hsl(204,100%,86%)]/60 bg-background/90 backdrop-blur-sm shadow-sm">
+    <div className="rounded-lg border border-border/50 bg-background/90 backdrop-blur-sm shadow-sm">
       <div className="flex items-center gap-3 px-4 py-3">
         <Button
           size="sm"
