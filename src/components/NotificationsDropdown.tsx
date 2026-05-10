@@ -72,7 +72,6 @@ const NotificationsDropdown = () => {
 
   const unread = alerts.filter(a => !a.read).length;
   const sherlockCount = hubIssues.filter(i => i.status === "sherlock_active").length;
-  const activeCount = hubIssues.filter(i => i.status === "active").length;
   const bellCount = unread + sherlockCount;
 
   const markRead = async (id: string) => {
