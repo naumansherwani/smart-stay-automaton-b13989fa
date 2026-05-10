@@ -1,0 +1,150 @@
+import { REPLIT_API_BASE } from "@/lib/replitBase";
+import { supabase } from "@/integrations/supabase/client";
+
+/**
+ * Thin wrapper for calling Replit (HostFlow Brain) routes.
+ *
+ * Returns { data, error } shape — drop-in replacement for
+ * supabase.functions.invoke(name, { body }) in the frontend.
+ *
+ * - Auth: forwards current Supabase JWT as `Authorization: Bearer <token>`
+ *   so Replit can validate the user via supabase.auth.getUser(token).
+ * - Errors: surfaces { code, message } from the response envelope, or a
+ *   generic message on network/JSON failure.
+ */
+
+export interface ReplitError {
+  message: string;
+  code?: string;
+  status?: number;
+}
+
+export interface ReplitResult<T> {
+  data: T | null;
+  error: ReplitError | null;
+}
+
+async function getAuthHeader(): Promise<Record<string, string>> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
+}
+
+export async function replitCall<T = any>(
+  path: string,
+  body?: unknown,
+  init: { method?: string; signal?: AbortSignal } = {},
+): Promise<ReplitResult<T>> {
+  const method = init.method ?? (body !== undefined ? "POST" : "GET");
+  const url = path.startsWith("http")
+    ? path
+    : `${REPLIT_API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
+
+  try {
+    const auth = await getAuthHeader();
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...auth,
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal: init.signal,
+    });
+
+    let json: any = null;
+    try {
+      json = await res.json();
+    } catch {
+      /* empty body */
+    }
+
+    if (!res.ok) {
+      const err: ReplitError = {
+        message:
+          json?.error?.message ||
+          json?.message ||
+          `Request failed (${res.status})`,
+        code: json?.error?.code,
+        status: res.status,
+      };
+      return { data: null, error: err };
+    }
+
+    // Unwrap standard envelope { ok, data, error }
+    const data: T = (json?.data ?? json) as T;
+    return { data, error: null };
+  } catch (e: any) {
+    return {
+      data: null,
+      error: { message: e?.message || "Network error" },
+    };
+  }
+}
+
+/**
+ * Stream Server-Sent Events from a Replit advisor/founder route.
+ * Yields parsed event objects: { event, data } where data is the JSON payload.
+ */
+export async function* replitStream(
+  path: string,
+  body?: unknown,
+  init: { signal?: AbortSignal } = {},
+): AsyncGenerator<{ event: string; data: any }, void, unknown> {
+  const url = path.startsWith("http")
+    ? path
+    : `${REPLIT_API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
+  const auth = await getAuthHeader();
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "text/event-stream",
+      ...auth,
+    },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal: init.signal,
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(`Stream failed (${res.status})`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+
+    let idx: number;
+    while ((idx = buf.indexOf("\n\n")) !== -1) {
+      const raw = buf.slice(0, idx);
+      buf = buf.slice(idx + 2);
+
+      let event = "message";
+      const dataLines: string[] = [];
+      for (const line of raw.split("\n")) {
+        if (line.startsWith("event:")) event = line.slice(6).trim();
+        else if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
+      }
+      const dataStr = dataLines.join("\n");
+      if (!dataStr) continue;
+
+      let data: any = dataStr;
+      try {
+        data = JSON.parse(dataStr);
+      } catch {
+        /* keep as string */
+      }
+      yield { event, data };
+    }
+  }
+}
