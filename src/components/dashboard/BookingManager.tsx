@@ -223,8 +223,9 @@ const BookingManager = ({ config }: BookingManagerProps) => {
 
     // === AI-Powered Server-Side Validation ===
     try {
-      const { data: validation, error: valError } = await supabase.functions.invoke("validate-booking", {
-        body: {
+      const { data: validation, error: valError } = await replitCall<any>(
+        "/bookings",
+        {
           resource_id: form.resource_id,
           check_in: form.check_in,
           check_out: form.check_out,
@@ -234,7 +235,7 @@ const BookingManager = ({ config }: BookingManagerProps) => {
           guest_email: form.guest_email || undefined,
           industry: config.id,
         },
-      });
+      );
 
       if (valError) {
         toast.error("Booking validation failed. Please try again.");
