@@ -112,24 +112,22 @@ export function GhostSidebar() {
     const hubBadgeNum = hubCount?.total_open ?? 0;
     const hubBadgeRed = (hubCount?.sherlock_active ?? 0) > 0;
     const showBadge = isHub && hubBadgeNum > 0;
+    const active = isActive(item.url);
 
     const link = (
       <NavLink
         to={item.url}
         end
         className={cn(
-          "relative text-sm transition-all duration-200 hover:bg-white/10",
+          "relative text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_rgba(45,212,191,0.12)]",
           labelsVisible
             ? "flex items-center gap-3 px-3 py-2.5 rounded-lg"
-            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
-          isActive(item.url) && "ghost-sidebar-active"
+            : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
+          active && "ghost-sidebar-active"
         )}
         activeClassName=""
         onClick={() => isMobile && setMobileOpen(false)}
       >
-        {isActive(item.url) && !labelsVisible && (
-          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-cyan-400" />
-        )}
         <item.icon className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
         <span className={cn(
           "whitespace-nowrap transition-opacity duration-200",
