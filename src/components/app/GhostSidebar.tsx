@@ -267,10 +267,10 @@ export function GhostSidebar() {
       onMouseLeave={handleMouseLeave}
       style={{ width: expanded ? W_EXPANDED : W_COLLAPSED }}
       className={cn(
-        "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg overflow-hidden",
+        "fixed top-0 left-0 h-full z-[55] flex flex-col ghost-sidebar-bg",
         "transition-[width] duration-300 ease-in-out",
         "shadow-[4px_0_24px_-4px_rgba(0,0,0,0.5)]",
-        expanded ? "px-3 py-4" : "px-0 py-3 items-center"
+        expanded ? "px-3 py-4" : "px-0 py-0 items-center"
       )}
     >
       {/* Header */}
