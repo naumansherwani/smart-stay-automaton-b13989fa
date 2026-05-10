@@ -118,18 +118,22 @@ export function GhostSidebar() {
         to={item.url}
         end
         className={cn(
-          "relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
-          "hover:bg-white/10",
-          isActive(item.url) && "ghost-sidebar-active",
-          !labelsVisible && "justify-center px-0"
+          "relative text-sm transition-all duration-200 hover:bg-white/10",
+          labelsVisible
+            ? "flex items-center gap-3 px-3 py-2.5 rounded-lg"
+            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
+          isActive(item.url) && "ghost-sidebar-active"
         )}
         activeClassName=""
         onClick={() => isMobile && setMobileOpen(false)}
       >
-        <item.icon className="h-[18px] w-[18px] shrink-0" />
+        {isActive(item.url) && !labelsVisible && (
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-cyan-400" />
+        )}
+        <item.icon className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
         <span className={cn(
           "whitespace-nowrap transition-opacity duration-200",
-          labelsVisible ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
+          labelsVisible ? "opacity-100" : "hidden"
         )}>
           {item.title}
         </span>
@@ -141,7 +145,7 @@ export function GhostSidebar() {
         )}
         {showBadge && !labelsVisible && (
           <span className={cn(
-            "absolute top-1 right-2 w-2 h-2 rounded-full ring-2 ring-[hsl(var(--background))]",
+            "absolute top-1.5 right-1.5 w-2 h-2 rounded-full ring-2 ring-[hsl(var(--background))]",
             hubBadgeRed ? "bg-red-500 animate-pulse" : "bg-cyan-500"
           )} />
         )}
@@ -168,13 +172,15 @@ export function GhostSidebar() {
       <button
         onClick={() => labelsVisible ? setCrmOpen(o => !o) : setPinned(true)}
         className={cn(
-          "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 hover:bg-white/10",
-          currentPath === "/crm" && "ghost-sidebar-active",
-          !labelsVisible && "justify-center px-0"
+          "text-sm transition-all duration-200 hover:bg-white/10",
+          labelsVisible
+            ? "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg"
+            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
+          currentPath === "/crm" && "ghost-sidebar-active"
         )}
       >
-        <Users className="h-[18px] w-[18px] shrink-0" />
-        <span className={cn("flex-1 text-left whitespace-nowrap transition-opacity", labelsVisible ? "opacity-100" : "opacity-0 w-0 overflow-hidden")}>CRM</span>
+        <Users className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
+        <span className={cn("flex-1 text-left whitespace-nowrap transition-opacity", labelsVisible ? "opacity-100" : "hidden")}>CRM</span>
         {labelsVisible && <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", crmOpen && "rotate-90")} />}
       </button>
     );
