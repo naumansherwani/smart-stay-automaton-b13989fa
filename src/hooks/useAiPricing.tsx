@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { replitCall } from "@/lib/replitApi";
 import { supportsAutoPricing } from "@/lib/industryFeatures";
 import type { IndustryType } from "@/lib/industryConfig";
 import { toast } from "sonner";
@@ -48,8 +49,9 @@ export function useAiPricing({ industry }: UseAiPricingOptions) {
     setError(null);
 
     try {
-      const { data: fnData, error: fnError } = await supabase.functions.invoke("ai-smart-pricing", {
-        body: {
+      const { data: fnData, error: fnError } = await replitCall<any>(
+        "/pricing/suggest",
+        {
           industry,
           resources,
           days: opts?.days ?? 7,
@@ -57,10 +59,10 @@ export function useAiPricing({ industry }: UseAiPricingOptions) {
           occupancyRate: opts?.occupancyRate,
           bookingVelocity: opts?.bookingVelocity,
         },
-      });
+      );
 
       if (fnError) throw new Error(fnError.message);
-      if (fnData?.error) throw new Error(fnData.error);
+      if (fnData?.error) throw new Error(typeof fnData.error === "string" ? fnData.error : fnData.error.message);
 
       const result: AiPricingResult = {
         suggestions: fnData.suggestions || [],
