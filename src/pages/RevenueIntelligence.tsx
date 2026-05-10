@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { replitCall } from "@/lib/replitApi";
 import { TrendingUp, Loader2, Sparkles } from "lucide-react";
+import AppLayout from "@/components/app/AppLayout";
 
 export default function RevenueIntelligence() {
   const [report, setReport] = useState<any>(null);
@@ -15,10 +16,11 @@ export default function RevenueIntelligence() {
       setReport(r.data);
       setSummary(s.data);
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, []);
 
   return (
+    <AppLayout>
     <div className="container max-w-6xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -53,6 +55,17 @@ export default function RevenueIntelligence() {
           </pre>
         </div>
       )}
+
+      {!loading && !report && !summary && (
+        <div className="p-10 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/50 text-center">
+          <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
+          <h2 className="text-lg font-bold mb-1.5">No reports yet</h2>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            Your first AI-generated revenue intelligence report will appear here once your account has activity to analyze.
+          </p>
+        </div>
+      )}
     </div>
+    </AppLayout>
   );
 }
