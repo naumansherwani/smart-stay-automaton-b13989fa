@@ -27,11 +27,11 @@ const ADVISORS: Record<string, Advisor> = {
 };
 
 const CAPABILITIES = [
-  { icon: TrendingUp, title: "Revenue Optimization", desc: "Spot pricing, demand and yield opportunities tailored to your industry." },
-  { icon: Settings2, title: "Operations Guidance", desc: "Day-to-day workflow, scheduling and resource allocation advice." },
-  { icon: AlertTriangle, title: "Issue Resolution", desc: "Diagnose problems and recommend the next best action fast." },
-  { icon: LineChart, title: "Forecasting", desc: "Forward-looking signals on demand, occupancy and revenue." },
-  { icon: Target, title: "Strategic Recommendations", desc: "High-impact moves aligned with your business goals." },
+  { icon: TrendingUp, title: "Revenue Optimization", desc: "Spot pricing, demand and yield opportunities tailored to your industry.", prompt: "Where are the biggest revenue optimization opportunities for my business right now?" },
+  { icon: Settings2, title: "Operations Guidance", desc: "Day-to-day workflow, scheduling and resource allocation advice.", prompt: "Review my current operations and suggest workflow and scheduling improvements." },
+  { icon: AlertTriangle, title: "Issue Resolution", desc: "Diagnose problems and recommend the next best action fast.", prompt: "What are the top issues I should resolve this week, and how?" },
+  { icon: LineChart, title: "Forecasting", desc: "Forward-looking signals on demand, occupancy and revenue.", prompt: "Give me a forecast for next month — demand, revenue and key risks." },
+  { icon: Target, title: "Strategic Recommendations", desc: "High-impact moves aligned with your business goals.", prompt: "What are the top strategic moves I should make this quarter?" },
 ];
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -61,9 +61,16 @@ export default function AIAdvisor() {
       );
       const reply = data?.reply || error?.message || "(no response)";
       setMessages(m => [...m, { role: "assistant", content: reply }]);
+    } catch (e) {
+      setMessages(m => [...m, { role: "assistant", content: "I couldn't reach the advisor service. Please try again in a moment." }]);
     } finally {
       setSending(false);
     }
+  };
+
+  const openWithPrompt = (prompt: string) => {
+    setInput(prompt);
+    setChatOpen(true);
   };
 
   return (
@@ -77,7 +84,11 @@ export default function AIAdvisor() {
         {/* Hero card — single advisor */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-primary/5 to-transparent border border-primary/30 backdrop-blur-xl p-8 mb-6">
           <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-          <div className="relative flex flex-col md:flex-row md:items-center gap-6">
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            className="relative flex flex-col md:flex-row md:items-center gap-6 w-full text-left hover:opacity-95 transition"
+          >
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-xl shrink-0">
               <Sparkles className="w-9 h-9 text-primary-foreground" />
             </div>
@@ -87,23 +98,30 @@ export default function AIAdvisor() {
               <p className="text-sm text-muted-foreground mt-1.5">{advisor.designation}</p>
               <p className="text-xs text-muted-foreground/80 italic mt-2">{advisor.vibe}</p>
             </div>
-            <Button size="lg" className="gap-2 shrink-0" onClick={() => setChatOpen(true)}>
+            <Button size="lg" className="gap-2 shrink-0" asChild>
+              <span>
               <MessageSquare className="w-4 h-4" />
               Open Chat
+              </span>
             </Button>
-          </div>
+          </button>
         </div>
 
         {/* Capabilities */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-6">
           {CAPABILITIES.map((c) => (
-            <div key={c.title} className="p-5 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/50">
+            <button
+              type="button"
+              key={c.title}
+              onClick={() => openWithPrompt(c.prompt)}
+              className="p-5 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/50 text-left hover:border-primary/40 hover:bg-card/60 transition"
+            >
               <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-3">
                 <c.icon className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-semibold text-sm mb-1">{c.title}</h3>
               <p className="text-xs text-muted-foreground leading-snug">{c.desc}</p>
-            </div>
+            </button>
           ))}
         </div>
 
