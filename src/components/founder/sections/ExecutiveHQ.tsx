@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFounderMetrics } from "@/hooks/useFounderMetrics";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { Crown, TrendingUp, TrendingDown, Users, Target, Briefcase, Mail, AlertTriangle, Sparkles, Activity, Globe2, Zap, FileText, RotateCcw, UserPlus, Plus, Loader2, Flame, Trophy, CalendarCheck } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,7 +49,7 @@ export default function ExecutiveHQ({ onNavigate }: { onNavigate?: (s: string) =
   const loadBrief = async () => {
     setBriefLoading(true);
     try {
-      const { data } = await supabase.functions.invoke("founder-intelligence", {
+      const { data } = await invokeShim("founder-intelligence", {
         body: {
           mrr_gbp: m.mrrGbp, arr_gbp: m.arrGbp,
           active_customers: m.activeCustomers, trial_customers: m.trialCustomers,

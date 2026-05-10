@@ -3,6 +3,7 @@ import { TrendingUp, TrendingDown, Users, Target, Briefcase, Activity, AlertTria
 import { ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Area, AreaChart, BarChart, Bar } from "recharts";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 
 const KpiCard = ({ icon: Icon, label, value, delta, tone = "default" }: any) => (
   <div className="founder-card p-5 group hover:border-[var(--fos-accent)]/30 transition-all">
@@ -42,7 +43,7 @@ export default function Overview() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await supabase.functions.invoke("founder-adviser", { body: { mode: "insights" } });
+        const { data } = await invokeShim("founder-adviser", { body: { mode: "insights" } });
         if (!cancelled && data?.insights) setInsights(data.insights);
       } catch {}
     })();

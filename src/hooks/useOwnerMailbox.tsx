@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 
 export type MailFolder = "inbox" | "priority" | "unread" | "sent" | "drafts" | "scheduled" | "starred" | "archive" | "spam" | "trash";
@@ -132,7 +133,7 @@ export function useOwnerMailbox(folder: MailFolder, search: string) {
     setError(null);
 
     try {
-      const { data, error: err } = await supabase.functions.invoke("owner-mailbox", {
+      const { data, error: err } = await invokeShim("owner-mailbox", {
         body: { action: "list", folder, search },
       });
       if (err) throw new Error(err.message);

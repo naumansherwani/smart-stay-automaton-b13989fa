@@ -5,6 +5,7 @@ import {
   Star, Briefcase, Mail, CreditCard, Building2, MessageSquare, Calendar,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { toast } from "sonner";
 
 const SEND_IDENTITIES = [
@@ -127,7 +128,7 @@ export default function ComposeModal({
   const runAI = async (mode: string) => {
     setAiBusy(mode);
     try {
-      const { data, error } = await supabase.functions.invoke("owner-email-ai", {
+      const { data, error } = await invokeShim("owner-email-ai", {
         body: { mode, input: body || subject, context: initial?.replyContext || "" },
       });
       if (error) throw new Error(error.message);

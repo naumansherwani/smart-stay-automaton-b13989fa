@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import {
@@ -79,7 +80,7 @@ export default function RetentionWizard({ open, onOpenChange, onCompleted }: Pro
     setSubmitting(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const { data, error } = await supabase.functions.invoke("retention-action", {
+      const { data, error } = await invokeShim("retention-action", {
         body: {
           action,
           reason: reason || "other",

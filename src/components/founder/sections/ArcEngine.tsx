@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Activity, Zap, Sparkles, AlertTriangle, CheckCircle2, XCircle, Loader2, RefreshCw, TrendingUp, TrendingDown, Heart, Mail, UserCheck, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 
@@ -83,7 +84,7 @@ export default function ArcEngine() {
   const runOrchestrator = async () => {
     setRunning(true);
     try {
-      const { data, error } = await supabase.functions.invoke("arc-orchestrator", { body: { trigger: "manual" } });
+      const { data, error } = await invokeShim("arc-orchestrator", { body: { trigger: "manual" } });
       if (error) throw error;
       toast({ title: "ARC run complete", description: `${data?.scored ?? 0} users scored, ${data?.actionsDispatched ?? 0} actions dispatched` });
       await load();

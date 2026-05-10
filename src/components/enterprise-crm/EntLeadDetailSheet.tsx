@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { invokeShim } from "@/lib/replitApi";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,7 @@ export default function EntLeadDetailSheet({ lead, open, onClose, onChanged }: P
     if (!lead) return;
     setInsightLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("founder-adviser", {
+      const { data, error } = await invokeShim("founder-adviser", {
         body: {
           mode: "enterprise_lead_score",
           messages: [
