@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { liveStreamUrl } from "@/lib/api";
 import { INDUSTRY_ADVISOR } from "./types";
 
-type Tone = "neutral" | "amber" | "green" | "cyan";
+type Tone = "neutral" | "amber" | "green" | "cyan" | "red";
 interface FeedItem {
   id: string;
   ts: number;
@@ -11,7 +11,7 @@ interface FeedItem {
   tone: Tone;
 }
 
-const MAX_ITEMS = 50;
+const MAX_ITEMS = 20;
 
 function fmtTime(ts: number) {
   const d = new Date(ts);
@@ -23,6 +23,7 @@ const toneClass: Record<Tone, string> = {
   amber: "border-l-amber-400/80",
   green: "border-l-emerald-400/80",
   cyan: "border-l-cyan-400/80",
+  red: "border-l-red-500/80",
 };
 
 export default function LiveFeed({ active }: { active: boolean }) {
@@ -64,13 +65,29 @@ export default function LiveFeed({ active }: { active: boolean }) {
       es.addEventListener("advisor.escalated", (e: MessageEvent) => {
         try {
           const d = JSON.parse(e.data);
-          push(`[${advisorOf(d.industry)}] — Issue escalated to Sherlock`, "amber");
+          const issueRef = d.issue_id ? ` · Issue #${d.issue_id}` : "";
+          push(
+            `[${advisorOf(d.industry)}] — Escalated to Sherlock${issueRef}`,
+            "red",
+            d.elapsed_ms ? `${Math.round(d.elapsed_ms / 1000)}s elapsed` : undefined,
+          );
         } catch { /* ignore */ }
       });
       es.addEventListener("advisor.resolved", (e: MessageEvent) => {
         try {
           const d = JSON.parse(e.data);
           push(`[${advisorOf(d.industry)}] — Resolved in ${d.elapsed_ms ?? "?"}ms`, "green");
+        } catch { /* ignore */ }
+      });
+      es.addEventListener("advisor.pricing_action", (e: MessageEvent) => {
+        try {
+          const d = JSON.parse(e.data);
+          const issueRef = d.issueId ? ` · Issue #${d.issueId}` : "";
+          push(
+            `[${advisorOf(d.industry)}] — Auto-pricing action${issueRef}`,
+            "amber",
+            typeof d.action === "string" ? d.action.slice(0, 140) : undefined,
+          );
         } catch { /* ignore */ }
       });
       es.addEventListener("subscription.created", (e: MessageEvent) => {
