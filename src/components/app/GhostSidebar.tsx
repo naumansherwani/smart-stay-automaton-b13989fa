@@ -274,7 +274,7 @@ export function GhostSidebar() {
       )}
     >
       {/* Header */}
-      <div className={cn("flex items-center min-h-[48px]", expanded ? "justify-between px-1 mb-5" : "justify-center w-full mb-3 h-[48px]")}>
+      <div className={cn("flex items-center shrink-0", expanded ? "h-14 justify-between px-1 mb-4" : "h-[72px] justify-center w-full")}>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-public-view"))}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -297,8 +297,8 @@ export function GhostSidebar() {
       </div>
 
       <div className={cn(
-        "flex-1 overflow-y-auto overflow-x-hidden",
-        expanded ? "-mx-1 px-1 w-full" : "w-full flex flex-col items-center"
+        "flex-1 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+        expanded ? "-mx-1 px-1 w-full" : "w-full flex flex-col items-center pb-6"
       )}>
         <nav className={cn("flex flex-col w-full", expanded ? "gap-0.5" : "items-center gap-2")}>
           {primaryNav.map(renderNavItem)}
