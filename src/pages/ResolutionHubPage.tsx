@@ -186,14 +186,33 @@ function IssueRow({
   );
 }
 
-const STAGE_LABEL: Record<string, string> = {
-  detected: "Detected",
-  issue_received: "Received",
-  ai_analyzing: "Analyzing",
-  recovery_engine: "Recovery Engine",
-  sherlock_reviewing: "Sherlock Reviewing",
-  resolved: "Resolved",
+// Sherlock Auto-Import Chain — 6 backend stages (BACKEND_API_BRIEF §4)
+const STAGE_META: Record<string, { label: string; color: string; ring: string }> = {
+  issue_received:      { label: "Customer message received",   color: "bg-cyan-500",     ring: "ring-cyan-500/30" },
+  ai_analyzing:        { label: "Advisor analysis in progress", color: "bg-blue-500",     ring: "ring-blue-500/30" },
+  analysis_completed:  { label: "Advisor analysis completed",   color: "bg-blue-500",     ring: "ring-blue-500/30" },
+  sherlock_reviewing:  { label: "Sherlock reviewed",            color: "bg-orange-500",   ring: "ring-orange-500/30" },
+  action_executed:     { label: "Auto-pricing action executed", color: "bg-amber-500",    ring: "ring-amber-500/30" },
+  revenue_protected:   { label: "Revenue protected",            color: "bg-emerald-500",  ring: "ring-emerald-500/30" },
+  resolved:            { label: "Issue resolved",               color: "bg-emerald-500",  ring: "ring-emerald-500/30" },
+  // legacy fallbacks
+  detected:            { label: "Detected",                     color: "bg-cyan-500",     ring: "ring-cyan-500/30" },
+  recovery_engine:     { label: "Recovery engine",              color: "bg-amber-500",    ring: "ring-amber-500/30" },
 };
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  if (!Number.isFinite(diff) || diff < 0) return "just now";
+  const s = Math.floor(diff / 1000);
+  if (s < 5) return "just now";
+  if (s < 60) return `${s}s ago`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
 
 function IssueDrawer({
   issueId,
@@ -293,21 +312,32 @@ function IssueDrawer({
             {detail.stages && detail.stages.length > 0 && (
               <div>
                 <h3 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
-                  Timeline
+                  Sherlock Auto-Import Chain
                 </h3>
                 <ol className="space-y-3 border-l border-border/60 pl-4">
-                  {detail.stages.map((s, i) => (
-                    <li key={i} className="relative">
-                      <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary" />
-                      <p className="text-sm font-medium">
-                        {STAGE_LABEL[s.stage] || s.stage}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{s.message}</p>
-                      <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-                        {new Date(s.timestamp).toLocaleString()}
-                      </p>
-                    </li>
-                  ))}
+                  {detail.stages.map((s, i) => {
+                    const meta = STAGE_META[s.stage] ?? {
+                      label: s.stage,
+                      color: "bg-primary",
+                      ring: "ring-primary/30",
+                    };
+                    return (
+                      <li key={i} className="relative">
+                        <span
+                          className={`absolute -left-[23px] top-1 w-3 h-3 rounded-full ${meta.color} ring-4 ${meta.ring}`}
+                        />
+                        <p className="text-sm font-medium">{meta.label}</p>
+                        {s.message && (
+                          <p className="text-xs text-muted-foreground">{s.message}</p>
+                        )}
+                        <p className="text-[10px] text-muted-foreground/70 mt-0.5">
+                          {relativeTime(s.timestamp)}
+                          <span className="mx-1.5 opacity-40">·</span>
+                          {new Date(s.timestamp).toLocaleTimeString()}
+                        </p>
+                      </li>
+                    );
+                  })}
                 </ol>
               </div>
             )}
