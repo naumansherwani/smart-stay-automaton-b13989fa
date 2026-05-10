@@ -170,10 +170,10 @@ export function GhostSidebar() {
       <button
         onClick={() => labelsVisible ? setCrmOpen(o => !o) : setPinned(true)}
         className={cn(
-          "text-sm transition-all duration-200 hover:bg-white/10",
+          "text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_rgba(45,212,191,0.12)]",
           labelsVisible
             ? "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg"
-            : "w-12 h-12 flex items-center justify-center rounded-2xl mx-auto",
+            : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
           currentPath === "/crm" && "ghost-sidebar-active"
         )}
       >
