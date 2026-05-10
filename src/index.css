@@ -241,6 +241,18 @@ html {
   box-shadow: 0 0 8px hsl(174 62% 50% / 0.5);
 }
 
+/* Collapsed rail: premium pill indicator outside button */
+.nav-rail-item.ghost-sidebar-active::before {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  bottom: auto;
+  border-radius: 9999px;
+  width: 3px;
+  box-shadow: 0 0 10px hsl(174 62% 50% / 0.6);
+}
+
 /* ===== Founder OS · Owner Command Center theme ===== */
 .founder-os {
   --fos-bg: #0B1120;
