@@ -25,6 +25,13 @@ const Messages = lazy(() => import("./pages/Messages"));
 const Reviews = lazy(() => import("./pages/Reviews"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Profile = lazy(() => import("./pages/Profile"));
+const AIAdvisor = lazy(() => import("./pages/AIAdvisor"));
+const RevenueIntelligence = lazy(() => import("./pages/RevenueIntelligence"));
+const ResolutionHubPage = lazy(() => import("./pages/ResolutionHubPage"));
+const Automations = lazy(() => import("./pages/Automations"));
+const Integrations = lazy(() => import("./pages/Integrations"));
+const Billing = lazy(() => import("./pages/Billing"));
+const Support = lazy(() => import("./pages/Support"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -359,6 +366,13 @@ const App = () => {
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+              <Route path="/advisor" element={<ProtectedRoute><AIAdvisor /></ProtectedRoute>} />
+              <Route path="/revenue-intel" element={<ProtectedRoute><RevenueIntelligence /></ProtectedRoute>} />
+              <Route path="/resolution-hub" element={<ProtectedRoute><ResolutionHubPage /></ProtectedRoute>} />
+              <Route path="/automations" element={<ProtectedRoute><Automations /></ProtectedRoute>} />
+              <Route path="/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
+              <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
+              <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
               <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
               <Route path="/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />

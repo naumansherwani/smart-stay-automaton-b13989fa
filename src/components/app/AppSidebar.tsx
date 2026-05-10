@@ -1,4 +1,8 @@
-import { LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff, CalendarDays, ListTodo, Sparkles } from "lucide-react";
+import {
+  LayoutDashboard, Users, ClipboardList, BarChart3, Settings, Pin, PinOff,
+  CalendarDays, ListTodo, Sparkles, TrendingUp, ShieldCheck, Workflow, Plug,
+  CreditCard, LifeBuoy, ChevronDown, UserPlus, UserCheck, GitBranch, ChevronRight,
+} from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
@@ -15,6 +19,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useCallback } from "react";
@@ -24,11 +29,27 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const primaryNav = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Advanced AI CRM", url: "/crm", icon: Users },
-  { title: "Bookings", url: "/dashboard?tab=bookings", icon: ClipboardList },
+  { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
+  { title: "AI Advisor", url: "/advisor", icon: Sparkles },
+  { title: "Revenue Intelligence", url: "/revenue-intel", icon: TrendingUp },
+  { title: "AI Resolution Hub", url: "/resolution-hub", icon: ShieldCheck },
+];
+
+const crmSub = [
+  { title: "Leads", url: "/crm?tab=leads", icon: UserPlus },
+  { title: "Customers", url: "/crm?tab=customers", icon: UserCheck },
+  { title: "Bookings", url: "/crm?tab=bookings", icon: ClipboardList },
+  { title: "Pipeline", url: "/crm?tab=pipeline", icon: GitBranch },
+  { title: "Tasks", url: "/crm?tab=tasks", icon: ListTodo },
+];
+
+const tailNav = [
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Automations", url: "/automations", icon: Workflow },
+  { title: "Integrations", url: "/integrations", icon: Plug },
+  { title: "Billing", url: "/billing", icon: CreditCard },
   { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Support", url: "/support", icon: LifeBuoy },
 ];
 
 const founderNav = [
@@ -47,6 +68,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const [pinned, setPinned] = useState(false);
+  const [crmOpen, setCrmOpen] = useState(currentPath === "/crm");
   const { profile } = useProfile();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -136,6 +158,42 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {primaryNav.map(renderNavItem)}
+
+                {/* CRM expandable group */}
+                <SidebarMenuItem>
+                  <Collapsible open={crmOpen} onOpenChange={setCrmOpen}>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton isActive={currentPath === "/crm"}>
+                        <Users className="mr-2 h-4 w-4" />
+                        {!collapsed && (
+                          <>
+                            <span className="flex-1 text-left">CRM</span>
+                            <ChevronRight className={`h-3.5 w-3.5 transition-transform ${crmOpen ? "rotate-90" : ""}`} />
+                          </>
+                        )}
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    {!collapsed && (
+                      <CollapsibleContent>
+                        <div className="ml-4 mt-1 space-y-0.5 border-l border-border/50 pl-2">
+                          {crmSub.map((s) => (
+                            <NavLink
+                              key={s.title}
+                              to={s.url}
+                              className="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition"
+                              activeClassName="text-primary font-medium"
+                            >
+                              <s.icon className="w-3.5 h-3.5" />
+                              <span>{s.title}</span>
+                            </NavLink>
+                          ))}
+                        </div>
+                      </CollapsibleContent>
+                    )}
+                  </Collapsible>
+                </SidebarMenuItem>
+
+                {tailNav.map(renderNavItem)}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
