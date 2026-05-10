@@ -72,6 +72,7 @@ export function AppSidebar() {
   const [pinned, setPinned] = useState(false);
   const [crmOpen, setCrmOpen] = useState(currentPath === "/crm");
   const { profile } = useProfile();
+  const { activeWorkspace } = useWorkspaces();
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const hubCount = useResolutionHubCount();
@@ -82,7 +83,7 @@ export function AppSidebar() {
       .then(({ data }) => setIsAdmin(!!data));
   }, [user]);
 
-  const userIndustry = profile?.industry || "";
+  const userIndustry = (activeWorkspace?.industry as string) || profile?.industry || "";
 
   const visibleConditional = conditionalNav.filter(
     (item) => item.industries.includes(userIndustry)
