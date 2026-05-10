@@ -148,3 +148,15 @@ export async function* replitStream(
     }
   }
 }
+
+/**
+ * POST /api/advisor/:industry — industry-scoped CRM/advisor calls.
+ * The body should NOT include a leading slash; industry is URL-encoded.
+ */
+export function callAdvisor<T = any>(
+  industry: string,
+  body: unknown,
+): Promise<ReplitResult<T>> {
+  const ind = encodeURIComponent(industry || "general");
+  return replitCall<T>(`/advisor/${ind}`, body);
+}
