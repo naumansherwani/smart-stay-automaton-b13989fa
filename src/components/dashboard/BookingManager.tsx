@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Shield, Zap, CalendarCheck, X, CheckCircle2, XCircle, Clock, Loader2, Users, Hotel, Compass, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { replitCall } from "@/lib/replitApi";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { sendOwnerNotification } from "@/lib/ownerNotifications";
