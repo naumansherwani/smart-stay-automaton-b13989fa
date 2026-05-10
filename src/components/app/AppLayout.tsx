@@ -38,12 +38,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
-  const { workspaces, createWorkspace, switchWorkspace } = useWorkspaces();
+  const { workspaces, activeWorkspace, createWorkspace, switchWorkspace } = useWorkspaces();
   const [isAdmin, setIsAdmin] = useState(false);
   const [publicMode, setPublicMode] = useState(false);
   const [adminChecked, setAdminChecked] = useState(false);
 
-  const currentIndustry = (profile?.industry as IndustryType) || "hospitality";
+  // SINGLE source of truth: active workspace industry wins, profile is fallback only.
+  // This prevents header/sidebar mismatch (e.g. left shows Car Rental, right shows Airlines).
+  const currentIndustry = (activeWorkspace?.industry as IndustryType)
+    || (profile?.industry as IndustryType)
+    || "hospitality";
   const togglePublicMode = useCallback(() => setPublicMode(prev => !prev), []);
 
   useEffect(() => {
@@ -57,16 +61,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const handleIndustrySelect = useCallback(async (industry: IndustryType) => {
     if (!user) return;
-    // Skip if already on this industry
-    if (profile?.industry === industry) {
+    // Skip if already on this industry (check workspace, not just profile)
+    if (activeWorkspace?.industry === industry && profile?.industry === industry) {
       setPublicMode(false);
       navigate("/dashboard");
       return;
     }
-    // 1. Update profile industry
-    await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
-
-    // 2. Sync workspace — switch if exists, otherwise create
+    // 1. Sync workspace FIRST — switch if exists, otherwise create
     const existing = workspaces.find(w => w.industry === industry);
     if (existing) {
       await switchWorkspace(existing.id);
@@ -75,11 +76,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
       await createWorkspace(label, industry);
     }
 
+    // 2. Update profile industry to MATCH workspace (keeps both in sync)
+    await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
+
     // 3. Close public view + go to that industry's dashboard
     setPublicMode(false);
     toast.success(`Switched to ${INDUSTRY_CONFIGS[industry]?.label || industry}`);
     navigate("/dashboard");
-  }, [user, profile?.industry, workspaces, switchWorkspace, createWorkspace, navigate]);
+  }, [user, profile?.industry, activeWorkspace?.industry, workspaces, switchWorkspace, createWorkspace, navigate]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
