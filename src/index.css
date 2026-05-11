@@ -734,6 +734,68 @@ html.dark[data-industry="events_entertainment"] {
   --sidebar-ring: 263 100% 46%;
 }
 
+/* -------- RAILWAYS — "Swiss Alpine Express" (Conductor Kai)
+   SBB Signal Red primary + Platform Steel + Alpine Mint. Zero collision with
+   Airlines (navy/gold), Logistics (orange), or Events (purple). */
+[data-industry="railways"] {
+  --background: 210 14% 96%;
+  --foreground: 215 19% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 19% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 19% 13%;
+  --primary: 0 100% 46%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 215 16% 47%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 16% 92%;
+  --muted-foreground: 215 14% 40%;
+  --accent: 150 100% 33%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 352 80% 38%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 215 14% 84%;
+  --input: 215 14% 84%;
+  --ring: 0 100% 46%;
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 215 19% 13%;
+  --sidebar-primary: 0 100% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 16% 92%;
+  --sidebar-accent-foreground: 215 19% 13%;
+  --sidebar-border: 215 14% 84%;
+  --sidebar-ring: 0 100% 46%;
+}
+html.dark[data-industry="railways"] {
+  --background: 204 36% 8%;
+  --foreground: 210 30% 96%;
+  --card: 207 31% 12%;
+  --card-foreground: 210 30% 96%;
+  --popover: 207 31% 12%;
+  --popover-foreground: 210 30% 96%;
+  --primary: 0 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 218 12% 78%;
+  --secondary-foreground: 204 36% 8%;
+  --muted: 207 28% 16%;
+  --muted-foreground: 215 16% 70%;
+  --accent: 150 100% 40%;
+  --accent-foreground: 204 36% 8%;
+  --destructive: 352 80% 48%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 207 28% 20%;
+  --input: 207 28% 20%;
+  --ring: 0 100% 50%;
+  --sidebar-background: 207 35% 10%;
+  --sidebar-foreground: 210 30% 96%;
+  --sidebar-primary: 0 100% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 207 28% 16%;
+  --sidebar-accent-foreground: 210 30% 96%;
+  --sidebar-border: 207 28% 20%;
+  --sidebar-ring: 0 100% 50%;
+}
+
 /* -------- BRAND (HostFlow Teal — fallback when user picks "Brand" mode) --------
    Explicitly mirrors the default :root / .dark tokens so the brand selection
    feels deliberate and consistent across all industries. */
