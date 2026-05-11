@@ -154,7 +154,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-2 text-xs font-medium hover:bg-primary/10 transition-all"
+            className="gap-2 text-xs font-medium bg-[hsl(168_70%_38%)]/10 text-foreground border border-[hsl(168_70%_38%)]/30 hover:bg-[hsl(168_70%_38%)]/20 hover:text-white transition-all"
             onClick={togglePublicMode}
             title="Choose Your Industry (Ctrl+Shift+P)"
           >
