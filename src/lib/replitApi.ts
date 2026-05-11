@@ -34,6 +34,24 @@ async function getAuthHeader(): Promise<Record<string, string>> {
   }
 }
 
+/**
+ * Read the admin "view-as-plan" override from localStorage (if any) and
+ * forward it to Replit as `X-View-As-Plan: basic|standard|premium`.
+ * Replit MAY honor it to gate features for admin-only QA. Ignored otherwise.
+ */
+function getViewAsPlanHeader(): Record<string, string> {
+  try {
+    if (typeof window === "undefined") return {};
+    const v = window.localStorage.getItem("hostflow:view-as-plan");
+    if (v === "basic" || v === "standard" || v === "premium") {
+      return { "X-View-As-Plan": v };
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
+
 export async function replitCall<T = any>(
   path: string,
   body?: unknown,
@@ -60,6 +78,7 @@ export async function replitCall<T = any>(
         "Content-Type": "application/json",
         ...auth,
         ...surfaceHeader,
+        ...getViewAsPlanHeader(),
         ...(init.headers ?? {}),
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -116,6 +135,7 @@ export async function* replitStream(
       "Content-Type": "application/json",
       Accept: "text/event-stream",
       ...auth,
+      ...getViewAsPlanHeader(),
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
     signal: init.signal,
