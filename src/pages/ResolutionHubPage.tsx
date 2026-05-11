@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import AppLayout from "@/components/app/AppLayout";
 
 type Issue = {
   id: number;
@@ -453,6 +454,7 @@ export default function ResolutionHubPage() {
   }, [load]);
 
   return (
+    <AppLayout>
     <div className="container max-w-6xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -499,5 +501,6 @@ export default function ResolutionHubPage() {
         onResolved={load}
       />
     </div>
+    </AppLayout>
   );
 }
