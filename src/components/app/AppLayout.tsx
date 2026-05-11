@@ -53,7 +53,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
     if (!user) return;
     supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
       setIsAdmin(!!data);
-      if (!!data && !adminChecked) setPublicMode(true);
+      // Only auto-open PublicView the first time per session.
+      // Once admin picks an industry (or closes it), don't re-open on every page mount.
+      const hasExitedPublic = sessionStorage.getItem("admin_exited_public") === "1";
+      if (!!data && !adminChecked && !hasExitedPublic) setPublicMode(true);
       setAdminChecked(true);
     });
   }, [user]);
@@ -75,6 +78,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     if (!user) return;
     // Skip if already on this industry (check workspace, not just profile)
     if (activeWorkspace?.industry === industry && profile?.industry === industry) {
+      sessionStorage.setItem("admin_exited_public", "1");
       setPublicMode(false);
       navigate("/dashboard");
       return;
@@ -92,6 +96,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     await supabase.from("profiles").update({ industry }).eq("user_id", user.id);
 
     // 3. Close public view + go to that industry's dashboard
+    sessionStorage.setItem("admin_exited_public", "1");
     setPublicMode(false);
     toast.success(`Switched to ${INDUSTRY_CONFIGS[industry]?.label || industry}`);
     navigate("/dashboard");
