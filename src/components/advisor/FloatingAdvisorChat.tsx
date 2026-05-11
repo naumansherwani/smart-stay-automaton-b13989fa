@@ -678,6 +678,7 @@ function FloatingChatWindow(p: WindowProps) {
             : "bottom-5 right-5 w-[min(960px,calc(100vw-2.5rem))] h-[min(720px,calc(100vh-2.5rem))]",
           p.sending && "advisor-aura-anim",
           dragOver && "ring-2 ring-primary/60",
+          p.advisor.mono && "font-mono",
         )}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
@@ -719,6 +720,11 @@ function FloatingChatWindow(p: WindowProps) {
               {p.advisor.channels.map((c) => <ChannelChipView key={c.id} chip={c} />)}
               {p.advisor.metricBadges.map((b) => <MetricBadgeView key={b.id} badge={b} />)}
             </div>
+          )}
+
+          {/* Radar micro-map (industry-specific, e.g. airlines) */}
+          {p.advisor.radar && (
+            <RadarMicroMap endpoint={p.advisor.radar.endpoint} title={p.advisor.radar.title} auraHsl={p.advisor.auraHsl} />
           )}
 
           {/* Sherlock shadow status line */}
