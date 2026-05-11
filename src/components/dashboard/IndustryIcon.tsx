@@ -16,7 +16,7 @@ const ICON_MAP: Record<IndustryType, React.ElementType> = {
 };
 
 const COLOR_MAP: Record<IndustryType, string> = {
-  hospitality: "#0d9488",
+  hospitality: "#2563eb",
   airlines: "#3b82f6",
   car_rental: "#0ea5e9",
   healthcare: "#ef4444",
