@@ -1087,3 +1087,70 @@ function ToolEventView({ event, onAction }: { event: ToolEvent; onAction: (actio
     </AccordionItem>
   );
 }
+
+type RadarDot = { id: string; x: number; y: number; status?: "ok" | "delay" | "cancel" | "weather"; label?: string };
+type RadarData = { dots: RadarDot[]; weather?: { x: number; y: number; kind?: string }[] };
+
+function RadarMicroMap({ endpoint, title, auraHsl }: { endpoint: string; title?: string; auraHsl: string }) {
+  const [data, setData] = useState<RadarData | null>(null);
+  useEffect(() => {
+    let live = true;
+    const load = async () => {
+      const { data, error } = await replitCall<RadarData>(endpoint, undefined, { method: "GET" });
+      if (live && !error && data?.dots) setData(data);
+    };
+    load();
+    const t = setInterval(load, 30000);
+    return () => { live = false; clearInterval(t); };
+  }, [endpoint]);
+
+  const statusColor = (s?: RadarDot["status"]) =>
+    s === "delay" ? "#f59e0b" : s === "cancel" ? "#ef4444" : s === "weather" ? "#38bdf8" : "#84cc16";
+
+  return (
+    <div
+      className="mt-3 relative h-28 rounded-lg border border-border/40 overflow-hidden bg-[#0a1628]/60"
+      style={{ boxShadow: `inset 0 0 40px hsl(${auraHsl} / 0.15)` }}
+    >
+      <div className="absolute top-1.5 left-2 text-[9px] uppercase tracking-[0.18em] text-muted-foreground/80 z-10">
+        {title || "Radar"}
+      </div>
+      {/* radar sweep */}
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `radial-gradient(circle at 50% 50%, hsl(${auraHsl} / 0.35) 0%, transparent 60%), repeating-radial-gradient(circle at 50% 50%, hsl(${auraHsl} / 0.25) 0 1px, transparent 1px 20px)`,
+        }}
+      />
+      <div
+        className="absolute top-1/2 left-1/2 w-[140%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full origin-center pointer-events-none"
+        style={{
+          background: `conic-gradient(from 0deg, transparent 0deg, hsl(${auraHsl} / 0.35) 30deg, transparent 60deg)`,
+          animation: "radar-sweep 4s linear infinite",
+        }}
+      />
+      {/* dots */}
+      {data?.dots?.map((d) => (
+        <div
+          key={d.id}
+          title={d.label}
+          className="absolute w-1.5 h-1.5 rounded-full -translate-x-1/2 -translate-y-1/2"
+          style={{
+            left: `${Math.max(2, Math.min(98, d.x))}%`,
+            top: `${Math.max(8, Math.min(92, d.y))}%`,
+            background: statusColor(d.status),
+            boxShadow: `0 0 8px ${statusColor(d.status)}`,
+          }}
+        />
+      ))}
+      {!data && (
+        <div className="absolute inset-0 flex items-center justify-center text-[10px] text-muted-foreground/70">
+          awaiting network feed…
+        </div>
+      )}
+      <style>{`
+        @keyframes radar-sweep { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+      `}</style>
+    </div>
+  );
+}
