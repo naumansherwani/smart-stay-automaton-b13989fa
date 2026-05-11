@@ -126,7 +126,12 @@ export function GhostSidebar() {
           active && "ghost-sidebar-active"
         )}
         activeClassName=""
-        onClick={() => isMobile && setMobileOpen(false)}
+        onClick={() => {
+          if (item.url === "/advisor") {
+            window.dispatchEvent(new CustomEvent("open-advisor-chat"));
+          }
+          if (isMobile) setMobileOpen(false);
+        }}
       >
         <item.icon className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
         <span className={cn(

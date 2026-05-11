@@ -65,6 +65,83 @@ export type Database = {
         }
         Relationships: []
       }
+      advisor_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          thread_id: string
+          tool_events: Json
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          role: string
+          thread_id: string
+          tool_events?: Json
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          thread_id?: string
+          tool_events?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "advisor_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "advisor_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advisor_threads: {
+        Row: {
+          created_at: string
+          draft: string | null
+          id: string
+          industry: string
+          last_message_at: string
+          scroll_position: number | null
+          title: string | null
+          updated_at: string
+          user_id: string
+          window_state: string
+        }
+        Insert: {
+          created_at?: string
+          draft?: string | null
+          id?: string
+          industry: string
+          last_message_at?: string
+          scroll_position?: number | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          window_state?: string
+        }
+        Update: {
+          created_at?: string
+          draft?: string | null
+          id?: string
+          industry?: string
+          last_message_at?: string
+          scroll_position?: number | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          window_state?: string
+        }
+        Relationships: []
+      }
       ai_message_log: {
         Row: {
           created_at: string

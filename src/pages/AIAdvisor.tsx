@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AppLayout from "@/components/app/AppLayout";
+import { useFloatingAdvisorChat } from "@/components/advisor/FloatingAdvisorChat";
 
 type Advisor = {
   industry: string;
@@ -39,6 +40,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 export default function AIAdvisor() {
   const { profile } = useProfile();
   const { activeWorkspace } = useWorkspaces();
+  const { openChat } = useFloatingAdvisorChat();
   const [chatOpen, setChatOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -46,6 +48,11 @@ export default function AIAdvisor() {
 
   const industry = (activeWorkspace?.industry as string) || profile?.industry || "hospitality";
   const advisor = useMemo(() => ADVISORS[industry] || ADVISORS.hospitality, [industry]);
+
+  // Auto-launch the floating chat whenever this route is visited.
+  useEffect(() => {
+    openChat();
+  }, [openChat]);
 
   const send = async () => {
     if (!input.trim()) return;
@@ -94,7 +101,7 @@ export default function AIAdvisor() {
               <p className="text-sm text-muted-foreground mt-1.5">{advisor.designation}</p>
               <p className="text-xs text-muted-foreground/80 italic mt-2">{advisor.vibe}</p>
             </div>
-            <Button size="lg" className="gap-2 shrink-0" onClick={() => setChatOpen(true)}>
+            <Button size="lg" className="gap-2 shrink-0" onClick={() => openChat()}>
               <MessageSquare className="w-4 h-4" />
               Open Chat
             </Button>
