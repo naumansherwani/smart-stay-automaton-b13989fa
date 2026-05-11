@@ -167,7 +167,7 @@ export default function CrmAiInsightsTab({ industry, isPremium }: Props) {
               <RadarChart data={radarData}>
                 <PolarGrid className="stroke-muted" />
                 <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10 }} />
-                <Radar dataKey="value" stroke="hsl(168, 70%, 38%)" fill="hsl(168, 70%, 38%)" fillOpacity={0.3} />
+                <Radar dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -183,7 +183,7 @@ export default function CrmAiInsightsTab({ industry, isPremium }: Props) {
                 <XAxis type="number" tick={{ fontSize: 10 }} />
                 <YAxis dataKey="stage" type="category" tick={{ fontSize: 10 }} width={80} />
                 <Tooltip formatter={(v: number) => [v, "Deals"]} />
-                <Bar dataKey="count" fill="hsl(168, 70%, 38%)" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

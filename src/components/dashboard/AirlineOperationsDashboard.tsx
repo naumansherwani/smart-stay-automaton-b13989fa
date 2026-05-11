@@ -204,7 +204,7 @@ export default function AirlineOperationsDashboard() {
             <div className="absolute top-3 right-3">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
             </div>
-            <CircularGauge value={avgLoad || 82} label="Live Load Factor" color="hsl(168, 70%, 38%)" />
+            <CircularGauge value={avgLoad || 82} label="Live Load Factor" color="hsl(var(--primary))" />
           </CardContent>
         </GlassCard>
 
@@ -289,8 +289,8 @@ export default function AirlineOperationsDashboard() {
                       <stop offset="100%" stopColor="hsl(220, 80%, 55%)" stopOpacity={0.02} />
                     </linearGradient>
                     <linearGradient id="actualGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(168, 70%, 38%)" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="hsl(168, 70%, 38%)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
@@ -322,9 +322,9 @@ export default function AirlineOperationsDashboard() {
                   <Line
                     type="monotone"
                     dataKey="actual"
-                    stroke="hsl(168, 70%, 38%)"
+                    stroke="hsl(var(--primary))"
                     strokeWidth={2.5}
-                    dot={{ r: 4, fill: "hsl(168, 70%, 38%)", strokeWidth: 2, stroke: "white" }}
+                    dot={{ r: 4, fill: "hsl(var(--primary))", strokeWidth: 2, stroke: "white" }}
                     name="Actual Revenue"
                     connectNulls={false}
                   />
@@ -333,7 +333,7 @@ export default function AirlineOperationsDashboard() {
             </div>
             <div className="flex items-center gap-6 mt-2 px-2">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-0.5 bg-[hsl(168,70%,38%)] rounded" />
+                <div className="w-4 h-0.5 bg-primary rounded" />
                 <span className="text-[11px] text-muted-foreground">Actual</span>
               </div>
               <div className="flex items-center gap-2">

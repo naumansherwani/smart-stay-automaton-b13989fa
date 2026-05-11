@@ -9,7 +9,7 @@ import { TrendingUp, DollarSign, Users, Target } from "lucide-react";
 interface Props { industry: IndustryType; }
 
 const COLORS = [
-  "hsl(168, 70%, 38%)", "hsl(217, 91%, 60%)", "hsl(280, 65%, 60%)",
+  "hsl(var(--primary))", "hsl(217, 91%, 60%)", "hsl(280, 65%, 60%)",
   "hsl(40, 96%, 53%)", "hsl(0, 84%, 60%)", "hsl(150, 60%, 40%)",
 ];
 
@@ -137,7 +137,7 @@ export default function CrmRevenueChart({ industry }: Props) {
                 <XAxis dataKey="month" className="text-xs" tick={{ fontSize: 11 }} />
                 <YAxis className="text-xs" tick={{ fontSize: 11 }} tickFormatter={v => `$${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`} />
                 <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, ""]} />
-                <Area type="monotone" dataKey="revenue" stroke="hsl(168, 70%, 38%)" fill="hsl(168, 70%, 38%)" fillOpacity={0.2} name="Won" />
+                <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} name="Won" />
                 <Area type="monotone" dataKey="pipeline" stroke="hsl(217, 91%, 60%)" fill="hsl(217, 91%, 60%)" fillOpacity={0.1} name="Pipeline" />
               </AreaChart>
             </ResponsiveContainer>
@@ -158,7 +158,7 @@ export default function CrmRevenueChart({ industry }: Props) {
                 <XAxis type="number" tick={{ fontSize: 11 }} />
                 <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} width={80} />
                 <Tooltip formatter={(v: number, name: string) => [name === "value" ? `$${v.toLocaleString()}` : v, name === "value" ? "Value" : "Count"]} />
-                <Bar dataKey="count" fill="hsl(168, 70%, 38%)" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
