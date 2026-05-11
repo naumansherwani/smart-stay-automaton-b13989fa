@@ -649,6 +649,58 @@ type WindowProps = {
 function FloatingChatWindow(p: WindowProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  // User-resizable width (persisted). Active in non-maximized state.
+  const [userWidth, setUserWidth] = useState<number | null>(() => {
+    if (typeof window === "undefined") return null;
+    const v = localStorage.getItem("advisor.chat.width");
+    return v ? Math.max(360, Math.min(window.innerWidth - 40, Number(v))) : null;
+  });
+  const [userHeight, setUserHeight] = useState<number | null>(() => {
+    if (typeof window === "undefined") return null;
+    const v = localStorage.getItem("advisor.chat.height");
+    return v ? Math.max(420, Math.min(window.innerHeight - 40, Number(v))) : null;
+  });
+  const resizingRef = useRef<null | { startX: number; startY: number; startW: number; startH: number; mode: "w" | "h" | "wh" }>(null);
+
+  const onResizeStart = (mode: "w" | "h" | "wh") => (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startW = userWidth ?? Math.min(440, window.innerWidth - 40);
+    const startH = userHeight ?? Math.min(680, window.innerHeight - 40);
+    resizingRef.current = { startX: e.clientX, startY: e.clientY, startW, startH, mode };
+    const onMove = (ev: MouseEvent) => {
+      const r = resizingRef.current;
+      if (!r) return;
+      if (r.mode === "w" || r.mode === "wh") {
+        // Dragging left edge → width grows when cursor moves LEFT
+        const next = Math.max(360, Math.min(window.innerWidth - 40, r.startW + (r.startX - ev.clientX)));
+        setUserWidth(next);
+      }
+      if (r.mode === "h" || r.mode === "wh") {
+        const next = Math.max(420, Math.min(window.innerHeight - 40, r.startH + (r.startY - ev.clientY)));
+        setUserHeight(next);
+      }
+    };
+    const onUp = () => {
+      const r = resizingRef.current;
+      resizingRef.current = null;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      document.body.style.cursor = "";
+      if (r) {
+        if (r.mode !== "h") localStorage.setItem("advisor.chat.width", String(userWidthRef.current ?? r.startW));
+        if (r.mode !== "w") localStorage.setItem("advisor.chat.height", String(userHeightRef.current ?? r.startH));
+      }
+    };
+    document.body.style.cursor = mode === "w" ? "ew-resize" : mode === "h" ? "ns-resize" : "nwse-resize";
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  // Keep latest values in refs so the mouseup handler can persist them.
+  const userWidthRef = useRef<number | null>(userWidth);
+  const userHeightRef = useRef<number | null>(userHeight);
+  useEffect(() => { userWidthRef.current = userWidth; }, [userWidth]);
+  useEffect(() => { userHeightRef.current = userHeight; }, [userHeight]);
 
   if (p.windowState === "closed") return null;
 
@@ -699,10 +751,14 @@ function FloatingChatWindow(p: WindowProps) {
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none">
       <div
-        style={auraStyle}
+        style={{
+          ...auraStyle,
+          ...(p.windowState !== "maximized" && userWidth ? { width: userWidth } : {}),
+          ...(p.windowState !== "maximized" && userHeight ? { height: userHeight } : {}),
+        }}
         className={cn(
           "pointer-events-auto absolute bg-card/95 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden",
-          "transition-all duration-200",
+          !resizingRef.current && "transition-all duration-200",
           maximized
             ? "top-4 bottom-4 right-4 md:top-6 md:bottom-6 md:right-6 w-[min(900px,calc(100vw-5rem))]"
             : "bottom-5 right-5 w-[min(440px,calc(100vw-2.5rem))] h-[min(680px,calc(100vh-2.5rem))]",
@@ -718,6 +774,34 @@ function FloatingChatWindow(p: WindowProps) {
           if (e.dataTransfer.files?.length) p.onFilesPicked(e.dataTransfer.files);
         }}
       >
+        {/* Resize handles — only in non-maximized state */}
+        {!maximized && (
+          <>
+            {/* Left edge: horizontal resize */}
+            <div
+              onMouseDown={onResizeStart("w")}
+              title="Drag to resize width"
+              className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize z-20 group/resize hover:bg-primary/20"
+            >
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-1.5 py-2 rounded-md bg-card/90 border border-border/60 opacity-0 group-hover/resize:opacity-100 transition pointer-events-none text-[10px] text-muted-foreground whitespace-nowrap flex items-center gap-1">
+                <ChevronRight className="w-3 h-3 rotate-180" />
+                <ChevronRight className="w-3 h-3" />
+              </div>
+            </div>
+            {/* Top edge: vertical resize */}
+            <div
+              onMouseDown={onResizeStart("h")}
+              title="Drag to resize height"
+              className="absolute top-0 left-1.5 right-1.5 h-1.5 cursor-ns-resize z-20 hover:bg-primary/20"
+            />
+            {/* Top-left corner: both */}
+            <div
+              onMouseDown={onResizeStart("wh")}
+              title="Drag to resize"
+              className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-30 hover:bg-primary/30 rounded-tl-2xl"
+            />
+          </>
+        )}
         {/* Header */}
         <div className={cn("relative border-b border-border/50 px-4 py-3 bg-gradient-to-r", p.advisor.accent)}>
           <div className="flex items-center gap-3">
