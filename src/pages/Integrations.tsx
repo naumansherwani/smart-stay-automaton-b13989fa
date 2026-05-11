@@ -1,4 +1,5 @@
 import { Plug, MessageCircle, Mic } from "lucide-react";
+import AppLayout from "@/components/app/AppLayout";
 
 export default function Integrations() {
   const items = [
@@ -7,6 +8,7 @@ export default function Integrations() {
     { icon: Mic, name: "Voice (ElevenLabs)", desc: "Industry-specific advisor welcome audio + voice replies.", status: "Active" },
   ];
   return (
+    <AppLayout>
     <div className="container max-w-6xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -25,5 +27,6 @@ export default function Integrations() {
         ))}
       </div>
     </div>
+    </AppLayout>
   );
 }
