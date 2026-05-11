@@ -98,13 +98,21 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Are there any booking conflicts I should know about?",
     ],
     toolPanels: [
-      { id: "revenue", label: "Revenue Optimization", icon: "TrendingUp", prompt: "Run a full revenue optimization review for the next 30 days and recommend the top 3 actions." },
-      { id: "pricing", label: "Pricing Recommendations", icon: "DollarSign", prompt: "Recommend nightly rate adjustments for the next 14 days based on demand, comp set and seasonality." },
-      { id: "guest_comm", label: "Guest Communication", icon: "MessageSquare", prompt: "Draft a personalised pre-arrival message for guests checking in tomorrow." },
-      { id: "review_response", label: "Review Response", icon: "Star", prompt: "Help me respond to my latest guest reviews professionally and on-brand." },
-      { id: "conflicts", label: "Booking Conflict Resolution", icon: "AlertTriangle", prompt: "Find and resolve any double-bookings or scheduling conflicts in my calendar." },
-      { id: "forecast", label: "Forecasting", icon: "LineChart", prompt: "Give me a 30-day forecast for occupancy, ADR and RevPAR with key risks." },
-      { id: "upsell", label: "Upsell Opportunities", icon: "Gift", prompt: "Identify the top upsell opportunities for current and upcoming reservations." },
+      // Revenue Management
+      { id: "revenue", category: "Revenue Management", label: "Revenue Optimization", icon: "TrendingUp", prompt: "Run a full revenue optimization review for the next 30 days and recommend the top 3 actions." },
+      { id: "pricing", category: "Revenue Management", label: "Pricing Recommendations", icon: "DollarSign", prompt: "Recommend nightly rate adjustments for the next 14 days based on demand, comp set and seasonality." },
+      { id: "forecast", category: "Revenue Management", label: "Forecasting", icon: "LineChart", prompt: "Give me a 30-day forecast for occupancy, ADR and RevPAR with key risks." },
+      // Distribution Channels
+      { id: "ota_mix", category: "Distribution Channels", label: "OTA Channel Mix Review", icon: "Globe", prompt: "Review my OTA channel mix (Booking, Airbnb, Expedia, direct) and recommend rebalancing to lift net ADR after commissions." },
+      // Guest Experience
+      { id: "review_response", category: "Guest Experience", label: "Review Response", icon: "Star", prompt: "Help me respond to my latest guest reviews professionally and on-brand." },
+      { id: "upsell", category: "Guest Experience", label: "Upsell Opportunities", icon: "Gift", prompt: "Identify the top upsell opportunities for current and upcoming reservations." },
+      // Operations
+      { id: "conflicts", category: "Operations", label: "Booking Conflict Resolution", icon: "AlertTriangle", prompt: "Find and resolve any double-bookings or scheduling conflicts in my calendar." },
+      // Marketing & CRM
+      { id: "returning_guest", category: "Marketing & CRM", label: "Returning Guest Campaign", icon: "Heart", prompt: "Segment past guests who haven't returned in 9+ months and draft a personalised win-back campaign with offer ideas." },
+      // Communication
+      { id: "guest_comm", category: "Communication", label: "Guest Communication", icon: "MessageSquare", prompt: "Draft a personalised pre-arrival message for guests checking in tomorrow." },
     ],
     metricBadges: [
       { id: "occupancy", label: "Occupancy", endpoint: "/metrics/hospitality/occupancy", unit: "%" },
@@ -140,14 +148,21 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Optimize aircraft utilization",
     ],
     toolPanels: [
-      { id: "route_profit", label: "Route Profitability", icon: "TrendingUp", prompt: "Analyze route profitability for the past 30 days and rank top/bottom 5 routes." },
-      { id: "schedule_opt", label: "Schedule Optimization", icon: "CalendarClock", prompt: "Recommend schedule changes to improve connections and aircraft utilization." },
-      { id: "fleet_util", label: "Fleet Utilization", icon: "Plane", prompt: "Show current fleet utilization by tail number and flag underutilized aircraft." },
-      { id: "delay_cost", label: "Delay Cost Analysis", icon: "Timer", prompt: "Break down delay-related costs by root cause for the last 14 days." },
-      { id: "compliance", label: "Compliance Monitoring", icon: "ShieldCheck", prompt: "Run a compliance check across crew duty hours, MEL items and certifications." },
-      { id: "disruption", label: "Disruption Recovery", icon: "AlertTriangle", prompt: "Draft a disruption recovery plan for currently delayed/cancelled flights." },
-      { id: "fuel", label: "Fuel Efficiency", icon: "Fuel", prompt: "Identify the top fuel-saving opportunities across the active network." },
-      { id: "ancillary", label: "Ancillary Revenue", icon: "Gift", prompt: "Recommend ancillary revenue optimizations (bags, seats, upgrades) for the next 30 days." },
+      // Route Profitability
+      { id: "route_profit", category: "Route Profitability", label: "Route Profitability", icon: "TrendingUp", prompt: "Analyze route profitability for the past 30 days and rank top/bottom 5 routes." },
+      { id: "ancillary", category: "Route Profitability", label: "Ancillary Revenue", icon: "Gift", prompt: "Recommend ancillary revenue optimizations (bags, seats, upgrades) for the next 30 days." },
+      // Scheduling
+      { id: "schedule_opt", category: "Scheduling", label: "Schedule Optimization", icon: "CalendarClock", prompt: "Recommend schedule changes to improve connections and aircraft utilization." },
+      { id: "disruption", category: "Scheduling", label: "Disruption Recovery", icon: "AlertTriangle", prompt: "Draft a disruption recovery plan for currently delayed/cancelled flights." },
+      // Compliance
+      { id: "compliance", category: "Compliance", label: "Compliance Monitoring", icon: "ShieldCheck", prompt: "Run a compliance check across crew duty hours, MEL items and certifications." },
+      // Fleet Utilization
+      { id: "fleet_util", category: "Fleet Utilization", label: "Fleet Utilization", icon: "Plane", prompt: "Show current fleet utilization by tail number and flag underutilized aircraft." },
+      { id: "fuel", category: "Fleet Utilization", label: "Fuel Efficiency", icon: "Fuel", prompt: "Identify the top fuel-saving opportunities across the active network." },
+      // Passenger Experience
+      { id: "delay_cost", category: "Passenger Experience", label: "Delay Cost Analysis", icon: "Timer", prompt: "Break down delay-related costs by root cause for the last 14 days." },
+      // Communication
+      { id: "passenger_disruption_notice", category: "Communication", label: "Passenger Disruption Notice", icon: "MessageSquare", prompt: "Draft a clear, on-brand passenger notification for currently delayed or cancelled flights with rebooking guidance." },
     ],
     metricBadges: [
       { id: "load_factor", label: "Load Factor", endpoint: "/metrics/airlines/load_factor", unit: "%" },
@@ -199,14 +214,20 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Recover underperforming assets.",
     ],
     toolPanels: [
-      { id: "fleet_util", label: "Fleet Utilization Analysis", icon: "Gauge", prompt: "Analyze current fleet utilization by vehicle and flag idle or underused assets across all locations." },
-      { id: "pricing_opt", label: "Dynamic Pricing Optimization", icon: "DollarSign", prompt: "Recommend dynamic pricing adjustments by location and demand to maximize fleet revenue." },
-      { id: "idle_recovery", label: "Idle Asset Recovery", icon: "Zap", prompt: "Identify idle vehicles and generate a recovery plan to monetize them within 48 hours." },
-      { id: "maintenance_pred", label: "Maintenance Prediction", icon: "Wrench", prompt: "Predict maintenance risks across the fleet and flag vehicles needing immediate attention." },
-      { id: "demand_forecast", label: "Demand Forecasting", icon: "LineChart", prompt: "Forecast customer demand by location and vehicle class for the next 14 days." },
-      { id: "damage_risk", label: "Damage Risk Analysis", icon: "Shield", prompt: "Run a damage risk analysis and surface vehicles with historically high damage or insurance claims." },
-      { id: "upsell_campaign", label: "Upsell Campaign Generator", icon: "Gift", prompt: "Generate a rental upsell campaign targeting current and upcoming bookings." },
-      { id: "customer_comm", label: "Customer Communication", icon: "MessageSquare", prompt: "Draft customer-facing communications for delay notifications, pickup reminders and return confirmations." },
+      // Fleet Utilization
+      { id: "fleet_util", category: "Fleet Utilization", label: "Fleet Utilization Analysis", icon: "Gauge", prompt: "Analyze current fleet utilization by vehicle and flag idle or underused assets across all locations." },
+      { id: "idle_recovery", category: "Fleet Utilization", label: "Idle Asset Recovery", icon: "Zap", prompt: "Identify idle vehicles and generate a recovery plan to monetize them within 48 hours." },
+      // Dynamic Pricing
+      { id: "pricing_opt", category: "Dynamic Pricing", label: "Dynamic Pricing Optimization", icon: "DollarSign", prompt: "Recommend dynamic pricing adjustments by location and demand to maximize fleet revenue." },
+      // Maintenance
+      { id: "maintenance_pred", category: "Maintenance", label: "Maintenance Prediction", icon: "Wrench", prompt: "Predict maintenance risks across the fleet and flag vehicles needing immediate attention." },
+      { id: "damage_risk", category: "Maintenance", label: "Damage Risk Analysis", icon: "Shield", prompt: "Run a damage risk analysis and surface vehicles with historically high damage or insurance claims." },
+      // Demand Forecasting
+      { id: "demand_forecast", category: "Demand Forecasting", label: "Demand Forecasting", icon: "LineChart", prompt: "Forecast customer demand by location and vehicle class for the next 14 days." },
+      // Customer Experience
+      { id: "upsell_campaign", category: "Customer Experience", label: "Upsell Campaign Generator", icon: "Gift", prompt: "Generate a rental upsell campaign targeting current and upcoming bookings." },
+      // Communication
+      { id: "customer_comm", category: "Communication", label: "Customer Communication", icon: "MessageSquare", prompt: "Draft customer-facing communications for delay notifications, pickup reminders and return confirmations." },
     ],
     metricBadges: [
       { id: "fleet_util", label: "Fleet Utilization", endpoint: "/metrics/car_rental/fleet_utilization", unit: "%" },
@@ -254,14 +275,21 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Review missed appointment patterns.",
     ],
     toolPanels: [
-      { id: "predictive_pathology", label: "Predictive Pathology", icon: "Activity", prompt: "Run a predictive pathology analysis for this patient based on latest vitals, labs and history." },
-      { id: "insurance_sniper", label: "Insurance Sniper", icon: "ShieldCheck", prompt: "Verify insurance authorization for the proposed treatment and surface any denial paths or financing options." },
-      { id: "biowearable_sync", label: "Bio-Wearable Sync", icon: "Heart", prompt: "Sync the latest bio-wearable data (heart rate, glucose, SpO2, sleep) and flag anomalies." },
-      { id: "drug_interaction", label: "Drug Interaction Shield", icon: "Pill", prompt: "Audit the current medication list for interactions, contraindications and dosing risks." },
-      { id: "triage", label: "Autonomous Triage", icon: "AlertTriangle", prompt: "Initiate an urgent-care triage protocol — stream vitals and notify the relevant specialist." },
-      { id: "appointment_opt", label: "Appointment Optimization", icon: "CalendarClock", prompt: "Optimize today's schedule to reduce wait time and no-shows." },
-      { id: "claims", label: "Claims Acceleration", icon: "FileText", prompt: "Accelerate pending claims and flag any rejection risks for the next 7 days." },
-      { id: "patient_comm", label: "Patient Communication", icon: "MessageSquare", prompt: "Draft personalised follow-up instructions for today's discharged patients." },
+      // Patient Care
+      { id: "predictive_pathology", category: "Patient Care", label: "Predictive Pathology", icon: "Activity", prompt: "Run a predictive pathology analysis for this patient based on latest vitals, labs and history." },
+      { id: "biowearable_sync", category: "Patient Care", label: "Bio-Wearable Sync", icon: "Heart", prompt: "Sync the latest bio-wearable data (heart rate, glucose, SpO2, sleep) and flag anomalies." },
+      { id: "triage", category: "Patient Care", label: "Autonomous Triage", icon: "AlertTriangle", prompt: "Initiate an urgent-care triage protocol — stream vitals and notify the relevant specialist." },
+      // Clinical Operations
+      { id: "appointment_opt", category: "Clinical Operations", label: "Appointment Optimization", icon: "CalendarClock", prompt: "Optimize today's schedule to reduce wait time and no-shows." },
+      // Risk & Compliance
+      { id: "drug_interaction", category: "Risk & Compliance", label: "Drug Interaction Shield", icon: "Pill", prompt: "Audit the current medication list for interactions, contraindications and dosing risks." },
+      // Insurance & Billing
+      { id: "insurance_sniper", category: "Insurance & Billing", label: "Insurance Sniper", icon: "ShieldCheck", prompt: "Verify insurance authorization for the proposed treatment and surface any denial paths or financing options." },
+      { id: "claims", category: "Insurance & Billing", label: "Claims Acceleration", icon: "FileText", prompt: "Accelerate pending claims and flag any rejection risks for the next 7 days." },
+      // Pharmacy
+      { id: "prescription_fulfilment", category: "Pharmacy", label: "Prescription Fulfilment Check", icon: "Pill", prompt: "Audit today's prescriptions for fulfilment status, stock-outs and patient pickup risks; flag follow-ups needed." },
+      // Communication
+      { id: "patient_comm", category: "Communication", label: "Patient Communication", icon: "MessageSquare", prompt: "Draft personalised follow-up instructions for today's discharged patients." },
     ],
     metricBadges: [
       { id: "risk_score", label: "Risk Score", endpoint: "/metrics/healthcare/patient_risk_score" },
@@ -354,14 +382,20 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Draft a customer delay notification.",
     ],
     toolPanels: [
-      { id: "route_opt", label: "Route Optimization", icon: "Map", prompt: "Optimize today's delivery routes to minimize miles, fuel and SLA risk." },
-      { id: "fleet_util", label: "Fleet Utilization Analysis", icon: "Truck", prompt: "Analyze current fleet utilization and flag underused or overloaded vehicles." },
-      { id: "fuel", label: "Fuel Efficiency Insights", icon: "Fuel", prompt: "Show the top fuel-saving opportunities across the fleet for the last 30 days." },
-      { id: "delivery_perf", label: "Delivery Performance Analysis", icon: "PackageCheck", prompt: "Break down on-time delivery performance by route, driver and customer." },
-      { id: "bottlenecks", label: "Supply Chain Bottleneck Detection", icon: "AlertTriangle", prompt: "Detect current bottlenecks across pickup, line-haul, warehouse and last-mile." },
-      { id: "warehouse", label: "Warehouse Throughput Review", icon: "Warehouse", prompt: "Review warehouse throughput and recommend the top 3 actions to lift it." },
-      { id: "driver", label: "Driver Productivity Analysis", icon: "User", prompt: "Analyze driver productivity and safety scores; rank top and bottom performers." },
-      { id: "customer_comm", label: "Customer Delay Communication", icon: "MessageSquare", prompt: "Draft customer-facing delay notifications for at-risk shipments today." },
+      // Route Optimization
+      { id: "route_opt", category: "Route Optimization", label: "Route Optimization", icon: "Map", prompt: "Optimize today's delivery routes to minimize miles, fuel and SLA risk." },
+      // Fleet Operations
+      { id: "fleet_util", category: "Fleet Operations", label: "Fleet Utilization Analysis", icon: "Truck", prompt: "Analyze current fleet utilization and flag underused or overloaded vehicles." },
+      { id: "driver", category: "Fleet Operations", label: "Driver Productivity Analysis", icon: "User", prompt: "Analyze driver productivity and safety scores; rank top and bottom performers." },
+      // Fuel & Cost Control
+      { id: "fuel", category: "Fuel & Cost Control", label: "Fuel Efficiency Insights", icon: "Fuel", prompt: "Show the top fuel-saving opportunities across the fleet for the last 30 days." },
+      // Delivery Performance
+      { id: "delivery_perf", category: "Delivery Performance", label: "Delivery Performance Analysis", icon: "PackageCheck", prompt: "Break down on-time delivery performance by route, driver and customer." },
+      { id: "bottlenecks", category: "Delivery Performance", label: "Supply Chain Bottleneck Detection", icon: "AlertTriangle", prompt: "Detect current bottlenecks across pickup, line-haul, warehouse and last-mile." },
+      // Warehouse
+      { id: "warehouse", category: "Warehouse", label: "Warehouse Throughput Review", icon: "Warehouse", prompt: "Review warehouse throughput and recommend the top 3 actions to lift it." },
+      // Communication
+      { id: "customer_comm", category: "Communication", label: "Customer Delay Communication", icon: "MessageSquare", prompt: "Draft customer-facing delay notifications for at-risk shipments today." },
     ],
     metricBadges: [
       { id: "otd", label: "On-Time Delivery", endpoint: "/metrics/logistics/on_time_delivery", unit: "%" },
@@ -396,10 +430,48 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     accent: "from-fuchsia-400/30 via-pink-300/15 to-transparent",
     auraHsl: "292 84% 61%",
     placeholder: "Let's make this show legendary — what's first?",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
-    channels: [],
+    starterPrompts: [
+      "Plan the run of show for our next headline event.",
+      "Recommend dynamic ticket pricing for the upcoming show.",
+      "Identify under-performing audience segments and retarget them.",
+      "Draft sponsor outreach for our next tour stop.",
+      "Forecast ticket sell-through for the next 14 days.",
+      "Audit artist riders and production needs for tomorrow's show.",
+      "Show no-show patterns by event and segment.",
+      "Draft an attendee announcement for schedule changes.",
+    ],
+    toolPanels: [
+      // Event Planning
+      { id: "vega_runbook", category: "Event Planning", label: "Show Runbook Builder", icon: "CalendarClock", prompt: "Build a detailed run of show for our next event including cues, transitions and crew assignments." },
+      { id: "vega_venue_capacity", category: "Event Planning", label: "Venue Capacity Planning", icon: "Building2", prompt: "Plan venue capacity, layout and zone allocation for our upcoming show based on ticket types sold." },
+      { id: "vega_talent_sched", category: "Event Planning", label: "Talent & Crew Scheduling", icon: "Users", prompt: "Schedule talent, crew and rehearsals for the next 7 days and flag conflicts." },
+      // Ticket Revenue
+      { id: "vega_dynamic_pricing", category: "Ticket Revenue", label: "Dynamic Ticket Pricing", icon: "DollarSign", prompt: "Recommend dynamic ticket pricing for the upcoming show based on demand curve and comparable events." },
+      { id: "vega_presale", category: "Ticket Revenue", label: "Presale Strategy", icon: "Ticket", prompt: "Design a presale waves strategy with pricing tiers, holds and fan-club access." },
+      // Audience Growth
+      { id: "vega_segments", category: "Audience Growth", label: "Audience Segment Targeting", icon: "Target", prompt: "Identify high-value audience segments and recommend targeted acquisition campaigns." },
+      { id: "vega_retargeting", category: "Audience Growth", label: "Retargeting Campaign", icon: "TrendingUp", prompt: "Draft a retargeting campaign for past attendees who haven't bought tickets for the next show." },
+      // Production Operations
+      { id: "vega_riders", category: "Production Operations", label: "Artist Rider Check", icon: "FileText", prompt: "Audit artist riders for tomorrow's show and flag any unmet hospitality or technical requirements." },
+      { id: "vega_run_of_show", category: "Production Operations", label: "Production Status Review", icon: "Activity", prompt: "Review production status — lighting, sound, staging — and surface readiness risks for the next event." },
+      // Sponsorship
+      { id: "vega_sponsor_outreach", category: "Sponsorship", label: "Sponsor Outreach", icon: "Mail", prompt: "Draft sponsor outreach emails for our next tour with audience demographics and activation options." },
+      { id: "vega_activation_roi", category: "Sponsorship", label: "Sponsor Activation ROI", icon: "LineChart", prompt: "Measure ROI of recent sponsor activations and recommend optimizations for renewals." },
+      // Communication
+      { id: "vega_attendee_announce", category: "Communication", label: "Attendee Announcement", icon: "MessageSquare", prompt: "Draft an attendee announcement for schedule changes, venue updates or special guests." },
+    ],
+    metricBadges: [
+      { id: "tickets_sold_pct", label: "Tickets Sold %", endpoint: "/metrics/events_entertainment/tickets_sold_pct", unit: "%" },
+      { id: "avg_ticket_price", label: "Avg Ticket", endpoint: "/metrics/events_entertainment/avg_ticket_price" },
+      { id: "sponsor_revenue", label: "Sponsor Rev", endpoint: "/metrics/events_entertainment/sponsor_revenue" },
+      { id: "no_show", label: "No-Show %", endpoint: "/metrics/events_entertainment/no_show_rate", unit: "%" },
+    ],
+    channels: [
+      { id: "eventbrite", label: "Eventbrite", icon: "Ticket" },
+      { id: "ticketmaster", label: "Ticketmaster", icon: "Ticket" },
+      { id: "email", label: "Email", icon: "Mail" },
+      { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
+    ],
   },
   railways: {
     industry: "railways",
@@ -410,10 +482,52 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     accent: "from-teal-400/30 via-emerald-300/15 to-transparent",
     auraHsl: "172 66% 50%",
     placeholder: "All aboard — what's the next stop?",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
-    channels: [],
+    starterPrompts: [
+      "Review on-time performance across the network.",
+      "Optimize today's timetable for peak demand.",
+      "Forecast load factor for the next 14 days.",
+      "Flag rolling stock needing predictive maintenance.",
+      "Identify stations with high passenger complaints.",
+      "Draft a delay notification for affected passengers.",
+      "Plan crew rotations for the upcoming week.",
+      "Show capacity utilization by route and time band.",
+    ],
+    toolPanels: [
+      // Network Performance
+      { id: "kai_otp", category: "Network Performance", label: "On-Time Performance Review", icon: "Timer", prompt: "Review on-time performance across the network for the last 30 days and rank routes by punctuality." },
+      { id: "kai_route_health", category: "Network Performance", label: "Route Health Scan", icon: "Activity", prompt: "Scan route health — delays, cancellations, incidents — and flag routes needing intervention." },
+      // Scheduling
+      { id: "kai_timetable", category: "Scheduling", label: "Timetable Optimization", icon: "CalendarClock", prompt: "Optimize the timetable for peak demand windows and recommend service additions or trims." },
+      { id: "kai_crew_rotation", category: "Scheduling", label: "Crew Rotation Planner", icon: "Users", prompt: "Plan crew rotations for the upcoming week and flag duty-hour or rest-rule risks." },
+      // Capacity Management
+      { id: "kai_load_factor", category: "Capacity Management", label: "Load Factor Forecast", icon: "TrendingUp", prompt: "Forecast load factor for the next 14 days by route and time band, with seat-release recommendations." },
+      { id: "kai_peak_demand", category: "Capacity Management", label: "Peak Demand Sizing", icon: "LineChart", prompt: "Size capacity for peak demand events (holidays, sport, festivals) and recommend extra services." },
+      // Maintenance
+      { id: "kai_rolling_stock", category: "Maintenance", label: "Rolling Stock Audit", icon: "Wrench", prompt: "Audit rolling stock condition and flag units approaching maintenance windows." },
+      { id: "kai_predictive_maint", category: "Maintenance", label: "Predictive Maintenance", icon: "ShieldCheck", prompt: "Run predictive maintenance analysis and surface failure risks for the next 30 days." },
+      // Passenger Experience
+      { id: "kai_complaints", category: "Passenger Experience", label: "Complaint Pattern Analysis", icon: "AlertTriangle", prompt: "Analyze complaint patterns by station and route; rank issues by frequency and severity." },
+      { id: "kai_station_throughput", category: "Passenger Experience", label: "Station Throughput Review", icon: "Building2", prompt: "Review station throughput and crowding patterns; recommend gating and signage improvements." },
+      // Communication
+      { id: "kai_delay_notice", category: "Communication", label: "Passenger Delay Notice", icon: "MessageSquare", prompt: "Draft a clear passenger delay notification with rebooking guidance and refund eligibility." },
+      { id: "kai_station_announce", category: "Communication", label: "Station Announcement", icon: "Megaphone", prompt: "Draft a station announcement for service disruptions, platform changes or weather alerts." },
+    ],
+    metricBadges: [
+      { id: "punctuality", label: "Punctuality %", endpoint: "/metrics/railways/punctuality", unit: "%" },
+      { id: "load_factor", label: "Load Factor %", endpoint: "/metrics/railways/load_factor", unit: "%" },
+      { id: "avg_delay", label: "Avg Delay", endpoint: "/metrics/railways/avg_delay", unit: "min" },
+      { id: "cancellation_rate", label: "Cancel %", endpoint: "/metrics/railways/cancellation_rate", unit: "%" },
+    ],
+    channels: [
+      { id: "sms", label: "SMS", icon: "MessageCircle" },
+      { id: "email", label: "Email", icon: "Mail" },
+      { id: "station_displays", label: "Station Displays", icon: "Monitor" },
+      { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
+    ],
+    radar: {
+      endpoint: "/metrics/railways/radar",
+      title: "Live Network Map",
+    },
   },
 };
 
