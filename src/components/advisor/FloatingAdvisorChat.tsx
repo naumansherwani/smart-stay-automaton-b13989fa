@@ -799,13 +799,8 @@ function FloatingChatWindow(p: WindowProps) {
             <div
               onMouseDown={onResizeStart("w")}
               title="Drag to resize width"
-              className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize z-20 group/resize hover:bg-primary/20"
-            >
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-1.5 py-2 rounded-md bg-card/90 border border-border/60 opacity-0 group-hover/resize:opacity-100 transition pointer-events-none text-[10px] text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                <ChevronRight className="w-3 h-3 rotate-180" />
-                <ChevronRight className="w-3 h-3" />
-              </div>
-            </div>
+              className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize z-20 hover:bg-primary/15"
+            />
             {/* Top edge: vertical resize */}
             <div
               onMouseDown={onResizeStart("h")}
