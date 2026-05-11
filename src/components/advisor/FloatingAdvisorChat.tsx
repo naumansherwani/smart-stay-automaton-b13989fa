@@ -108,6 +108,7 @@ const MAX_FILE_MB = 20;
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp, DollarSign, MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench,
   FileText, ImageIcon, FileSpreadsheet,
+  Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle, Mail, CalendarClock, Dna,
 };
 
 // ===================== Provider =====================
