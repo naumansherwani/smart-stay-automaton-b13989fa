@@ -53,6 +53,13 @@ export type AdvisorConfig = {
   metricBadges: MetricBadge[];
   /** Channel chips shown under the header (e.g. Booking.com, Airbnb) */
   channels: ChannelChip[];
+  /** Use monospaced typography for an operational/cockpit feel */
+  mono?: boolean;
+  /** Optional radar micro-map (airlines/railways/logistics) */
+  radar?: {
+    endpoint: string; // Replit GET → { dots:[{id,x,y,status,label?}], weather?:[{x,y,kind}] }
+    title?: string;
+  };
 };
 
 export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
@@ -94,15 +101,44 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     industry: "airlines",
     name: "Captain Orion",
     designation:
-      "AI Advisor & AI Flight Operations & Compliance Director — Airlines & Aviation Division",
+      "Flight Operations Director — Airlines & Aviation Division",
     vibe: "Calm, authoritative. Inspires confidence like a senior pilot.",
-    accent: "from-sky-400/30 via-amber-300/15 to-transparent",
-    auraHsl: "204 89% 60%",
-    placeholder: "Ready for pre-flight briefing, Sir.",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
+    accent: "from-[#0a1628]/80 via-[#0ea5e9]/15 to-[#84cc16]/10",
+    auraHsl: "190 95% 55%",
+    mono: true,
+    placeholder: "Awaiting flight parameters, Commander.",
+    starterPrompts: [
+      "Improve load factor on underperforming routes",
+      "Reduce delay-related costs",
+      "Optimize ancillary revenue",
+      "Analyze route profitability",
+      "Draft disruption communication",
+    ],
+    toolPanels: [
+      { id: "route_profit", label: "Route Profitability", icon: "TrendingUp", prompt: "Analyze route profitability for the past 30 days and rank top/bottom 5 routes." },
+      { id: "schedule_opt", label: "Schedule Optimization", icon: "CalendarClock", prompt: "Recommend schedule changes to improve connections and aircraft utilization." },
+      { id: "fleet_util", label: "Fleet Utilization", icon: "Plane", prompt: "Show current fleet utilization by tail number and flag underutilized aircraft." },
+      { id: "delay_cost", label: "Delay Cost Analysis", icon: "Timer", prompt: "Break down delay-related costs by root cause for the last 14 days." },
+      { id: "compliance", label: "Compliance Monitoring", icon: "ShieldCheck", prompt: "Run a compliance check across crew duty hours, MEL items and certifications." },
+      { id: "disruption", label: "Disruption Recovery", icon: "AlertTriangle", prompt: "Draft a disruption recovery plan for currently delayed/cancelled flights." },
+      { id: "fuel", label: "Fuel Efficiency", icon: "Fuel", prompt: "Identify the top fuel-saving opportunities across the active network." },
+      { id: "ancillary", label: "Ancillary Revenue", icon: "Gift", prompt: "Recommend ancillary revenue optimizations (bags, seats, upgrades) for the next 30 days." },
+    ],
+    metricBadges: [
+      { id: "load_factor", label: "Load Factor", endpoint: "/metrics/airlines/load_factor", unit: "%" },
+      { id: "yield", label: "Yield", endpoint: "/metrics/airlines/yield", unit: "" },
+      { id: "rask", label: "RASK", endpoint: "/metrics/airlines/rask", unit: "" },
+      { id: "cask", label: "CASK", endpoint: "/metrics/airlines/cask", unit: "" },
+      { id: "otp", label: "OTP", endpoint: "/metrics/airlines/otp", unit: "%" },
+      { id: "delay_min", label: "Delay Min", endpoint: "/metrics/airlines/delay_minutes", unit: "" },
+      { id: "cancel_rate", label: "Cancel %", endpoint: "/metrics/airlines/cancellation_rate", unit: "%" },
+      { id: "ancillary_rev", label: "Ancillary", endpoint: "/metrics/airlines/ancillary_revenue", unit: "" },
+    ],
     channels: [],
+    radar: {
+      endpoint: "/metrics/airlines/radar",
+      title: "Live Network Radar",
+    },
   },
   car_rental: {
     industry: "car_rental",
