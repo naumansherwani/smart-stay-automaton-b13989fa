@@ -29,7 +29,7 @@ import {
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
   Mail, CalendarClock, Dna, Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
   Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
-  Car, Gauge, Zap, CreditCard,
+  Car, Gauge, Zap, CreditCard, ChevronLeft, Search, StarOff, Clock, PanelLeft,
 } from "lucide-react";
 
 // ===================== Types =====================
