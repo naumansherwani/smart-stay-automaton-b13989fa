@@ -985,7 +985,7 @@ function MetricBadgeView({ badge }: { badge: MetricBadge }) {
   );
 }
 
-function SherlockLine({ state }: { state: SherlockState }) {
+function SherlockLine({ state, shieldGlow }: { state: SherlockState; shieldGlow?: boolean }) {
   const palette: Record<SherlockState, { color: string; label: string }> = {
     idle:          { color: "text-muted-foreground",          label: "Sherlock standby" },
     watching:      { color: "text-muted-foreground/80",       label: "Sherlock is watching quietly" },
@@ -994,9 +994,16 @@ function SherlockLine({ state }: { state: SherlockState }) {
     resolved:      { color: "text-emerald-500",               label: "Sherlock resolved a background task" },
   };
   const p = palette[state];
+  const active = shieldGlow && (state === "investigating" || state === "alert" || state === "watching");
   return (
     <div className={cn("mt-2 flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em]", p.color)}>
-      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+      {shieldGlow ? (
+        <Shield
+          className={cn("w-3 h-3", active && "text-emerald-400 drop-shadow-[0_0_6px_rgba(110,231,183,0.9)] animate-pulse")}
+        />
+      ) : (
+        <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+      )}
       {p.label}
     </div>
   );
