@@ -29,7 +29,7 @@ import {
   MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
   Mail, CalendarClock, Dna, Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
-  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Map as MapIcon, Truck, PackageCheck, Warehouse, User, Navigation, Database,
   Car, Gauge, Zap, CreditCard, ChevronLeft, Search, StarOff, Clock, PanelLeft,
 } from "lucide-react";
 
