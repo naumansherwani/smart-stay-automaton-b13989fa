@@ -18,9 +18,14 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+    const redirectTo = `${window.location.origin}/reset-password`;
+
+    // Route via owner-password-recovery function: it handles recovery_email forwarding
+    // for the owner account, and falls back to standard reset for everyone else.
+    const { error } = await supabase.functions.invoke("owner-password-recovery", {
+      body: { email, redirectTo },
     });
+
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
