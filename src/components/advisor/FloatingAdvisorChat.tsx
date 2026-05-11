@@ -29,6 +29,7 @@ import {
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
   Mail, CalendarClock, Dna, Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
   Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Car, Gauge, Zap, CreditCard,
 } from "lucide-react";
 
 // ===================== Types =====================
@@ -112,6 +113,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle, Mail, CalendarClock, Dna,
   Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
   Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Car, Gauge, Zap, CreditCard,
 };
 
 // ===================== Provider =====================
@@ -708,7 +710,8 @@ function FloatingChatWindow(p: WindowProps) {
   if (p.windowState === "closed") return null;
 
   if (p.windowState === "minimized") {
-    const isOrb = p.advisor.minimizedOrb === "mint-breath";
+    const isOrb = p.advisor.minimizedOrb === "mint-breath" || p.advisor.minimizedOrb === "lime-breath";
+    const orbKind = p.advisor.minimizedOrb;
     const hour = new Date().getHours();
     const dim = hour >= 20 || hour < 7;
     return (
@@ -719,11 +722,18 @@ function FloatingChatWindow(p: WindowProps) {
       >
         {isOrb ? (
           <span
-            className="advisor-mint-orb relative w-8 h-8 rounded-full"
-            style={{
+            className={cn(
+              "relative w-8 h-8 rounded-full",
+              orbKind === "mint-breath" && "advisor-mint-orb",
+              orbKind === "lime-breath" && "advisor-lime-orb"
+            )}
+            style={orbKind === "mint-breath" ? {
               background: "radial-gradient(circle at 35% 30%, #ecfdf5, #6ee7b7 55%, #059669 100%)",
               boxShadow: "0 0 18px 4px rgba(110,231,183,0.55), inset 0 0 8px rgba(255,255,255,0.6)",
-            }}
+            } : orbKind === "lime-breath" ? {
+              background: "radial-gradient(circle at 35% 30%, #ecfccb, #a3e635 55%, #65a30d 100%)",
+              boxShadow: "0 0 18px 4px rgba(163,230,53,0.55), inset 0 0 8px rgba(255,255,255,0.6)",
+            } : undefined}
           />
         ) : (
           <span className={cn("w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center", p.advisor.accent)}>
@@ -739,6 +749,11 @@ function FloatingChatWindow(p: WindowProps) {
             50%      { transform: scale(1.08); box-shadow: 0 0 26px 6px rgba(110,231,183,0.75), inset 0 0 10px rgba(255,255,255,0.7); }
           }
           .advisor-mint-orb { animation: advisorMintBreath 4s ease-in-out infinite; }
+          @keyframes advisorLimeBreath {
+            0%, 100% { transform: scale(1);    box-shadow: 0 0 14px 3px rgba(163,230,53,0.45), inset 0 0 8px rgba(255,255,255,0.55); }
+            50%      { transform: scale(1.08); box-shadow: 0 0 26px 6px rgba(163,230,53,0.75), inset 0 0 10px rgba(255,255,255,0.7); }
+          }
+          .advisor-lime-orb { animation: advisorLimeBreath 4s ease-in-out infinite; }
         `}</style>
       </button>
     );
