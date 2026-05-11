@@ -1063,6 +1063,126 @@ function MetricBadgeView({ badge }: { badge: MetricBadge }) {
   );
 }
 
+function AdvisorUtilityPanel({
+  industry,
+  advisor,
+  sending,
+  sherlock,
+}: {
+  industry: string;
+  advisor: ReturnType<typeof getAdvisor>;
+  sending: boolean;
+  sherlock: SherlockState;
+}) {
+  const storageKey = `advisor-utility-panel-${industry}`;
+  const [expanded, setExpanded] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(storageKey) === "1";
+  });
+  useEffect(() => {
+    try { localStorage.setItem(storageKey, expanded ? "1" : "0"); } catch {}
+  }, [expanded, storageKey]);
+
+  const hasChannels = advisor.channels.length > 0;
+  const hasBadges = advisor.metricBadges.length > 0;
+  const hasHealth = !!(advisor.ekgPulse || advisor.trustScore);
+  const hasRadar = !!advisor.radar;
+  const hasAny = hasChannels || hasBadges || hasHealth || hasRadar;
+
+  // Always render Sherlock line outside the collapse so it stays visible.
+  // If there's nothing else, just render the line with no toggle.
+  if (!hasAny) {
+    return <SherlockLine state={sherlock} shieldGlow={advisor.sherlockShieldGlow} />;
+  }
+
+  const previewChips = advisor.channels.slice(0, 3);
+  const remaining =
+    Math.max(0, advisor.channels.length - previewChips.length) +
+    advisor.metricBadges.length +
+    (hasRadar ? 1 : 0);
+
+  return (
+    <div className="mt-3">
+      {/* Toggle row: compact preview + chevron */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          aria-label={expanded ? "Collapse utility panel" : "Expand utility panel"}
+          className="inline-flex items-center justify-center w-6 h-6 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors shrink-0"
+        >
+          {expanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+        </button>
+        {!expanded && (
+          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+            {previewChips.map((c) => (
+              <span
+                key={c.id}
+                className="text-[10px] text-muted-foreground/90 truncate max-w-[90px]"
+                title={c.label}
+              >
+                {c.label}
+              </span>
+            )).reduce<React.ReactNode[]>((acc, node, i) => {
+              if (i > 0) acc.push(<span key={`dot-${i}`} className="text-[10px] text-muted-foreground/40">•</span>);
+              acc.push(node);
+              return acc;
+            }, [])}
+            {remaining > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-foreground/5 border border-border/40 text-[10px] text-muted-foreground font-medium">
+                +{remaining}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Expanded region */}
+      <div
+        className={cn(
+          "grid transition-all duration-300 ease-out overflow-hidden",
+          expanded ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden space-y-3">
+          {(hasChannels || hasBadges) && (
+            <div className="flex flex-wrap items-center gap-2">
+              {advisor.channels.map((c) => <ChannelChipView key={c.id} chip={c} />)}
+              {advisor.metricBadges.map((b) => <MetricBadgeView key={b.id} badge={b} />)}
+            </div>
+          )}
+
+          {hasHealth && (
+            <div className="flex items-center gap-3">
+              {advisor.ekgPulse && <EkgPulse active={sending} />}
+              {advisor.trustScore && (
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#a7f3d0]/20 to-[#ffffff]/10 border border-[#6ee7b7]/30 text-[11px]">
+                  <Heart className="w-3 h-3 text-emerald-400" />
+                  <span className="text-muted-foreground">{advisor.trustScore.label}:</span>
+                  <span className="font-bold text-foreground">{advisor.trustScore.value}</span>
+                  {advisor.trustScore.sub && (
+                    <span className="text-muted-foreground/80 hidden sm:inline">· {advisor.trustScore.sub}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {hasRadar && advisor.radar && (
+            <RadarMicroMap endpoint={advisor.radar.endpoint} title={advisor.radar.title} auraHsl={advisor.auraHsl} />
+          )}
+        </div>
+      </div>
+
+      {/* Sherlock line always visible */}
+      <div className="mt-2">
+        <SherlockLine state={sherlock} shieldGlow={advisor.sherlockShieldGlow} />
+      </div>
+    </div>
+  );
+}
+
 function SherlockLine({ state, shieldGlow }: { state: SherlockState; shieldGlow?: boolean }) {
   const palette: Record<SherlockState, { color: string; label: string }> = {
     idle:          { color: "text-muted-foreground",          label: "Sherlock standby" },
