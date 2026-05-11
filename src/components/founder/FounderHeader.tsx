@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Plus, Search, Mail, Crown } from "lucide-react";
+import { Plus, Search, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import FounderNotifications from "./FounderNotifications";
 import { useOwnerMailbox } from "@/hooks/useOwnerMailbox";
+import UserHalo from "@/components/identity/UserHalo";
 
 const TZ = [
   { city: "London", tz: "Europe/London" },
@@ -67,17 +68,16 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
           Quick Add
         </button>
 
-        <button
-          onClick={() => onSelect?.("profile")}
-          className="relative group"
-          title="Founder Profile"
-        >
-          <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-[#F59E0B] via-[#FACC15] to-[#F59E0B] opacity-80 group-hover:opacity-100 blur-[2px] transition-opacity" />
-          <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[#0F172A] to-[#1E293B] border border-[#F59E0B]/40 flex items-center justify-center shadow-lg shadow-[#F59E0B]/20">
-            <Crown className="w-4 h-4 text-[#F59E0B]" />
-          </div>
-          <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[var(--fos-success)] border-2 border-[var(--fos-bg)]" />
-        </button>
+        <div className="relative">
+          <UserHalo
+            size={36}
+            founderBadge
+            pulse="idle"
+            onClick={() => onSelect?.("profile")}
+            title="Founder Profile"
+          />
+          <span className="absolute -bottom-0 -left-0 w-2.5 h-2.5 rounded-full bg-[var(--fos-success)] border-2 border-[var(--fos-bg)] z-[3]" />
+        </div>
       </div>
     </header>
   );

@@ -15,6 +15,7 @@ import PublicView from "./PublicView";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
 import PlanSwitcher, { PlanSwitcherBanner } from "./PlanSwitcher";
+import UserHalo from "@/components/identity/UserHalo";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import { useWorkspaceTheme } from "@/hooks/useWorkspaceTheme";
@@ -165,6 +166,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Globe className="w-3.5 h-3.5 text-muted-foreground" />
             <span className="hidden lg:inline text-muted-foreground">Switch</span>
           </Button>
+          <UserHalo
+            size={32}
+            industry={currentIndustry}
+            founderBadge={isAdmin}
+            onClick={() => navigate("/profile")}
+            title="Your Profile"
+          />
         </div>
       </header>
 
