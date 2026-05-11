@@ -867,6 +867,18 @@ function FloatingChatWindow(p: WindowProps) {
           />
         </div>
 
+        {/* Body: Sidebar + Chat column */}
+        <div className="flex-1 flex min-h-0">
+          <QuickActionsSidebar
+            industry={p.industry}
+            advisor={p.advisor}
+            onPick={(prompt) => {
+              p.onUseStarter(prompt);
+              // Focus composer after inserting
+              requestAnimationFrame(() => composerRef.current?.focus());
+            }}
+          />
+          <div className="flex-1 flex flex-col min-w-0">
         {/* Messages */}
         <div
           ref={p.scrollRef}
@@ -904,15 +916,6 @@ function FloatingChatWindow(p: WindowProps) {
             />
           ))}
         </div>
-
-        {/* Tool panels (industry-specific) */}
-        {p.advisor.toolPanels.length > 0 && (
-          <div className="border-t border-border/40 px-3 py-2 flex gap-1.5 overflow-x-auto bg-background/30">
-            {p.advisor.toolPanels.map((t) => (
-              <ToolPanelButton key={t.id} panel={t} onClick={() => p.onUseStarter(t.prompt)} />
-            ))}
-          </div>
-        )}
 
         {/* Resolution Pulse (SLA timeline) */}
         {p.advisor.resolutionPulse && (
@@ -976,6 +979,8 @@ function FloatingChatWindow(p: WindowProps) {
                 <Send className="w-4 h-4" />
               </Button>
             )}
+          </div>
+        </div>
           </div>
         </div>
       </div>
