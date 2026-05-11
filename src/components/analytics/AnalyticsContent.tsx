@@ -75,15 +75,15 @@ const AnalyticsContent = ({ bookings, properties }: AnalyticsPageProps) => {
                 <AreaChart data={weeklyData}>
                   <defs>
                     <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(168, 70%, 38%)" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="hsl(168, 70%, 38%)" stopOpacity={0} />
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 90%)" />
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: "hsl(220, 10%, 46%)" }} />
                   <YAxis tick={{ fontSize: 11, fill: "hsl(220, 10%, 46%)" }} tickFormatter={v => `$${v}`} />
                   <ReTooltip formatter={(v: number) => [`$${v}`, "Revenue"]} contentStyle={{ borderRadius: 12, border: "1px solid hsl(214, 20%, 90%)", fontSize: 12 }} />
-                  <Area type="monotone" dataKey="revenue" stroke="hsl(168, 70%, 38%)" fill="url(#revenueGrad)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="url(#revenueGrad)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

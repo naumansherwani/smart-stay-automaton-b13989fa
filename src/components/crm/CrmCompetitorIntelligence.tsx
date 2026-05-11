@@ -137,7 +137,7 @@ export default function CrmCompetitorIntelligence({ industry }: Props) {
                     <RadarChart data={analysis.radar_data}>
                       <PolarGrid className="stroke-muted" />
                       <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10 }} />
-                      <Radar name="You" dataKey="you" stroke="hsl(168, 70%, 38%)" fill="hsl(168, 70%, 38%)" fillOpacity={0.3} />
+                      <Radar name="You" dataKey="you" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} />
                       <Radar name="Avg Competitor" dataKey="avg_competitor" stroke="hsl(0, 70%, 50%)" fill="hsl(0, 70%, 50%)" fillOpacity={0.15} />
                       <Legend />
                     </RadarChart>
@@ -200,7 +200,7 @@ export default function CrmCompetitorIntelligence({ industry }: Props) {
                         <XAxis dataKey="route" tick={{ fontSize: 11 }} />
                         <YAxis tick={{ fontSize: 11 }} />
                         <Tooltip />
-                        <Bar dataKey="you" fill="hsl(168, 70%, 38%)" name="Your Price" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="you" fill="hsl(var(--primary))" name="Your Price" radius={[4, 4, 0, 0]} />
                         {analysis.competitors.map((comp, i) => (
                           <Bar key={comp.name} dataKey={comp.name} fill={COMP_COLORS[i % COMP_COLORS.length]} name={comp.name} radius={[4, 4, 0, 0]} />
                         ))}

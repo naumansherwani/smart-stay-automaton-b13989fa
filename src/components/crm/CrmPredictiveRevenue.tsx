@@ -123,7 +123,7 @@ export default function CrmPredictiveRevenue({ industry }: Props) {
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, "Revenue"]} />
-                <Area type="monotone" dataKey="revenue" stroke="hsl(168, 70%, 38%)" fill="hsl(168, 70%, 38%)" fillOpacity={0.2} />
+                <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -144,8 +144,8 @@ export default function CrmPredictiveRevenue({ industry }: Props) {
                     <YAxis tick={{ fontSize: 10 }} />
                     <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, ""]} />
                     <Legend />
-                    <Area type="monotone" dataKey="confidence_high" stroke="none" fill="hsl(168, 70%, 38%)" fillOpacity={0.1} name="Upper Bound" />
-                    <Area type="monotone" dataKey="predicted" stroke="hsl(168, 70%, 38%)" fill="hsl(168, 70%, 38%)" fillOpacity={0.3} name="Predicted" strokeWidth={2} />
+                    <Area type="monotone" dataKey="confidence_high" stroke="none" fill="hsl(var(--primary))" fillOpacity={0.1} name="Upper Bound" />
+                    <Area type="monotone" dataKey="predicted" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.3} name="Predicted" strokeWidth={2} />
                     <Area type="monotone" dataKey="confidence_low" stroke="none" fill="transparent" name="Lower Bound" />
                   </AreaChart>
                 </ResponsiveContainer>
