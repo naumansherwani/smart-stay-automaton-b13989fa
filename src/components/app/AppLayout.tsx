@@ -16,6 +16,7 @@ import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
+import { useWorkspaceTheme } from "@/hooks/useWorkspaceTheme";
 import { toast } from "sonner";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
@@ -41,6 +42,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [publicMode, setPublicMode] = useState(false);
   const [adminChecked, setAdminChecked] = useState(false);
+  // Apply industry-scoped color theme to <html data-industry="...">.
+  // Respects user's chosen mode (industry/brand/system) from localStorage.
+  useWorkspaceTheme();
 
   // SINGLE source of truth: active workspace industry wins, profile is fallback only.
   // This prevents header/sidebar mismatch (e.g. left shows Car Rental, right shows Airlines).
