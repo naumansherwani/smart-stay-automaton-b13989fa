@@ -653,11 +653,13 @@ function FloatingChatWindow(p: WindowProps) {
 
   if (p.windowState === "minimized") {
     const isOrb = p.advisor.minimizedOrb === "mint-breath";
+    const hour = new Date().getHours();
+    const dim = hour >= 20 || hour < 7;
     return (
       <button
         onClick={p.onOpenFromPill}
         className="fixed bottom-5 right-5 z-[100] flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/90 backdrop-blur-xl border border-primary/30 shadow-2xl hover:border-primary/60 transition-all group"
-        style={isOrb ? { filter: `brightness(${nightDim() ? 0.7 : 1})` } : undefined}
+        style={isOrb && dim ? { filter: "brightness(0.7)" } : undefined}
       >
         {isOrb ? (
           <span
