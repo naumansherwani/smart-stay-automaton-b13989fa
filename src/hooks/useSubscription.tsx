@@ -84,9 +84,12 @@ export function useSubscription() {
   // When set, we override plan + drop is_lifetime so feature gating reflects the
   // chosen tier exactly as a paying user would experience it.
   if (viewAsPlan && subscription) {
+    // "standard" tier maps to legacy "pro" in the subscription type.
+    const mappedPlan: Subscription["plan"] =
+      viewAsPlan === "standard" ? "pro" : viewAsPlan;
     const overridden: Subscription = {
       ...subscription,
-      plan: viewAsPlan,
+      plan: mappedPlan,
       status: "active",
       is_lifetime: false,
     };
