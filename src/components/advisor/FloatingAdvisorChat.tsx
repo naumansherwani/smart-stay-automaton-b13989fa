@@ -701,7 +701,23 @@ function FloatingChatWindow(p: WindowProps) {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-sm leading-tight truncate">{p.advisor.name}</p>
+                <p className="font-bold text-sm leading-tight truncate flex items-center gap-1.5">
+                  <span>
+                    {p.advisor.name}
+                    {p.advisor.shortTitle && (
+                      <span className="text-muted-foreground font-medium"> — {p.advisor.shortTitle}</span>
+                    )}
+                  </span>
+                  {p.advisor.sovereignBadge && (
+                    <span
+                      title="Sovereign"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-gradient-to-r from-[#f5d4a1] to-[#f4c2d7] text-amber-900 shadow-[0_0_10px_rgba(245,212,161,0.55)]"
+                    >
+                      <Crown className="w-2.5 h-2.5" />
+                      Sovereign
+                    </span>
+                  )}
+                </p>
                 <p className="text-[11px] text-muted-foreground line-clamp-1">{p.advisor.designation}</p>
               </div>
             </div>
