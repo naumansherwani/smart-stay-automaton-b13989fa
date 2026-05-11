@@ -9,7 +9,13 @@ import { Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
 
-const OWNER_EMAIL = "naumansherwani@hostflowai.net";
+// Both emails open the Crown/Owner protocol — primary work email + personal gmail.
+const OWNER_EMAILS = [
+  "naumansherwani@hostflowai.net",
+  "naumankhansherwani@gmail.com",
+];
+const isOwnerEmail = (e?: string | null) =>
+  !!e && OWNER_EMAILS.includes(e.toLowerCase().trim());
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -29,7 +35,7 @@ export default function Login() {
     // Also check active session (case-insensitive)
     supabase.auth.getSession().then(({ data }) => {
       const sessionEmail = data.session?.user?.email?.toLowerCase();
-      if (sessionEmail === OWNER_EMAIL) {
+      if (isOwnerEmail(sessionEmail)) {
         setIsOwner(true);
         localStorage.setItem("hf_owner", "true");
       }
@@ -53,7 +59,7 @@ export default function Login() {
     }
 
     // Set owner flag for persistent greeting
-    if (email.toLowerCase() === OWNER_EMAIL) {
+    if (isOwnerEmail(email)) {
       localStorage.setItem("hf_owner", "true");
     }
 
@@ -233,7 +239,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => { setEmail(e.target.value); setIsOwner(e.target.value.toLowerCase() === OWNER_EMAIL); }} required placeholder="you@example.com" />
+              <Input id="email" type="email" value={email} onChange={e => { setEmail(e.target.value); setIsOwner(isOwnerEmail(e.target.value)); }} required placeholder="you@example.com" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
