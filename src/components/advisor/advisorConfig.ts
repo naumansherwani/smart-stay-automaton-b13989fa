@@ -14,6 +14,9 @@ export type ToolPanel = {
   label: string;
   icon: string; // lucide icon name
   prompt: string; // prefilled into the input draft
+  /** Optional grouping label for the Quick Actions sidebar. Items
+   *  without a category fall under "Quick Actions". */
+  category?: string;
 };
 
 export type MetricBadge = {
