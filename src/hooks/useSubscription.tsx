@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { useViewAsPlan } from "./useViewAsPlan";
 
 export interface Subscription {
   id: string;
@@ -17,6 +18,7 @@ export interface Subscription {
 
 export function useSubscription() {
   const { user, loading: authLoading } = useAuth();
+  const { plan: viewAsPlan } = useViewAsPlan();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -77,6 +79,27 @@ export function useSubscription() {
   const trialDaysLeft = subscription?.trial_ends_at
     ? Math.max(0, Math.ceil((new Date(subscription.trial_ends_at).getTime() - Date.now()) / 86400000))
     : 0;
+
+  // === View-As-Plan override (admin only, UI-only, never touches billing) ===
+  // When set, we override plan + drop is_lifetime so feature gating reflects the
+  // chosen tier exactly as a paying user would experience it.
+  if (viewAsPlan && subscription) {
+    const overridden: Subscription = {
+      ...subscription,
+      plan: viewAsPlan,
+      status: "active",
+      is_lifetime: false,
+    };
+    return {
+      subscription: overridden,
+      loading,
+      isActive: true,
+      isTrialing: false,
+      isExpired: false,
+      trialDaysLeft: 0,
+      refresh: checkSubscription,
+    };
+  }
 
   return { subscription, loading, isActive, isTrialing, isExpired, trialDaysLeft, refresh: checkSubscription };
 }
