@@ -25,7 +25,7 @@ import {
   Send, Minus, Maximize2, Minimize2, X, Sparkles, Loader2, Square, RefreshCcw,
   Copy, Pencil, Paperclip, Mic, MicOff, FileText, Image as ImageIcon, FileSpreadsheet,
   AlertCircle, CheckCircle2, XCircle, ChevronRight, TrendingUp, DollarSign,
-  MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench,
+  MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
 } from "lucide-react";
 
 // ===================== Types =====================
