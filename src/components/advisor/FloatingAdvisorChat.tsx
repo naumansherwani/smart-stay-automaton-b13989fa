@@ -26,6 +26,8 @@ import {
   Copy, Pencil, Paperclip, Mic, MicOff, FileText, Image as ImageIcon, FileSpreadsheet,
   AlertCircle, CheckCircle2, XCircle, ChevronRight, TrendingUp, DollarSign,
   MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
+  Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
+  Mail, CalendarClock, Dna,
 } from "lucide-react";
 
 // ===================== Types =====================
@@ -50,6 +52,12 @@ type ToolEvent = {
   input?: unknown;
   output?: unknown;
   status?: "running" | "done" | "error";
+  /** Custom widget renderer (industry-specific). Falls back to JSON view. */
+  widget?:
+    | { type: "dna_helix" }
+    | { type: "risk_gauge"; value: number; label?: string }
+    | { type: "insurance_pulse"; state: "pending" | "approved" | "denied" | "financing"; note?: string }
+    | { type: "pharmacy_options"; options: Array<{ kind: "brand" | "generic" | "covered"; name: string; price?: string; note?: string }> };
   /** Inline actions the user can take */
   actions?: Array<{
     id: string;
