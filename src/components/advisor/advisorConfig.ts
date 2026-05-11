@@ -65,7 +65,7 @@ export type AdvisorConfig = {
   ekgPulse?: boolean;
   trustScore?: { label: string; value: string; sub?: string };
   sherlockShieldGlow?: boolean;
-  minimizedOrb?: "mint-breath";
+  minimizedOrb?: "mint-breath" | "lime-breath";
   /** Bottom SLA timeline */
   resolutionPulse?: boolean;
   /** Optional radar micro-map (airlines/railways/logistics) */
@@ -176,14 +176,54 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     name: "Rex",
     designation:
       "AI Advisor & AI Fleet Revenue & Operations Director — Car Rental Division",
-    vibe: "Confident, road-ready. Direct and gets things done fast.",
-    accent: "from-orange-400/30 via-zinc-400/15 to-transparent",
-    auraHsl: "20 91% 55%",
-    placeholder: "What's the next move for the fleet, Boss?",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
-    channels: [],
+    vibe: "Confident, direct, fast-moving, commercially aggressive, and operationally precise.",
+    accent: "from-[#060606]/80 via-[#32ff00]/15 to-[#a1a1aa]/10",
+    auraHsl: "105 100% 50%",
+    mono: true,
+    shortTitle: "Fleet Revenue Director",
+    toolBadgeStyle: "uppercase-code",
+    resolutionPulse: true,
+    minimizedOrb: "lime-breath",
+    placeholder: "Fleet telemetry online. What should we optimize today?",
+    starterPrompts: [
+      "Identify idle vehicles reducing revenue.",
+      "Optimize fleet pricing by location.",
+      "Reduce fuel and maintenance costs.",
+      "Improve utilization across the fleet.",
+      "Predict maintenance risks.",
+      "Analyze customer demand trends.",
+      "Draft a rental upsell campaign.",
+      "Recover underperforming assets.",
+    ],
+    toolPanels: [
+      { id: "fleet_util", label: "Fleet Utilization Analysis", icon: "Gauge", prompt: "Analyze current fleet utilization by vehicle and flag idle or underused assets across all locations." },
+      { id: "pricing_opt", label: "Dynamic Pricing Optimization", icon: "DollarSign", prompt: "Recommend dynamic pricing adjustments by location and demand to maximize fleet revenue." },
+      { id: "idle_recovery", label: "Idle Asset Recovery", icon: "Zap", prompt: "Identify idle vehicles and generate a recovery plan to monetize them within 48 hours." },
+      { id: "maintenance_pred", label: "Maintenance Prediction", icon: "Wrench", prompt: "Predict maintenance risks across the fleet and flag vehicles needing immediate attention." },
+      { id: "demand_forecast", label: "Demand Forecasting", icon: "LineChart", prompt: "Forecast customer demand by location and vehicle class for the next 14 days." },
+      { id: "damage_risk", label: "Damage Risk Analysis", icon: "Shield", prompt: "Run a damage risk analysis and surface vehicles with historically high damage or insurance claims." },
+      { id: "upsell_campaign", label: "Upsell Campaign Generator", icon: "Gift", prompt: "Generate a rental upsell campaign targeting current and upcoming bookings." },
+      { id: "customer_comm", label: "Customer Communication", icon: "MessageSquare", prompt: "Draft customer-facing communications for delay notifications, pickup reminders and return confirmations." },
+    ],
+    metricBadges: [
+      { id: "fleet_util", label: "Fleet Utilization", endpoint: "/metrics/car_rental/fleet_utilization", unit: "%" },
+      { id: "idle_vehicles", label: "Idle Vehicles", endpoint: "/metrics/car_rental/idle_vehicles" },
+      { id: "rev_per_vehicle", label: "Rev/Vehicle", endpoint: "/metrics/car_rental/revenue_per_vehicle" },
+      { id: "adr", label: "ADR", endpoint: "/metrics/car_rental/average_daily_rate" },
+      { id: "maint_risk", label: "Maint Risk", endpoint: "/metrics/car_rental/maintenance_risk" },
+      { id: "fuel_eff", label: "Fuel Eff", endpoint: "/metrics/car_rental/fuel_efficiency" },
+      { id: "damage_rate", label: "Damage %", endpoint: "/metrics/car_rental/damage_rate", unit: "%" },
+      { id: "booking_conv", label: "Booking Conv", endpoint: "/metrics/car_rental/booking_conversion", unit: "%" },
+    ],
+    channels: [
+      { id: "gps", label: "GPS", icon: "Navigation" },
+      { id: "telematics", label: "Telematics", icon: "Activity" },
+      { id: "pricing", label: "Pricing", icon: "DollarSign" },
+      { id: "maintenance", label: "Maintenance", icon: "Wrench" },
+      { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
+      { id: "email", label: "Email", icon: "Mail" },
+      { id: "payments", label: "Payments", icon: "CreditCard" },
+    ],
   },
   healthcare: {
     industry: "healthcare",
