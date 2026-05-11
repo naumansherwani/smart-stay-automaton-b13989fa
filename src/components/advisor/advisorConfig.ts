@@ -61,6 +61,13 @@ export type AdvisorConfig = {
   sovereignBadge?: boolean;
   /** Tool event label rendering style. Default = icon + sentence. */
   toolBadgeStyle?: "uppercase-code";
+  /** Health-cockpit features (Dr. Lyra) */
+  ekgPulse?: boolean;
+  trustScore?: { label: string; value: string; sub?: string };
+  sherlockShieldGlow?: boolean;
+  minimizedOrb?: "mint-breath";
+  /** Bottom SLA timeline */
+  resolutionPulse?: boolean;
   /** Optional radar micro-map (airlines/railways/logistics) */
   radar?: {
     endpoint: string; // Replit GET → { dots:[{id,x,y,status,label?}], weather?:[{x,y,kind}] }
@@ -167,15 +174,56 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     industry: "healthcare",
     name: "Dr. Lyra",
     designation:
-      "AI Advisor & AI Clinical Operations & Patient Experience Director — Healthcare & Clinics Division",
+      "Clinical Operations & Patient Experience Director — Healthcare & Clinics",
     vibe: "Caring, professional. Patient-first approach, precise.",
-    accent: "from-emerald-400/30 via-cyan-300/15 to-transparent",
-    auraHsl: "158 64% 52%",
-    placeholder: "How may I support your clinic today, Doctor?",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
-    channels: [],
+    accent: "from-[#a7f3d0]/30 via-[#ffffff]/20 to-[#cbd5e1]/15",
+    auraHsl: "158 70% 60%",
+    shortTitle: "Clinical Operations Director",
+    placeholder: "System Vitals: Stable. How can I assist with patient care today?",
+    ekgPulse: true,
+    trustScore: { label: "Lyra Trust Score", value: "99.9%", sub: "1,000+ Cases Resolved" },
+    sherlockShieldGlow: true,
+    minimizedOrb: "mint-breath",
+    resolutionPulse: true,
+    starterPrompts: [
+      "Analyze this patient's risk profile.",
+      "Predict potential complications in the next 48 hours.",
+      "Verify insurance authorization.",
+      "Check for drug interaction risks.",
+      "Generate a treatment plan.",
+      "Optimize clinic revenue opportunities.",
+      "Draft patient follow-up instructions.",
+      "Review missed appointment patterns.",
+    ],
+    toolPanels: [
+      { id: "predictive_pathology", label: "Predictive Pathology", icon: "Activity", prompt: "Run a predictive pathology analysis for this patient based on latest vitals, labs and history." },
+      { id: "insurance_sniper", label: "Insurance Sniper", icon: "ShieldCheck", prompt: "Verify insurance authorization for the proposed treatment and surface any denial paths or financing options." },
+      { id: "biowearable_sync", label: "Bio-Wearable Sync", icon: "Heart", prompt: "Sync the latest bio-wearable data (heart rate, glucose, SpO2, sleep) and flag anomalies." },
+      { id: "drug_interaction", label: "Drug Interaction Shield", icon: "Pill", prompt: "Audit the current medication list for interactions, contraindications and dosing risks." },
+      { id: "triage", label: "Autonomous Triage", icon: "AlertTriangle", prompt: "Initiate an urgent-care triage protocol — stream vitals and notify the relevant specialist." },
+      { id: "appointment_opt", label: "Appointment Optimization", icon: "CalendarClock", prompt: "Optimize today's schedule to reduce wait time and no-shows." },
+      { id: "claims", label: "Claims Acceleration", icon: "FileText", prompt: "Accelerate pending claims and flag any rejection risks for the next 7 days." },
+      { id: "patient_comm", label: "Patient Communication", icon: "MessageSquare", prompt: "Draft personalised follow-up instructions for today's discharged patients." },
+    ],
+    metricBadges: [
+      { id: "risk_score", label: "Risk Score", endpoint: "/metrics/healthcare/patient_risk_score" },
+      { id: "appt_util", label: "Appt Utilization", endpoint: "/metrics/healthcare/appointment_utilization", unit: "%" },
+      { id: "claim_approval", label: "Claim Approval", endpoint: "/metrics/healthcare/claim_approval_rate", unit: "%" },
+      { id: "no_show", label: "No-Show", endpoint: "/metrics/healthcare/no_show_rate", unit: "%" },
+      { id: "wait_time", label: "Avg Wait", endpoint: "/metrics/healthcare/average_wait_time", unit: "min" },
+      { id: "rev_per_patient", label: "Rev/Patient", endpoint: "/metrics/healthcare/revenue_per_patient" },
+      { id: "satisfaction", label: "Satisfaction", endpoint: "/metrics/healthcare/satisfaction_score" },
+      { id: "bed_occupancy", label: "Bed Occupancy", endpoint: "/metrics/healthcare/bed_occupancy", unit: "%" },
+    ],
+    channels: [
+      { id: "ehr", label: "EHR", icon: "FileText" },
+      { id: "insurance", label: "Insurance", icon: "ShieldCheck" },
+      { id: "lab", label: "Lab", icon: "FlaskConical" },
+      { id: "pharmacy", label: "Pharmacy", icon: "Pill" },
+      { id: "wearables", label: "Wearables", icon: "Watch" },
+      { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
+      { id: "email", label: "Email", icon: "Mail" },
+    ],
   },
   education: {
     industry: "education",
