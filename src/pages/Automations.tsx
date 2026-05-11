@@ -1,7 +1,9 @@
 import { Workflow, Construction } from "lucide-react";
+import AppLayout from "@/components/app/AppLayout";
 
 export default function Automations() {
   return (
+    <AppLayout>
     <div className="container max-w-6xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -14,5 +16,6 @@ export default function Automations() {
         <p className="text-sm text-muted-foreground">Workflow builder coming soon. Smart Pricing & AI Calendar are already running in the background.</p>
       </div>
     </div>
+    </AppLayout>
   );
 }
