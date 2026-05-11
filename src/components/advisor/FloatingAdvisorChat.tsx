@@ -957,6 +957,7 @@ function FloatingChatWindow(p: WindowProps) {
               {p.recording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </Button>
             <textarea
+              ref={composerRef}
               value={p.draft}
               onChange={(e) => p.onDraftChange(e.target.value)}
               onKeyDown={(e) => {
