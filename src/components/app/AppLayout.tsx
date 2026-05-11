@@ -14,6 +14,7 @@ import TrialBanner from "@/components/TrialBanner";
 import PublicView from "./PublicView";
 import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
+import PlanSwitcher, { PlanSwitcherBanner } from "./PlanSwitcher";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import { useWorkspaceTheme } from "@/hooks/useWorkspaceTheme";
@@ -149,6 +150,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
+          <PlanSwitcher />
           <Button
             variant="ghost"
             size="sm"
@@ -166,6 +168,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </div>
       </header>
 
+      <PlanSwitcherBanner />
       <TrialBanner />
 
       <main className="flex-1">
