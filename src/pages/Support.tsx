@@ -1,7 +1,9 @@
 import { LifeBuoy } from "lucide-react";
+import AppLayout from "@/components/app/AppLayout";
 
 export default function Support() {
   return (
+    <AppLayout>
     <div className="container max-w-3xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -14,5 +16,6 @@ export default function Support() {
         <p className="text-xs text-muted-foreground">Critical incidents → AI Resolution Hub tracks live progress with countdown and revenue protection.</p>
       </div>
     </div>
+    </AppLayout>
   );
 }
