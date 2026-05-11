@@ -829,7 +829,7 @@ function FloatingChatWindow(p: WindowProps) {
             <div className="flex items-center gap-3 ml-2 min-w-0 flex-1">
               <UserHalo
                 size={36}
-                industry={p.industry}
+                industry={p.industry as any}
                 pulse={p.sending ? "streaming" : "idle"}
               />
               <div className="min-w-0">
