@@ -122,6 +122,9 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     accent: "from-[#0a1628]/80 via-[#0ea5e9]/15 to-[#84cc16]/10",
     auraHsl: "190 95% 55%",
     mono: true,
+    shortTitle: "Flight Operations Director",
+    toolBadgeStyle: "uppercase-code",
+    resolutionPulse: true,
     placeholder: "Awaiting flight parameters, Commander.",
     starterPrompts: [
       "Improve load factor on underperforming routes",
@@ -129,6 +132,9 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       "Optimize ancillary revenue",
       "Analyze route profitability",
       "Draft disruption communication",
+      "Review compliance risks",
+      "Improve on-time performance",
+      "Optimize aircraft utilization",
     ],
     toolPanels: [
       { id: "route_profit", label: "Route Profitability", icon: "TrendingUp", prompt: "Analyze route profitability for the past 30 days and rank top/bottom 5 routes." },
@@ -150,7 +156,16 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       { id: "cancel_rate", label: "Cancel %", endpoint: "/metrics/airlines/cancellation_rate", unit: "%" },
       { id: "ancillary_rev", label: "Ancillary", endpoint: "/metrics/airlines/ancillary_revenue", unit: "" },
     ],
-    channels: [],
+    channels: [
+      { id: "iata", label: "IATA", icon: "Plane" },
+      { id: "faa", label: "FAA", icon: "ShieldCheck" },
+      { id: "easa", label: "EASA", icon: "Shield" },
+      { id: "amadeus", label: "Amadeus", icon: "Globe" },
+      { id: "sabre", label: "Sabre", icon: "Ticket" },
+      { id: "flightradar", label: "FlightRadar", icon: "Radar" },
+      { id: "weather", label: "Weather", icon: "CloudSun" },
+      { id: "email", label: "Email", icon: "Mail" },
+    ],
     radar: {
       endpoint: "/metrics/airlines/radar",
       title: "Live Network Radar",

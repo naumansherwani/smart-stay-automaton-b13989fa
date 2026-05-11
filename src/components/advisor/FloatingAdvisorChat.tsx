@@ -27,7 +27,8 @@ import {
   AlertCircle, CheckCircle2, XCircle, ChevronRight, TrendingUp, DollarSign,
   MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
-  Mail, CalendarClock, Dna,
+  Mail, CalendarClock, Dna, Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
+  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
 } from "lucide-react";
 
 // ===================== Types =====================
@@ -109,6 +110,8 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp, DollarSign, MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench,
   FileText, ImageIcon, FileSpreadsheet,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle, Mail, CalendarClock, Dna,
+  Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
+  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
 };
 
 // ===================== Provider =====================
