@@ -767,13 +767,30 @@ function FloatingChatWindow(p: WindowProps) {
             </div>
           )}
 
+          {/* EKG pulse + Trust Score (healthcare) */}
+          {(p.advisor.ekgPulse || p.advisor.trustScore) && (
+            <div className="mt-3 flex items-center gap-3">
+              {p.advisor.ekgPulse && <EkgPulse active={p.sending} />}
+              {p.advisor.trustScore && (
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#a7f3d0]/20 to-[#ffffff]/10 border border-[#6ee7b7]/30 text-[11px]">
+                  <Heart className="w-3 h-3 text-emerald-400" />
+                  <span className="text-muted-foreground">{p.advisor.trustScore.label}:</span>
+                  <span className="font-bold text-foreground">{p.advisor.trustScore.value}</span>
+                  {p.advisor.trustScore.sub && (
+                    <span className="text-muted-foreground/80 hidden sm:inline">· {p.advisor.trustScore.sub}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Radar micro-map (industry-specific, e.g. airlines) */}
           {p.advisor.radar && (
             <RadarMicroMap endpoint={p.advisor.radar.endpoint} title={p.advisor.radar.title} auraHsl={p.advisor.auraHsl} />
           )}
 
           {/* Sherlock shadow status line */}
-          <SherlockLine state={p.sherlock} />
+          <SherlockLine state={p.sherlock} shieldGlow={p.advisor.sherlockShieldGlow} />
         </div>
 
         {/* Messages */}
@@ -821,6 +838,11 @@ function FloatingChatWindow(p: WindowProps) {
               <ToolPanelButton key={t.id} panel={t} onClick={() => p.onUseStarter(t.prompt)} />
             ))}
           </div>
+        )}
+
+        {/* Resolution Pulse (SLA timeline) */}
+        {p.advisor.resolutionPulse && (
+          <ResolutionPulse sending={p.sending} sherlock={p.sherlock} />
         )}
 
         {/* Attachment chips */}
