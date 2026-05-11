@@ -653,6 +653,7 @@ type WindowProps = {
 
 function FloatingChatWindow(p: WindowProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const composerRef = useRef<HTMLTextAreaElement | null>(null);
   const [dragOver, setDragOver] = useState(false);
   // User-resizable width (persisted). Active in non-maximized state.
   const [userWidth, setUserWidth] = useState<number | null>(() => {
