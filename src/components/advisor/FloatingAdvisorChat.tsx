@@ -21,6 +21,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import ChatSpeakerButton from "@/components/chat/ChatSpeakerButton";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Send, Minus, Maximize2, Minimize2, X, Sparkles, Loader2, Square, RefreshCcw,
   Copy, Pencil, Paperclip, Mic, MicOff, FileText, Image as ImageIcon, FileSpreadsheet,
