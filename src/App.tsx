@@ -12,6 +12,7 @@ import { backendFetch, syncManifest, notifyChangelog } from "@/lib/backend";
 import { connectBrainStream } from "@/lib/brain-sync";
 import AiLimitModal from "@/components/AiLimitModal";
 import SurfaceGuard from "@/components/SurfaceGuard";
+import { FloatingAdvisorChatProvider } from "@/components/advisor/FloatingAdvisorChat";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -343,6 +344,7 @@ const App = () => {
           <BrainBridge />
           <AiLimitModal />
           <SurfaceGuard />
+          <FloatingAdvisorChatProvider>
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -390,6 +392,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          </FloatingAdvisorChatProvider>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
