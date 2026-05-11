@@ -704,8 +704,8 @@ function FloatingChatWindow(p: WindowProps) {
           "pointer-events-auto absolute bg-card/95 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-2xl flex flex-col overflow-hidden",
           "transition-all duration-200",
           maximized
-            ? "inset-4 md:inset-6"
-            : "bottom-5 right-5 w-[min(960px,calc(100vw-2.5rem))] h-[min(720px,calc(100vh-2.5rem))]",
+            ? "top-4 bottom-4 right-4 md:top-6 md:bottom-6 md:right-6 w-[min(900px,calc(100vw-5rem))]"
+            : "bottom-5 right-5 w-[min(440px,calc(100vw-2.5rem))] h-[min(680px,calc(100vh-2.5rem))]",
           p.sending && "advisor-aura-anim",
           dragOver && "ring-2 ring-primary/60",
           p.advisor.mono && "font-mono",
