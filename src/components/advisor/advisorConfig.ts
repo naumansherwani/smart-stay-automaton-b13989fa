@@ -14,6 +14,9 @@ export type ToolPanel = {
   label: string;
   icon: string; // lucide icon name
   prompt: string; // prefilled into the input draft
+  /** Optional grouping label for the Quick Actions sidebar. Items
+   *  without a category fall under "Quick Actions". */
+  category?: string;
 };
 
 export type MetricBadge = {
@@ -289,10 +292,47 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     accent: "from-indigo-400/30 via-violet-300/15 to-transparent",
     auraHsl: "239 84% 67%",
     placeholder: "What shall we work on today, Professor?",
-    starterPrompts: [],
-    toolPanels: [],
-    metricBadges: [],
-    channels: [],
+    starterPrompts: [
+      "Analyze this term's student performance and flag who needs help.",
+      "Show my enrollment funnel and where prospects are dropping off.",
+      "Identify students at high dropout risk this month.",
+      "Review teacher workload distribution and flag overload.",
+      "Plan the next two weeks of assignments balanced across subjects.",
+      "Draft this week's parent update covering progress and attendance.",
+      "Suggest optimal batch sizes and schedules for next intake.",
+      "Surface top and bottom performing instructors by outcomes.",
+    ],
+    toolPanels: [
+      // Academics
+      { id: "edu_performance", category: "Academics", label: "Student Performance Review", icon: "LineChart", prompt: "Analyze this term's grades and flag students needing intervention with concrete next steps." },
+      { id: "edu_curriculum_gap", category: "Academics", label: "Curriculum Gap Analysis", icon: "FileText", prompt: "Review my curriculum coverage and highlight gaps before final exams, by subject and class." },
+      { id: "edu_assignment_plan", category: "Academics", label: "Assignment & Assessment Planner", icon: "CalendarClock", prompt: "Plan the next 2 weeks of assignments balanced across subjects and class workload." },
+      // Enrollment & Growth
+      { id: "edu_funnel", category: "Enrollment & Growth", label: "Lead → Enrollment Funnel", icon: "TrendingUp", prompt: "Show my enrollment funnel from inquiry to enrolled and where prospects are dropping off." },
+      { id: "edu_batch", category: "Enrollment & Growth", label: "Batch Capacity Optimization", icon: "Database", prompt: "Suggest optimal batch sizes, timings and instructor pairings for the next intake." },
+      { id: "edu_reenroll", category: "Enrollment & Growth", label: "Re-enrollment Outreach", icon: "MessageSquare", prompt: "Draft re-enrollment messages for students who haven't registered for next term, segmented by risk." },
+      // Attendance & Retention
+      { id: "edu_dropout", category: "Attendance & Retention", label: "Dropout Risk Scan", icon: "AlertTriangle", prompt: "Identify students at high dropout risk and recommend personalised retention actions." },
+      { id: "edu_attendance", category: "Attendance & Retention", label: "Attendance Pattern Analysis", icon: "Activity", prompt: "Analyze attendance patterns over the last month and flag chronic absentees with suggested follow-ups." },
+      // Faculty & Operations
+      { id: "edu_teacher_load", category: "Faculty & Operations", label: "Teacher Workload Review", icon: "User", prompt: "Review teacher workload distribution and flag overload, underload and rebalancing opportunities." },
+      { id: "edu_instructor_perf", category: "Faculty & Operations", label: "Instructor Performance", icon: "Star", prompt: "Surface top and bottom performing instructors by student outcomes, retention and feedback." },
+      // Communication
+      { id: "edu_parent_comm", category: "Communication", label: "Parent Communication", icon: "Mail", prompt: "Draft this week's parent update covering progress, attendance and upcoming events." },
+      { id: "edu_student_comm", category: "Communication", label: "Student Announcement", icon: "MessageCircle", prompt: "Draft a clear announcement for the upcoming exam schedule change, friendly and concise." },
+    ],
+    metricBadges: [
+      { id: "active_students", label: "Active Students", endpoint: "/metrics/education/active_students", unit: "" },
+      { id: "attendance_rate", label: "Attendance", endpoint: "/metrics/education/attendance_rate", unit: "%" },
+      { id: "dropout_risk", label: "Dropout Risk", endpoint: "/metrics/education/dropout_risk", unit: "%" },
+      { id: "enrollment_pipeline", label: "Enrollment Pipeline", endpoint: "/metrics/education/enrollment_pipeline", unit: "" },
+    ],
+    channels: [
+      { id: "email", label: "Email", icon: "Mail" },
+      { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
+      { id: "sms", label: "SMS", icon: "MessageSquare" },
+      { id: "parent_portal", label: "Parent Portal", icon: "ShieldCheck" },
+    ],
   },
   logistics: {
     industry: "logistics",

@@ -21,6 +21,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import ChatSpeakerButton from "@/components/chat/ChatSpeakerButton";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Send, Minus, Maximize2, Minimize2, X, Sparkles, Loader2, Square, RefreshCcw,
   Copy, Pencil, Paperclip, Mic, MicOff, FileText, Image as ImageIcon, FileSpreadsheet,
@@ -28,8 +29,8 @@ import {
   MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle,
   Mail, CalendarClock, Dna, Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
-  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
-  Car, Gauge, Zap, CreditCard,
+  Map as MapIcon, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Car, Gauge, Zap, CreditCard, ChevronLeft, Search, PanelLeft,
 } from "lucide-react";
 
 // ===================== Types =====================
@@ -112,7 +113,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText, ImageIcon, FileSpreadsheet,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle, Mail, CalendarClock, Dna,
   Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
-  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Map: MapIcon, Truck, PackageCheck, Warehouse, User, Navigation, Database,
   Car, Gauge, Zap, CreditCard,
 };
 
@@ -653,6 +654,7 @@ type WindowProps = {
 
 function FloatingChatWindow(p: WindowProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const composerRef = useRef<HTMLTextAreaElement | null>(null);
   const [dragOver, setDragOver] = useState(false);
   // User-resizable width (persisted). Active in non-maximized state.
   const [userWidth, setUserWidth] = useState<number | null>(() => {
@@ -799,13 +801,8 @@ function FloatingChatWindow(p: WindowProps) {
             <div
               onMouseDown={onResizeStart("w")}
               title="Drag to resize width"
-              className="absolute left-0 top-0 bottom-0 w-1.5 cursor-ew-resize z-20 group/resize hover:bg-primary/20"
-            >
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-1.5 py-2 rounded-md bg-card/90 border border-border/60 opacity-0 group-hover/resize:opacity-100 transition pointer-events-none text-[10px] text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                <ChevronRight className="w-3 h-3 rotate-180" />
-                <ChevronRight className="w-3 h-3" />
-              </div>
-            </div>
+              className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize z-20 hover:bg-primary/15"
+            />
             {/* Top edge: vertical resize */}
             <div
               onMouseDown={onResizeStart("h")}
@@ -871,6 +868,18 @@ function FloatingChatWindow(p: WindowProps) {
           />
         </div>
 
+        {/* Body: Sidebar + Chat column */}
+        <div className="flex-1 flex min-h-0">
+          <QuickActionsSidebar
+            industry={p.industry}
+            advisor={p.advisor}
+            onPick={(prompt) => {
+              p.onUseStarter(prompt);
+              // Focus composer after inserting
+              requestAnimationFrame(() => composerRef.current?.focus());
+            }}
+          />
+          <div className="flex-1 flex flex-col min-w-0">
         {/* Messages */}
         <div
           ref={p.scrollRef}
@@ -908,15 +917,6 @@ function FloatingChatWindow(p: WindowProps) {
             />
           ))}
         </div>
-
-        {/* Tool panels (industry-specific) */}
-        {p.advisor.toolPanels.length > 0 && (
-          <div className="border-t border-border/40 px-3 py-2 flex gap-1.5 overflow-x-auto bg-background/30">
-            {p.advisor.toolPanels.map((t) => (
-              <ToolPanelButton key={t.id} panel={t} onClick={() => p.onUseStarter(t.prompt)} />
-            ))}
-          </div>
-        )}
 
         {/* Resolution Pulse (SLA timeline) */}
         {p.advisor.resolutionPulse && (
@@ -961,6 +961,7 @@ function FloatingChatWindow(p: WindowProps) {
               {p.recording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </Button>
             <textarea
+              ref={composerRef}
               value={p.draft}
               onChange={(e) => p.onDraftChange(e.target.value)}
               onKeyDown={(e) => {
@@ -979,6 +980,8 @@ function FloatingChatWindow(p: WindowProps) {
                 <Send className="w-4 h-4" />
               </Button>
             )}
+          </div>
+        </div>
           </div>
         </div>
       </div>
@@ -1058,6 +1061,346 @@ function MetricBadgeView({ badge }: { badge: MetricBadge }) {
         <span className={cn("font-medium", delta >= 0 ? "text-emerald-500" : "text-red-500")}>
           {delta >= 0 ? "+" : ""}{delta}%
         </span>
+      )}
+    </div>
+  );
+}
+
+// ===================== Quick Actions Sidebar =====================
+// Engine-level. Reads from advisor.toolPanels (single source). Groups by
+// optional `category`. Default collapsed icon-rail (56px). Manual chevron
+// toggle only — no hover auto-expand. Favorites + Recents per industry.
+// Click = insert into composer (parent focuses textarea).
+function QuickActionsSidebar({
+  industry,
+  advisor,
+  onPick,
+}: {
+  industry: string;
+  advisor: ReturnType<typeof getAdvisor>;
+  onPick: (prompt: string) => void;
+}) {
+  const isMobile = useIsMobile();
+  const expandKey = `advisor-sidebar-expanded-${industry}`;
+  const favKey = `advisor-sidebar-fav-${industry}`;
+  const recentKey = `advisor-sidebar-recent-${industry}`;
+
+  const [expanded, setExpanded] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(expandKey) === "1";
+  });
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem(favKey) || "[]"); } catch { return []; }
+  });
+  const [recents, setRecents] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try { return JSON.parse(localStorage.getItem(recentKey) || "[]"); } catch { return []; }
+  });
+  const [query, setQuery] = useState("");
+
+  // Reset state when industry changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setExpanded(localStorage.getItem(expandKey) === "1");
+    try { setFavorites(JSON.parse(localStorage.getItem(favKey) || "[]")); } catch { setFavorites([]); }
+    try { setRecents(JSON.parse(localStorage.getItem(recentKey) || "[]")); } catch { setRecents([]); }
+    setMobileOpen(false);
+    setQuery("");
+  }, [industry, expandKey, favKey, recentKey]);
+
+  const toggle = () => {
+    setExpanded((v) => {
+      const next = !v;
+      try { localStorage.setItem(expandKey, next ? "1" : "0"); } catch {}
+      return next;
+    });
+  };
+
+  const toggleFav = (id: string) => {
+    setFavorites((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(favKey, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const handlePick = (panel: ToolPanel) => {
+    onPick(panel.prompt);
+    setRecents((prev) => {
+      const next = [panel.id, ...prev.filter((x) => x !== panel.id)].slice(0, 5);
+      try { localStorage.setItem(recentKey, JSON.stringify(next)); } catch {}
+      return next;
+    });
+    if (isMobile) setMobileOpen(false);
+  };
+
+  const panels = advisor.toolPanels;
+  if (!panels || panels.length === 0) return null;
+
+  // Build groups
+  const byId = new Map(panels.map((p) => [p.id, p] as const));
+  const filtered = query.trim()
+    ? panels.filter((p) => (p.label + " " + p.prompt + " " + (p.category || ""))
+        .toLowerCase().includes(query.trim().toLowerCase()))
+    : panels;
+
+  const groups = new Map<string, ToolPanel[]>();
+  for (const p of filtered) {
+    const cat = p.category || "Quick Actions";
+    if (!groups.has(cat)) groups.set(cat, []);
+    groups.get(cat)!.push(p);
+  }
+
+  const favItems = favorites.map((id) => byId.get(id)).filter(Boolean) as ToolPanel[];
+  const recentItems = recents.map((id) => byId.get(id)).filter(Boolean) as ToolPanel[];
+
+  const auraGlow = `hsl(${advisor.auraHsl})`;
+
+  // Mobile: render as drawer overlay + slim trigger rail
+  if (isMobile) {
+    return (
+      <>
+        <div className="w-10 shrink-0 border-r border-border/40 bg-card/60 backdrop-blur-xl flex flex-col items-center pt-2 gap-1">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="w-8 h-8 rounded-md flex items-center justify-center hover:bg-primary/15 text-muted-foreground hover:text-foreground transition"
+            title="Open quick actions"
+          >
+            <PanelLeft className="w-4 h-4" />
+          </button>
+        </div>
+        {mobileOpen && (
+          <div className="fixed inset-0 z-[110] flex" onClick={() => setMobileOpen(false)}>
+            <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-[80%] max-w-[280px] h-full bg-card/95 backdrop-blur-2xl border-r border-border/60 flex flex-col animate-in slide-in-from-left duration-200"
+            >
+              <SidebarContent
+                expanded={true}
+                onToggle={() => setMobileOpen(false)}
+                advisor={advisor}
+                groups={groups}
+                favItems={favItems}
+                recentItems={recentItems}
+                favorites={favorites}
+                onToggleFav={toggleFav}
+                onPick={handlePick}
+                query={query}
+                setQuery={setQuery}
+                auraGlow={auraGlow}
+                isMobile
+              />
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "shrink-0 border-r border-border/40 bg-card/60 backdrop-blur-xl flex flex-col transition-[width] duration-200",
+        expanded ? "w-[240px]" : "w-[56px]",
+      )}
+    >
+      <SidebarContent
+        expanded={expanded}
+        onToggle={toggle}
+        advisor={advisor}
+        groups={groups}
+        favItems={favItems}
+        recentItems={recentItems}
+        favorites={favorites}
+        onToggleFav={toggleFav}
+        onPick={handlePick}
+        query={query}
+        setQuery={setQuery}
+        auraGlow={auraGlow}
+      />
+    </div>
+  );
+}
+
+function SidebarContent({
+  expanded,
+  onToggle,
+  advisor,
+  groups,
+  favItems,
+  recentItems,
+  favorites,
+  onToggleFav,
+  onPick,
+  query,
+  setQuery,
+  auraGlow,
+  isMobile = false,
+}: {
+  expanded: boolean;
+  onToggle: () => void;
+  advisor: ReturnType<typeof getAdvisor>;
+  groups: Map<string, ToolPanel[]>;
+  favItems: ToolPanel[];
+  recentItems: ToolPanel[];
+  favorites: string[];
+  onToggleFav: (id: string) => void;
+  onPick: (p: ToolPanel) => void;
+  query: string;
+  setQuery: (v: string) => void;
+  auraGlow: string;
+  isMobile?: boolean;
+}) {
+  return (
+    <>
+      {/* Header: toggle */}
+      <div className={cn(
+        "flex items-center border-b border-border/40 px-2 py-2 shrink-0",
+        expanded ? "justify-between" : "justify-center",
+      )}>
+        {expanded && (
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground pl-1">
+            Actions
+          </span>
+        )}
+        <button
+          onClick={onToggle}
+          title={isMobile ? "Close" : expanded ? "Collapse sidebar" : "Expand sidebar"}
+          className="w-7 h-7 rounded-md flex items-center justify-center hover:bg-primary/15 text-muted-foreground hover:text-foreground transition"
+        >
+          {isMobile ? <X className="w-4 h-4" /> : expanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+        </button>
+      </div>
+
+      {/* Search (only when expanded) */}
+      {expanded && (
+        <div className="px-2 py-2 border-b border-border/40 shrink-0">
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search actions…"
+              className="w-full h-8 pl-7 pr-2 rounded-md bg-background/60 border border-border/50 text-[11px] focus:outline-none focus:ring-1 focus:ring-primary/40"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto py-2 px-1.5">
+        {/* Favorites */}
+        {favItems.length > 0 && (
+          <SidebarGroup label="Starred" expanded={expanded}>
+            {favItems.map((p) => (
+              <SidebarItem
+                key={"fav-" + p.id}
+                panel={p}
+                expanded={expanded}
+                isFav={favorites.includes(p.id)}
+                onToggleFav={() => onToggleFav(p.id)}
+                onPick={() => onPick(p)}
+                auraGlow={auraGlow}
+              />
+            ))}
+          </SidebarGroup>
+        )}
+
+        {/* Recents */}
+        {recentItems.length > 0 && (
+          <SidebarGroup label="Recent" expanded={expanded}>
+            {recentItems.map((p) => (
+              <SidebarItem
+                key={"recent-" + p.id}
+                panel={p}
+                expanded={expanded}
+                isFav={favorites.includes(p.id)}
+                onToggleFav={() => onToggleFav(p.id)}
+                onPick={() => onPick(p)}
+                auraGlow={auraGlow}
+              />
+            ))}
+          </SidebarGroup>
+        )}
+
+        {/* Categories */}
+        {Array.from(groups.entries()).map(([cat, items]) => (
+          <SidebarGroup key={cat} label={cat} expanded={expanded}>
+            {items.map((p) => (
+              <SidebarItem
+                key={p.id}
+                panel={p}
+                expanded={expanded}
+                isFav={favorites.includes(p.id)}
+                onToggleFav={() => onToggleFav(p.id)}
+                onPick={() => onPick(p)}
+                auraGlow={auraGlow}
+              />
+            ))}
+          </SidebarGroup>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function SidebarGroup({ label, expanded, children }: { label: string; expanded: boolean; children: React.ReactNode }) {
+  return (
+    <div className="mb-2">
+      {expanded && (
+        <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70 px-2 pt-1.5 pb-1">
+          {label}
+        </div>
+      )}
+      <div className="flex flex-col gap-0.5">{children}</div>
+    </div>
+  );
+}
+
+function SidebarItem({
+  panel,
+  expanded,
+  isFav,
+  onToggleFav,
+  onPick,
+  auraGlow,
+}: {
+  panel: ToolPanel;
+  expanded: boolean;
+  isFav: boolean;
+  onToggleFav: () => void;
+  onPick: () => void;
+  auraGlow: string;
+}) {
+  const Icon = ICON_MAP[panel.icon] || Wrench;
+  return (
+    <div className="group/sb relative flex items-center">
+      <button
+        onClick={onPick}
+        title={expanded ? panel.prompt : panel.label}
+        className={cn(
+          "flex-1 flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition",
+          "hover:bg-primary/10 hover:shadow-[0_0_0_1px_var(--aura)] focus:outline-none focus:ring-1 focus:ring-primary/40",
+          !expanded && "justify-center px-0",
+        )}
+        style={{ ['--aura' as never]: auraGlow }}
+      >
+        <Icon className="w-4 h-4 text-primary shrink-0" />
+        {expanded && (
+          <span className="text-[11.5px] font-medium truncate">{panel.label}</span>
+        )}
+      </button>
+      {expanded && (
+        <button
+          onClick={onToggleFav}
+          title={isFav ? "Unstar" : "Star"}
+          className="opacity-0 group-hover/sb:opacity-100 focus:opacity-100 w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:text-amber-400 transition"
+        >
+          {isFav ? <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> : <Star className="w-3.5 h-3.5" />}
+        </button>
       )}
     </div>
   );
