@@ -43,3 +43,6 @@ verify_jwt = false
 
 [functions.founder-action-execute]
 verify_jwt = true
+
+[functions.owner-password-recovery]
+verify_jwt = false

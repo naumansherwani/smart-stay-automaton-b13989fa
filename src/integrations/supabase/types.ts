@@ -3054,6 +3054,7 @@ export type Database = {
           id: string
           industry: Database["public"]["Enums"]["industry_type"] | null
           phone: string | null
+          recovery_email: string | null
           social_links: Json | null
           updated_at: string
           user_id: string
@@ -3074,6 +3075,7 @@ export type Database = {
           id?: string
           industry?: Database["public"]["Enums"]["industry_type"] | null
           phone?: string | null
+          recovery_email?: string | null
           social_links?: Json | null
           updated_at?: string
           user_id: string
@@ -3094,6 +3096,7 @@ export type Database = {
           id?: string
           industry?: Database["public"]["Enums"]["industry_type"] | null
           phone?: string | null
+          recovery_email?: string | null
           social_links?: Json | null
           updated_at?: string
           user_id?: string
