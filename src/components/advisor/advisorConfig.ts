@@ -383,19 +383,19 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     ],
     toolPanels: [
       // Route Optimization
-      { id: "route_opt", category: "Route Optimization", label: "Route Optimization", icon: "Map", prompt: "Optimize today's delivery routes to minimize miles, fuel and SLA risk." },
+      { id: "route_opt", category: "Route Optimization", label: "🗺️ Route Optimization", icon: "Map", prompt: "Optimize today's delivery routes to minimize miles, fuel and SLA risk. Compare alternate routes, factor live traffic and weather, and surface SLA risk per stop." },
       // Fleet Operations
-      { id: "fleet_util", category: "Fleet Operations", label: "Fleet Utilization Analysis", icon: "Truck", prompt: "Analyze current fleet utilization and flag underused or overloaded vehicles." },
-      { id: "driver", category: "Fleet Operations", label: "Driver Productivity Analysis", icon: "User", prompt: "Analyze driver productivity and safety scores; rank top and bottom performers." },
+      { id: "fleet_util", category: "Fleet Operations", label: "🚚 Fleet Utilization Analysis", icon: "Truck", prompt: "Analyze current fleet utilization and flag underused, idle or overloaded vehicles across all depots." },
+      { id: "driver", category: "Fleet Operations", label: "🧑‍✈️ Driver Productivity Analysis", icon: "User", prompt: "Analyze driver productivity and safety scores; rank top and bottom performers and flag retraining candidates." },
       // Fuel & Cost Control
-      { id: "fuel", category: "Fuel & Cost Control", label: "Fuel Efficiency Insights", icon: "Fuel", prompt: "Show the top fuel-saving opportunities across the fleet for the last 30 days." },
+      { id: "fuel", category: "Fuel & Cost Control", label: "⛽ Fuel Efficiency Insights", icon: "Fuel", prompt: "Show the top fuel-saving opportunities across the fleet for the last 30 days, by route, driver and vehicle." },
       // Delivery Performance
-      { id: "delivery_perf", category: "Delivery Performance", label: "Delivery Performance Analysis", icon: "PackageCheck", prompt: "Break down on-time delivery performance by route, driver and customer." },
-      { id: "bottlenecks", category: "Delivery Performance", label: "Supply Chain Bottleneck Detection", icon: "AlertTriangle", prompt: "Detect current bottlenecks across pickup, line-haul, warehouse and last-mile." },
+      { id: "delivery_perf", category: "Delivery Performance", label: "📦 Delivery Performance Analysis", icon: "PackageCheck", prompt: "Break down on-time delivery performance by route, driver and customer; surface at-risk shipments today." },
+      { id: "bottlenecks", category: "Delivery Performance", label: "⚠️ Supply Chain Bottleneck Detection", icon: "AlertTriangle", prompt: "Detect current bottlenecks across pickup, line-haul, warehouse and last-mile, and recommend the top 3 unblocking actions." },
       // Warehouse
-      { id: "warehouse", category: "Warehouse", label: "Warehouse Throughput Review", icon: "Warehouse", prompt: "Review warehouse throughput and recommend the top 3 actions to lift it." },
+      { id: "warehouse", category: "Warehouse", label: "🏭 Warehouse Throughput Review", icon: "Warehouse", prompt: "Review warehouse throughput, dock utilization and dwell time; recommend the top 3 actions to lift throughput this week." },
       // Communication
-      { id: "customer_comm", category: "Communication", label: "Customer Delay Communication", icon: "MessageSquare", prompt: "Draft customer-facing delay notifications for at-risk shipments today." },
+      { id: "customer_comm", category: "Communication", label: "💬 Customer Delay Communication", icon: "MessageSquare", prompt: "Draft customer-facing delay notifications for at-risk shipments today, with revised ETAs and remediation options." },
     ],
     metricBadges: [
       { id: "otd", label: "On-Time Delivery", endpoint: "/metrics/logistics/on_time_delivery", unit: "%" },
@@ -413,6 +413,7 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
       { id: "tms", label: "TMS", icon: "Truck" },
       { id: "wms", label: "WMS", icon: "Warehouse" },
       { id: "erp", label: "ERP", icon: "Database" },
+      { id: "weather", label: "Weather", icon: "CloudSun" },
       { id: "whatsapp", label: "WhatsApp", icon: "MessageCircle" },
       { id: "email", label: "Email", icon: "Mail" },
     ],
