@@ -11,6 +11,8 @@ export interface Profile {
   user_id: string;
   display_name: string | null;
   avatar_url: string | null;
+  /** Private storage path inside `profile-avatars` bucket. Resolve via useAvatarSignedUrl. */
+  avatar_path: string | null;
   company_name: string | null;
   phone: string | null;
   industry: IndustryType;
@@ -52,6 +54,7 @@ export function useProfile() {
           user_id: user.id,
           display_name: displayName,
           avatar_url: avatarUrl,
+          avatar_path: (data as any)?.avatar_path ?? null,
           company_name: data?.company_name ?? null,
           phone: data?.phone ?? null,
           industry,
@@ -96,6 +99,7 @@ export function useProfile() {
             user_id: user.id,
             display_name: getUserDisplayName(user),
             avatar_url: getUserAvatarUrl(user),
+            avatar_path: null,
             company_name: null,
             phone: null,
             industry: "hospitality",
@@ -136,7 +140,7 @@ export function useProfile() {
     setProfile(prev => prev ? { ...prev, business_subtype: subtype } : null);
   };
 
-  const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string; avatar_url?: string }) => {
+  const updateProfile = async (updates: { display_name?: string; company_name?: string; phone?: string; avatar_url?: string; avatar_path?: string | null }) => {
     if (!user) return;
     await supabase
       .from("profiles")

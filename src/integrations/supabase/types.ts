@@ -3122,6 +3122,7 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          avatar_path: string | null
           avatar_url: string | null
           bio: string | null
           business_hours: Json | null
@@ -3143,6 +3144,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          avatar_path?: string | null
           avatar_url?: string | null
           bio?: string | null
           business_hours?: Json | null
@@ -3164,6 +3166,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          avatar_path?: string | null
           avatar_url?: string | null
           bio?: string | null
           business_hours?: Json | null

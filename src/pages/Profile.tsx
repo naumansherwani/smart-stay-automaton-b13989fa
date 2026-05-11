@@ -104,19 +104,20 @@ const Profile = () => {
 
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${user.id}/avatar.${ext}`;
+      // Upload to the PRIVATE `profile-avatars` bucket.
+      // Path convention: {user_id}/avatar.{ext} — RLS enforces ownership.
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const safeExt = ["jpg", "jpeg", "png", "webp"].includes(ext) ? ext : "jpg";
+      const path = `${user.id}/avatar.${safeExt}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, file, { upsert: true });
+        .from("profile-avatars")
+        .upload(path, file, { upsert: true, contentType: file.type });
 
       if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-      const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-
-      await updateProfile({ avatar_url: newUrl });
+      // Store only the storage PATH — surfaces resolve a short-lived signed URL.
+      await updateProfile({ avatar_path: path });
       toast.success("Profile photo updated!");
     } catch (err: any) {
       toast.error(err.message || "Failed to upload photo");

@@ -11,6 +11,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import UserHalo from "@/components/identity/UserHalo";
 import { useProfile } from "@/hooks/useProfile";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { replitStream, replitCall } from "@/lib/replitApi";
@@ -826,9 +827,11 @@ function FloatingChatWindow(p: WindowProps) {
               <button onClick={p.onMaximize} title={maximized ? "Restore" : "Maximize"} className="w-3 h-3 rounded-full bg-emerald-500 hover:brightness-110" />
             </div>
             <div className="flex items-center gap-3 ml-2 min-w-0 flex-1">
-              <div className="w-9 h-9 rounded-full bg-background/60 border border-primary/30 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-primary" />
-              </div>
+              <UserHalo
+                size={36}
+                industry={p.industry as any}
+                pulse={p.sending ? "streaming" : "idle"}
+              />
               <div className="min-w-0">
                 <p className="font-bold text-sm leading-tight truncate flex items-center gap-1.5">
                   <span>
