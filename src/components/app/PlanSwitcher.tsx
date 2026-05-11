@@ -41,11 +41,11 @@ export default function PlanSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={active ? "default" : "ghost"}
+          variant="ghost"
           size="sm"
           className={`gap-2 text-xs font-medium transition-all ${
             active
-              ? "bg-secondary text-[hsl(168_70%_45%)] hover:bg-secondary/80 border border-[hsl(168_70%_38%)]/40"
+              ? "bg-[hsl(168_70%_38%)]/15 text-[hsl(168_70%_45%)] border border-[hsl(168_70%_38%)]/40 hover:bg-[hsl(168_70%_38%)]/25 hover:text-white"
               : "hover:bg-primary/10"
           }`}
           title="Preview the app as a paying user (admin only)"
