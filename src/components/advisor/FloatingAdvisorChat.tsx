@@ -1248,3 +1248,158 @@ function RadarMicroMap({ endpoint, title, auraHsl }: { endpoint: string; title?:
     </div>
   );
 }
+
+// ===================== Healthcare cockpit components =====================
+
+function EkgPulse({ active }: { active: boolean }) {
+  const dur = active ? "1.2s" : "2.6s";
+  return (
+    <div className="flex-1 min-w-0 h-8 relative overflow-hidden rounded-md bg-gradient-to-r from-emerald-500/5 via-emerald-500/10 to-transparent border border-emerald-500/20">
+      <svg viewBox="0 0 200 40" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+        <defs>
+          <linearGradient id="ekgGrad" x1="0" x2="1">
+            <stop offset="0%" stopColor="#6ee7b7" stopOpacity="0" />
+            <stop offset="50%" stopColor="#34d399" stopOpacity="1" />
+            <stop offset="100%" stopColor="#6ee7b7" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0 20 L40 20 L48 20 L52 8 L58 32 L64 14 L70 26 L76 20 L120 20 L128 20 L132 4 L138 36 L144 20 L200 20"
+          fill="none"
+          stroke="url(#ekgGrad)"
+          strokeWidth="1.6"
+          style={{
+            filter: "drop-shadow(0 0 4px rgba(110,231,183,0.7))",
+            strokeDasharray: 400,
+            animation: `ekgSweep ${dur} linear infinite`,
+          }}
+        />
+      </svg>
+      <style>{`
+        @keyframes ekgSweep { 0% { stroke-dashoffset: 400; } 100% { stroke-dashoffset: 0; } }
+      `}</style>
+    </div>
+  );
+}
+
+function ResolutionPulse({ sending, sherlock }: { sending: boolean; sherlock: SherlockState }) {
+  // Stage derived from streaming time + sherlock state
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!sending) { setElapsed(0); return; }
+    const t = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(t);
+  }, [sending]);
+
+  const stages = [
+    { id: "analyzing", label: "AI Advisor Analyzing",   color: "bg-emerald-500" },
+    { id: "audit",     label: "Deep Audit by Sherlock", color: "bg-amber-400" },
+    { id: "finalize",  label: "Finalizing Resolution",  color: "bg-red-500" },
+    { id: "resolved",  label: "Resolved",               color: "bg-emerald-500" },
+    { id: "escalated", label: "Escalated to Sherlock",  color: "bg-red-500" },
+  ];
+
+  let activeId = "resolved";
+  if (sherlock === "alert") activeId = "escalated";
+  else if (sending) {
+    if (elapsed < 60) activeId = "analyzing";
+    else if (elapsed < 100) activeId = "audit";
+    else activeId = "finalize";
+  } else if (sherlock === "resolved") activeId = "resolved";
+
+  return (
+    <div className="border-t border-border/40 px-3 py-1.5 bg-background/30 flex items-center gap-1.5 overflow-x-auto">
+      {stages.map((s) => {
+        const isActive = s.id === activeId;
+        return (
+          <div
+            key={s.id}
+            className={cn(
+              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] whitespace-nowrap border",
+              isActive ? "border-foreground/30 bg-card/70" : "border-border/40 bg-background/40 opacity-50",
+            )}
+          >
+            <span className={cn("w-1.5 h-1.5 rounded-full", s.color, isActive && "animate-pulse")} />
+            <span className={isActive ? "text-foreground font-medium" : "text-muted-foreground"}>{s.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DnaHelixWidget() {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-emerald-500/20">
+      <div className="relative w-10 h-10">
+        <Dna className="w-10 h-10 text-emerald-400" style={{ animation: "helixSpin 2.4s linear infinite", filter: "drop-shadow(0 0 6px rgba(110,231,183,0.6))" }} />
+      </div>
+      <div className="text-[11px] text-muted-foreground">Bio-scanner running — analysing patient record…</div>
+      <style>{`@keyframes helixSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }`}</style>
+    </div>
+  );
+}
+
+function RiskGaugeWidget({ value, label }: { value: number; label?: string }) {
+  const v = Math.max(0, Math.min(100, value));
+  const color = v < 33 ? "#10b981" : v < 66 ? "#f59e0b" : "#ef4444";
+  const C = 2 * Math.PI * 28;
+  const off = C - (v / 100) * C;
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border/40">
+      <svg width="72" height="72" viewBox="0 0 72 72">
+        <circle cx="36" cy="36" r="28" stroke="hsl(var(--border))" strokeWidth="6" fill="none" />
+        <circle
+          cx="36" cy="36" r="28" stroke={color} strokeWidth="6" fill="none"
+          strokeLinecap="round"
+          strokeDasharray={C}
+          strokeDashoffset={off}
+          transform="rotate(-90 36 36)"
+          style={{ transition: "stroke-dashoffset 0.6s ease", filter: `drop-shadow(0 0 4px ${color}aa)` }}
+        />
+        <text x="36" y="40" textAnchor="middle" fontSize="14" fontWeight="700" fill="hsl(var(--foreground))">{v}</text>
+      </svg>
+      <div>
+        <div className="text-[11px] text-muted-foreground">{label || "Risk Score"}</div>
+        <div className="text-[10px] uppercase tracking-wider font-semibold" style={{ color }}>
+          {v < 33 ? "Low" : v < 66 ? "Moderate" : "High"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InsurancePulseWidget({ state, note }: { state: "pending" | "approved" | "denied" | "financing"; note?: string }) {
+  const cfg = {
+    pending:   { color: "text-amber-400",    bg: "border-amber-400/40 bg-amber-400/10",    label: "Pre-authorization in progress…", pulse: true },
+    approved:  { color: "text-emerald-500",  bg: "border-emerald-500/40 bg-emerald-500/10", label: "Approved",                       pulse: false },
+    denied:    { color: "text-red-500",      bg: "border-red-500/40 bg-red-500/10",         label: "Denied",                         pulse: false },
+    financing: { color: "text-sky-400",      bg: "border-sky-400/40 bg-sky-400/10",         label: "Financing options available",    pulse: false },
+  }[state];
+  return (
+    <div className={cn("flex items-center gap-2.5 p-2.5 rounded-lg border", cfg.bg)}>
+      <ShieldCheck className={cn("w-4 h-4", cfg.color, cfg.pulse && "animate-pulse")} />
+      <div className="flex-1 min-w-0">
+        <div className={cn("text-[11px] font-semibold uppercase tracking-wider", cfg.color)}>{cfg.label}</div>
+        {note && <div className="text-[10.5px] text-muted-foreground truncate">{note}</div>}
+      </div>
+    </div>
+  );
+}
+
+function PharmacyOptionsWidget({ options }: { options: Array<{ kind: "brand" | "generic" | "covered"; name: string; price?: string; note?: string }> }) {
+  const kindLabel = { brand: "Brand", generic: "Generic", covered: "Insurance-covered" };
+  const kindColor = { brand: "text-violet-400", generic: "text-sky-400", covered: "text-emerald-400" };
+  return (
+    <div className="grid gap-1.5 sm:grid-cols-3">
+      {options.map((o, i) => (
+        <div key={i} className="p-2 rounded-lg bg-background/50 border border-border/40">
+          <div className={cn("text-[9px] uppercase tracking-wider font-bold", kindColor[o.kind])}>{kindLabel[o.kind]}</div>
+          <div className="text-[12px] font-semibold flex items-center gap-1.5"><Pill className="w-3 h-3 text-emerald-400" />{o.name}</div>
+          {o.price && <div className="text-[10px] text-muted-foreground">{o.price}</div>}
+          {o.note && <div className="text-[10px] text-muted-foreground/80">{o.note}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
