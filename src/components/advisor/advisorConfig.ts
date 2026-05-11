@@ -55,6 +55,12 @@ export type AdvisorConfig = {
   channels: ChannelChip[];
   /** Use monospaced typography for an operational/cockpit feel */
   mono?: boolean;
+  /** Short title appended to the header (e.g. "Revenue Director") */
+  shortTitle?: string;
+  /** Render a gold "Sovereign" crown chip next to the advisor name */
+  sovereignBadge?: boolean;
+  /** Tool event label rendering style. Default = icon + sentence. */
+  toolBadgeStyle?: "uppercase-code";
   /** Optional radar micro-map (airlines/railways/logistics) */
   radar?: {
     endpoint: string; // Replit GET → { dots:[{id,x,y,status,label?}], weather?:[{x,y,kind}] }
@@ -69,8 +75,11 @@ export const ADVISORS: Record<IndustryType, AdvisorConfig> = {
     designation:
       "AI Advisor & Executive Revenue & Operations Director — Travel, Tourism & Hospitality Division",
     vibe: "Warm, welcoming host. Makes every guest feel valued.",
-    accent: "from-amber-400/30 via-rose-400/20 to-transparent",
-    auraHsl: "32 95% 60%",
+    accent: "from-[#f5d4a1]/35 via-[#f4c2d7]/25 to-[#fce7d4]/10",
+    auraHsl: "32 75% 68%",
+    shortTitle: "Revenue Director",
+    sovereignBadge: true,
+    toolBadgeStyle: "uppercase-code",
     placeholder: "How can I enhance your revenue today, Sir?",
     starterPrompts: [
       "What's my occupancy trend for the next 14 days?",

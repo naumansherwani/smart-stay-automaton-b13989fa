@@ -25,7 +25,7 @@ import {
   Send, Minus, Maximize2, Minimize2, X, Sparkles, Loader2, Square, RefreshCcw,
   Copy, Pencil, Paperclip, Mic, MicOff, FileText, Image as ImageIcon, FileSpreadsheet,
   AlertCircle, CheckCircle2, XCircle, ChevronRight, TrendingUp, DollarSign,
-  MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench,
+  MessageSquare, Star, AlertTriangle, LineChart, Gift, Wrench, Crown,
 } from "lucide-react";
 
 // ===================== Types =====================
@@ -701,7 +701,23 @@ function FloatingChatWindow(p: WindowProps) {
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-sm leading-tight truncate">{p.advisor.name}</p>
+                <p className="font-bold text-sm leading-tight truncate flex items-center gap-1.5">
+                  <span>
+                    {p.advisor.name}
+                    {p.advisor.shortTitle && (
+                      <span className="text-muted-foreground font-medium"> — {p.advisor.shortTitle}</span>
+                    )}
+                  </span>
+                  {p.advisor.sovereignBadge && (
+                    <span
+                      title="Sovereign"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-gradient-to-r from-[#f5d4a1] to-[#f4c2d7] text-amber-900 shadow-[0_0_10px_rgba(245,212,161,0.55)]"
+                    >
+                      <Crown className="w-2.5 h-2.5" />
+                      Sovereign
+                    </span>
+                  )}
+                </p>
                 <p className="text-[11px] text-muted-foreground line-clamp-1">{p.advisor.designation}</p>
               </div>
             </div>
@@ -759,6 +775,7 @@ function FloatingChatWindow(p: WindowProps) {
               key={m.id}
               message={m}
               advisorName={p.advisor.name}
+              toolBadgeStyle={p.advisor.toolBadgeStyle}
               isLastAssistant={m.role === "assistant" && i === p.messages.length - 1 && !p.sending}
               canEditLastUser={m.role === "user" && i === p.messages.length - 2 && !p.sending}
               onRegenerate={p.onRegenerate}
@@ -962,6 +979,7 @@ function AttachmentChip({ att, onRemove }: { att: Attachment; onRemove: () => vo
 function MessageBubble(props: {
   message: Message;
   advisorName: string;
+  toolBadgeStyle?: "uppercase-code";
   isLastAssistant: boolean;
   canEditLastUser: boolean;
   onRegenerate: () => void;
@@ -1012,7 +1030,7 @@ function MessageBubble(props: {
           <div className="mb-2">
             <Accordion type="multiple" className="space-y-1">
               {m.tool_events.map((ev) => (
-                <ToolEventView key={ev.id} event={ev} onAction={(aid) => props.onToolAction(ev, aid)} />
+                <ToolEventView key={ev.id} event={ev} badgeStyle={props.toolBadgeStyle} onAction={(aid) => props.onToolAction(ev, aid)} />
               ))}
             </Accordion>
           </div>
@@ -1046,17 +1064,24 @@ function MessageBubble(props: {
   );
 }
 
-function ToolEventView({ event, onAction }: { event: ToolEvent; onAction: (actionId: string) => void }) {
+function ToolEventView({ event, badgeStyle, onAction }: { event: ToolEvent; badgeStyle?: "uppercase-code"; onAction: (actionId: string) => void }) {
   const statusIcon =
     event.status === "running" ? <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" /> :
     event.status === "error"   ? <XCircle className="w-3.5 h-3.5 text-red-500" /> :
                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />;
+  const codeLabel = `[${event.label.toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_|_$/g, "")}]`;
   return (
     <AccordionItem value={event.id} className="border border-border/40 rounded-lg px-2.5 bg-background/40">
       <AccordionTrigger className="py-1.5 hover:no-underline">
         <div className="flex items-center gap-2 text-[12px] font-medium text-left">
           {statusIcon}
-          <span>{event.label}</span>
+          {badgeStyle === "uppercase-code" ? (
+            <span className="font-mono text-[10.5px] tracking-wider px-1.5 py-0.5 rounded bg-gradient-to-r from-[#f5d4a1]/25 to-[#f4c2d7]/25 border border-[#f5d4a1]/40 text-amber-200">
+              {codeLabel}
+            </span>
+          ) : (
+            <span>{event.label}</span>
+          )}
         </div>
       </AccordionTrigger>
       <AccordionContent className="pb-2">
