@@ -325,3 +325,453 @@ html {
 @media (max-width: 768px) {
   .founder-os .founder-sidebar { transform: translateX(-100%); }
 }
+
+/* ============================================================
+   WORKSPACE INDUSTRY THEMES
+   Scoped via [data-industry="X"] on <html>. Applied only on
+   authenticated app surfaces (AppLayout). Landing/auth/marketing
+   pages keep the default brand teal because the attribute is
+   cleared on unmount. Each block defines LIGHT defaults;
+   the corresponding html.dark[data-industry="X"] block overrides
+   for dark mode. No industry colors bleed between workspaces.
+   ============================================================ */
+
+/* -------- HOSPITALITY (Aria · Luxury Concierge — Gold + Rose) -------- */
+[data-industry="hospitality"] {
+  --background: 36 36% 96%;
+  --foreground: 27 30% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 27 30% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 27 30% 13%;
+  --primary: 46 65% 52%;
+  --primary-foreground: 27 40% 12%;
+  --secondary: 0 38% 86%;
+  --secondary-foreground: 27 30% 13%;
+  --muted: 36 30% 92%;
+  --muted-foreground: 30 11% 43%;
+  --accent: 0 38% 86%;
+  --accent-foreground: 27 30% 13%;
+  --border: 36 20% 86%;
+  --input: 36 20% 86%;
+  --ring: 46 65% 52%;
+  --sidebar-background: 36 36% 96%;
+  --sidebar-foreground: 27 30% 13%;
+  --sidebar-primary: 46 65% 52%;
+  --sidebar-primary-foreground: 27 40% 12%;
+  --sidebar-accent: 0 38% 86%;
+  --sidebar-accent-foreground: 27 30% 13%;
+  --sidebar-border: 36 20% 86%;
+  --sidebar-ring: 46 65% 52%;
+}
+html.dark[data-industry="hospitality"] {
+  --background: 220 16% 7%;
+  --foreground: 45 100% 99%;
+  --card: 220 14% 12%;
+  --card-foreground: 45 100% 99%;
+  --popover: 220 14% 12%;
+  --popover-foreground: 45 100% 99%;
+  --primary: 46 65% 52%;
+  --primary-foreground: 220 16% 7%;
+  --secondary: 0 65% 86%;
+  --secondary-foreground: 220 16% 7%;
+  --muted: 220 12% 16%;
+  --muted-foreground: 39 12% 75%;
+  --accent: 0 65% 86%;
+  --accent-foreground: 220 16% 7%;
+  --border: 220 12% 20%;
+  --input: 220 12% 20%;
+  --ring: 46 65% 52%;
+  --sidebar-background: 220 14% 10%;
+  --sidebar-foreground: 45 100% 99%;
+  --sidebar-primary: 46 65% 52%;
+  --sidebar-primary-foreground: 220 16% 7%;
+  --sidebar-accent: 0 65% 86%;
+  --sidebar-accent-foreground: 220 16% 7%;
+  --sidebar-border: 220 12% 20%;
+  --sidebar-ring: 46 65% 52%;
+}
+
+/* -------- AIRLINES (Orion · Sky Command — Sky Blue + Aviation Gold) -------- */
+[data-industry="airlines"] {
+  --background: 213 100% 98%;
+  --foreground: 218 100% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 218 100% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 218 100% 14%;
+  --primary: 205 100% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 45 100% 43%;
+  --secondary-foreground: 218 100% 14%;
+  --muted: 213 60% 94%;
+  --muted-foreground: 214 18% 45%;
+  --accent: 45 100% 43%;
+  --accent-foreground: 218 100% 14%;
+  --border: 213 40% 88%;
+  --input: 213 40% 88%;
+  --ring: 205 100% 40%;
+  --sidebar-background: 213 100% 98%;
+  --sidebar-foreground: 218 100% 14%;
+  --sidebar-primary: 205 100% 40%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 45 100% 43%;
+  --sidebar-accent-foreground: 218 100% 14%;
+  --sidebar-border: 213 40% 88%;
+  --sidebar-ring: 205 100% 40%;
+}
+html.dark[data-industry="airlines"] {
+  --background: 210 100% 10%;
+  --foreground: 213 100% 98%;
+  --card: 213 76% 16%;
+  --card-foreground: 213 100% 98%;
+  --popover: 213 76% 16%;
+  --popover-foreground: 213 100% 98%;
+  --primary: 199 92% 64%;
+  --primary-foreground: 210 100% 10%;
+  --secondary: 47 89% 61%;
+  --secondary-foreground: 210 100% 10%;
+  --muted: 213 50% 18%;
+  --muted-foreground: 210 31% 76%;
+  --accent: 47 89% 61%;
+  --accent-foreground: 210 100% 10%;
+  --border: 213 50% 24%;
+  --input: 213 50% 24%;
+  --ring: 199 92% 64%;
+  --sidebar-background: 210 100% 12%;
+  --sidebar-foreground: 213 100% 98%;
+  --sidebar-primary: 199 92% 64%;
+  --sidebar-primary-foreground: 210 100% 10%;
+  --sidebar-accent: 47 89% 61%;
+  --sidebar-accent-foreground: 210 100% 10%;
+  --sidebar-border: 213 50% 24%;
+  --sidebar-ring: 199 92% 64%;
+}
+
+/* -------- CAR RENTAL (Rex · Velocity Command — Cyber Lime + Hazard Amber) -------- */
+[data-industry="car_rental"] {
+  --background: 165 11% 96%;
+  --foreground: 210 15% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 15% 18%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 15% 18%;
+  --primary: 120 100% 20%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 200 13% 73%;
+  --secondary-foreground: 210 15% 18%;
+  --muted: 165 8% 92%;
+  --muted-foreground: 207 17% 46%;
+  --accent: 200 13% 73%;
+  --accent-foreground: 210 15% 18%;
+  --destructive: 41 100% 50%;
+  --destructive-foreground: 210 15% 18%;
+  --border: 165 8% 86%;
+  --input: 165 8% 86%;
+  --ring: 120 100% 20%;
+  --sidebar-background: 165 11% 96%;
+  --sidebar-foreground: 210 15% 18%;
+  --sidebar-primary: 120 100% 20%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 200 13% 73%;
+  --sidebar-accent-foreground: 210 15% 18%;
+  --sidebar-border: 165 8% 86%;
+  --sidebar-ring: 120 100% 20%;
+}
+html.dark[data-industry="car_rental"] {
+  --background: 0 0% 2%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 110 100% 50%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 88%;
+  --secondary-foreground: 0 0% 5%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 218 4% 63%;
+  --accent: 0 0% 88%;
+  --accent-foreground: 0 0% 5%;
+  --destructive: 41 100% 50%;
+  --destructive-foreground: 0 0% 5%;
+  --border: 0 0% 16%;
+  --input: 0 0% 16%;
+  --ring: 110 100% 50%;
+  --sidebar-background: 0 0% 4%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-primary: 110 100% 50%;
+  --sidebar-primary-foreground: 0 0% 5%;
+  --sidebar-accent: 41 100% 50%;
+  --sidebar-accent-foreground: 0 0% 5%;
+  --sidebar-border: 0 0% 16%;
+  --sidebar-ring: 110 100% 50%;
+}
+
+/* -------- HEALTHCARE (Lyra · Precision Sanctum — Neon Mint) -------- */
+[data-industry="healthcare"] {
+  --background: 156 100% 99%;
+  --foreground: 165 18% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 165 18% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 165 18% 15%;
+  --primary: 165 100% 36%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 175 59% 40%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 156 30% 94%;
+  --muted-foreground: 165 8% 45%;
+  --accent: 175 59% 40%;
+  --accent-foreground: 0 0% 100%;
+  --border: 156 20% 88%;
+  --input: 156 20% 88%;
+  --ring: 165 100% 36%;
+  --sidebar-background: 156 100% 99%;
+  --sidebar-foreground: 165 18% 15%;
+  --sidebar-primary: 165 100% 36%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 175 59% 40%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 156 20% 88%;
+  --sidebar-ring: 165 100% 36%;
+}
+html.dark[data-industry="healthcare"] {
+  --background: 162 22% 6%;
+  --foreground: 156 100% 99%;
+  --card: 159 35% 9%;
+  --card-foreground: 156 100% 99%;
+  --popover: 159 35% 9%;
+  --popover-foreground: 156 100% 99%;
+  --primary: 162 100% 45%;
+  --primary-foreground: 162 22% 6%;
+  --secondary: 152 100% 99%;
+  --secondary-foreground: 162 22% 6%;
+  --muted: 159 30% 12%;
+  --muted-foreground: 161 16% 71%;
+  --accent: 152 100% 99%;
+  --accent-foreground: 162 22% 6%;
+  --border: 159 30% 16%;
+  --input: 159 30% 16%;
+  --ring: 162 100% 45%;
+  --sidebar-background: 162 22% 8%;
+  --sidebar-foreground: 156 100% 99%;
+  --sidebar-primary: 162 100% 45%;
+  --sidebar-primary-foreground: 162 22% 6%;
+  --sidebar-accent: 152 100% 99%;
+  --sidebar-accent-foreground: 162 22% 6%;
+  --sidebar-border: 159 30% 16%;
+  --sidebar-ring: 162 100% 45%;
+}
+
+/* -------- EDUCATION (Sage · Academic Hub — Oxford Blue + Scholar Gold) -------- */
+[data-industry="education"] {
+  --background: 80 25% 97%;
+  --foreground: 218 100% 14%;
+  --card: 0 0% 100%;
+  --card-foreground: 218 100% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 218 100% 14%;
+  --primary: 218 100% 14%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 46 65% 52%;
+  --secondary-foreground: 218 100% 14%;
+  --muted: 80 20% 92%;
+  --muted-foreground: 215 12% 40%;
+  --accent: 46 65% 52%;
+  --accent-foreground: 218 100% 14%;
+  --border: 80 14% 86%;
+  --input: 80 14% 86%;
+  --ring: 218 100% 14%;
+  --sidebar-background: 80 25% 97%;
+  --sidebar-foreground: 218 100% 14%;
+  --sidebar-primary: 218 100% 14%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 46 65% 52%;
+  --sidebar-accent-foreground: 218 100% 14%;
+  --sidebar-border: 80 14% 86%;
+  --sidebar-ring: 218 100% 14%;
+}
+html.dark[data-industry="education"] {
+  --background: 217 65% 11%;
+  --foreground: 213 100% 95%;
+  --card: 220 58% 16%;
+  --card-foreground: 213 100% 95%;
+  --popover: 220 58% 16%;
+  --popover-foreground: 213 100% 95%;
+  --primary: 39 98% 71%;
+  --primary-foreground: 217 65% 11%;
+  --secondary: 231 48% 48%;
+  --secondary-foreground: 213 100% 95%;
+  --muted: 220 40% 18%;
+  --muted-foreground: 226 17% 62%;
+  --accent: 231 48% 48%;
+  --accent-foreground: 213 100% 95%;
+  --border: 220 40% 22%;
+  --input: 220 40% 22%;
+  --ring: 39 98% 71%;
+  --sidebar-background: 217 65% 13%;
+  --sidebar-foreground: 213 100% 95%;
+  --sidebar-primary: 39 98% 71%;
+  --sidebar-primary-foreground: 217 65% 11%;
+  --sidebar-accent: 231 48% 48%;
+  --sidebar-accent-foreground: 213 100% 95%;
+  --sidebar-border: 220 40% 22%;
+  --sidebar-ring: 39 98% 71%;
+}
+
+/* -------- LOGISTICS (Atlas · Heavy-Duty Command — Signal Orange + Safety Yellow) -------- */
+[data-industry="logistics"] {
+  --background: 0 0% 88%;
+  --foreground: 0 0% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 11%;
+  --primary: 22 100% 41%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 211 14% 43%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 92%;
+  --muted-foreground: 0 0% 43%;
+  --accent: 211 14% 43%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 80%;
+  --input: 0 0% 80%;
+  --ring: 22 100% 41%;
+  --sidebar-background: 0 0% 92%;
+  --sidebar-foreground: 0 0% 11%;
+  --sidebar-primary: 22 100% 41%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 211 14% 43%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 0 0% 80%;
+  --sidebar-ring: 22 100% 41%;
+}
+html.dark[data-industry="logistics"] {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 33 100% 50%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 51 100% 50%;
+  --secondary-foreground: 0 0% 5%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 64%;
+  --accent: 51 100% 50%;
+  --accent-foreground: 0 0% 5%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 33 100% 50%;
+  --sidebar-background: 0 0% 7%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-primary: 33 100% 50%;
+  --sidebar-primary-foreground: 0 0% 5%;
+  --sidebar-accent: 51 100% 50%;
+  --sidebar-accent-foreground: 0 0% 5%;
+  --sidebar-border: 0 0% 18%;
+  --sidebar-ring: 33 100% 50%;
+}
+
+/* -------- EVENTS & ENTERTAINMENT (Vega · Backstage Pass — Electric Purple) -------- */
+[data-industry="events_entertainment"] {
+  --background: 293 47% 93%;
+  --foreground: 254 68% 34%;
+  --card: 0 0% 100%;
+  --card-foreground: 254 68% 34%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 254 68% 34%;
+  --primary: 263 100% 46%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 26 100% 50%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 293 30% 90%;
+  --muted-foreground: 257 21% 45%;
+  --accent: 26 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  --border: 270 24% 86%;
+  --input: 270 24% 86%;
+  --ring: 263 100% 46%;
+  --sidebar-background: 293 47% 93%;
+  --sidebar-foreground: 254 68% 34%;
+  --sidebar-primary: 263 100% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 26 100% 50%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 270 24% 86%;
+  --sidebar-ring: 263 100% 46%;
+}
+html.dark[data-industry="events_entertainment"] {
+  --background: 0 0% 2%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 263 100% 46%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 300 100% 50%;
+  --secondary-foreground: 0 0% 2%;
+  --muted: 263 30% 12%;
+  --muted-foreground: 257 38% 83%;
+  --accent: 180 100% 50%;
+  --accent-foreground: 0 0% 2%;
+  --destructive: 4 100% 59%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 263 30% 18%;
+  --input: 263 30% 18%;
+  --ring: 263 100% 46%;
+  --sidebar-background: 0 0% 4%;
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-primary: 263 100% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 300 100% 50%;
+  --sidebar-accent-foreground: 0 0% 2%;
+  --sidebar-border: 263 30% 18%;
+  --sidebar-ring: 263 100% 46%;
+}
+
+/* -------- BRAND (HostFlow Teal — fallback when user picks "Brand" mode) --------
+   Explicitly mirrors the default :root / .dark tokens so the brand selection
+   feels deliberate and consistent across all industries. */
+[data-industry="brand"] {
+  --background: 210 20% 98%;
+  --foreground: 220 20% 25%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 20% 25%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 20% 25%;
+  --primary: 174 55% 42%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 70% 52%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 20% 95%;
+  --muted-foreground: 220 10% 46%;
+  --accent: 217 70% 52%;
+  --accent-foreground: 0 0% 100%;
+  --border: 220 15% 88%;
+  --input: 220 15% 88%;
+  --ring: 174 55% 42%;
+}
+html.dark[data-industry="brand"] {
+  --background: 222 47% 11%;
+  --foreground: 240 20% 98%;
+  --card: 222 40% 14%;
+  --card-foreground: 240 20% 98%;
+  --popover: 222 40% 14%;
+  --popover-foreground: 240 20% 98%;
+  --primary: 174 62% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 216 88% 55%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 222 30% 18%;
+  --muted-foreground: 215 15% 60%;
+  --accent: 216 88% 55%;
+  --accent-foreground: 0 0% 100%;
+  --border: 222 30% 22%;
+  --input: 222 30% 22%;
+  --ring: 174 62% 55%;
+}
