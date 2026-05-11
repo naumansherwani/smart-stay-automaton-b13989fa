@@ -652,17 +652,36 @@ function FloatingChatWindow(p: WindowProps) {
   if (p.windowState === "closed") return null;
 
   if (p.windowState === "minimized") {
+    const isOrb = p.advisor.minimizedOrb === "mint-breath";
     return (
       <button
         onClick={p.onOpenFromPill}
         className="fixed bottom-5 right-5 z-[100] flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/90 backdrop-blur-xl border border-primary/30 shadow-2xl hover:border-primary/60 transition-all group"
+        style={isOrb ? { filter: `brightness(${nightDim() ? 0.7 : 1})` } : undefined}
       >
-        <span className={cn("w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center", p.advisor.accent)}>
-          <Sparkles className="w-4 h-4 text-primary" />
-        </span>
+        {isOrb ? (
+          <span
+            className="advisor-mint-orb relative w-8 h-8 rounded-full"
+            style={{
+              background: "radial-gradient(circle at 35% 30%, #ecfdf5, #6ee7b7 55%, #059669 100%)",
+              boxShadow: "0 0 18px 4px rgba(110,231,183,0.55), inset 0 0 8px rgba(255,255,255,0.6)",
+            }}
+          />
+        ) : (
+          <span className={cn("w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center", p.advisor.accent)}>
+            <Sparkles className="w-4 h-4 text-primary" />
+          </span>
+        )}
         <span className="text-sm font-semibold">{p.advisor.name}</span>
         <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse",
           p.sending ? "bg-amber-400" : "bg-emerald-500")} />
+        <style>{`
+          @keyframes advisorMintBreath {
+            0%, 100% { transform: scale(1);    box-shadow: 0 0 14px 3px rgba(110,231,183,0.45), inset 0 0 8px rgba(255,255,255,0.55); }
+            50%      { transform: scale(1.08); box-shadow: 0 0 26px 6px rgba(110,231,183,0.75), inset 0 0 10px rgba(255,255,255,0.7); }
+          }
+          .advisor-mint-orb { animation: advisorMintBreath 4s ease-in-out infinite; }
+        `}</style>
       </button>
     );
   }
