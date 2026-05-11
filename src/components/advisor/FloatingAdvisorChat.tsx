@@ -1143,6 +1143,17 @@ function ToolEventView({ event, badgeStyle, onAction }: { event: ToolEvent; badg
         </div>
       </AccordionTrigger>
       <AccordionContent className="pb-2">
+        {/* Custom widget renderers (industry-specific) — data-driven via Replit SSE */}
+        {event.widget?.type === "dna_helix" && <DnaHelixWidget />}
+        {event.widget?.type === "risk_gauge" && (
+          <RiskGaugeWidget value={event.widget.value} label={event.widget.label} />
+        )}
+        {event.widget?.type === "insurance_pulse" && (
+          <InsurancePulseWidget state={event.widget.state} note={event.widget.note} />
+        )}
+        {event.widget?.type === "pharmacy_options" && (
+          <PharmacyOptionsWidget options={event.widget.options} />
+        )}
         {(event.input !== undefined || event.output !== undefined) && (
           <pre className="text-[10.5px] bg-background/70 border border-border/40 rounded p-2 overflow-x-auto max-h-48">
             {JSON.stringify({ input: event.input, output: event.output }, null, 2)}
