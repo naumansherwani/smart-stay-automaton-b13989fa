@@ -113,7 +113,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   FileText, ImageIcon, FileSpreadsheet,
   Heart, Activity, Pill, ShieldCheck, Shield, FlaskConical, Watch, MessageCircle, Mail, CalendarClock, Dna,
   Plane, Globe, Ticket, Radar, CloudSun, Timer, Fuel,
-  Map, Truck, PackageCheck, Warehouse, User, Navigation, Database,
+  Map: MapIcon, Truck, PackageCheck, Warehouse, User, Navigation, Database,
   Car, Gauge, Zap, CreditCard,
 };
 
