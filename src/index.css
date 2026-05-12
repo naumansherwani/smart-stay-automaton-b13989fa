@@ -227,32 +227,37 @@ html {
   100% { opacity: 1; transform: scale(1) rotate(360deg); }
 }
 
-/* Rainbow dance — slow soft multi-color halo for landing/chooser cards */
-@keyframes rainbow-dance {
-  0%   { box-shadow: 0 0 0 1px hsla(0,   85%, 60%, 0.30), 0 0 26px -6px hsla(0,   85%, 60%, 0.40); border-color: hsla(0,   85%, 60%, 0.40); }
-  10%  { box-shadow: 0 0 0 1px hsla(30,  90%, 60%, 0.30), 0 0 26px -6px hsla(30,  90%, 60%, 0.40); border-color: hsla(30,  90%, 60%, 0.40); }
-  20%  { box-shadow: 0 0 0 1px hsla(50,  95%, 60%, 0.30), 0 0 26px -6px hsla(50,  95%, 60%, 0.40); border-color: hsla(50,  95%, 60%, 0.40); }
-  30%  { box-shadow: 0 0 0 1px hsla(120, 70%, 55%, 0.30), 0 0 26px -6px hsla(120, 70%, 55%, 0.40); border-color: hsla(120, 70%, 55%, 0.40); }
-  40%  { box-shadow: 0 0 0 1px hsla(160, 80%, 50%, 0.30), 0 0 26px -6px hsla(160, 80%, 50%, 0.40); border-color: hsla(160, 80%, 50%, 0.40); }
-  50%  { box-shadow: 0 0 0 1px hsla(190, 90%, 55%, 0.30), 0 0 26px -6px hsla(190, 90%, 55%, 0.40); border-color: hsla(190, 90%, 55%, 0.40); }
-  60%  { box-shadow: 0 0 0 1px hsla(220, 90%, 65%, 0.30), 0 0 26px -6px hsla(220, 90%, 65%, 0.40); border-color: hsla(220, 90%, 65%, 0.40); }
-  70%  { box-shadow: 0 0 0 1px hsla(260, 80%, 65%, 0.30), 0 0 26px -6px hsla(260, 80%, 65%, 0.40); border-color: hsla(260, 80%, 65%, 0.40); }
-  80%  { box-shadow: 0 0 0 1px hsla(290, 80%, 60%, 0.30), 0 0 26px -6px hsla(290, 80%, 60%, 0.40); border-color: hsla(290, 80%, 60%, 0.40); }
-  90%  { box-shadow: 0 0 0 1px hsla(330, 85%, 60%, 0.30), 0 0 26px -6px hsla(330, 85%, 60%, 0.40); border-color: hsla(330, 85%, 60%, 0.40); }
-  100% { box-shadow: 0 0 0 1px hsla(0,   85%, 60%, 0.30), 0 0 26px -6px hsla(0,   85%, 60%, 0.40); border-color: hsla(0,   85%, 60%, 0.40); }
+/* Industry breathing glow — each card uses its OWN color via --glow CSS var.
+   Soft slow breathing (no color cycle), staggered so they pulse out of sync. */
+@keyframes industry-breath {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px hsl(var(--glow) / 0.25),
+      0 0 18px -4px hsl(var(--glow) / 0.30),
+      0 0 36px -10px hsl(var(--glow) / 0.18);
+    border-color: hsl(var(--glow) / 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px hsl(var(--glow) / 0.55),
+      0 0 32px -4px hsl(var(--glow) / 0.65),
+      0 0 64px -8px hsl(var(--glow) / 0.45);
+    border-color: hsl(var(--glow) / 0.65);
+  }
 }
 .industry-rainbow-card {
-  animation: rainbow-dance 18s ease-in-out infinite;
+  --glow: 0 0% 80%;
+  animation: industry-breath 5s ease-in-out infinite;
   transition: transform .3s ease;
 }
 .industry-rainbow-card:nth-child(1) { animation-delay: 0s; }
-.industry-rainbow-card:nth-child(2) { animation-delay: -2.25s; }
-.industry-rainbow-card:nth-child(3) { animation-delay: -4.5s; }
-.industry-rainbow-card:nth-child(4) { animation-delay: -6.75s; }
-.industry-rainbow-card:nth-child(5) { animation-delay: -9s; }
-.industry-rainbow-card:nth-child(6) { animation-delay: -11.25s; }
-.industry-rainbow-card:nth-child(7) { animation-delay: -13.5s; }
-.industry-rainbow-card:nth-child(8) { animation-delay: -15.75s; }
+.industry-rainbow-card:nth-child(2) { animation-delay: -0.6s; }
+.industry-rainbow-card:nth-child(3) { animation-delay: -1.2s; }
+.industry-rainbow-card:nth-child(4) { animation-delay: -1.8s; }
+.industry-rainbow-card:nth-child(5) { animation-delay: -2.4s; }
+.industry-rainbow-card:nth-child(6) { animation-delay: -3.0s; }
+.industry-rainbow-card:nth-child(7) { animation-delay: -3.6s; }
+.industry-rainbow-card:nth-child(8) { animation-delay: -4.2s; }
 @media (prefers-reduced-motion: reduce) {
   .industry-rainbow-card { animation: none !important; }
 }
@@ -1088,6 +1093,40 @@ html.dark[data-industry] [data-sidebar="menu-button"][data-active="true"] {
     0 0 22px -4px hsl(var(--primary) / 0.65),
     0 0 44px -10px hsl(var(--primary) / 0.45) !important;
   border-radius: 0.5rem;
+}
+
+/* ============================================================
+   SIDEBAR INDUSTRY MAGIC — slow gradient sweep + soft edge glow
+   in each industry's primary color. Dark mode only.
+   ============================================================ */
+@keyframes sidebar-sweep {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+html.dark[data-industry] [data-sidebar="sidebar"],
+html.dark[data-industry] aside.ghost-sidebar-bg {
+  position: relative;
+  background-image:
+    linear-gradient(180deg,
+      hsl(var(--primary) / 0.08) 0%,
+      transparent 35%,
+      hsl(var(--primary) / 0.05) 60%,
+      transparent 100%),
+    linear-gradient(180deg,
+      hsl(var(--sidebar-background)) 0%,
+      hsl(var(--sidebar-background)) 100%);
+  background-size: 100% 200%, 100% 100%;
+  animation: sidebar-sweep 14s ease-in-out infinite alternate;
+  border-right: 1px solid hsl(var(--primary) / 0.18);
+  box-shadow: inset -1px 0 18px -8px hsl(var(--primary) / 0.45);
+}
+html.dark[data-industry] [data-sidebar="menu-button"]:hover {
+  background-color: hsl(var(--primary) / 0.10) !important;
+  color: hsl(var(--primary)) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.dark[data-industry] [data-sidebar="sidebar"],
+  html.dark[data-industry] aside.ghost-sidebar-bg { animation: none !important; }
 }
 
 /* ============================================================
