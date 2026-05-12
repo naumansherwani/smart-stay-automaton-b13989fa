@@ -74,7 +74,13 @@ Deno.serve(async (req) => {
       try {
         const supa = createClient(Deno.env.get("SUPABASE_URL")!, SERVICE_ROLE);
         const { data: { user } } = await supa.auth.getUser(token);
-        if (user) authorized = true;
+        if (user) {
+          const { data: isAdmin } = await supa.rpc("has_role", {
+            _user_id: user.id,
+            _role: "admin",
+          });
+          if (isAdmin === true) authorized = true;
+        }
       } catch (_) { /* ignore */ }
     }
     if (!authorized) {
