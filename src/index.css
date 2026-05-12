@@ -227,6 +227,36 @@ html {
   100% { opacity: 1; transform: scale(1) rotate(360deg); }
 }
 
+/* Rainbow dance — slow soft multi-color halo for landing/chooser cards */
+@keyframes rainbow-dance {
+  0%   { box-shadow: 0 0 0 1px hsla(0,   85%, 60%, 0.30), 0 0 26px -6px hsla(0,   85%, 60%, 0.40); border-color: hsla(0,   85%, 60%, 0.40); }
+  10%  { box-shadow: 0 0 0 1px hsla(30,  90%, 60%, 0.30), 0 0 26px -6px hsla(30,  90%, 60%, 0.40); border-color: hsla(30,  90%, 60%, 0.40); }
+  20%  { box-shadow: 0 0 0 1px hsla(50,  95%, 60%, 0.30), 0 0 26px -6px hsla(50,  95%, 60%, 0.40); border-color: hsla(50,  95%, 60%, 0.40); }
+  30%  { box-shadow: 0 0 0 1px hsla(120, 70%, 55%, 0.30), 0 0 26px -6px hsla(120, 70%, 55%, 0.40); border-color: hsla(120, 70%, 55%, 0.40); }
+  40%  { box-shadow: 0 0 0 1px hsla(160, 80%, 50%, 0.30), 0 0 26px -6px hsla(160, 80%, 50%, 0.40); border-color: hsla(160, 80%, 50%, 0.40); }
+  50%  { box-shadow: 0 0 0 1px hsla(190, 90%, 55%, 0.30), 0 0 26px -6px hsla(190, 90%, 55%, 0.40); border-color: hsla(190, 90%, 55%, 0.40); }
+  60%  { box-shadow: 0 0 0 1px hsla(220, 90%, 65%, 0.30), 0 0 26px -6px hsla(220, 90%, 65%, 0.40); border-color: hsla(220, 90%, 65%, 0.40); }
+  70%  { box-shadow: 0 0 0 1px hsla(260, 80%, 65%, 0.30), 0 0 26px -6px hsla(260, 80%, 65%, 0.40); border-color: hsla(260, 80%, 65%, 0.40); }
+  80%  { box-shadow: 0 0 0 1px hsla(290, 80%, 60%, 0.30), 0 0 26px -6px hsla(290, 80%, 60%, 0.40); border-color: hsla(290, 80%, 60%, 0.40); }
+  90%  { box-shadow: 0 0 0 1px hsla(330, 85%, 60%, 0.30), 0 0 26px -6px hsla(330, 85%, 60%, 0.40); border-color: hsla(330, 85%, 60%, 0.40); }
+  100% { box-shadow: 0 0 0 1px hsla(0,   85%, 60%, 0.30), 0 0 26px -6px hsla(0,   85%, 60%, 0.40); border-color: hsla(0,   85%, 60%, 0.40); }
+}
+.industry-rainbow-card {
+  animation: rainbow-dance 18s ease-in-out infinite;
+  transition: transform .3s ease;
+}
+.industry-rainbow-card:nth-child(1) { animation-delay: 0s; }
+.industry-rainbow-card:nth-child(2) { animation-delay: -2.25s; }
+.industry-rainbow-card:nth-child(3) { animation-delay: -4.5s; }
+.industry-rainbow-card:nth-child(4) { animation-delay: -6.75s; }
+.industry-rainbow-card:nth-child(5) { animation-delay: -9s; }
+.industry-rainbow-card:nth-child(6) { animation-delay: -11.25s; }
+.industry-rainbow-card:nth-child(7) { animation-delay: -13.5s; }
+.industry-rainbow-card:nth-child(8) { animation-delay: -15.75s; }
+@media (prefers-reduced-motion: reduce) {
+  .industry-rainbow-card { animation: none !important; }
+}
+
 /* Ghost Sidebar */
 .ghost-sidebar-bg {
   background: linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(222 55% 8%) 100%);

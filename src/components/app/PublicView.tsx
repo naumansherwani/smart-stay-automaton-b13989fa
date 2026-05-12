@@ -245,8 +245,8 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                   <Card
                     key={ind.id}
                     onClick={() => onIndustrySelect(ind.id)}
-                    className={`group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden relative ${
-                      isActive ? "ring-2 ring-primary shadow-lg" : "border-border/50 hover:border-primary/30"
+                    className={`industry-rainbow-card group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden relative ${
+                      isActive ? "ring-2 ring-primary shadow-lg" : "border-border/50"
                     }`}
                     style={isActive ? { borderColor: ind.color, boxShadow: `0 4px 20px -4px ${ind.color}40` } : {}}
                     onMouseEnter={(e) => {
