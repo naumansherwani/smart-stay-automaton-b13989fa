@@ -1,7 +1,7 @@
 # Project Memory
 
 ## Core
-HostFlow AI - multi-industry AI scheduling platform. Primary 168 70% 38% teal.
+HostFlow AI - multi-industry AI scheduling platform. Primary 168 70% 38% teal (BRAND CHROME ONLY — never force inside industry workspace).
 3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
 8 industries ONLY: hospitality, airlines, car_rental, healthcare, education, logistics, events_entertainment, railways.
 Hospitality has 2 sub-types in profiles.business_subtype: hotel_property | travel_tours. NEVER mix hotel data with tour data.
@@ -12,26 +12,24 @@ Domain: hostflowai.net (primary, May 2026). .live FULLY REMOVED everywhere.
 Owner: naumansherwani@hostflowai.net, notifications → naumankhansherwani@gmail.com
 No public support@ email on website — removed per owner. Internal founder mailbox Support identity kept.
 No "Book Demo" CTA on landing/pricing — removed per owner.
-Payments: Paddle FULLY REMOVED Apr 2026. No provider integrated. Checkout shows waitlist banner. Do NOT auto-integrate any provider — user must confirm.
-Email: Resend ONLY (May 2026). Zoho/IMAP/SMTP fully removed. Single sender noreply@hostflowai.net, identities are display-name only, replies route to naumansherwani@hostflowai.net via Reply-To. No in-app inbox — Founder Emails section is compose-only. Edge fn: resend-send (replaces zoho-smtp-send + owner-mailbox).
-Backend split: Lovable Cloud = DB of record + auth + storage + email (Resend) + frontend. Replit = AI brain (advisors, health scores, benchmarks, plan enforcement). Schema changes only via Lovable migrations.
+Payments: Polar via Replit backend, LIVE & connected. Paddle removed Apr 2026. Do NOT auto-integrate any provider on Lovable side.
+Backend split: Lovable Cloud = DB of record + auth + storage + email + frontend. Replit = AI brain (advisors, health scores, benchmarks, plan enforcement). Schema changes only via Lovable migrations.
+Replit also owns deep features for healthcare/education/logistics (workflows, scoring, advisor logic). Don't assume Lovable frontend has full feature picture — trust Replit as source of truth.
+NO MOCK DATA in any dashboard/workspace component. Owner must see exactly what paying users see — empty/zero state if DB is empty. Sample data only on dedicated /demo route with visible badge.
+INDUSTRY COLORS LOCKED by owner May 12, 2026 — see mem://design/industry-colors. Do NOT change without explicit owner approval. Ask first.
 
 ## Memories
 - [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Standard/Premium
 - [Industries](mem://features/industries) — 8 supported industry types and their configs
 - [Owner credentials](mem://features/owner-credentials) — Owner login & Gmail notification config
-- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette
+- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette (teal — chrome only)
+- [Industry colors LOCKED](mem://design/industry-colors) — Per-industry primary/accent palette, owner-locked, do not modify
 - [CRM architecture](mem://features/crm-architecture) — CRM module structure
 - [Double-booking guard](mem://features/double-booking-guard) — Conflict detection system
 - [Industry features](mem://features/industry-features) — Per-industry feature configs
 - [Trial system](mem://features/trial-system) — Trial & subscription logic
-- [No payment provider](mem://constraints/no-paddle-stripe-lemon) — Paddle removed Apr 2026, no provider currently integrated
+- [Polar payment provider](mem://constraints/no-paddle-stripe-lemon) — Polar live via Replit; do not auto-integrate on Lovable side
 - [Advisor architecture](mem://features/advisor-architecture) — platform-knowledge.ts → 8 industry advisors → Sherlock auto-import chain
-- [Advisor names locked](mem://features/advisor-names-locked) — Full C-suite designations for Aria, Captain Orion, Rex, Dr. Lyra, Professor Sage, Atlas, Vega, Conductor Kai, Sherlock — EXACT, case-sensitive
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
-- [Industry isolation locked](mem://constraints/industry-isolation-locked) — LOCKED: activeWorkspace.industry is single source of truth; per-industry subdomain plan
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
-- [Floating Advisor Chat](mem://features/floating-advisor-chat) — Global ChatGPT-style chat: advisor_threads + advisor_messages tables, lazy 50-msg pagination, auto-resume per industry, Mac controls, draft autosave
-- [Resolution Hub live solving](mem://features/resolution-hub-live-solving) — Future spec: tool calling + actionable buttons + auto-conflict resolution. NOT implemented.
-- [AI Email Center hands-off](mem://constraints/ai-email-center-handsoff) — Lovable must not touch email backend/data; Replit owns it. UI/UX only on request.
-- [Resolution Hub flow locked](mem://features/resolution-hub-flow-locked) — 6 locked stages: Customer message received → Aria analyzed → Issue created → Sherlock reviewed → Pricing updated → Revenue protected
+- [No mock data](mem://constraints/no-mock-data) — Forbid hardcoded sample arrays in production UI
