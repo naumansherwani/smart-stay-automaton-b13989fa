@@ -869,23 +869,20 @@ html.dark[data-industry="brand"] {
    Sample rollout. Dark mode only. Cosmetic overlay — does not
    change layout, spacing, or any business logic.
    ============================================================ */
+/* Heartbeat: lub-dub double-thump (0-25%) then soft breathing glow (25-100%).
+   White halo on red — true cardiac monitor feel, ~60bpm cycle. */
 @keyframes hc-pulse-glow {
-  0%, 100% {
-    box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.18),
-      0 0 18px -2px hsl(var(--primary) / 0.25),
-      0 0 38px -10px hsl(var(--accent) / 0.18);
-  }
-  50% {
-    box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.42),
-      0 0 28px -2px hsl(var(--primary) / 0.55),
-      0 0 60px -8px hsl(var(--accent) / 0.42);
-  }
+  0%   { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 16px -2px hsl(var(--primary) / 0.25), 0 0 32px -10px hsl(0 0% 100% / 0.10); }
+  6%   { box-shadow: 0 0 0 2px hsl(var(--primary) / 0.55), 0 0 28px -2px hsl(var(--primary) / 0.65), 0 0 60px -6px hsl(0 0% 100% / 0.40); }
+  12%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.22), 0 0 16px -2px hsl(var(--primary) / 0.28), 0 0 32px -10px hsl(0 0% 100% / 0.12); }
+  18%  { box-shadow: 0 0 0 2px hsl(var(--primary) / 0.45), 0 0 24px -2px hsl(var(--primary) / 0.55), 0 0 50px -6px hsl(0 0% 100% / 0.32); }
+  25%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 16px -2px hsl(var(--primary) / 0.25), 0 0 32px -10px hsl(0 0% 100% / 0.10); }
+  60%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.40), 0 0 26px -2px hsl(var(--primary) / 0.45), 0 0 56px -8px hsl(0 0% 100% / 0.28); }
+  100% { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 16px -2px hsl(var(--primary) / 0.25), 0 0 32px -10px hsl(0 0% 100% / 0.10); }
 }
 @keyframes hc-ring-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.55); }
-  70%      { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
+  0%, 100% { box-shadow: 0 0 0 0 hsl(0 0% 100% / 0.55); }
+  70%      { box-shadow: 0 0 0 12px hsl(0 0% 100% / 0); }
 }
 
 html.dark[data-industry="healthcare"] body {
