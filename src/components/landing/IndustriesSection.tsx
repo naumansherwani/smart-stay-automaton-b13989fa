@@ -3,8 +3,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Globe, Plane, Car, Stethoscope, GraduationCap, Truck,
-  Theater, TrainFront, Zap,
+  Theater, TrainFront, Zap, Crown,
 } from "lucide-react";
+import { ADVISORS } from "@/components/advisor/advisorConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 
 const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; glow: string; id: IndustryType }[] = [
@@ -62,24 +63,38 @@ const IndustriesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-          {INDUSTRIES.map((ind) => (
+          {INDUSTRIES.map((ind) => {
+            const advisor = ADVISORS[ind.id];
+            const isHospitality = ind.id === "hospitality";
+            return (
             <Card
               key={ind.name}
               onClick={() => handleClick(ind.id)}
               data-airline-radar={ind.id === "airlines" ? "true" : undefined}
-              className="industry-rainbow-card group bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
+              className={`industry-rainbow-card group backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative ${
+                isHospitality
+                  ? "border-[#f5d4a1]/50 bg-gradient-to-br from-[#f5d4a1]/10 via-[#f4c2d7]/10 to-transparent hover:border-[#f5d4a1]"
+                  : "bg-white/[0.02]"
+              }`}
               style={{ ["--glow" as any]: ind.glow }}
               onMouseEnter={(e) => {
+                if (isHospitality) return;
                 e.currentTarget.style.borderColor = `${ind.color}50`;
                 e.currentTarget.style.boxShadow = `0 8px 40px -8px ${ind.color}30, 0 0 0 1px ${ind.color}20, inset 0 1px 0 0 ${ind.color}15`;
                 e.currentTarget.style.background = `linear-gradient(135deg, ${ind.color}08, transparent)`;
               }}
               onMouseLeave={(e) => {
+                if (isHospitality) return;
                 e.currentTarget.style.borderColor = "";
                 e.currentTarget.style.boxShadow = "";
                 e.currentTarget.style.background = "";
               }}
             >
+              {advisor?.sovereignBadge && (
+                <span className="absolute top-2 right-2 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-gradient-to-r from-[#f5d4a1] to-[#f4c2d7] text-amber-900 shadow-sm">
+                  <Crown className="w-2.5 h-2.5" /> Sovereign
+                </span>
+              )}
               {/* Top glow line on hover */}
               <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `linear-gradient(90deg, transparent, ${ind.color}60, transparent)` }} />
               <CardContent className="p-5 flex items-start gap-3">
@@ -92,10 +107,16 @@ const IndustriesSection = () => {
                 <div>
                   <h4 className="font-bold text-foreground text-sm leading-tight group-hover:text-white transition-colors duration-300">{ind.name}</h4>
                   <p className="text-xs text-muted-foreground mt-1 group-hover:text-white/50 transition-colors duration-300">{ind.desc}</p>
+                  {advisor && (
+                    <p className="text-[10px] text-muted-foreground/80 mt-1.5 font-medium">
+                      {advisor.name}{advisor.shortTitle ? ` · ${advisor.shortTitle}` : ""}
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
