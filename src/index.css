@@ -279,8 +279,8 @@ html {
 }
 
 .ghost-sidebar-active {
-  background: hsl(217 91% 60% / 0.15);
-  color: hsl(174 62% 60%);
+  background: hsl(var(--sidebar-ring) / 0.14);
+  color: hsl(var(--sidebar-ring));
   position: relative;
 }
 
@@ -292,8 +292,8 @@ html {
   bottom: 4px;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: hsl(174 62% 50%);
-  box-shadow: 0 0 8px hsl(174 62% 50% / 0.5);
+  background: hsl(var(--sidebar-ring));
+  box-shadow: 0 0 8px hsl(var(--sidebar-ring) / 0.5);
 }
 
 /* Collapsed rail: premium pill indicator outside button */
@@ -305,7 +305,7 @@ html {
   bottom: auto;
   border-radius: 9999px;
   width: 3px;
-  box-shadow: 0 0 10px hsl(174 62% 50% / 0.6);
+  box-shadow: 0 0 10px hsl(var(--sidebar-ring) / 0.6);
 }
 
 /* ============================================================
