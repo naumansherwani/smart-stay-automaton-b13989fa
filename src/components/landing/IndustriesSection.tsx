@@ -3,9 +3,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Globe, Plane, Car, Stethoscope, GraduationCap, Truck,
-  Theater, TrainFront, Zap, Crown,
+  Theater, TrainFront, Zap,
 } from "lucide-react";
-import { ADVISORS } from "@/components/advisor/advisorConfig";
 import type { IndustryType } from "@/lib/industryConfig";
 
 const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; glow: string; id: IndustryType }[] = [
@@ -64,7 +63,6 @@ const IndustriesSection = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {INDUSTRIES.map((ind) => {
-            const advisor = ADVISORS[ind.id];
             const isHospitality = ind.id === "hospitality";
             return (
             <Card
@@ -90,11 +88,6 @@ const IndustriesSection = () => {
                 e.currentTarget.style.background = "";
               }}
             >
-              {advisor?.sovereignBadge && (
-                <span className="absolute top-2 right-2 z-10 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-gradient-to-r from-[#f5d4a1] to-[#f4c2d7] text-amber-900 shadow-sm">
-                  <Crown className="w-2.5 h-2.5" /> Sovereign
-                </span>
-              )}
               {/* Top glow line on hover */}
               <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `linear-gradient(90deg, transparent, ${ind.color}60, transparent)` }} />
               <CardContent className="p-5 flex items-start gap-3">
