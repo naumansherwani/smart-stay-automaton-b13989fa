@@ -32,7 +32,9 @@ serve(async (req) => {
       userId = data?.user?.id ?? null;
     }
     if (!userId) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      // Silently no-op for unauthenticated callers — event tracking is best-effort
+      // and must never break the client UI.
+      return new Response(JSON.stringify({ ok: true, skipped: "unauthenticated" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const body = await req.json().catch(() => ({}));
