@@ -107,11 +107,6 @@ const IndustriesSection = () => {
                 <div>
                   <h4 className="font-bold text-foreground text-sm leading-tight group-hover:text-white transition-colors duration-300">{ind.name}</h4>
                   <p className="text-xs text-muted-foreground mt-1 group-hover:text-white/50 transition-colors duration-300">{ind.desc}</p>
-                  {advisor && (
-                    <p className="text-[10px] text-muted-foreground/80 mt-1.5 font-medium">
-                      {advisor.name}{advisor.shortTitle ? ` · ${advisor.shortTitle}` : ""}
-                    </p>
-                  )}
                 </div>
               </CardContent>
             </Card>
