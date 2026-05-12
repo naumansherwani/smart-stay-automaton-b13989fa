@@ -1,7 +1,7 @@
 # Project Memory
 
 ## Core
-HostFlow AI - multi-industry AI scheduling platform. Primary 168 70% 38% teal (BRAND CHROME ONLY — never force inside industry workspace).
+HostFlow AI - multi-industry AI scheduling platform. Primary 168 70% 38% teal.
 3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
 8 industries ONLY: hospitality, airlines, car_rental, healthcare, education, logistics, events_entertainment, railways.
 Hospitality has 2 sub-types in profiles.business_subtype: hotel_property | travel_tours. NEVER mix hotel data with tour data.
@@ -16,14 +16,15 @@ Payments: Polar via Replit backend, LIVE & connected. Paddle removed Apr 2026. D
 Backend split: Lovable Cloud = DB of record + auth + storage + email + frontend. Replit = AI brain (advisors, health scores, benchmarks, plan enforcement). Schema changes only via Lovable migrations.
 Replit also owns deep features for healthcare/education/logistics (workflows, scoring, advisor logic). Don't assume Lovable frontend has full feature picture — trust Replit as source of truth.
 NO MOCK DATA in any dashboard/workspace component. Owner must see exactly what paying users see — empty/zero state if DB is empty. Sample data only on dedicated /demo route with visible badge.
-INDUSTRY COLORS LOCKED by owner May 12, 2026 — see mem://design/industry-colors. Do NOT change without explicit owner approval. Ask first.
+CRM is named "AI CRM" everywhere user-facing. Route is /ai-crm; legacy /crm redirects to /ai-crm preserving query/hash. Internal file/component/hook names (CRM.tsx, useCrm, CrmFoo) stay as is.
+Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartbeat = lub-dub double-thump then breathing glow, 5s cycle. Each industry gets its OWN signature motion (Airlines=radar sweep done; rest pending owner approval one-by-one). Landing page colors NOT touched without explicit approval.
 
 ## Memories
 - [Pricing tiers](mem://features/pricing) — Plan features and limits for Basic/Standard/Premium
 - [Industries](mem://features/industries) — 8 supported industry types and their configs
 - [Owner credentials](mem://features/owner-credentials) — Owner login & Gmail notification config
-- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette (teal — chrome only)
-- [Industry colors LOCKED](mem://design/industry-colors) — Per-industry primary/accent palette, owner-locked, do not modify
+- [Brand colors](mem://design/brand-colors) — HostFlow AI brand palette
+- [Industry colors](mem://design/industry-colors) — Locked per-industry color palette
 - [CRM architecture](mem://features/crm-architecture) — CRM module structure
 - [Double-booking guard](mem://features/double-booking-guard) — Conflict detection system
 - [Industry features](mem://features/industry-features) — Per-industry feature configs
