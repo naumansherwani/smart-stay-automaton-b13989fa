@@ -119,7 +119,7 @@ export function GhostSidebar() {
         to={item.url}
         end
         className={cn(
-          "relative text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_hsl(var(--sidebar-ring)/0.18)]",
+          "relative text-sm text-white/88 transition-all duration-200 hover:bg-white/[0.06] hover:text-white hover:shadow-[0_0_14px_-4px_hsl(var(--sidebar-ring)/0.24)]",
           labelsVisible
             ? "flex items-center gap-3 px-3 py-2.5 rounded-lg"
             : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
@@ -175,7 +175,7 @@ export function GhostSidebar() {
       <button
         onClick={() => labelsVisible ? setCrmOpen(o => !o) : setPinned(true)}
         className={cn(
-          "text-sm transition-all duration-200 hover:bg-white/[0.08] hover:shadow-[0_0_12px_-2px_hsl(var(--sidebar-ring)/0.18)]",
+          "text-sm text-white/88 transition-all duration-200 hover:bg-white/[0.06] hover:text-white hover:shadow-[0_0_14px_-4px_hsl(var(--sidebar-ring)/0.24)]",
           labelsVisible
             ? "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg"
             : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
