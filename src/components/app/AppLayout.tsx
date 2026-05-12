@@ -6,7 +6,6 @@ import { GhostSidebar } from "./GhostSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Globe } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useProfile } from "@/hooks/useProfile";
@@ -162,9 +161,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <IndustryIcon industry={currentIndustry} size={16} />
             <span className="hidden md:inline font-semibold">{INDUSTRY_LABELS[currentIndustry]}</span>
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="hidden lg:inline text-muted-foreground">·</span>
-            <Globe className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="hidden lg:inline text-muted-foreground">Switch</span>
           </Button>
           <UserHalo
             size={32}
