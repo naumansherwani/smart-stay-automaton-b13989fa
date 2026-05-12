@@ -278,16 +278,6 @@ html.dark[data-industry] .ghost-sidebar-bg {
   background: linear-gradient(180deg, rgba(8, 12, 20, 0.97) 0%, rgba(5, 9, 16, 0.99) 100%);
 }
 
-.ghost-edge-glow {
-  background: linear-gradient(180deg, hsl(174 62% 50% / 0.15) 0%, hsl(217 91% 60% / 0.25) 50%, hsl(174 62% 50% / 0.15) 100%);
-  box-shadow: 0 0 8px 1px hsl(217 91% 60% / 0.2);
-  transition: box-shadow 0.3s ease;
-}
-
-.ghost-edge-glow:hover {
-  box-shadow: 0 0 14px 3px hsl(217 91% 60% / 0.4);
-}
-
 .ghost-sidebar-active {
   color: rgb(var(--industry-rgb));
   background: rgba(var(--industry-rgb), 0.08);
@@ -323,25 +313,6 @@ html.dark[data-industry] .ghost-sidebar-bg .nav-rail-item:hover {
     animation: none;
   }
 }
-
-/* ============================================================
-   Per-industry sidebar ambience (dark mode only).
-   Slow vertical gradient sweep tinted by --sidebar-ring + a
-   right-edge glow line in the same industry color. Healthcare=red,
-   Airlines=blue, Events=purple, Hospitality=gold, etc.
-   ============================================================ */
-@keyframes sidebar-vertical-sweep {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 0% 200%; }
-}
-@keyframes sidebar-edge-pulse {
-  0%, 100% { opacity: 0.55; }
-  50%      { opacity: 1;    }
-}
-
-/* Per-industry sidebar surface animation removed — see .ghost-sidebar-bg
-   for the static premium glass treatment. The shadcn sidebar primitive
-   inherits its look from .ghost-sidebar-bg applied in GhostSidebar. */
 
 /* ===== Founder OS · Owner Command Center theme ===== */
 .founder-os {
