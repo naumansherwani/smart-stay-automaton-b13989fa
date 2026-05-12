@@ -38,11 +38,11 @@ const primaryNav = [
 ];
 
 const crmSub = [
-  { title: "Leads", url: "/crm?tab=leads", icon: UserPlus },
-  { title: "Customers", url: "/crm?tab=customers", icon: UserCheck },
-  { title: "Bookings", url: "/crm?tab=bookings", icon: ClipboardList },
-  { title: "Pipeline", url: "/crm?tab=pipeline", icon: GitBranch },
-  { title: "Tasks", url: "/crm?tab=tasks", icon: ListTodo },
+  { title: "Leads", url: "/ai-crm?tab=leads", icon: UserPlus },
+  { title: "Customers", url: "/ai-crm?tab=customers", icon: UserCheck },
+  { title: "Bookings", url: "/ai-crm?tab=bookings", icon: ClipboardList },
+  { title: "Pipeline", url: "/ai-crm?tab=pipeline", icon: GitBranch },
+  { title: "Tasks", url: "/ai-crm?tab=tasks", icon: ListTodo },
 ];
 
 const tailNav = [
@@ -70,7 +70,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const [pinned, setPinned] = useState(false);
-  const [crmOpen, setCrmOpen] = useState(currentPath === "/crm");
+  const [crmOpen, setCrmOpen] = useState(currentPath === "/ai-crm" || currentPath === "/crm");
   const { profile } = useProfile();
   const { activeWorkspace } = useWorkspaces();
   const { user } = useAuth();
@@ -191,11 +191,11 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <Collapsible open={crmOpen} onOpenChange={setCrmOpen}>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton isActive={currentPath === "/crm"}>
+                      <SidebarMenuButton isActive={currentPath === "/ai-crm" || currentPath === "/crm"}>
                         <Users className="mr-2 h-4 w-4" />
                         {!collapsed && (
                           <>
-                            <span className="flex-1 text-left">CRM</span>
+                            <span className="flex-1 text-left">AI CRM</span>
                             <ChevronRight className={`h-3.5 w-3.5 transition-transform ${crmOpen ? "rotate-90" : ""}`} />
                           </>
                         )}

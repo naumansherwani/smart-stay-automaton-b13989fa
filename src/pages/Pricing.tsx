@@ -32,7 +32,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     starter: true,
     features: [
       "Includes 1 industry (workspace)",
-      "Up to 100 CRM contacts",
+      "Up to 100 AI CRM contacts",
       "Up to 50 bookings/month",
       "AI Calendar — limited",
       "AI Pricing — limited",
@@ -47,7 +47,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     popular: true,
     features: [
       "Includes 1 industry (workspace)",
-      "Unlimited contacts (CRM)",
+      "Unlimited contacts (AI CRM)",
       "Unlimited bookings",
       "All Basic features included",
       "",
@@ -71,7 +71,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
       "Includes 1 industry (workspace)",
-      "Unlimited contacts (CRM)",
+      "Unlimited contacts (AI CRM)",
       "Unlimited bookings",
       "All Pro features included",
       "",

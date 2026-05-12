@@ -43,7 +43,7 @@ const getIndustryIcon = (id?: IndustryType) => {
 const FEATURES = [
   { icon: Brain, title: "AI-Powered Automation", desc: "Automate bookings, scheduling, and customer management with intelligent AI systems.", gradient: "from-[#6366F1] to-[#8B5CF6]" },
   { icon: BarChart3, title: "Predictive Analytics", desc: "Revenue forecasting, demand prediction, and real-time business insights.", gradient: "from-[#06B6D4] to-[#3B82F6]" },
-  { icon: Users, title: "Smart CRM", desc: "Lead scoring, customer behavior analysis, and automated follow-ups.", gradient: "from-[#f97316] to-[#ef4444]" },
+  { icon: Users, title: "Smart AI CRM", desc: "Lead scoring, customer behavior analysis, and automated follow-ups.", gradient: "from-[#f97316] to-[#ef4444]" },
   { icon: Calendar, title: "Smart Scheduling", desc: "Conflict-free scheduling with AI optimization across all resources.", gradient: "from-[#10B981] to-[#06B6D4]" },
   { icon: Shield, title: "Enterprise Security", desc: "Bank-grade encryption, RLS policies, and complete data isolation.", gradient: "from-[#8B5CF6] to-[#ec4899]" },
   { icon: Rocket, title: "Multi-Industry", desc: "8 dedicated industry workspaces, each with tailored workflows.", gradient: "from-[#f97316] to-[#facc15]" },
@@ -54,7 +54,7 @@ const FOOTER_COLUMNS = [
     { label: "Features", href: "/#features" },
     { label: "Pricing", href: "/pricing" },
     { label: "AI Tools", href: "/dashboard" },
-    { label: "CRM", href: "/crm" },
+    { label: "AI CRM", href: "/ai-crm" },
     { label: "Automations", href: "/dashboard" },
   ]},
   { heading: "Platform", links: [

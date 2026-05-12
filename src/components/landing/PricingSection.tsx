@@ -34,7 +34,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     desc: "Best for individuals getting started",
     features: [
       "Includes 1 industry (workspace)",
-      "Up to 100 CRM contacts",
+      "Up to 100 AI CRM contacts",
       "Up to 50 bookings/month",
       "AI Calendar — limited",
       "Calendar sync",
@@ -51,7 +51,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     desc: "Best for growing businesses",
     features: [
       "Includes 1 industry (workspace)",
-      "Unlimited contacts (CRM)",
+      "Unlimited contacts (AI CRM)",
       "Unlimited bookings",
       "All Basic features included",
       "",
@@ -78,7 +78,7 @@ const PLAN_META: Record<PaymentsPlanKey, PlanMeta> = {
     highlight: "🚀 Advanced AI CRM Hub",
     features: [
       "Includes 1 industry (workspace)",
-      "Unlimited contacts (CRM)",
+      "Unlimited contacts (AI CRM)",
       "Unlimited bookings",
       "All Pro features included",
       "",

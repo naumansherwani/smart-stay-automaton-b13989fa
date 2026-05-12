@@ -162,7 +162,7 @@ const Onboarding = () => {
           </div>
           <div className="space-y-3">
             <h2 className="text-2xl md:text-3xl font-bold text-white">Setting up your {subtypeLabel} system...</h2>
-            <p className="text-white/50 text-sm">Customizing AI dashboards, CRM & workspace for you</p>
+            <p className="text-white/50 text-sm">Customizing AI dashboards, AI CRM & workspace for you</p>
           </div>
           <div className="w-72 mx-auto">
             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
