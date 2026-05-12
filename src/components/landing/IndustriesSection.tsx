@@ -66,6 +66,7 @@ const IndustriesSection = () => {
             <Card
               key={ind.name}
               onClick={() => handleClick(ind.id)}
+              data-airline-radar={ind.id === "airlines" ? "true" : undefined}
               className="industry-rainbow-card group bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
               style={{ ["--glow" as any]: ind.glow }}
               onMouseEnter={(e) => {
