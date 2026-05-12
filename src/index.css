@@ -1059,3 +1059,210 @@ html.dark[data-industry] [data-sidebar="menu-button"][data-active="true"] {
     0 0 44px -10px hsl(var(--primary) / 0.45) !important;
   border-radius: 0.5rem;
 }
+
+/* ============================================================
+   PER-INDUSTRY SIGNATURE MOTIONS (dark mode, cosmetic only)
+   Each industry gets ONE unique animation that matches its vibe.
+   Healthcare = heartbeat (above). Airlines = radar sweep (above).
+   Below: 6 remaining industries.
+   ============================================================ */
+
+/* ---- HOSPITALITY: warm gold shimmer (sun across cards) ---- */
+@keyframes hosp-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+html.dark[data-industry="hospitality"] body {
+  background:
+    radial-gradient(1000px 500px at 90% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    radial-gradient(800px 400px at -10% 40%, hsl(var(--accent) / 0.07), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="hospitality"] [data-slot="card"],
+html.dark[data-industry="hospitality"] .rounded-lg.border.bg-card,
+html.dark[data-industry="hospitality"] .rounded-xl.border.bg-card {
+  position: relative;
+  border-color: hsl(var(--primary) / 0.25);
+  background-image: linear-gradient(110deg,
+    transparent 30%,
+    hsl(var(--primary) / 0.10) 48%,
+    hsl(var(--accent) / 0.10) 52%,
+    transparent 70%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: hosp-shimmer 7s ease-in-out infinite;
+}
+html.dark[data-industry="hospitality"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.30);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.55);
+}
+html.dark[data-industry="hospitality"] button.bg-primary {
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 0.4), 0 8px 24px -8px hsl(var(--primary) / 0.55);
+}
+
+/* ---- CAR RENTAL: speedometer rev (quick double-pulse) ---- */
+@keyframes car-rev {
+  0%   { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 14px -2px hsl(var(--primary) / 0.30); }
+  20%  { box-shadow: 0 0 0 2px hsl(var(--primary) / 0.65), 0 0 32px -2px hsl(var(--primary) / 0.75); }
+  40%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.30), 0 0 16px -2px hsl(var(--primary) / 0.35); }
+  100% { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 14px -2px hsl(var(--primary) / 0.30); }
+}
+html.dark[data-industry="car_rental"] body {
+  background:
+    radial-gradient(1000px 500px at 80% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="car_rental"] [data-slot="card"],
+html.dark[data-industry="car_rental"] .rounded-lg.border.bg-card,
+html.dark[data-industry="car_rental"] .rounded-xl.border.bg-card {
+  border-color: hsl(var(--primary) / 0.25);
+  animation: car-rev 4s ease-in-out infinite;
+}
+html.dark[data-industry="car_rental"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.35);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.6);
+}
+
+/* ---- EDUCATION: page-turn glow (soft slow sweep, scholarly) ---- */
+@keyframes edu-page-glow {
+  0%   { background-position: -150% 0; opacity: 0.7; }
+  50%  { opacity: 1; }
+  100% { background-position: 150% 0; opacity: 0.7; }
+}
+html.dark[data-industry="education"] body {
+  background:
+    radial-gradient(1100px 550px at 85% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    radial-gradient(900px 450px at -10% 35%, hsl(var(--accent) / 0.08), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="education"] [data-slot="card"],
+html.dark[data-industry="education"] .rounded-lg.border.bg-card,
+html.dark[data-industry="education"] .rounded-xl.border.bg-card {
+  border-color: hsl(var(--primary) / 0.28);
+  background-image: linear-gradient(100deg,
+    transparent 35%,
+    hsl(var(--primary) / 0.08) 50%,
+    transparent 65%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  animation: edu-page-glow 9s ease-in-out infinite;
+}
+html.dark[data-industry="education"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.30);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.55);
+}
+
+/* ---- LOGISTICS: conveyor belt shimmer (left-to-right industrial) ---- */
+@keyframes log-conveyor {
+  0%   { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+html.dark[data-industry="logistics"] body {
+  background:
+    radial-gradient(1000px 500px at 80% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    radial-gradient(800px 400px at -10% 40%, hsl(var(--accent) / 0.06), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="logistics"] [data-slot="card"],
+html.dark[data-industry="logistics"] .rounded-lg.border.bg-card,
+html.dark[data-industry="logistics"] .rounded-xl.border.bg-card {
+  position: relative;
+  border-color: hsl(var(--primary) / 0.30);
+  overflow: hidden;
+}
+html.dark[data-industry="logistics"] [data-slot="card"]::after,
+html.dark[data-industry="logistics"] .rounded-lg.border.bg-card::after,
+html.dark[data-industry="logistics"] .rounded-xl.border.bg-card::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+    hsl(var(--primary) / 0.55) 0 12px,
+    transparent 12px 24px);
+  background-size: 24px 3px;
+  animation: log-conveyor 1.4s linear infinite;
+  opacity: 0.7;
+}
+html.dark[data-industry="logistics"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.35);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.6);
+}
+
+/* ---- EVENTS & ENTERTAINMENT: stage strobe (multi-color flash) ---- */
+@keyframes evt-strobe {
+  0%   { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.30), 0 0 22px -2px hsl(var(--primary) / 0.40); border-color: hsl(var(--primary) / 0.30); }
+  25%  { box-shadow: 0 0 0 1px hsl(300 100% 60% / 0.45), 0 0 28px -2px hsl(300 100% 60% / 0.55); border-color: hsl(300 100% 60% / 0.45); }
+  50%  { box-shadow: 0 0 0 1px hsl(180 100% 55% / 0.45), 0 0 28px -2px hsl(180 100% 55% / 0.55); border-color: hsl(180 100% 55% / 0.45); }
+  75%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.55), 0 0 32px -2px hsl(var(--primary) / 0.65); border-color: hsl(var(--primary) / 0.55); }
+  100% { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.30), 0 0 22px -2px hsl(var(--primary) / 0.40); border-color: hsl(var(--primary) / 0.30); }
+}
+html.dark[data-industry="events_entertainment"] body {
+  background:
+    radial-gradient(900px 500px at 80% -10%, hsl(var(--primary) / 0.12), transparent 60%),
+    radial-gradient(800px 400px at 20% 110%, hsl(300 100% 50% / 0.10), transparent 60%),
+    radial-gradient(800px 400px at -10% 30%, hsl(180 100% 50% / 0.08), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="events_entertainment"] [data-slot="card"],
+html.dark[data-industry="events_entertainment"] .rounded-lg.border.bg-card,
+html.dark[data-industry="events_entertainment"] .rounded-xl.border.bg-card {
+  animation: evt-strobe 6s ease-in-out infinite;
+}
+html.dark[data-industry="events_entertainment"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.40);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.7);
+}
+
+/* ---- RAILWAYS: signal blink (red↔green alternating pulse) ---- */
+@keyframes rail-signal {
+  0%, 45%   { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.45), 0 0 24px -2px hsl(var(--primary) / 0.55); border-color: hsl(var(--primary) / 0.45); }
+  50%, 95%  { box-shadow: 0 0 0 1px hsl(var(--accent) / 0.45), 0 0 24px -2px hsl(var(--accent) / 0.55); border-color: hsl(var(--accent) / 0.45); }
+  100%      { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.45), 0 0 24px -2px hsl(var(--primary) / 0.55); border-color: hsl(var(--primary) / 0.45); }
+}
+html.dark[data-industry="railways"] body {
+  background:
+    radial-gradient(1000px 500px at 80% -10%, hsl(var(--primary) / 0.10), transparent 60%),
+    radial-gradient(900px 450px at -10% 40%, hsl(var(--accent) / 0.08), transparent 60%),
+    hsl(var(--background));
+  background-attachment: fixed;
+}
+html.dark[data-industry="railways"] [data-slot="card"],
+html.dark[data-industry="railways"] .rounded-lg.border.bg-card,
+html.dark[data-industry="railways"] .rounded-xl.border.bg-card {
+  animation: rail-signal 5s ease-in-out infinite;
+}
+html.dark[data-industry="railways"] header.sticky {
+  border-bottom: 1px solid hsl(var(--primary) / 0.35);
+  box-shadow: 0 8px 30px -18px hsl(var(--primary) / 0.6);
+}
+
+/* Reduced motion: disable all signature animations */
+@media (prefers-reduced-motion: reduce) {
+  html.dark[data-industry="hospitality"] [data-slot="card"],
+  html.dark[data-industry="hospitality"] .rounded-lg.border.bg-card,
+  html.dark[data-industry="hospitality"] .rounded-xl.border.bg-card,
+  html.dark[data-industry="car_rental"] [data-slot="card"],
+  html.dark[data-industry="car_rental"] .rounded-lg.border.bg-card,
+  html.dark[data-industry="car_rental"] .rounded-xl.border.bg-card,
+  html.dark[data-industry="education"] [data-slot="card"],
+  html.dark[data-industry="education"] .rounded-lg.border.bg-card,
+  html.dark[data-industry="education"] .rounded-xl.border.bg-card,
+  html.dark[data-industry="logistics"] [data-slot="card"]::after,
+  html.dark[data-industry="logistics"] .rounded-lg.border.bg-card::after,
+  html.dark[data-industry="logistics"] .rounded-xl.border.bg-card::after,
+  html.dark[data-industry="events_entertainment"] [data-slot="card"],
+  html.dark[data-industry="events_entertainment"] .rounded-lg.border.bg-card,
+  html.dark[data-industry="events_entertainment"] .rounded-xl.border.bg-card,
+  html.dark[data-industry="railways"] [data-slot="card"],
+  html.dark[data-industry="railways"] .rounded-lg.border.bg-card,
+  html.dark[data-industry="railways"] .rounded-xl.border.bg-card {
+    animation: none !important;
+  }
+}
