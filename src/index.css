@@ -332,15 +332,18 @@ html {
   }
 }
 
-[data-sidebar="menu-button"][data-active="true"] {
+[data-sidebar="menu-button"][data-active="true"],
+html.dark[data-industry] [data-sidebar="menu-button"][data-active="true"],
+html.dark[data-industry="airlines"] [data-sidebar="menu-button"][data-active="true"],
+html.dark[data-industry="healthcare"] [data-sidebar="menu-button"][data-active="true"] {
   background: transparent !important;
   color: hsl(var(--sidebar-ring)) !important;
   border-radius: 0.5rem;
-  animation: sidebar-active-breath 3.2s ease-in-out infinite;
+  animation: sidebar-active-breath 3.2s ease-in-out infinite !important;
 }
 
 [data-sidebar="menu-button"][data-active="true"] svg {
-  color: hsl(var(--sidebar-ring));
+  color: hsl(var(--sidebar-ring)) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
