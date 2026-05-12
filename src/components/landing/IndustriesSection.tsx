@@ -66,7 +66,7 @@ const IndustriesSection = () => {
             <Card
               key={ind.name}
               onClick={() => handleClick(ind.id)}
-              className="group border-white/[0.06] bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
+              className="industry-rainbow-card group bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = `${ind.color}50`;
                 e.currentTarget.style.boxShadow = `0 8px 40px -8px ${ind.color}30, 0 0 0 1px ${ind.color}20, inset 0 1px 0 0 ${ind.color}15`;
