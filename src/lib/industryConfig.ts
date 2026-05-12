@@ -97,7 +97,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "No-Show Rate", key: "noShowRate", format: "percent" },
       { label: "Patients/Day", key: "patientsDay", format: "number" },
     ],
-    color: "hsl(162 100% 45%)",
+    color: "hsl(0 80% 60%)",
   },
   education: {
     id: "education", label: "Education & Training", icon: "🎓",

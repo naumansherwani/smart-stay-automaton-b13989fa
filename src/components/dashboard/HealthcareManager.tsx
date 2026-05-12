@@ -1455,7 +1455,7 @@ function MedicationSafetyWall() {
   const severityStyle = (s: string) =>
     s === "critical"
       ? { bg: "bg-destructive/10", border: "border-destructive/20", badge: "bg-destructive text-destructive-foreground", dot: "hsl(0,70%,55%)" }
-      : { bg: "bg-[hsl(45,100%,96%)]", border: "border-[hsl(45,90%,50%)]/20", badge: "bg-[hsl(45,90%,50%)] text-foreground", dot: "hsl(45,90%,50%)" };
+      : { bg: "bg-warning/10", border: "border-warning/30", badge: "bg-warning text-warning-foreground", dot: "hsl(45,90%,50%)" };
 
   const typeIcon = (t: string) =>
     t === "allergy" ? "🚫" : t === "interaction" ? "⚠️" : "💊";
