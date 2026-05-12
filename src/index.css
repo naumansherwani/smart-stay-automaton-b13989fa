@@ -264,106 +264,47 @@ html {
 
 /* Ghost Sidebar */
 .ghost-sidebar-bg {
-  position: relative;
-  isolation: isolate;
-  background: linear-gradient(180deg, hsl(222 30% 6% / 0.98) 0%, hsl(222 35% 4% / 0.99) 100%);
+  background: linear-gradient(180deg, rgba(8, 12, 20, 0.97) 0%, rgba(5, 9, 16, 0.99) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   color: hsl(var(--sidebar-foreground));
-  border-right: 1px solid hsl(var(--sidebar-ring) / 0.18);
+  border-right: 1px solid rgba(var(--industry-rgb), 0.18);
   box-shadow:
-    inset 0 1px 0 hsl(0 0% 100% / 0.03),
-    inset -1px 0 0 hsl(0 0% 100% / 0.04),
-    0 0 30px hsl(var(--sidebar-ring) / 0.08),
-    0 0 60px hsl(var(--sidebar-ring) / 0.06),
-    2px 0 24px hsl(var(--sidebar-ring) / 0.12),
-    0 0 40px hsl(0 0% 0% / 0.55);
-}
-
-.ghost-sidebar-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at 50% 18%,
-    hsl(var(--sidebar-ring) / 0.10) 0%,
-    transparent 48%
-  );
-}
-
-.ghost-sidebar-bg > * {
-  position: relative;
-  z-index: 1;
+    0 0 24px rgba(var(--industry-rgb), 0.08),
+    2px 0 18px rgba(var(--industry-rgb), 0.10);
 }
 
 html.dark[data-industry] .ghost-sidebar-bg {
-  background:
-    linear-gradient(180deg, hsl(222 30% 6% / 0.98) 0%, hsl(222 35% 4% / 0.99) 100%);
-}
-
-html.dark[data-industry] .ghost-sidebar-bg::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: 1px;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    hsl(var(--sidebar-ring) / 0.30) 50%,
-    transparent 100%
-  );
-}
-
-.ghost-edge-glow {
-  background: linear-gradient(180deg, hsl(174 62% 50% / 0.15) 0%, hsl(217 91% 60% / 0.25) 50%, hsl(174 62% 50% / 0.15) 100%);
-  box-shadow: 0 0 8px 1px hsl(217 91% 60% / 0.2);
-  transition: box-shadow 0.3s ease;
-}
-
-.ghost-edge-glow:hover {
-  box-shadow: 0 0 14px 3px hsl(217 91% 60% / 0.4);
+  background: linear-gradient(180deg, rgba(8, 12, 20, 0.97) 0%, rgba(5, 9, 16, 0.99) 100%);
 }
 
 .ghost-sidebar-active {
-  position: relative;
-  color: hsl(var(--sidebar-foreground));
-  background:
-    linear-gradient(180deg, hsl(var(--muted) / 0.82) 0%, hsl(var(--muted) / 0.58) 100%),
-    linear-gradient(180deg, hsl(var(--sidebar-ring) / 0.08) 0%, hsl(var(--sidebar-ring) / 0.03) 100%);
-  border: 1px solid hsl(var(--sidebar-ring) / 0.34);
-  box-shadow:
-    inset 0 0 0 1px hsl(var(--sidebar-ring) / 0.10),
-    0 0 0 1px hsl(var(--sidebar-ring) / 0.12),
-    0 0 18px -14px hsl(var(--sidebar-ring) / 0.28),
-    0 14px 24px -24px hsl(var(--sidebar-ring) / 0.34);
+  color: rgb(var(--industry-rgb));
+  background: rgba(var(--industry-rgb), 0.08);
+  border: 1px solid rgba(var(--industry-rgb), 0.45);
+  border-radius: 14px;
+  box-shadow: 0 0 14px rgba(var(--industry-rgb), 0.16);
 }
 
 .ghost-sidebar-active svg {
-  color: hsl(var(--sidebar-ring));
+  color: rgb(var(--industry-rgb));
 }
 
 .ghost-sidebar-active span {
+  color: rgb(var(--industry-rgb));
+}
+
+.ghost-sidebar-item,
+.nav-rail-item {
+  border: 1px solid transparent;
+}
+
+.ghost-sidebar-item:hover,
+html.dark[data-industry] .ghost-sidebar-bg .nav-rail-item:hover {
   color: hsl(var(--sidebar-foreground));
-}
-
-.ghost-sidebar-bg [data-sidebar="menu-button"][data-active="true"] {
-  background: linear-gradient(180deg, hsl(var(--sidebar-ring) / 0.08) 0%, hsl(var(--sidebar-ring) / 0.04) 100%) !important;
-  color: hsl(var(--sidebar-foreground)) !important;
-  border-radius: 0.5rem;
-  box-shadow:
-    inset 0 0 0 1px hsl(var(--sidebar-ring) / 0.10),
-    0 0 14px -12px hsl(var(--sidebar-ring) / 0.26) !important;
-}
-
-.ghost-sidebar-bg [data-sidebar="menu-button"][data-active="true"] svg {
-  color: hsl(var(--sidebar-ring)) !important;
+  background: rgba(var(--industry-rgb), 0.04);
+  border: 1px solid rgba(var(--industry-rgb), 0.08);
+  box-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -372,25 +313,6 @@ html.dark[data-industry] .ghost-sidebar-bg::after {
     animation: none;
   }
 }
-
-/* ============================================================
-   Per-industry sidebar ambience (dark mode only).
-   Slow vertical gradient sweep tinted by --sidebar-ring + a
-   right-edge glow line in the same industry color. Healthcare=red,
-   Airlines=blue, Events=purple, Hospitality=gold, etc.
-   ============================================================ */
-@keyframes sidebar-vertical-sweep {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 0% 200%; }
-}
-@keyframes sidebar-edge-pulse {
-  0%, 100% { opacity: 0.55; }
-  50%      { opacity: 1;    }
-}
-
-/* Per-industry sidebar surface animation removed — see .ghost-sidebar-bg
-   for the static premium glass treatment. The shadcn sidebar primitive
-   inherits its look from .ghost-sidebar-bg applied in GhostSidebar. */
 
 /* ===== Founder OS · Owner Command Center theme ===== */
 .founder-os {
@@ -999,8 +921,11 @@ html.dark[data-industry="brand"] {
   60%  { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.40), 0 0 26px -2px hsl(var(--primary) / 0.45), 0 0 56px -8px hsl(0 0% 100% / 0.28); }
   100% { box-shadow: 0 0 0 1px hsl(var(--primary) / 0.20), 0 0 16px -2px hsl(var(--primary) / 0.25), 0 0 32px -10px hsl(0 0% 100% / 0.10); }
 }
-html.dark[data-industry] .ghost-sidebar-bg [data-sidebar="menu-button"]:not([data-active="true"]):hover,
-html.dark[data-industry] .ghost-sidebar-bg .nav-rail-item:hover {
-  color: hsl(var(--sidebar-foreground)) !important;
-  background: hsl(var(--sidebar-ring) / 0.06) !important;
-}
+[data-industry="hospitality"] { --industry-rgb: 245, 197, 66; }
+[data-industry="airlines"] { --industry-rgb: 59, 130, 246; }
+[data-industry="car_rental"] { --industry-rgb: 16, 185, 129; }
+[data-industry="healthcare"] { --industry-rgb: 239, 68, 68; }
+[data-industry="education"] { --industry-rgb: 139, 92, 246; }
+[data-industry="logistics"] { --industry-rgb: 249, 115, 22; }
+[data-industry="events_entertainment"] { --industry-rgb: 236, 72, 153; }
+[data-industry="railways"] { --industry-rgb: 6, 182, 212; }
