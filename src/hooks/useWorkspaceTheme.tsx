@@ -35,20 +35,29 @@ export function useWorkspaceTheme() {
       const root = document.documentElement;
       const mode = getWorkspaceThemeMode();
       if (mode === "brand" || mode === "system") {
-        if (mode === "brand") root.dataset.industry = "brand";
-        else delete root.dataset.industry;
+        // "system" still falls back to brand teal so the owner/admin
+        // never sees an un-themed grey shell on first login.
+        root.dataset.industry = "brand";
         return;
       }
       const industry = activeWorkspace?.industry || profile?.industry;
-      if (industry) root.dataset.industry = industry;
-      else delete root.dataset.industry;
+      // Always apply *something* so semantic tokens resolve. Falls back to
+      // brand teal until the user picks an industry.
+      root.dataset.industry = industry || "brand";
     };
     apply();
     window.addEventListener("workspace-theme-mode-changed", apply);
     return () => {
       window.removeEventListener("workspace-theme-mode-changed", apply);
-      // Clear when AppLayout unmounts (e.g. user lands on /, /login).
-      delete document.documentElement.dataset.industry;
     };
   }, [activeWorkspace?.industry, profile?.industry]);
+
+  // Only clear `data-industry` on full unmount (e.g. navigating to landing /
+  // login). Previously this ran on every dep change, causing a one-frame
+  // un-themed flicker each time the workspace or profile updated.
+  useEffect(() => {
+    return () => {
+      delete document.documentElement.dataset.industry;
+    };
+  }, []);
 }
