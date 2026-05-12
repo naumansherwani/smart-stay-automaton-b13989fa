@@ -268,12 +268,11 @@ html {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   color: hsl(var(--sidebar-foreground));
-  border-right: 1px solid rgba(var(--industry-rgb), 0.35);
+  border-right: 1px solid rgba(var(--industry-rgb), 0.30);
+  /* Keep neon INSIDE the sidebar — no outward bleed into main content */
   box-shadow:
-    inset -1px 0 0 rgba(var(--industry-rgb), 0.25),
-    0 0 32px rgba(var(--industry-rgb), 0.18),
-    4px 0 28px rgba(var(--industry-rgb), 0.22),
-    8px 0 60px rgba(var(--industry-rgb), 0.12);
+    inset -1px 0 0 rgba(var(--industry-rgb), 0.40),
+    inset -8px 0 24px -8px rgba(var(--industry-rgb), 0.25);
 }
 
 html.dark[data-industry] .ghost-sidebar-bg {
