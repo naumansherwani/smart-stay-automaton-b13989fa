@@ -7,15 +7,15 @@ import {
 } from "lucide-react";
 import type { IndustryType } from "@/lib/industryConfig";
 
-const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; id: IndustryType }[] = [
-  { icon: Globe, name: "Travel, Tourism & Hospitality", desc: "Hotels, vacation rentals, B&Bs, tour operators", color: "#0d9488", id: "hospitality" },
-  { icon: Plane, name: "Airlines", desc: "Crew scheduling, gate management, fleet rotation", color: "#3b82f6", id: "airlines" },
-  { icon: Car, name: "Car Rental", desc: "Fleet availability, maintenance scheduling", color: "#0ea5e9", id: "car_rental" },
-  { icon: Stethoscope, name: "Healthcare", desc: "Appointments, OR rooms, equipment booking", color: "#ef4444", id: "healthcare" },
-  { icon: GraduationCap, name: "Education", desc: "Class scheduling, room allocation, tutoring", color: "#8b5cf6", id: "education" },
-  { icon: Truck, name: "Logistics", desc: "Delivery slots, warehouse scheduling, fleet", color: "#f97316", id: "logistics" },
-  { icon: Theater, name: "Events & Entertainment", desc: "Venue booking, performer scheduling", color: "#d946ef", id: "events_entertainment" },
-  { icon: TrainFront, name: "Railways", desc: "Train scheduling, platform allocation, crew rotation", color: "#0284c7", id: "railways" },
+const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; glow: string; id: IndustryType }[] = [
+  { icon: Globe, name: "Travel, Tourism & Hospitality", desc: "Hotels, vacation rentals, B&Bs, tour operators", color: "#d4a017", glow: "46 65% 55%", id: "hospitality" },
+  { icon: Plane, name: "Airlines", desc: "Crew scheduling, gate management, fleet rotation", color: "#3b82f6", glow: "199 92% 64%", id: "airlines" },
+  { icon: Car, name: "Car Rental", desc: "Fleet availability, maintenance scheduling", color: "#22c55e", glow: "110 100% 50%", id: "car_rental" },
+  { icon: Stethoscope, name: "Healthcare", desc: "Appointments, OR rooms, equipment booking", color: "#ef4444", glow: "0 80% 60%", id: "healthcare" },
+  { icon: GraduationCap, name: "Education", desc: "Class scheduling, room allocation, tutoring", color: "#fbbf24", glow: "39 98% 71%", id: "education" },
+  { icon: Truck, name: "Logistics", desc: "Delivery slots, warehouse scheduling, fleet", color: "#f97316", glow: "33 100% 50%", id: "logistics" },
+  { icon: Theater, name: "Events & Entertainment", desc: "Venue booking, performer scheduling", color: "#a855f7", glow: "263 100% 65%", id: "events_entertainment" },
+  { icon: TrainFront, name: "Railways", desc: "Train scheduling, platform allocation, crew rotation", color: "#ef4444", glow: "0 100% 60%", id: "railways" },
 ];
 
 const IndustriesSection = () => {
@@ -67,6 +67,7 @@ const IndustriesSection = () => {
               key={ind.name}
               onClick={() => handleClick(ind.id)}
               className="industry-rainbow-card group bg-white/[0.02] backdrop-blur-sm transition-all duration-400 ease-out hover:-translate-y-1.5 hover:scale-[1.04] cursor-pointer overflow-hidden relative"
+              style={{ ["--glow" as any]: ind.glow }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = `${ind.color}50`;
                 e.currentTarget.style.boxShadow = `0 8px 40px -8px ${ind.color}30, 0 0 0 1px ${ind.color}20, inset 0 1px 0 0 ${ind.color}15`;
