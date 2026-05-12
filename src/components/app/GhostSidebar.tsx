@@ -287,11 +287,17 @@ export function GhostSidebar() {
       )}>
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-public-view"))}
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          className="ghost-brand group flex items-center gap-2.5 hover:opacity-95 transition-opacity"
           title="Switch to Public View"
         >
-          <Logo size="sm" />
-          {expanded && <span className="text-sm font-bold text-white/90 whitespace-nowrap">HostFlow AI</span>}
+          <span className="ghost-brand-mark relative inline-flex items-center justify-center shrink-0">
+            <Logo size="sm" />
+          </span>
+          {expanded && (
+            <span className="ghost-brand-text text-sm font-extrabold tracking-tight whitespace-nowrap">
+              HostFlow AI
+            </span>
+          )}
         </button>
         {expanded && (
           <Button
