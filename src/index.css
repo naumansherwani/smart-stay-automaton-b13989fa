@@ -321,6 +321,33 @@ html.dark[data-industry] .ghost-sidebar-bg .nav-rail-item:hover {
   }
 }
 
+/* ===== Ghost Sidebar — LIGHT MODE override =====
+   Dark sidebar is unreadable in light mode. This block flips bg/text to
+   light tokens WITHOUT touching the dark mode appearance (gated on
+   html:not(.dark)). The industry neon (active item glow + hover ring)
+   keeps using --industry-rgb so the 8-industry color identity is
+   preserved in both themes.                                          */
+html:not(.dark) .ghost-sidebar-bg {
+  background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 97%) 100%);
+  color: hsl(var(--foreground));
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 0 24px -4px rgba(0, 0, 0, 0.08);
+}
+html:not(.dark) .ghost-sidebar-bg [class*="text-white"] {
+  color: hsl(var(--foreground)) !important;
+}
+html:not(.dark) .ghost-sidebar-bg [class*="border-white"] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html:not(.dark) .ghost-sidebar-bg .ghost-sidebar-item:hover,
+html:not(.dark) .ghost-sidebar-bg .nav-rail-item:hover {
+  background: rgba(var(--industry-rgb, 15 23 42), 0.06);
+  border-color: rgba(var(--industry-rgb, 15 23 42), 0.18);
+}
+html:not(.dark) .ghost-sidebar-bg .ghost-sidebar-active {
+  background: linear-gradient(135deg, rgba(var(--industry-rgb, 15 23 42), 0.12) 0%, rgba(var(--industry-rgb, 15 23 42), 0.04) 100%);
+}
+
 /* ===== Founder OS · Owner Command Center theme ===== */
 .founder-os {
   --fos-bg: #0B1120;
