@@ -34,3 +34,4 @@ Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartb
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
 - [No mock data](mem://constraints/no-mock-data) — Forbid hardcoded sample arrays in production UI
+- [Sidebar locked](mem://design/sidebar-locked) — GhostSidebar premium dark glass is final across all 8 industries; landing industry cards stay consistent. Do not restyle without owner approval.
