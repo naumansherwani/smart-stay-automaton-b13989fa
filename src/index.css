@@ -1055,18 +1055,14 @@ html.dark[data-industry="airlines"] body {
   background-attachment: fixed;
 }
 
-html.dark[data-industry="airlines"] [data-slot="card"],
-html.dark[data-industry="airlines"] .rounded-lg.border.bg-card,
-html.dark[data-industry="airlines"] .rounded-xl.border.bg-card {
+html.dark[data-industry="airlines"] [data-airline-radar="true"] {
   position: relative;
   border-color: hsl(var(--primary) / 0.25);
   overflow: hidden;
   isolation: isolate;
   transition: transform .25s ease, border-color .25s ease;
 }
-html.dark[data-industry="airlines"] [data-slot="card"]::before,
-html.dark[data-industry="airlines"] .rounded-lg.border.bg-card::before,
-html.dark[data-industry="airlines"] .rounded-xl.border.bg-card::before {
+html.dark[data-industry="airlines"] [data-airline-radar="true"]::before {
   content: "";
   position: absolute;
   inset: -50%;
@@ -1080,13 +1076,11 @@ html.dark[data-industry="airlines"] .rounded-xl.border.bg-card::before {
   animation: air-radar-sweep 8s linear infinite;
   opacity: 0.55;
 }
-html.dark[data-industry="airlines"] [data-slot="card"] > *,
-html.dark[data-industry="airlines"] .rounded-lg.border.bg-card > *,
-html.dark[data-industry="airlines"] .rounded-xl.border.bg-card > * {
+html.dark[data-industry="airlines"] [data-airline-radar="true"] > * {
   position: relative;
   z-index: 1;
 }
-html.dark[data-industry="airlines"] [data-slot="card"]:hover {
+html.dark[data-industry="airlines"] [data-airline-radar="true"]:hover {
   border-color: hsl(var(--primary) / 0.55);
   transform: translateY(-1px);
 }
@@ -1116,9 +1110,7 @@ html.dark[data-industry="airlines"] .ghost-sidebar-active {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.dark[data-industry="airlines"] [data-slot="card"]::before,
-  html.dark[data-industry="airlines"] .rounded-lg.border.bg-card::before,
-  html.dark[data-industry="airlines"] .rounded-xl.border.bg-card::before,
+  html.dark[data-industry="airlines"] [data-airline-radar="true"]::before,
   html.dark[data-industry="airlines"] button.bg-primary:hover {
     animation: none !important;
   }
