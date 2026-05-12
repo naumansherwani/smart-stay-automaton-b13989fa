@@ -241,6 +241,17 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {INDUSTRIES.map((ind) => {
                 const isActive = currentIndustry === ind.id;
+                const glowMap: Record<string, string> = {
+                  hospitality: "46 65% 55%",
+                  airlines: "199 92% 64%",
+                  car_rental: "110 100% 50%",
+                  healthcare: "0 80% 60%",
+                  education: "39 98% 71%",
+                  logistics: "33 100% 50%",
+                  events_entertainment: "263 100% 65%",
+                  railways: "0 100% 60%",
+                };
+                const glowHsl = glowMap[ind.id] || "168 70% 50%";
                 return (
                   <Card
                     key={ind.id}
@@ -248,7 +259,7 @@ export default function PublicView({ onReturn, onIndustrySelect, currentIndustry
                     className={`industry-rainbow-card group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden relative ${
                       isActive ? "ring-2 ring-primary shadow-lg" : "border-border/50"
                     }`}
-                    style={isActive ? { borderColor: ind.color, boxShadow: `0 4px 20px -4px ${ind.color}40` } : {}}
+                    style={{ ["--glow" as any]: glowHsl, ...(isActive ? { borderColor: ind.color } : {}) }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.borderColor = `${ind.color}50`;
