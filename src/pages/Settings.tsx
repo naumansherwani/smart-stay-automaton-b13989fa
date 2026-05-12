@@ -287,7 +287,7 @@ const Settings = () => {
                   <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                     <p className="text-sm font-medium text-foreground">🏢 HostFlow AI</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Multi-industry AI platform · 8 Industries · Smart CRM · AI Automation
+                      Multi-industry AI platform · 8 Industries · AI CRM · AI Automation
                     </p>
                   </div>
                 </CardContent>

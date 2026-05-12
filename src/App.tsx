@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +13,12 @@ import { connectBrainStream } from "@/lib/brain-sync";
 import AiLimitModal from "@/components/AiLimitModal";
 import SurfaceGuard from "@/components/SurfaceGuard";
 import { FloatingAdvisorChatProvider } from "@/components/advisor/FloatingAdvisorChat";
+
+// Redirect legacy /crm to new /ai-crm, preserving query string and hash
+const CrmRedirect = () => {
+  const loc = useLocation();
+  return <Navigate to={`/ai-crm${loc.search}${loc.hash}`} replace />;
+};
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -366,7 +372,8 @@ const App = () => {
               <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route path="/maintenance" element={<Maintenance />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
+              <Route path="/ai-crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
+              <Route path="/crm" element={<CrmRedirect />} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/advisor" element={<ProtectedRoute><AIAdvisor /></ProtectedRoute>} />
               <Route path="/revenue-intel" element={<ProtectedRoute><RevenueIntelligence /></ProtectedRoute>} />

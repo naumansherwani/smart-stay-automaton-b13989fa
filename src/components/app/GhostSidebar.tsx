@@ -27,11 +27,11 @@ const primaryNav = [
 ];
 
 const crmSub = [
-  { title: "Leads", url: "/crm?tab=leads", icon: UserPlus },
-  { title: "Customers", url: "/crm?tab=customers", icon: UserCheck },
-  { title: "Bookings", url: "/crm?tab=bookings", icon: ClipboardList },
-  { title: "Pipeline", url: "/crm?tab=pipeline", icon: GitBranch },
-  { title: "Tasks", url: "/crm?tab=tasks", icon: ListTodo },
+  { title: "Leads", url: "/ai-crm?tab=leads", icon: UserPlus },
+  { title: "Customers", url: "/ai-crm?tab=customers", icon: UserCheck },
+  { title: "Bookings", url: "/ai-crm?tab=bookings", icon: ClipboardList },
+  { title: "Pipeline", url: "/ai-crm?tab=pipeline", icon: GitBranch },
+  { title: "Tasks", url: "/ai-crm?tab=tasks", icon: ListTodo },
 ];
 
 const tailNav = [
@@ -179,11 +179,11 @@ export function GhostSidebar() {
           labelsVisible
             ? "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg"
             : "w-12 h-12 flex items-center justify-center rounded-[14px] mx-auto nav-rail-item",
-          currentPath === "/crm" && "ghost-sidebar-active"
+          (currentPath === "/ai-crm" || currentPath === "/crm") && "ghost-sidebar-active"
         )}
       >
         <Users className={cn("shrink-0", labelsVisible ? "h-[18px] w-[18px]" : "h-5 w-5")} />
-        <span className={cn("flex-1 text-left whitespace-nowrap transition-opacity", labelsVisible ? "opacity-100" : "hidden")}>CRM</span>
+        <span className={cn("flex-1 text-left whitespace-nowrap transition-opacity", labelsVisible ? "opacity-100" : "hidden")}>AI CRM</span>
         {labelsVisible && <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", crmOpen && "rotate-90")} />}
       </button>
     );
@@ -193,7 +193,7 @@ export function GhostSidebar() {
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>{crmBtn}</TooltipTrigger>
-              <TooltipContent side="right" className="bg-card text-foreground border-border">CRM</TooltipContent>
+              <TooltipContent side="right" className="bg-card text-foreground border-border">AI CRM</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         ) : crmBtn}
