@@ -349,35 +349,17 @@ html:not(.dark) .ghost-sidebar-bg .ghost-sidebar-active {
 }
 
 /* ===== Ghost Sidebar — HostFlow AI brand header ("H" + wordmark) =====
-   Works in BOTH light & dark, picks up the active industry's --industry-rgb
-   so the H glows in the industry color across all 8 dashboards.       */
+   Dark mode keeps the original plain H logo.
+   Light mode keeps the premium industry-colored treatment. */
 .ghost-brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background:
-    radial-gradient(circle at 30% 30%, rgba(var(--industry-rgb, 45 212 191), 0.28), transparent 65%),
-    linear-gradient(135deg, rgba(var(--industry-rgb, 45 212 191), 0.18), rgba(var(--industry-rgb, 45 212 191), 0.04));
-  border: 1px solid rgba(var(--industry-rgb, 45 212 191), 0.45);
-  box-shadow:
-    0 0 0 1px rgba(var(--industry-rgb, 45 212 191), 0.18),
-    0 0 18px -2px rgba(var(--industry-rgb, 45 212 191), 0.55),
-    0 0 36px -10px rgba(var(--industry-rgb, 45 212 191), 0.45),
-    inset 0 0 12px rgba(var(--industry-rgb, 45 212 191), 0.18);
-  transition: box-shadow .35s ease, transform .35s ease;
+  transition: box-shadow .35s ease, transform .35s ease, filter .35s ease;
 }
 .ghost-brand-mark img {
-  width: 28px !important;
-  height: 28px !important;
-  filter: drop-shadow(0 0 6px rgba(var(--industry-rgb, 45 212 191), 0.65));
+  width: 40px !important;
+  height: 40px !important;
 }
 .ghost-brand:hover .ghost-brand-mark {
-  transform: scale(1.04);
-  box-shadow:
-    0 0 0 1px rgba(var(--industry-rgb, 45 212 191), 0.35),
-    0 0 26px -2px rgba(var(--industry-rgb, 45 212 191), 0.75),
-    0 0 56px -10px rgba(var(--industry-rgb, 45 212 191), 0.55),
-    inset 0 0 14px rgba(var(--industry-rgb, 45 212 191), 0.28);
+  transform: none;
 }
 
 /* Wordmark — gradient that pops in dark mode */
