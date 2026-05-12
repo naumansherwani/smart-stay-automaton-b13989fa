@@ -395,26 +395,48 @@ html:not(.dark) .ghost-sidebar-bg .ghost-sidebar-active {
 html:not(.dark) .ghost-brand-text {
   background: linear-gradient(135deg,
     rgb(var(--industry-rgb, 15 118 110)) 0%,
-    hsl(222 47% 11%) 55%,
+    hsl(222 47% 14%) 45%,
+    hsl(222 47% 8%) 60%,
     rgb(var(--industry-rgb, 15 118 110)) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: none;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 22px rgba(var(--industry-rgb, 15 118 110), 0.35);
+  letter-spacing: -0.01em;
 }
 /* Light mode H plate — slightly stronger fill so the glow reads on white */
 html:not(.dark) .ghost-brand-mark {
   background:
-    radial-gradient(circle at 30% 30%, rgba(var(--industry-rgb, 15 118 110), 0.22), transparent 65%),
-    linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 97%));
-  border: 1px solid rgba(var(--industry-rgb, 15 118 110), 0.45);
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95), transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(var(--industry-rgb, 15 118 110), 0.35), transparent 65%),
+    linear-gradient(135deg,
+      rgba(var(--industry-rgb, 15 118 110), 0.18) 0%,
+      hsl(0 0% 100%) 45%,
+      rgba(var(--industry-rgb, 15 118 110), 0.22) 100%);
+  border: 1px solid rgba(var(--industry-rgb, 15 118 110), 0.55);
   box-shadow:
-    0 0 0 1px rgba(var(--industry-rgb, 15 118 110), 0.15),
-    0 4px 14px -2px rgba(var(--industry-rgb, 15 118 110), 0.35),
-    0 0 28px -10px rgba(var(--industry-rgb, 15 118 110), 0.35);
+    0 0 0 1px rgba(var(--industry-rgb, 15 118 110), 0.22),
+    0 6px 18px -4px rgba(var(--industry-rgb, 15 118 110), 0.5),
+    0 0 32px -6px rgba(var(--industry-rgb, 15 118 110), 0.45),
+    0 0 60px -16px rgba(var(--industry-rgb, 15 118 110), 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 14px rgba(var(--industry-rgb, 15 118 110), 0.12);
 }
 html:not(.dark) .ghost-brand-mark img {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  filter:
+    drop-shadow(0 0 4px rgba(var(--industry-rgb, 15 118 110), 0.55))
+    drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+html:not(.dark) .ghost-brand:hover .ghost-brand-mark {
+  box-shadow:
+    0 0 0 1px rgba(var(--industry-rgb, 15 118 110), 0.4),
+    0 8px 24px -4px rgba(var(--industry-rgb, 15 118 110), 0.65),
+    0 0 48px -6px rgba(var(--industry-rgb, 15 118 110), 0.55),
+    0 0 80px -16px rgba(var(--industry-rgb, 15 118 110), 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 0 18px rgba(var(--industry-rgb, 15 118 110), 0.2);
 }
 
 /* ===== Founder OS · Owner Command Center theme ===== */
