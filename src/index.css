@@ -530,7 +530,7 @@ html.dark[data-industry="car_rental"] {
 
 /* -------- HEALTHCARE (Lyra · Precision Sanctum — Neon Mint) -------- */
 [data-industry="healthcare"] {
-  /* Medical Red primary (hospital cross) + Clinical Teal accent. Clean white surfaces. */
+  /* Medical Red primary + clean clinical White accent */
   --background: 0 0% 100%;
   --foreground: 215 25% 14%;
   --card: 0 0% 100%;
@@ -539,12 +539,12 @@ html.dark[data-industry="car_rental"] {
   --popover-foreground: 215 25% 14%;
   --primary: 0 75% 48%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 165 70% 38%;
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 0 0% 96%;
+  --secondary-foreground: 215 25% 14%;
   --muted: 210 16% 95%;
   --muted-foreground: 215 12% 42%;
-  --accent: 165 70% 38%;
-  --accent-foreground: 0 0% 100%;
+  --accent: 0 0% 98%;
+  --accent-foreground: 0 75% 48%;
   --destructive: 0 75% 48%;
   --destructive-foreground: 0 0% 100%;
   --border: 210 16% 88%;
@@ -554,13 +554,13 @@ html.dark[data-industry="car_rental"] {
   --sidebar-foreground: 215 25% 14%;
   --sidebar-primary: 0 75% 48%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 165 70% 38%;
-  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 96%;
+  --sidebar-accent-foreground: 0 75% 48%;
   --sidebar-border: 210 16% 88%;
   --sidebar-ring: 0 75% 48%;
 }
 html.dark[data-industry="healthcare"] {
-  /* Deep clinical navy surfaces, vivid medical red primary, mint accent */
+  /* Deep clinical navy + vivid medical red + pure white halo (no more teal) */
   --background: 215 32% 7%;
   --foreground: 210 30% 96%;
   --card: 215 28% 11%;
@@ -569,12 +569,12 @@ html.dark[data-industry="healthcare"] {
   --popover-foreground: 210 30% 96%;
   --primary: 0 80% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 162 80% 50%;
+  --secondary: 0 0% 100%;
   --secondary-foreground: 215 32% 7%;
   --muted: 215 24% 14%;
   --muted-foreground: 215 14% 70%;
-  --accent: 162 80% 50%;
-  --accent-foreground: 215 32% 7%;
+  --accent: 0 0% 100%;
+  --accent-foreground: 0 80% 60%;
   --destructive: 0 80% 60%;
   --destructive-foreground: 0 0% 100%;
   --border: 215 22% 18%;
@@ -584,8 +584,8 @@ html.dark[data-industry="healthcare"] {
   --sidebar-foreground: 210 30% 96%;
   --sidebar-primary: 0 80% 60%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 162 80% 50%;
-  --sidebar-accent-foreground: 215 32% 7%;
+  --sidebar-accent: 0 0% 100%;
+  --sidebar-accent-foreground: 0 80% 60%;
   --sidebar-border: 215 22% 18%;
   --sidebar-ring: 0 80% 60%;
 }
