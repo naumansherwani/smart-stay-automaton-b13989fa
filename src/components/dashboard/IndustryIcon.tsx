@@ -2,7 +2,7 @@ import {
   Globe, Plane, Car, Hospital, GraduationCap, Package,
   Theater, TrainFront
 } from "lucide-react";
-import type { IndustryType } from "@/lib/industryConfig";
+import { getIndustryConfig, type IndustryType } from "@/lib/industryConfig";
 
 const ICON_MAP: Record<IndustryType, React.ElementType> = {
   hospitality: Globe,
@@ -15,17 +15,6 @@ const ICON_MAP: Record<IndustryType, React.ElementType> = {
   railways: TrainFront,
 };
 
-const COLOR_MAP: Record<IndustryType, string> = {
-  hospitality: "#2563eb",
-  airlines: "#3b82f6",
-  car_rental: "#0ea5e9",
-  healthcare: "#ef4444",
-  education: "#8b5cf6",
-  logistics: "#f97316",
-  events_entertainment: "#d946ef",
-  railways: "#0284c7",
-};
-
 interface IndustryIconProps {
   industry: IndustryType;
   size?: number;
@@ -34,7 +23,7 @@ interface IndustryIconProps {
 
 const IndustryIcon = ({ industry, size = 18, className }: IndustryIconProps) => {
   const IconComponent = ICON_MAP[industry] || Globe;
-  const color = COLOR_MAP[industry] || "#3b82f6";
+  const color = getIndustryConfig(industry).color;
 
   return <IconComponent size={size} color={color} className={className} />;
 };
