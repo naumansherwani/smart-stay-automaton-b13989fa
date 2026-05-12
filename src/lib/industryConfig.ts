@@ -40,7 +40,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Booking Rate", key: "bookingRate", format: "percent" },
       { label: "Satisfaction", key: "satisfaction", format: "percent" },
     ],
-    color: "hsl(168, 70%, 38%)",
+    color: "hsl(46 65% 52%)",
   },
   airlines: {
     id: "airlines", label: "Airlines & Aviation", icon: "✈️",
@@ -59,7 +59,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Revenue/Seat", key: "revSeat", format: "currency" },
       { label: "Turnaround", key: "turnaround", format: "duration" },
     ],
-    color: "hsl(220, 80%, 55%)",
+    color: "hsl(199 92% 64%)",
   },
   car_rental: {
     id: "car_rental", label: "Car Rental", icon: "🚗",
@@ -78,7 +78,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Avg Rental", key: "avgRental", format: "duration" },
       { label: "Damage Rate", key: "damageRate", format: "percent" },
     ],
-    color: "hsl(200, 70%, 50%)",
+    color: "hsl(110 100% 50%)",
   },
   healthcare: {
     id: "healthcare", label: "Healthcare & Clinics", icon: "🏥",
@@ -97,7 +97,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "No-Show Rate", key: "noShowRate", format: "percent" },
       { label: "Patients/Day", key: "patientsDay", format: "number" },
     ],
-    color: "hsl(356, 72%, 55%)",
+    color: "hsl(162 100% 45%)",
   },
   education: {
     id: "education", label: "Education & Training", icon: "🎓",
@@ -116,7 +116,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Attendance Rate", key: "attendance", format: "percent" },
       { label: "Classes/Day", key: "classesDay", format: "number" },
     ],
-    color: "hsl(262, 60%, 55%)",
+    color: "hsl(39 98% 71%)",
   },
   logistics: {
     id: "logistics", label: "Logistics & Shipping", icon: "📦",
@@ -135,7 +135,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Avg Transit", key: "avgTransit", format: "duration" },
       { label: "Shipments/Day", key: "shipmentsDay", format: "number" },
     ],
-    color: "hsl(30, 70%, 50%)",
+    color: "hsl(33 100% 50%)",
   },
   events_entertainment: {
     id: "events_entertainment", label: "Events & Entertainment", icon: "🎭",
@@ -154,7 +154,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Sell-Through", key: "sellThrough", format: "percent" },
       { label: "Events/Month", key: "eventsMonth", format: "number" },
     ],
-    color: "hsl(310, 60%, 50%)",
+    color: "hsl(263 100% 46%)",
   },
   railways: {
     id: "railways", label: "Railways & Train Services", icon: "🚆",
@@ -173,7 +173,7 @@ export const INDUSTRY_CONFIGS: Record<IndustryType, IndustryConfig> = {
       { label: "Rev/Journey", key: "revJourney", format: "currency" },
       { label: "Journeys/Day", key: "journeysDay", format: "number" },
     ],
-    color: "hsl(180, 65%, 45%)",
+    color: "hsl(0 100% 50%)",
   },
 };
 

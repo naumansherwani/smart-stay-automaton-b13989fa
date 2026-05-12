@@ -34,13 +34,16 @@ export function useWorkspaceTheme() {
     const apply = () => {
       const root = document.documentElement;
       const mode = getWorkspaceThemeMode();
-      if (mode === "brand" || mode === "system") {
-        if (mode === "brand") root.dataset.industry = "brand";
-        else delete root.dataset.industry;
+      const industry = activeWorkspace?.industry || profile?.industry;
+      if (industry) {
+        if (mode !== "industry") {
+          localStorage.setItem(STORAGE_KEY, "industry");
+        }
+        root.dataset.industry = industry;
         return;
       }
-      const industry = activeWorkspace?.industry || profile?.industry;
-      if (industry) root.dataset.industry = industry;
+
+      if (mode === "brand") root.dataset.industry = "brand";
       else delete root.dataset.industry;
     };
     apply();
