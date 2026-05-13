@@ -401,6 +401,7 @@ const App = () => {
             </Routes>
           </Suspense>
           </FloatingAdvisorChatProvider>
+          <JimmyJohnChat />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
