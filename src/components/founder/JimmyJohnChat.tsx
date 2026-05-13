@@ -36,6 +36,12 @@ export default function JimmyJohnChat() {
   useEffect(() => { try { localStorage.setItem(POS_KEY, JSON.stringify(pos)); } catch { /* noop */ } }, [pos]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, thinking]);
 
+  useEffect(() => {
+    const open = () => setView("open");
+    window.addEventListener("jj:open", open);
+    return () => window.removeEventListener("jj:open", open);
+  }, []);
+
   const onDragStart = (e: React.MouseEvent) => {
     if (view === "maximized") return;
     dragRef.current = { startX: e.clientX, startY: e.clientY, baseX: pos.x, baseY: pos.y };
