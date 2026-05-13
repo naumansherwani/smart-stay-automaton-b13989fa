@@ -23,8 +23,8 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
   return (
     <header className="founder-header sticky top-0 z-30 h-[72px] flex items-center justify-between px-6 gap-4">
       <div className="min-w-[160px]">
-        <h1 className="text-[var(--fos-text)] text-lg font-semibold tracking-tight">{title}</h1>
-        <p className="text-[var(--fos-muted)] text-[11px] tracking-wide">Founder Command Center</p>
+        <h1 className="fos-gold-text text-lg font-bold tracking-tight">{title}</h1>
+        <p className="text-[var(--fos-muted)] text-[11px] tracking-[0.2em] uppercase">Founder Command Center</p>
       </div>
 
       <div className="flex-1 max-w-xl">
@@ -63,7 +63,9 @@ export default function FounderHeader({ title, onSelect }: { title: string; onSe
 
         <FounderNotifications />
 
-        <button className="h-9 px-3 rounded-lg bg-[var(--fos-accent)] hover:bg-[var(--fos-accent)]/90 text-white text-[12px] font-semibold flex items-center gap-1.5 shadow-lg shadow-[var(--fos-accent)]/20 transition-all">
+        <button className="h-9 px-3 rounded-lg text-[#0a0a0a] text-[12px] font-bold flex items-center gap-1.5 transition-all hover:-translate-y-0.5"
+          style={{ background: "var(--fos-gold-gradient)", boxShadow: "0 6px 18px -6px rgba(212,175,55,0.55), inset 0 1px 0 rgba(255,255,255,0.35)" }}
+        >
           <Plus className="w-3.5 h-3.5" />
           Quick Add
         </button>
