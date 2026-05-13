@@ -45,8 +45,8 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
       >
         <img src={logoImg} alt="HostFlow AI" className="w-10 h-10 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] group-hover:scale-105 transition-transform" />
         <div>
-          <div className="text-[var(--fos-text)] text-sm font-semibold leading-tight">Founder OS</div>
-          <div className="text-[var(--fos-muted)] text-[10px] tracking-widest uppercase">HostFlow AI</div>
+          <div className="fos-gold-text text-sm font-bold leading-tight tracking-wide">Founder OS</div>
+          <div className="text-[var(--fos-accent)]/70 text-[10px] tracking-[0.22em] uppercase">HostFlow AI</div>
         </div>
       </Link>
 
@@ -65,7 +65,7 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
               }`}
             >
               <span className={`text-[10px] tabular-nums w-4 ${isActive ? "text-[var(--fos-accent)]" : "text-[var(--fos-muted)]/60"}`}>{i + 1}</span>
-              <Icon className="w-4 h-4 shrink-0" />
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? "fos-icon-neon" : ""}`} />
               <span>{it.label}</span>
             </button>
             {it.id === "emails" && (

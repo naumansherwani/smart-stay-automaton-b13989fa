@@ -135,6 +135,43 @@ export default function JimmyJohnChat() {
     window.addEventListener("mouseup", up);
   };
 
+  const onEdgeResize = (axis: "x" | "y") => (e: React.MouseEvent) => {
+    if (view === "maximized") return;
+    e.stopPropagation();
+    resizeRef.current = { sx: e.clientX, sy: e.clientY, bw: size.w, bh: size.h };
+    const move = (ev: MouseEvent) => {
+      if (!resizeRef.current) return;
+      const nw = axis === "x"
+        ? Math.max(420, Math.min(window.innerWidth - 40, resizeRef.current.bw + (ev.clientX - resizeRef.current.sx)))
+        : resizeRef.current.bw;
+      const nh = axis === "y"
+        ? Math.max(420, Math.min(window.innerHeight - 40, resizeRef.current.bh + (ev.clientY - resizeRef.current.sy)))
+        : resizeRef.current.bh;
+      setSize({ w: nw, h: nh });
+    };
+    const up = () => { resizeRef.current = null; window.removeEventListener("mousemove", move); window.removeEventListener("mouseup", up); };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  };
+
+  const SIZE_PRESETS: { id: "S" | "M" | "L" | "XL"; w: number; h: number }[] = [
+    { id: "S",  w: 480, h: 520 },
+    { id: "M",  w: 700, h: 620 },
+    { id: "L",  w: 920, h: 720 },
+    { id: "XL", w: 1180, h: 820 },
+  ];
+  const applyPreset = (p: { w: number; h: number }) => {
+    if (view === "maximized") setView("open");
+    const w = Math.min(window.innerWidth - 40, p.w);
+    const h = Math.min(window.innerHeight - 40, p.h);
+    setSize({ w, h });
+    setPos((cur) => ({
+      x: Math.max(8, Math.min(window.innerWidth - w - 8, cur.x)),
+      y: Math.max(8, Math.min(window.innerHeight - h - 8, cur.y)),
+    }));
+  };
+  const activePreset = SIZE_PRESETS.find((p) => p.w === size.w && p.h === size.h)?.id;
+
   const send = useCallback(() => {
     const text = input.trim();
     if (!text || thinking) return;
@@ -211,6 +248,19 @@ export default function JimmyJohnChat() {
         </div>
 
         <span className="jj-badge"><span className="jj-badge-dot" /> CORE_PENDING</span>
+
+        <div className="hidden sm:flex items-center gap-1 ml-1" onMouseDown={(e) => e.stopPropagation()}>
+          {SIZE_PRESETS.map((p) => (
+            <button
+              key={p.id}
+              className={`jj-size-chip ${activePreset === p.id && !isMax ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); applyPreset(p); }}
+              title={`Resize to ${p.id} (${p.w}×${p.h})`}
+            >
+              {p.id}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Body: Sidebar + Module */}
@@ -435,7 +485,13 @@ export default function JimmyJohnChat() {
         </div>
       </div>
 
-      {!isMax && <div className="jj-resize" onMouseDown={onResizeStart} title="Resize" />}
+      {!isMax && (
+        <>
+          <div className="jj-resize-e" onMouseDown={onEdgeResize("x")} title="Drag to resize width" />
+          <div className="jj-resize-s" onMouseDown={onEdgeResize("y")} title="Drag to resize height" />
+          <div className="jj-resize" onMouseDown={onResizeStart} title="Drag to resize" />
+        </>
+      )}
     </div>
   );
 }
