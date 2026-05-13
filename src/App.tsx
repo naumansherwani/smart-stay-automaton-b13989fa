@@ -13,6 +13,7 @@ import { connectBrainStream } from "@/lib/brain-sync";
 import AiLimitModal from "@/components/AiLimitModal";
 import SurfaceGuard from "@/components/SurfaceGuard";
 import { FloatingAdvisorChatProvider } from "@/components/advisor/FloatingAdvisorChat";
+import JimmyJohnChat from "@/components/founder/JimmyJohnChat";
 
 // Redirect legacy /crm to new /ai-crm, preserving query string and hash
 const CrmRedirect = () => {
@@ -400,6 +401,7 @@ const App = () => {
             </Routes>
           </Suspense>
           </FloatingAdvisorChatProvider>
+          <JimmyJohnChat />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
