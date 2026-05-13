@@ -1,7 +1,8 @@
-import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Search, Activity, Bot } from "lucide-react";
+import { LayoutDashboard, Crown, TrendingUp, Users, Target, Briefcase, ShieldCheck, CheckSquare, Sparkles, BarChart3, Settings, UserCircle, LogOut, Moon, Sun, Mail, Search, Activity, Bot, Pin, PinOff } from "lucide-react";
 import { useFounderTheme } from "./FounderTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import logoImg from "@/assets/logo-h-cal-4.png";
 
 export type FounderSection =
@@ -33,21 +34,53 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
   const { mode, toggle } = useFounderTheme();
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+  const [pinned, setPinned] = useState<boolean>(() => {
+    try { const v = localStorage.getItem("fos-sidebar-pinned"); return v === null ? true : v === "1"; } catch { return true; }
+  });
+  const [hovering, setHovering] = useState(false);
+  useEffect(() => { try { localStorage.setItem("fos-sidebar-pinned", pinned ? "1" : "0"); } catch { /* noop */ } }, [pinned]);
+  useEffect(() => {
+    document.body.style.setProperty("--fos-sidebar-w", pinned ? "280px" : "0px");
+    return () => { document.body.style.removeProperty("--fos-sidebar-w"); };
+  }, [pinned]);
 
   const visibleItems = items.filter((it) => it.id !== "sherlock" || user?.id === SHERLOCK_USER_ID);
+  const visible = pinned || hovering;
 
   return (
-    <aside className="founder-sidebar fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40">
+    <>
+      {!pinned && (
+        <button
+          aria-label="Show sidebar"
+          onClick={() => setPinned(true)}
+          onMouseEnter={() => setHovering(true)}
+          className="fixed left-0 top-0 h-screen w-2 z-40 bg-gradient-to-b from-[#a01030]/40 via-[#D4AF37]/30 to-[#a01030]/40 hover:w-3 transition-all"
+          title="Pin sidebar"
+        />
+      )}
+      <aside
+        className={`founder-sidebar fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40 transition-transform duration-300 ${visible ? "translate-x-0" : "-translate-x-full"}`}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
       <Link
         to="/"
-        className="px-6 py-6 border-b border-[var(--fos-border)] flex items-center gap-3 hover:bg-[var(--fos-card)]/50 transition-colors group"
+        className="px-6 py-6 border-b border-[var(--fos-border)] flex items-center gap-3 hover:bg-[var(--fos-card)]/50 transition-colors group relative"
         title="Return to landing page"
       >
         <img src={logoImg} alt="HostFlow AI" className="w-10 h-10 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] group-hover:scale-105 transition-transform" />
-        <div>
+        <div className="flex-1">
           <div className="fos-gold-text text-sm font-bold leading-tight tracking-wide">Founder OS</div>
           <div className="text-[var(--fos-accent)]/70 text-[10px] tracking-[0.22em] uppercase">HostFlow AI</div>
         </div>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPinned((p) => !p); }}
+          className={`w-7 h-7 rounded-md flex items-center justify-center transition-all border ${pinned ? "bg-[#5c0014]/30 border-[#a01030]/60 text-[#ff6b8a]" : "bg-transparent border-[var(--fos-border)] text-[var(--fos-muted)] hover:text-[var(--fos-accent)]"}`}
+          title={pinned ? "Unpin sidebar (auto-hide)" : "Pin sidebar"}
+          aria-label={pinned ? "Unpin sidebar" : "Pin sidebar"}
+        >
+          {pinned ? <Pin className="w-3.5 h-3.5" /> : <PinOff className="w-3.5 h-3.5" />}
+        </button>
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
@@ -106,6 +139,7 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
           <span className="text-[var(--fos-success)]">● Operational</span>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
