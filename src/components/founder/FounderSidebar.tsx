@@ -51,21 +51,12 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
       </Link>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        <button
-          onClick={() => window.dispatchEvent(new Event("jj:open"))}
-          className="w-full flex items-center gap-3 px-3 py-2.5 mb-2 rounded-lg text-[13px] font-semibold transition-all duration-200 bg-gradient-to-r from-[#0a0a0a] to-[#1a1a1a] border border-[#D4AF37]/40 text-[#D4AF37] hover:border-[#D4AF37] hover:shadow-[0_0_18px_-2px_rgba(212,175,55,0.55)]"
-          title="Open Jimmy John — Autopilot CEO"
-        >
-          <Crown className="w-4 h-4 shrink-0" />
-          <span className="flex-1 text-left">Jimmy Founder Backbone</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-        </button>
         {visibleItems.map((it, i) => {
           const Icon = it.icon;
           const isActive = active === it.id;
           return (
+            <div key={it.id}>
             <button
-              key={it.id}
               onClick={() => onSelect(it.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                 isActive
@@ -77,6 +68,18 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
               <Icon className="w-4 h-4 shrink-0" />
               <span>{it.label}</span>
             </button>
+            {it.id === "emails" && (
+              <button
+                onClick={() => window.dispatchEvent(new Event("jj:open"))}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-200 bg-gradient-to-r from-[#0a0a0a] to-[#1a1a1a] border border-[#D4AF37]/40 text-[#D4AF37] hover:border-[#D4AF37] hover:shadow-[0_0_18px_-2px_rgba(212,175,55,0.55)]"
+                title="Open Jimmy John — Autopilot CEO"
+              >
+                <Crown className="w-4 h-4 shrink-0" />
+                <span className="flex-1 text-left">Jimmy Founder Backbone</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+              </button>
+            )}
+            </div>
           );
         })}
       </nav>
