@@ -55,9 +55,8 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
           const Icon = it.icon;
           const isActive = active === it.id;
           return (
-            <>
+            <div key={it.id}>
             <button
-              key={it.id}
               onClick={() => onSelect(it.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                 isActive
@@ -71,7 +70,6 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
             </button>
             {it.id === "emails" && (
               <button
-                key="jj-backbone"
                 onClick={() => window.dispatchEvent(new Event("jj:open"))}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-semibold transition-all duration-200 bg-gradient-to-r from-[#0a0a0a] to-[#1a1a1a] border border-[#D4AF37]/40 text-[#D4AF37] hover:border-[#D4AF37] hover:shadow-[0_0_18px_-2px_rgba(212,175,55,0.55)]"
                 title="Open Jimmy John — Autopilot CEO"
@@ -81,7 +79,7 @@ export default function FounderSidebar({ active, onSelect }: { active: FounderSe
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
               </button>
             )}
-            </>
+            </div>
           );
         })}
       </nav>
