@@ -36,3 +36,4 @@ Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartb
 - [No mock data](mem://constraints/no-mock-data) — Forbid hardcoded sample arrays in production UI
 - [Sidebar header spacing](mem://design/sidebar-header-spacing) — Locked GhostSidebar header 72px + border-b + nav pt-2 separation
 - [Sidebar locked](mem://design/sidebar-locked) — GhostSidebar premium dark glass is final across all 8 industries; landing industry cards stay consistent. Do not restyle without owner approval.
+- [Sovereign architecture (LOCKED)](mem://constraints/sovereign-architecture) — Hetzner + personal Supabase + local Ollama. Lovable = frontend/design only. No new Lovable Cloud usage. No duplicates.
