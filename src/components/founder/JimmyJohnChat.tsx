@@ -179,7 +179,7 @@ export default function JimmyJohnChat() {
     setInput("");
     setThinking(true);
     try {
-      const res = await fetch("http://88.198.208.90:8080/api/founder/jimmy/orchestrate", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/founder/jimmy/orchestrate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
