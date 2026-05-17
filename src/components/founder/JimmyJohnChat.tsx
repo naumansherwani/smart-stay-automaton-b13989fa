@@ -172,20 +172,29 @@ export default function JimmyJohnChat() {
   };
   const activePreset = SIZE_PRESETS.find((p) => p.w === size.w && p.h === size.h)?.id;
 
-  const send = useCallback(() => {
+  const send = useCallback(async () => {
     const text = input.trim();
     if (!text || thinking) return;
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
     setThinking(true);
-    setTimeout(() => {
-      setMessages((m) => [...m, {
-        role: "ceo",
-        content: "Strategic directive received, Chairman. Core wiring to Replit pending — full autopilot decisioning will come online once the CEO core is connected.",
-        badges: STARTER_BADGES,
-      }]);
+    try {
+      const res = await fetch("http://88.198.208.90:8080/api/founder/jimmy/orchestrate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Sovereign-Token": "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL",
+        },
+        body: JSON.stringify({ message: text, use_burst: false }),
+      });
+      const data = await res.json();
+      const reply = data.response || data.error || "No response from Jimmy.";
+      setMessages((m) => [...m, { role: "ceo", content: reply, badges: ["CORE_ONLINE", "PROVIDER_" + (data.provider || "ollama").toUpperCase()] }]);
+    } catch {
+      setMessages((m) => [...m, { role: "ceo", content: "Connection error — Jimmy core unreachable.", badges: ["ERROR"] }]);
+    } finally {
       setThinking(false);
-    }, 900);
+    }
   }, [input, thinking]);
 
   if (!isChairman) return null;
@@ -247,7 +256,7 @@ export default function JimmyJohnChat() {
           </div>
         </div>
 
-        <span className="jj-badge"><span className="jj-badge-dot" /> CORE_PENDING</span>
+        <span className="jj-badge"><span className="jj-badge-dot" /> CORE_ONLINE</span>
 
         <div className="hidden sm:flex items-center gap-1 ml-1" onMouseDown={(e) => e.stopPropagation()}>
           {SIZE_PRESETS.map((p) => (
