@@ -1,5 +1,5 @@
 // Sovereign Brain (Hetzner, May 2026). Replaces Replit dev/app subdomains.
-const DEFAULT_REPLIT_ORIGIN = "http://88.198.208.90:8000";
+const DEFAULT_REPLIT_ORIGIN = "http://88.198.208.90:8080";
 
 function normalizeOrigin(value?: string): string {
   const raw = (value ?? "").trim();
