@@ -5,6 +5,7 @@ import {
   Wallet, Sparkles, Zap, Search, Settings as SettingsIcon, BookOpen, Bot,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { REPLIT_API_BASE, SOVEREIGN_TOKEN } from "@/lib/replitBase";
 import "./jimmy-john.css";
 
 const CHAIRMAN_EMAIL = "naumansherwani@hostflowai.net";
@@ -179,19 +180,24 @@ export default function JimmyJohnChat() {
     setInput("");
     setThinking(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/founder/jimmy/orchestrate`, {
+      const res = await fetch(`${REPLIT_API_BASE}/founder/jimmy/orchestrate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Sovereign-Token": "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL",
+          "X-Sovereign-Token": SOVEREIGN_TOKEN,
         },
         body: JSON.stringify({ message: text, use_burst: false }),
       });
-      const data = await res.json();
-      const reply = data.response || data.error || "No response from Jimmy.";
+      const data = await res.json().catch(() => ({} as any));
+      const reply = data.response || data.error || `No response from Jimmy (HTTP ${res.status}).`;
       setMessages((m) => [...m, { role: "ceo", content: reply, badges: ["CORE_ONLINE", "PROVIDER_" + (data.provider || "ollama").toUpperCase()] }]);
-    } catch {
-      setMessages((m) => [...m, { role: "ceo", content: "Connection error — Jimmy core unreachable.", badges: ["ERROR"] }]);
+    } catch (err: any) {
+      const msg = err?.message || "network failure";
+      setMessages((m) => [...m, {
+        role: "ceo",
+        content: `Connection error — Jimmy core unreachable (${msg}). Endpoint: ${REPLIT_API_BASE}/founder/jimmy/orchestrate`,
+        badges: ["ERROR"],
+      }]);
     } finally {
       setThinking(false);
     }
