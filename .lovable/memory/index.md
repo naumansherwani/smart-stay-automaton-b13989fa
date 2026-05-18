@@ -37,4 +37,4 @@ Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartb
 - [Sidebar header spacing](mem://design/sidebar-header-spacing) — Locked GhostSidebar header 72px + border-b + nav pt-2 separation
 - [Sidebar locked](mem://design/sidebar-locked) — GhostSidebar premium dark glass is final across all 8 industries; landing industry cards stay consistent. Do not restyle without owner approval.
 - [Sovereign architecture (LOCKED)](mem://constraints/sovereign-architecture) — Hetzner + personal Supabase + local Ollama. Lovable = frontend/design only. No new Lovable Cloud usage. No duplicates.
-- [Supabase = single source of truth (LOCKED)](mem://constraints/supabase-source-of-truth) — Personal Supabase is the only truth. No hardcoded URLs/flags/mappings. Frontend=presentation, Backend=execution, Supabase=truth.
+- [Supabase = single source of truth (LOCKED)](mem://constraints/supabase-source-of-truth) — Operations Supabase (qsfmsjyorhicydtoiluk) is the only truth + Realtime auto-sync layer. Covers all 8 industries, prices, plans, features, advisers, AI RapidPay, Founder AI Builder. Jimmy = POST /founder/jimmy/orchestrate with X-Sovereign-Token + JWT.
