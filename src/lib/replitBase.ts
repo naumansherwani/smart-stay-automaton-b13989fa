@@ -41,4 +41,4 @@ export const REPLIT_API_BASE = `${REPLIT_ORIGIN}/api`;
 // Sovereign auth token for Founder OS chat (Jimmy). Sent as X-Sovereign-Token.
 export const SOVEREIGN_TOKEN =
   (import.meta.env.VITE_SOVEREIGN_TOKEN as string | undefined) ||
-  "JimmyFounder2026SecureKey";
+  "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL";

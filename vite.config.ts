@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 const PERSONAL_SUPABASE_URL = "https://qsfmsjyorhicydtoiluk.supabase.co";
 const PERSONAL_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2Ys8isiGGWE3sUqEcIbEgA_yajwvX4i";
+const JIMMY_SOVEREIGN_TOKEN = "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -19,6 +20,7 @@ export default defineConfig(({ mode }) => ({
   define: {
     "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(PERSONAL_SUPABASE_URL),
     "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(PERSONAL_SUPABASE_PUBLISHABLE_KEY),
+    "import.meta.env.VITE_SOVEREIGN_TOKEN": JSON.stringify(JIMMY_SOVEREIGN_TOKEN),
   },
   resolve: {
     alias: [
