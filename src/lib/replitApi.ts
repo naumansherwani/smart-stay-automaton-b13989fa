@@ -1,4 +1,5 @@
 import { REPLIT_API_BASE } from "@/lib/replitBase";
+import { SOVEREIGN_TOKEN } from "@/lib/replitBase";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
@@ -76,6 +77,7 @@ export async function replitCall<T = any>(
       method,
       headers: {
         "Content-Type": "application/json",
+        "X-Sovereign-Token": SOVEREIGN_TOKEN,
         ...auth,
         ...surfaceHeader,
         ...getViewAsPlanHeader(),
@@ -134,6 +136,7 @@ export async function* replitStream(
     headers: {
       "Content-Type": "application/json",
       Accept: "text/event-stream",
+      "X-Sovereign-Token": SOVEREIGN_TOKEN,
       ...auth,
       ...getViewAsPlanHeader(),
     },
