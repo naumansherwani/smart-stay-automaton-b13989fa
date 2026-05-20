@@ -5,9 +5,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const REPLIT_INBOX_URL =
+// Sovereign brain (Hetzner). Replit fully retired May 2026.
+const INBOX_URL =
   Deno.env.get("REPLIT_INBOX_URL") ||
-  "https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api/email/inbox";
+  Deno.env.get("SOVEREIGN_API_BASE_URL") ||
+  "https://api.hostflowai.net/api/email/inbox";
 
 const FOLDER_STATUS_MAP: Record<string, string[] | null> = {
   inbox: ["sent", "pending", "failed", "suppressed", "bounced", "complained", "dlq"],
