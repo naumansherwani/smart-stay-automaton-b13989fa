@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -6,6 +5,7 @@ import {
   Theater, TrainFront, Zap,
 } from "lucide-react";
 import type { IndustryType } from "@/lib/industryConfig";
+import { getIndustrySubdomainUrl } from "@/lib/industryDomain";
 
 const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: string; glow: string; id: IndustryType }[] = [
   { icon: Globe, name: "Travel, Tourism & Hospitality", desc: "Hotels, vacation rentals, B&Bs, tour operators", color: "#d4a017", glow: "46 65% 55%", id: "hospitality" },
@@ -19,27 +19,23 @@ const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: 
 ];
 
 const IndustriesSection = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleClick = (industry: IndustryType) => {
-    sessionStorage.setItem("preselected_industry", industry);
-    const target = !user ? "/signup" : "/onboarding";
+    // Owner-locked (May 2026): each industry lives on its own subdomain.
+    // Root landing → industry subdomain (signup if logged out, onboarding if in).
+    try {
+      sessionStorage.setItem("preselected_industry", industry);
+      localStorage.setItem("preselected_industry", industry);
+    } catch { /* ignore storage errors */ }
+    const path = !user ? "/signup" : "/onboarding";
+    const url = getIndustrySubdomainUrl(industry, path);
+    // Logged-in users keep their current dashboard open in a new tab.
     if (user) {
-      // Logged-in users: open the selected industry workspace in a NEW tab
-      // so their current dashboard tab stays untouched.
-      try {
-        // Persist selection for the new tab to read (sessionStorage is per-tab,
-        // so also use localStorage as a one-shot handoff).
-        localStorage.setItem("preselected_industry", industry);
-      } catch { /* ignore storage errors */ }
-      const win = window.open(target, "_blank", "noopener,noreferrer");
-      if (!win) {
-        // Pop-up blocked — fall back to same-tab navigation.
-        navigate(target);
-      }
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if (!win) window.location.assign(url);
     } else {
-      navigate(target);
+      window.location.assign(url);
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { sendOwnerNotification } from "@/lib/ownerNotifications";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
+import { getLockedIndustry, industryLabel, getRootUrl } from "@/lib/industryDomain";
 
 
 export default function Signup() {
@@ -21,6 +22,18 @@ export default function Signup() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Industry is locked by the current subdomain (e.g. airlines.hostflowai.net).
+  const lockedIndustry = useMemo(() => getLockedIndustry(), []);
+
+  useEffect(() => {
+    if (lockedIndustry) {
+      try {
+        sessionStorage.setItem("preselected_industry", lockedIndustry);
+        localStorage.setItem("preselected_industry", lockedIndustry);
+      } catch { /* ignore */ }
+    }
+  }, [lockedIndustry]);
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -29,7 +42,11 @@ export default function Signup() {
       password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { full_name: fullName, company_name: company },
+        data: {
+          full_name: fullName,
+          company_name: company,
+          ...(lockedIndustry ? { industry: lockedIndustry } : {}),
+        },
       },
     });
     if (error) {
@@ -38,8 +55,8 @@ export default function Signup() {
       setSuccess(true);
       sendOwnerNotification({
         eventType: "new_signup",
-        eventTitle: "New User Signed Up",
-        details: `${fullName || "Unknown"} (${email}) just signed up${company ? ` from ${company}` : ""}.`,
+        eventTitle: `New User Signed Up${lockedIndustry ? ` — ${industryLabel(lockedIndustry)}` : ""}`,
+        details: `${fullName || "Unknown"} (${email}) just signed up${company ? ` from ${company}` : ""}${lockedIndustry ? ` for ${industryLabel(lockedIndustry)}` : ""}.`,
       });
     }
     setLoading(false);
@@ -74,13 +91,25 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <AnimatedTopBorder />
       <div className="w-full max-w-md space-y-6">
-        <div className="text-center space-y-3 cursor-pointer" onClick={() => navigate("/")}>
+        <div
+          className="text-center space-y-3 cursor-pointer"
+          onClick={() => {
+            // From an industry subdomain, "home" means the root landing.
+            if (lockedIndustry) window.location.assign(getRootUrl("/"));
+            else navigate("/");
+          }}
+        >
           <p className="text-xs font-medium tracking-[0.35em] uppercase text-primary/70">Join</p>
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
             <span className="bg-gradient-to-r from-[hsl(174,62%,55%)] via-[hsl(200,80%,65%)] to-[hsl(217,91%,60%)] bg-clip-text text-transparent drop-shadow-[0_0_30px_hsl(174,62%,50%,0.3)]">
               HostFlow AI
             </span>
           </h1>
+          {lockedIndustry && (
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold">
+              {industryLabel(lockedIndustry)} workspace
+            </div>
+          )}
           <div className="flex items-center justify-center gap-3">
             <span className="h-px w-12 bg-gradient-to-r from-transparent to-primary/40" />
             <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground font-medium">Premium Experience</span>
