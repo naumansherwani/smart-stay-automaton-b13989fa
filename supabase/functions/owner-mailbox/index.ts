@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
         });
       }
       try {
-        const r = await fetch(`${REPLIT_INBOX_URL}/${encodeURIComponent(String(id))}/read`, {
+        const r = await fetch(`${INBOX_URL}/${encodeURIComponent(String(id))}/read`, {
           method: "PATCH",
           headers: { Authorization: authHeader },
         });
@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
       if (body?.to) params.set("to", String(body.to));
       params.set("limit", String(body?.limit || 100));
       params.set("offset", String(body?.offset || 0));
-      const url = `${REPLIT_INBOX_URL}?${params.toString()}`;
+      const url = `${INBOX_URL}?${params.toString()}`;
       const r = await fetch(url, {
         headers: { Authorization: authHeader, "Content-Type": "application/json" },
       });
