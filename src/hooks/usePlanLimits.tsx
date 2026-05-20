@@ -30,26 +30,25 @@ const subscribers = new Set<(d: PlanLimitsResponse | null) => void>();
 
 /** Convert raw SQL rows into the nested PlanLimitBucket shape consumers expect. */
 function rowsToPlans(rows: FeatureRow[]): PlanLimitsResponse {
-  const plans: Partial<Record<PlanKey, PlanLimitBucket>> = {};
+  const plans: Record<string, any> = {};
   for (const r of rows) {
-    const bucket: PlanLimitBucket & Record<string, any> = plans[r.plan] ?? { ai: {}, core: {}, voice: {} };
+    const bucket = plans[r.plan] ?? { ai: {}, core: {}, voice: {} };
     const value = r.is_unlimited ? null : (r.limit_value ?? 0);
     switch (r.feature_key) {
       case "ai_daily_messages":
-        bucket.ai = { ...(bucket.ai ?? {}), daily_messages: value };
+        bucket.ai.daily_messages = value;
         break;
       case "ai_hourly_fairuse":
-        bucket.ai = { ...(bucket.ai ?? {}), hourly_fair_use: value };
+        bucket.ai.hourly_fair_use = value;
         break;
       case "industries":
-        bucket.core = { ...(bucket.core ?? {}), industries: value };
+        bucket.core.industries = value;
         break;
       case "voice_assistant":
       case "ai_voice_assistant":
-        bucket.voice = { ...(bucket.voice ?? {}), monthly_minutes: value };
+        bucket.voice.monthly_minutes = value;
         break;
     }
-    // Flat mirror so anything can read by key directly.
     bucket[r.feature_key] = value;
     plans[r.plan] = bucket;
   }
