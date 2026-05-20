@@ -1,5 +1,6 @@
-// Sovereign Brain (Hetzner, May 2026). Replaces Replit dev/app subdomains.
-const DEFAULT_REPLIT_ORIGIN = "https://api.hostflowai.net";
+// Sovereign HostFlow Brain — runs on owner's own server (Hetzner).
+// Single source of truth for AI advisors, founder OS, and inbox.
+const DEFAULT_BRAIN_ORIGIN = "https://api.hostflowai.net";
 
 function normalizeOrigin(value?: string): string {
   const raw = (value ?? "").trim();
@@ -11,13 +12,9 @@ function normalizeOrigin(value?: string): string {
     const url = new URL(sanitized);
     const host = url.hostname.toLowerCase();
 
-    // Hard block legacy Replit dev hosts that were causing auth/session drift.
-    if (host.endsWith(".riker.replit.dev")) return "";
-
-    // Allow stable Replit app domains (legacy) OR the sovereign Hetzner host.
-    const isReplitApp = host.endsWith(".replit.app");
+    // Only allow the sovereign HostFlow Brain host. Everything else rejected.
     const isSovereign = host === "88.198.208.90" || host.endsWith("hostflowai.net");
-    if (!isReplitApp && !isSovereign) return "";
+    if (!isSovereign) return "";
 
     return url.origin;
   } catch {
@@ -26,19 +23,33 @@ function normalizeOrigin(value?: string): string {
 }
 
 const envOrigins = [
+  import.meta.env.VITE_BRAIN_API_BASE as string | undefined,
+  import.meta.env.VITE_BRAIN_INBOX_URL as string | undefined,
   import.meta.env.VITE_API_BASE_URL as string | undefined,
-  import.meta.env.VITE_REPLIT_URL as string | undefined,
-  import.meta.env.VITE_REPLIT_INBOX_URL as string | undefined,
-  import.meta.env.VITE_REPLIT_ADVISOR_URL as string | undefined,
   import.meta.env.VITE_BACKEND_URL as string | undefined,
 ]
   .map(normalizeOrigin)
   .filter(Boolean);
 
-export const REPLIT_ORIGIN = envOrigins[0] || DEFAULT_REPLIT_ORIGIN;
-export const REPLIT_API_BASE = `${REPLIT_ORIGIN}/api`;
+export const BRAIN_ORIGIN = envOrigins[0] || DEFAULT_BRAIN_ORIGIN;
+export const BRAIN_API_BASE = `${BRAIN_ORIGIN}/api`;
 
-// Sovereign auth token for Founder OS chat (Jimmy). Sent as X-Sovereign-Token.
+// Back-compat aliases — existing imports keep working. Prefer BRAIN_* in new code.
+export const REPLIT_ORIGIN = BRAIN_ORIGIN;
+export const REPLIT_API_BASE = BRAIN_API_BASE;
+
+// Sovereign machine-to-machine token. Sent as X-Sovereign-Token on every
+// Brain request so Hetzner can verify the caller is the official HostFlow
+// frontend (in addition to the user JWT for identity / RLS).
+//
+// MUST come from env (VITE_SOVEREIGN_TOKEN). If missing, requests will be
+// rejected by the Brain with 401 — which is the intended secure default.
 export const SOVEREIGN_TOKEN =
-  (import.meta.env.VITE_SOVEREIGN_TOKEN as string | undefined) ||
-  "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL";
+  (import.meta.env.VITE_SOVEREIGN_TOKEN as string | undefined) ?? "";
+
+if (!SOVEREIGN_TOKEN && import.meta.env.DEV) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    "[brain] VITE_SOVEREIGN_TOKEN not set — Brain API requests will be unauthorized.",
+  );
+}
