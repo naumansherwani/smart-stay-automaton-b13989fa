@@ -32,7 +32,10 @@ const subscribers = new Set<(d: PlanLimitsResponse | null) => void>();
 function rowsToPlans(rows: FeatureRow[]): PlanLimitsResponse {
   const plans: Record<string, any> = {};
   for (const r of rows) {
-    const bucket = plans[r.plan] ?? { ai: {}, core: {}, voice: {} };
+    // SQL has both `standard` (limits layer) and `pro` (pricing/discount layer).
+    // Owner-locked plan keys are basic/pro/premium → alias `standard` → `pro`.
+    const planKey = r.plan === "standard" ? "pro" : r.plan;
+    const bucket = plans[planKey] ?? { ai: {}, core: {}, voice: {} };
     const value = r.is_unlimited ? null : (r.limit_value ?? 0);
     switch (r.feature_key) {
       case "ai_daily_messages":
@@ -50,7 +53,7 @@ function rowsToPlans(rows: FeatureRow[]): PlanLimitsResponse {
         break;
     }
     bucket[r.feature_key] = value;
-    plans[r.plan] = bucket;
+    plans[planKey] = bucket;
   }
   return { plans: plans as Record<PlanKey, PlanLimitBucket> };
 }
