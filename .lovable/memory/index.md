@@ -12,9 +12,10 @@ Domain: hostflowai.net (primary, May 2026). .live FULLY REMOVED everywhere.
 Owner: naumansherwani@hostflowai.net, notifications → naumankhansherwani@gmail.com
 No public support@ email on website — removed per owner. Internal founder mailbox Support identity kept.
 No "Book Demo" CTA on landing/pricing — removed per owner.
-Payments: Polar via Replit backend, LIVE & connected. Paddle removed Apr 2026. Do NOT auto-integrate any provider on Lovable side.
-Backend split: Lovable Cloud = DB of record + auth + storage + email + frontend. Replit = AI brain (advisors, health scores, benchmarks, plan enforcement). Schema changes only via Lovable migrations.
-Replit also owns deep features for healthcare/education/logistics (workflows, scoring, advisor logic). Don't assume Lovable frontend has full feature picture — trust Replit as source of truth.
+Payments: Polar via sovereign brain, LIVE & connected. Paddle removed Apr 2026. Do NOT auto-integrate any provider on Lovable side.
+FINAL ARCHITECTURE (May 2026): Frontend=Lovable, Database=Supabase (source of truth, SQL-first), AI Backend=Hetzner https://api.hostflowai.net/api, Models=Ollama Qwen3 (Jimmy qwen3:8b 3M ctx, Sherlock qwen3:8b 1M ctx, 8 industry advisors qwen3:4b 100K ctx each) + Gemini/Groq fallback. Replit FULLY RETIRED.
+Legacy file names src/lib/replit*.ts and var names like REPLIT_INBOX_URL are just historic — they all point to api.hostflowai.net. Do not rename in bulk; just don't add new Replit references.
+Sovereign brain owns: advisors, Jimmy, Sherlock, health scores, benchmarks, plan enforcement, inbox, healthcare/education/logistics workflows. Lovable frontend trusts Hetzner as runtime source of truth.
 NO MOCK DATA in any dashboard/workspace component. Owner must see exactly what paying users see — empty/zero state if DB is empty. Sample data only on dedicated /demo route with visible badge.
 CRM is named "AI CRM" everywhere user-facing. Route is /ai-crm; legacy /crm redirects to /ai-crm preserving query/hash. Internal file/component/hook names (CRM.tsx, useCrm, CrmFoo) stay as is.
 Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartbeat = lub-dub double-thump then breathing glow, 5s cycle. Each industry gets its OWN signature motion (Airlines=radar sweep done; rest pending owner approval one-by-one). Landing page colors NOT touched without explicit approval.
