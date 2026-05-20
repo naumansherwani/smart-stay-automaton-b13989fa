@@ -188,7 +188,14 @@ export function callAdvisor<T = any>(
   body: unknown,
 ): Promise<ReplitResult<T>> {
   const ind = encodeURIComponent(industry || "general");
-  return replitCall<T>(`/advisor/${ind}`, body);
+  // SQL source of truth: backend_features rows for every industry advisor
+  // point to /api/founder/jimmy/orchestrate (Jimmy is the orchestrator that
+  // routes to qwen3:4b industry advisors). Industry passed in body.
+  return replitCall<T>(`/founder/jimmy/orchestrate`, {
+    ...(typeof body === "object" && body ? body : {}),
+    industry: ind,
+    target: "industry_advisor",
+  });
 }
 
 /**
@@ -217,14 +224,31 @@ export async function invokeShim<T = any>(
       return replitCall<T>("/onboarding/answer", body);
 
     case "founder-adviser":
-      return replitCall<T>("/founder/adviser", body);
+      // SQL: founder_jimmy_chat → /api/founder/jimmy/orchestrate
+      return replitCall<T>("/founder/jimmy/orchestrate", {
+        ...(typeof body === "object" && body ? body : {}),
+        target: "jimmy",
+      });
+    case "sherlock-audit":
+      // SQL: founder_sherlock_audit → /api/founder/adviser
+      return replitCall<T>("/founder/adviser", {
+        ...(typeof body === "object" && body ? body : {}),
+        target: "sherlock",
+      });
     case "founder-intelligence":
     case "mrr-ai-insights":
       return replitCall<T>("/intelligence-reports/latest", body, { method: "GET" });
     case "owner-email-ai":
       return replitCall<T>("/email", body);
-    case "owner-mailbox":
-      return replitCall<T>("/email/inbox", body, { method: "GET" });
+    case "owner-mailbox": {
+      // Route through Supabase edge function which gracefully degrades when
+      // the Hetzner /email/inbox upstream returns 5xx. Prevents UI breakage.
+      const { data, error } = await supabase.functions.invoke("owner-mailbox", {
+        body,
+      });
+      if (error) return { data: null, error: { message: error.message } };
+      return { data: data as T, error: null };
+    }
     case "churn-risk-score":
       return replitCall<T>("/health-scores/admin", body, { method: "GET" });
     case "retention-action":
