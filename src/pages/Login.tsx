@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import AnimatedTopBorder from "@/components/AnimatedTopBorder";
 import { useToast } from "@/hooks/use-toast";
+import { getLockedIndustry, industryLabel } from "@/lib/industryDomain";
 
 // Both emails open the Crown/Owner protocol — primary work email + personal gmail.
 const OWNER_EMAILS = [
@@ -25,6 +26,10 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Subdomain locks the industry on this login page (purely informational here —
+  // the user's real industry is read from their profile after sign-in).
+  const lockedIndustry = (typeof window !== "undefined" ? getLockedIndustry() : null);
 
   // Check if owner: via session, localStorage flag, or email input
   useEffect(() => {
