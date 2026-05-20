@@ -188,14 +188,9 @@ export function callAdvisor<T = any>(
   body: unknown,
 ): Promise<ReplitResult<T>> {
   const ind = encodeURIComponent(industry || "general");
-  // SQL source of truth: backend_features rows for every industry advisor
-  // point to /api/founder/jimmy/orchestrate (Jimmy is the orchestrator that
-  // routes to qwen3:4b industry advisors). Industry passed in body.
-  return replitCall<T>(`/founder/jimmy/orchestrate`, {
-    ...(typeof body === "object" && body ? body : {}),
-    industry: ind,
-    target: "industry_advisor",
-  });
+  // Owner-locked (May 2026): each industry advisor has its own endpoint
+  // /api/advisor/{industry} — runs qwen3:4b on Hetzner. No orchestrator hop.
+  return replitCall<T>(`/advisor/${ind}`, body);
 }
 
 /**
