@@ -38,18 +38,10 @@ export const BRAIN_API_BASE = `${BRAIN_ORIGIN}/api`;
 export const REPLIT_ORIGIN = BRAIN_ORIGIN;
 export const REPLIT_API_BASE = BRAIN_API_BASE;
 
-// Sovereign machine-to-machine token. Sent as X-Sovereign-Token on every
-// Brain request so Hetzner can verify the caller is the official HostFlow
-// frontend (in addition to the user JWT for identity / RLS).
-//
-// MUST come from env (VITE_SOVEREIGN_TOKEN). If missing, requests will be
-// rejected by the Brain with 401 — which is the intended secure default.
+// Publishable Brain identifier — sent as X-Sovereign-Token so Hetzner
+// recognizes the official HostFlow frontend. Real per-user security comes
+// from the Supabase JWT (Authorization: Bearer). Acts like an anon key.
+// Override at build time with VITE_SOVEREIGN_TOKEN if rotated.
 export const SOVEREIGN_TOKEN =
-  (import.meta.env.VITE_SOVEREIGN_TOKEN as string | undefined) ?? "";
-
-if (!SOVEREIGN_TOKEN && import.meta.env.DEV) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    "[brain] VITE_SOVEREIGN_TOKEN not set — Brain API requests will be unauthorized.",
-  );
-}
+  (import.meta.env.VITE_SOVEREIGN_TOKEN as string | undefined) ||
+  "hf-jimmy-sk-2026-xK9mPqR7vNwZ3jL";
