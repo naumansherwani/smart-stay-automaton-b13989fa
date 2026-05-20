@@ -2,7 +2,7 @@
 
 ## Core
 HostFlow AI - multi-industry AI scheduling platform. Primary 168 70% 38% teal.
-3-day free trial, then Basic $15/Standard $39/Premium $99 monthly.
+7-day free trial (SQL handle_new_user locked), then Basic $15/Standard $39/Premium $99 monthly.
 8 industries ONLY: hospitality, airlines, car_rental, healthcare, education, logistics, events_entertainment, railways.
 Hospitality has 2 sub-types in profiles.business_subtype: hotel_property | travel_tours. NEVER mix hotel data with tour data.
 Pricing 5 industries get AI Smart Pricing: hospitality, airlines, car_rental, events_entertainment, railways. NO pricing for healthcare/education/logistics.
