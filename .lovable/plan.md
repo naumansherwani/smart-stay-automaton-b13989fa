@@ -1,78 +1,64 @@
+## Goal
 
-# CalendarAI Marketplace & Chat Implementation Plan
+SQL = high command. Personal Supabase (`qsfmsjyorhicydtoiluk`, 102 tables) drives the frontend. Hardcoded mappings in TS files are removed in favor of SQL reads + Realtime auto-sync. Backend (Hetzner `hostflowai-brain` + `runtime-schema-sync`) keeps SQL fresh.
 
-## Revenue Model: Subscription + Featured Listings (No Commission)
-- Primary income: Monthly subscriptions (Basic $15 / Standard $39 / Premium $99)
-- Secondary income: Featured Listings (pay to promote services/profile)
-- Marketplace access: Free for all subscribers
-- No commission on deals = users stay on platform
+## Audit findings
 
-## Phase 1: Database Schema (Migration)
-### New Tables:
-1. **service_listings** - Users list their services/products
-   - title, description, price_range, category, industry, location
-   - is_featured (paid promotion), featured_until
-   - status (active/paused/draft)
-   - user_id (owner)
+**SQL config tables already populated:**
+- `plan_feature_limits` — 4 plans × ~25 feature keys (limits + unlimited flags) ✅
+- `onboarding_settings`, `voice_assistant_settings`, `schedule_settings`, `founder_settings`, `scheduling_conflict_policy`, `railway_pricing_overrides`
 
-2. **listing_inquiries** - Deal/inquiry requests
-   - listing_id, sender_id, message, status (pending/accepted/rejected)
-   - Privacy: only sender and listing owner can see
+**Hardcoded files to migrate (in priority order):**
+1. `src/lib/pricingConfig.ts` (47 ln) — plan keys + prices + discounts. **Mismatch**: code has `basic/pro/premium` + £25/52/108; SQL + memory say `basic/standard/premium` + $15/39/99. SQL wins.
+2. `src/lib/industryFeatures.ts` (96 ln) — per-industry feature flags.
+3. `src/lib/industryConfig.ts` (182 ln) — industry list, names, icons, colors.
+4. `src/lib/crmConfig.ts` (176 ln) — per-industry CRM tabs/columns.
+5. `src/hooks/usePlanLimits.tsx` — currently goes via Replit HTTP; switch to direct SQL read with Replit only for live usage counters.
 
-3. **conversations** - Chat threads (created from inquiries)
-   - type: deal_based (from inquiry) 
-   - participants stored separately
+**Tables that may need to be created for full SQL-drive** (Phase 4 only if missing):
+- `industry_configs` (industry, display_name, icon, color, enabled, sort_order)
+- `industry_features` (industry, feature_key, enabled, plan_required)
+- `plan_pricing` (plan, base_price, currency, discount_percent)
 
-4. **conversation_participants** - Who's in which conversation
-   - conversation_id, user_id, last_read_at
+## Phases
 
-5. **messages** - Chat messages
-   - conversation_id, sender_id, content, read status
-   - Realtime enabled for live chat
+### Phase 1 — Plan limits (lowest risk, biggest win)
+- Rewrite `usePlanLimits` to read `plan_feature_limits` directly from Supabase + subscribe to Realtime changes.
+- Keep Replit `/api/plan/me` only for live usage counters (today's AI messages used, etc.).
+- All `FeatureGate`, `useTrialLimits`, `useConversationCap` consumers auto-update.
+- Delete hardcoded limits from `useTrialLimits.tsx` if any.
 
-6. **profile extensions** - Industry-specific extra fields
-   - Add to profiles: bio, website, address, social_links (jsonb), business_hours (jsonb), certifications (text[]), gallery_urls (text[]), verified (boolean)
+### Phase 2 — Pricing reconciliation
+- Confirm with owner: SQL says plan enum = `trial/basic/standard/premium`; code says `basic/pro/premium`. Need owner decision on `pro` vs `standard` rename + currency ($ vs £).
+- Create `plan_pricing` table OR use `subscriptions.plan` enum as source.
+- Rewrite `pricingConfig.ts` → thin hook `usePricing()` that reads SQL.
+- Update `PricingSection`, `Pricing` page, `Billing` page.
 
-### RLS Policies:
-- Listings: Public read (all authenticated), owner CRUD
-- Inquiries: Only sender and listing owner
-- Messages: Only conversation participants
-- Profiles: Public read (for marketplace), owner update
+### Phase 3 — Industry & CRM configs
+- Create `industry_configs` + `industry_features` tables (migration to personal Supabase).
+- Seed from current TS values so nothing breaks.
+- Convert `industryConfig.ts` + `industryFeatures.ts` + `crmConfig.ts` to thin SQL-backed hooks (`useIndustries`, `useIndustryFeatures`, `useCrmConfig`).
+- Add Realtime so `runtime-schema-sync` changes propagate instantly.
 
-## Phase 2: Frontend Pages & Components
-1. **Marketplace Page** (`/marketplace`)
-   - Browse all service listings by industry
-   - Search, filter by category/location/price
-   - Featured listings appear at top (highlighted)
+### Phase 4 — Onboarding, voice, scheduling settings
+- Wire `Onboarding` wizard to `onboarding_settings`.
+- Wire voice components to `voice_assistant_settings`.
+- Wire schedule/conflict UI to `schedule_settings` + `scheduling_conflict_policy`.
 
-2. **Listing Detail Page** (`/marketplace/:id`)
-   - Service details, provider profile
-   - "Send Inquiry" button → creates inquiry + conversation
+## Technical notes
 
-3. **My Listings Page** (in dashboard)
-   - Create/edit/pause listings
-   - View inquiries received
-   - "Promote to Featured" button (links to payment)
+- All reads use `supabase` client from `@/integrations/supabase/client` (already aliased to personal Supabase via `vite.config.ts`).
+- Each new hook caches in-memory + subscribes to `postgres_changes` for that table for auto-sync.
+- No migrations created against Lovable Cloud — Phase 3 migration SQL will be handed to owner to run on personal Supabase (since Lovable migration tool targets the wrong project).
+- Zero behavior change in Phase 1: if SQL row missing, fall back to current Replit response.
+- Each phase = one chat turn, one git commit, independently revertable.
 
-4. **Chat/Messages Page** (`/messages`)
-   - Conversation list (sidebar)
-   - Real-time messaging
-   - Deal-based: shows linked listing info
+## Out of scope (this plan)
 
-5. **Enhanced Profile Page**
-   - Industry-specific fields
-   - Public profile view for marketplace
-   - Services gallery
+- Touching 90+ data tables (bookings, crm_*, railway_*, healthcare_*) — those are already correctly wired via supabase client, no hardcoded data.
+- Landing page copy, brand colors (locked per memory).
+- Backend changes on Hetzner.
 
-## Phase 3: Featured Listings Payment
-- Use manual payment approval flow
-- Offer featured listing upgrades via payment request
-- Feature a listing for 7/30 days after manual confirmation
-- Auto-expire featured status
+## What I need from you before starting
 
-## Privacy & Security
-- Chat only through inquiries (no random DMs)
-- Messages encrypted in transit (Supabase default)
-- Block/report functionality
-- RLS ensures data isolation
-- No personal info shared until user chooses to
+Just say **"Phase 1 start"** and I'll rewire `usePlanLimits` to read `plan_feature_limits` directly. For Phase 2, I'll need a one-line answer: keep `pro` or rename to `standard`? Keep £ or switch to $?
