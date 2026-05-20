@@ -34,7 +34,7 @@ function rowsToPlans(rows: FeatureRow[]): PlanLimitsResponse {
   for (const r of rows) {
     // SQL has both `standard` (limits layer) and `pro` (pricing/discount layer).
     // Owner-locked plan keys are basic/pro/premium → alias `standard` → `pro`.
-    const planKey = r.plan === "standard" ? "pro" : r.plan;
+    const planKey: string = (r.plan as unknown as string) === "standard" ? "pro" : (r.plan as unknown as string);
     const bucket = plans[planKey] ?? { ai: {}, core: {}, voice: {} };
     const value = r.is_unlimited ? null : (r.limit_value ?? 0);
     switch (r.feature_key) {
