@@ -15,6 +15,8 @@ import UserHalo from "@/components/identity/UserHalo";
 import { useProfile } from "@/hooks/useProfile";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { replitStream, replitCall } from "@/lib/replitApi";
+import { dispatchAdvisorTool, type ToolCallEvent } from "@/lib/advisorToolDispatch";
+import TypewriterCursor from "@/components/chat/TypewriterCursor";
 import { getAdvisor, type ToolPanel, type MetricBadge, type ChannelChip } from "./advisorConfig";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -340,6 +342,30 @@ export function FloatingAdvisorChatProvider({ children }: { children: React.Reac
           if (idx >= 0) events[idx] = { ...events[idx], ...incoming };
           else events.push(incoming);
           setMessages((m) => m.map((x) => x.id === assistantId ? { ...x, tool_events: [...events] } : x));
+        } else if (ev.event === "tool_call") {
+          // Brain ne tool call kiya — Supabase pe execute karke result dikhao.
+          const call = ev.data as ToolCallEvent;
+          if (call?.id && call?.name) {
+            // Pehle "running" badge dikhao
+            const runningEvt: ToolEvent = { id: call.id, label: `⚙️ Running ${call.name}…`, status: "running", input: call.args };
+            const ridx = events.findIndex((e) => e.id === call.id);
+            if (ridx >= 0) events[ridx] = { ...events[ridx], ...runningEvt };
+            else events.push(runningEvt);
+            setMessages((m) => m.map((x) => x.id === assistantId ? { ...x, tool_events: [...events] } : x));
+            // Execute against Supabase (RLS-safe, user JWT)
+            const result = await dispatchAdvisorTool(call, { industry, userId: user?.id });
+            const doneEvt: ToolEvent = {
+              id: result.id,
+              label: result.label,
+              status: result.status,
+              input: call.args,
+              output: result.output ?? result.error,
+            };
+            const didx = events.findIndex((e) => e.id === result.id);
+            if (didx >= 0) events[didx] = { ...events[didx], ...doneEvt };
+            else events.push(doneEvt);
+            setMessages((m) => m.map((x) => x.id === assistantId ? { ...x, tool_events: [...events] } : x));
+          }
         } else if (ev.event === "sherlock") {
           if (ev.data?.state) setSherlock(ev.data.state as SherlockState);
         } else if (ev.event === "done" || ev.event === "end") {
@@ -1642,6 +1668,7 @@ function MessageBubble(props: {
         {m.content ? (
           <div className="prose prose-sm dark:prose-invert max-w-none prose-pre:bg-background/70 prose-pre:border prose-pre:border-border/50 prose-code:text-primary prose-code:before:hidden prose-code:after:hidden">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+            {m.pending && <TypewriterCursor />}
           </div>
         ) : (
           m.pending && <Loader2 className="w-4 h-4 animate-spin text-primary" />
