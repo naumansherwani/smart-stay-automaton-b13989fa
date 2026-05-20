@@ -222,6 +222,11 @@ export default function Login() {
           {isOwner && (
             <p className="text-[10px] text-muted-foreground">Owner Protocol Active</p>
           )}
+          {lockedIndustry && !isOwner && (
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold">
+              {industryLabel(lockedIndustry)} workspace
+            </div>
+          )}
         </div>
 
         <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-sm">
