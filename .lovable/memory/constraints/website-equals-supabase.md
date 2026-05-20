@@ -11,3 +11,10 @@ type: constraint
 4. **Currency LOCKED:** GBP (£). Base prices: Basic £25, Pro £52, Premium £108/month.
 5. **Launch discount LOCKED:** Active 2026-04-24 → 2026-07-31. Basic 12%, Pro 15%, Premium 20%. Cap 100/plan. Source: `get_launch_discount_status()` + `launch_discount_redemptions` table.
 6. **Workflow on new SQL table:** (a) read columns via `supabase--read_query`, (b) wire frontend hook + Realtime subscription, (c) zero hardcoded mappings.
+
+**7. SQL me SAB hai — Lovable code nahi likhta (May 2026):**
+- Advisor names, system prompts, model IDs, industry mappings, plan logic, pricing, features — sab SQL tables me hai.
+- Lovable ka kaam: SQL read karo → frontend ko wire karo. **Bas.**
+- Sirf edge function ek hi likhne ki ijaazat hai: thin generic AI proxy jo SQL se config padhe + Lovable AI Gateway pe forward kare (kyunki `LOVABLE_API_KEY` browser me expose nahi kar sakte). **Zero hardcoded prompts.** Sab kuch SQL row se aata hai.
+- Replit deprecated. Sab AI (Jimmy, Sherlock, 8 industry advisors) Lovable AI Gateway pe SQL-driven.
+- Jab bhi naya AI behavior chahiye: owner SQL row banata/edit karta hai. Lovable code touch nahi karta.
