@@ -225,8 +225,8 @@ export async function invokeShim<T = any>(
         target: "jimmy",
       });
     case "sherlock-audit":
-      // SQL: founder_sherlock_audit → /api/founder/adviser
-      return replitCall<T>("/founder/adviser", {
+      // Owner-locked May 2026: Sherlock has its own orchestrator endpoint.
+      return replitCall<T>("/founder/sherlock/orchestrate", {
         ...(typeof body === "object" && body ? body : {}),
         target: "sherlock",
       });
