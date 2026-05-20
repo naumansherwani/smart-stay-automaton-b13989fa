@@ -179,14 +179,11 @@ export function useOwnerMailbox(folder: MailFolder, search: string) {
   const moveTo = useCallback(async () => {}, []);
 
   const send = useCallback(async (payload: { to: string; cc?: string; bcc?: string; subject: string; html: string; inReplyTo?: string; references?: string; fromIdentity?: MailIdentity }) => {
-    const { data, error: err } = await supabase.functions.invoke("resend-send", {
-      body: { action: "send", ...payload, logMailbox: true },
-    });
-    if (err) throw new Error(err.message);
-    if (!data?.ok) throw new Error(data?.error || "Send failed");
-    toast.success("Email sent via Resend");
-    await refresh();
-    return data.data;
+    void payload;
+    // Resend removed (May 2026). Outbound send is pending Google Workspace
+    // wiring. Until then sending is disabled — surface a clear message.
+    toast.error("Outbound email is disabled — Google Workspace integration pending");
+    throw new Error("Email sending is temporarily disabled (migrating to Google Workspace)");
   }, [refresh]);
 
   return {
