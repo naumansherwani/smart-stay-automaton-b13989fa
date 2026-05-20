@@ -1,14 +1,14 @@
 ---
 name: Advisor Endpoints (LOCKED — owner final May 2026)
-description: Each industry advisor has its own dedicated Hetzner endpoint /api/advisor/{industry}. Jimmy uses /api/founder/jimmy/orchestrate. Sherlock uses /api/founder/adviser.
+description: Each industry advisor has its own dedicated Hetzner endpoint /api/advisor/{industry}. Jimmy uses /api/founder/jimmy/orchestrate. Sherlock uses /api/founder/sherlock/orchestrate.
 type: feature
 ---
-**Owner-locked May 2026 — supersedes prior orchestrator-only routing.**
+**Owner-locked May 2026 (FINAL) — supersedes prior orchestrator-only routing.**
 
 | Caller | Hetzner path | invokeShim name |
 |---|---|---|
 | Jimmy (founder chat) | `/api/founder/jimmy/orchestrate` body `{target:"jimmy"}` | `founder-adviser` |
-| Sherlock (audit) | `/api/founder/adviser` body `{target:"sherlock"}` | `sherlock-audit` |
+| Sherlock (audit) | `/api/founder/sherlock/orchestrate` body `{target:"sherlock"}` | `sherlock-audit` |
 | Industry advisors (Aria/Orion/Rex/Lyra/Sage/Atlas/Vega/Kai) | `/api/advisor/{industry}` — one endpoint per industry | `crm-*` via `callAdvisor()` |
 | Owner mailbox | Supabase edge `owner-mailbox` (gracefully degrades on Hetzner /email/inbox 5xx) | `owner-mailbox` |
 
