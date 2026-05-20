@@ -5,9 +5,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const REPLIT_INBOX_URL =
+// Sovereign brain (Hetzner). Replit fully retired May 2026.
+const INBOX_URL =
   Deno.env.get("REPLIT_INBOX_URL") ||
-  "https://294617d8-2084-4895-8e41-8e7fdf1efde4-00-37kl744l50epn.riker.replit.dev/api/email/inbox";
+  Deno.env.get("SOVEREIGN_API_BASE_URL") ||
+  "https://api.hostflowai.net/api/email/inbox";
 
 const FOLDER_STATUS_MAP: Record<string, string[] | null> = {
   inbox: ["sent", "pending", "failed", "suppressed", "bounced", "complained", "dlq"],
@@ -79,7 +81,7 @@ Deno.serve(async (req) => {
         });
       }
       try {
-        const r = await fetch(`${REPLIT_INBOX_URL}/${encodeURIComponent(String(id))}/read`, {
+        const r = await fetch(`${INBOX_URL}/${encodeURIComponent(String(id))}/read`, {
           method: "PATCH",
           headers: { Authorization: authHeader },
         });
@@ -114,7 +116,7 @@ Deno.serve(async (req) => {
       if (body?.to) params.set("to", String(body.to));
       params.set("limit", String(body?.limit || 100));
       params.set("offset", String(body?.offset || 0));
-      const url = `${REPLIT_INBOX_URL}?${params.toString()}`;
+      const url = `${INBOX_URL}?${params.toString()}`;
       const r = await fetch(url, {
         headers: { Authorization: authHeader, "Content-Type": "application/json" },
       });
