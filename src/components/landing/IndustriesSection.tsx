@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -20,7 +19,6 @@ const INDUSTRIES: { icon: React.ElementType; name: string; desc: string; color: 
 ];
 
 const IndustriesSection = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleClick = (industry: IndustryType) => {
