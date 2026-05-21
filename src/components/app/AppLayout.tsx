@@ -15,9 +15,11 @@ import IndustryIcon from "@/components/dashboard/IndustryIcon";
 import WinBackOfferModal from "@/components/winback/WinBackOfferModal";
 import PlanSwitcher, { PlanSwitcherBanner } from "./PlanSwitcher";
 import UserHalo from "@/components/identity/UserHalo";
+import FounderHQBadge from "@/components/founder/FounderHQBadge";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import { useWorkspaceTheme } from "@/hooks/useWorkspaceTheme";
+import { ensureFounderUiLock } from "@/lib/founderUiLock";
 import { toast } from "sonner";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
@@ -62,10 +64,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
     if (!user) return;
     supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
       setIsAdmin(!!data);
-      // Only auto-open PublicView the first time per session.
-      // Once admin picks an industry (or closes it), don't re-open on every page mount.
-      const hasExitedPublic = sessionStorage.getItem("admin_exited_public") === "1";
-      if (!!data && !adminChecked && !hasExitedPublic) setPublicMode(true);
+      if (data) {
+        sessionStorage.setItem("admin_exited_public", "1");
+        void ensureFounderUiLock(user.id).catch(() => {});
+      }
       setAdminChecked(true);
     });
   }, [user]);
@@ -182,6 +184,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <main className="flex-1">
         {children}
       </main>
+
+      <FounderHQBadge />
 
       {/* Win-Back personalized offer for canceled users */}
       <WinBackOfferModal />
