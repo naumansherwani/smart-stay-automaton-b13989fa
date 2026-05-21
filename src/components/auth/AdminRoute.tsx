@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { isOwnerEmail } from "@/lib/ownerIdentity";
 
 export default function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
@@ -11,6 +12,10 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!user) {
       setIsAdmin(false);
+      return;
+    }
+    if (isOwnerEmail(user.email)) {
+      setIsAdmin(true);
       return;
     }
     (async () => {
