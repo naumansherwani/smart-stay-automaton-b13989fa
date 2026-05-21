@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Crown, ArrowUpRight } from "lucide-react";
+import { isOwnerEmail } from "@/lib/ownerIdentity";
 
 export default function FounderHQBadge() {
   const { user } = useAuth();
@@ -11,6 +12,10 @@ export default function FounderHQBadge() {
 
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
+    if (isOwnerEmail(user.email)) {
+      setIsAdmin(true);
+      return;
+    }
     supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
   }, [user]);
 
