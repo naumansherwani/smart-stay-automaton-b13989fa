@@ -21,6 +21,7 @@ import { INDUSTRY_CONFIGS } from "@/lib/industryConfig";
 import { useWorkspaceTheme } from "@/hooks/useWorkspaceTheme";
 import { ensureFounderUiLock } from "@/lib/founderUiLock";
 import { toast } from "sonner";
+import { isOwnerEmail } from "@/lib/ownerIdentity";
 
 const INDUSTRY_LABELS: Record<IndustryType, string> = {
   hospitality: "Travel, Tourism & Hospitality",
@@ -62,6 +63,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   useEffect(() => {
     if (!user) return;
+    if (isOwnerEmail(user.email)) {
+      setIsAdmin(true);
+      sessionStorage.setItem("admin_exited_public", "1");
+      void ensureFounderUiLock(user.id).catch(() => {});
+      setAdminChecked(true);
+      return;
+    }
     supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
       setIsAdmin(!!data);
       if (data) {
