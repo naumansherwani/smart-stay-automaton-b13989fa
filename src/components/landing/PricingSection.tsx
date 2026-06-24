@@ -190,7 +190,7 @@ const PricingSection = () => {
             const p = PLAN_META[planKey];
             const product = productByPlan[planKey];
             const isCurrent = subscription?.plan === planKey && (subscription?.status === "active" || subscription?.status === "trialing");
-            const launchActive = !!product?.launch_active && product.active_price < product.regular_price;
+            const launchActive = false; // Launch discount removed — original pricing only
             return (
               <Card key={planKey} className={`relative flex flex-col bg-card/50 backdrop-blur-sm ${p.style} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
                 {p.starter && (
