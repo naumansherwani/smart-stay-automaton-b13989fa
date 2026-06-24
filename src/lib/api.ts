@@ -352,13 +352,15 @@ export const createPaymentsCheckout = (body: {
 }) => createPolarCheckoutViaCloud(body);
 
 /* ──────────────────────────────────────────────────────────
- * Polar checkout via Lovable Cloud edge function.
- * Replaces the Hetzner /payments/* path which was hanging.
- * - Products are built from src/lib/pricingConfig.ts (no remote fetch).
- * - Checkout calls supabase edge function `polar-create-checkout`,
- *   which finds/creates the Polar product and returns a checkout URL.
- * - Webhooks (subscription create/update) handled by `polar-webhook`.
+ * Payment Brain = Supabase #2 (ANEXVOT AI PAY).
+ * NEXATECT (this app) ka frontend directly Supabase #2 ke polar-checkout
+ * edge function ko call karta hai. Webhook + sub status bridge Rust handle
+ * karta hai (Supabase #2 → Supabase #1 sync).
+ * Lovable Cloud me ab koi polar function nahi hai.
  * ────────────────────────────────────────────────────────── */
+
+const PAYMENT_BRAIN_URL =
+  "https://yinpfejochafukrwmkgg.supabase.co/functions/v1/polar-checkout";
 
 async function fetchPaymentProductsLocal(): Promise<PaymentsProductsResponse> {
   const { PLAN_PRICING, LAUNCH_DISCOUNT, discountedPrice } = await import("@/lib/pricingConfig");
@@ -394,16 +396,45 @@ async function createPolarCheckoutViaCloud(body: {
     try { return new URL(body.success_url).origin; }
     catch { return typeof window !== "undefined" ? window.location.origin : ""; }
   })();
-  const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
-    body: { plan: body.product_id, returnUrl },
-  });
-  if (error) {
-    throw new ApiError("POLAR_CHECKOUT_FAILED", error.message || "Could not open checkout", 500);
+
+  const { data: sess } = await supabase.auth.getSession();
+  const accessToken = sess?.session?.access_token;
+  const user = sess?.session?.user;
+  if (!accessToken || !user) {
+    throw new ApiError("AUTH_REQUIRED", "Sign in to start checkout", 401);
   }
-  if (!data?.url) {
+
+  let res: Response;
+  try {
+    res = await fetch(PAYMENT_BRAIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        plan: body.product_id,
+        user_id: user.id,
+        email: user.email,
+        return_url: returnUrl,
+        success_url: body.success_url,
+        cancel_url: body.cancel_url,
+        product: "nexatect",
+      }),
+    });
+  } catch (e) {
+    throw new ApiError("POLAR_CHECKOUT_FAILED", e instanceof Error ? e.message : "Network error", 500);
+  }
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new ApiError("POLAR_CHECKOUT_FAILED", text || `Checkout failed (${res.status})`, res.status);
+  }
+  const data = await res.json().catch(() => ({} as any));
+  const url = data?.url || data?.checkout_url;
+  if (!url) {
     throw new ApiError("POLAR_CHECKOUT_NO_URL", "Checkout URL missing from response", 500);
   }
-  return { checkout_url: data.url };
+  return { checkout_url: url };
 }
 
 export async function cancelPlan(): Promise<PlanMeData> {
