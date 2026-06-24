@@ -341,7 +341,7 @@ export interface PlanMeData {
 }
 
 export const fetchPaymentProducts = () =>
-  apiGet<PaymentsProductsResponse>("/payments/products", { auth: false });
+  fetchPaymentProductsLocal();
 
 export const fetchMe = () => apiGet<PlanMeData>("/plan/me");
 
@@ -349,7 +349,62 @@ export const createPaymentsCheckout = (body: {
   product_id: string;
   success_url: string;
   cancel_url: string;
-}) => apiPost<PaymentsCheckoutResponse>("/payments/checkout", body);
+}) => createPolarCheckoutViaCloud(body);
+
+/* ──────────────────────────────────────────────────────────
+ * Polar checkout via Lovable Cloud edge function.
+ * Replaces the Hetzner /payments/* path which was hanging.
+ * - Products are built from src/lib/pricingConfig.ts (no remote fetch).
+ * - Checkout calls supabase edge function `polar-create-checkout`,
+ *   which finds/creates the Polar product and returns a checkout URL.
+ * - Webhooks (subscription create/update) handled by `polar-webhook`.
+ * ────────────────────────────────────────────────────────── */
+
+async function fetchPaymentProductsLocal(): Promise<PaymentsProductsResponse> {
+  const { PLAN_PRICING, LAUNCH_DISCOUNT, discountedPrice } = await import("@/lib/pricingConfig");
+  const now = Date.now();
+  const start = new Date(LAUNCH_DISCOUNT.campaignStart).getTime();
+  const end = new Date(LAUNCH_DISCOUNT.campaignEnd).getTime();
+  const launchActive = now >= start && now <= end;
+
+  const products: PaymentProduct[] = (["basic", "pro", "premium"] as PaymentsPlanKey[]).map((plan) => {
+    const p = PLAN_PRICING[plan];
+    const regular = Math.round(p.basePriceGBP * 100);
+    const active = Math.round(discountedPrice(plan) * 100);
+    return {
+      plan,
+      name: p.name,
+      currency: "gbp",
+      regular_price: regular,
+      active_price: launchActive ? active : regular,
+      launch_active: launchActive,
+      launch_ends_at: launchActive ? LAUNCH_DISCOUNT.campaignEnd : null,
+      checkout_product_id: plan, // edge function resolves plan → Polar product
+    };
+  });
+  return { products };
+}
+
+async function createPolarCheckoutViaCloud(body: {
+  product_id: string;
+  success_url: string;
+  cancel_url: string;
+}): Promise<PaymentsCheckoutResponse> {
+  const returnUrl = (() => {
+    try { return new URL(body.success_url).origin; }
+    catch { return typeof window !== "undefined" ? window.location.origin : ""; }
+  })();
+  const { data, error } = await supabase.functions.invoke("polar-create-checkout", {
+    body: { plan: body.product_id, returnUrl },
+  });
+  if (error) {
+    throw new ApiError("POLAR_CHECKOUT_FAILED", error.message || "Could not open checkout", 500);
+  }
+  if (!data?.url) {
+    throw new ApiError("POLAR_CHECKOUT_NO_URL", "Checkout URL missing from response", 500);
+  }
+  return { checkout_url: data.url };
+}
 
 export async function cancelPlan(): Promise<PlanMeData> {
   return request<PlanMeData>("DELETE", "/payments/cancel");
