@@ -12,7 +12,8 @@ Domain: hostflowai.net (primary, May 2026). .live FULLY REMOVED everywhere.
 Owner: naumansherwani@hostflowai.net, notifications → naumankhansherwani@gmail.com
 No public support@ email on website — removed per owner. Internal founder mailbox Support identity kept.
 No "Book Demo" CTA on landing/pricing — removed per owner.
-Payments: Polar via sovereign brain, LIVE & connected. Paddle removed Apr 2026. Do NOT auto-integrate any provider on Lovable side.
+Payments: Polar lives on Supabase #2 (ANEXVOT AI PAY) ONLY. Endpoint https://yinpfejochafukrwmkgg.supabase.co/functions/v1/polar-checkout. Lovable Cloud has ZERO polar functions (deleted 2026-06-24). Rust bridge syncs sub status to Supabase #1 & #3. Multi-product via metadata.product (nexatect|axonetis|...). Never recreate polar functions in Lovable.
+For Supabase #2/#3, Hetzner, Rust bridge, Caddy: output copy-paste blocks for the user's terminal. Lovable has no tools that reach those systems.
 FINAL ARCHITECTURE (May 2026): Frontend=Lovable, Database=Supabase (source of truth, SQL-first), AI Backend=Hetzner https://api.hostflowai.net/api, Models=Ollama Qwen3 (Jimmy qwen3:8b 3M ctx, Sherlock qwen3:8b 1M ctx, 8 industry advisors qwen3:4b 100K ctx each) + Gemini/Groq fallback. Replit FULLY RETIRED.
 Legacy file names src/lib/replit*.ts and var names like REPLIT_INBOX_URL are just historic — they all point to api.hostflowai.net. Do not rename in bulk; just don't add new Replit references.
 Sovereign brain owns: advisors, Jimmy, Sherlock, health scores, benchmarks, plan enforcement, inbox, healthcare/education/logistics workflows. Lovable frontend trusts Hetzner as runtime source of truth.
@@ -37,6 +38,8 @@ Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartb
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
 - [No mock data](mem://constraints/no-mock-data) — Forbid hardcoded sample arrays in production UI
+- [Payment Brain Supabase #2](mem://features/payment-brain-supabase2) — All Polar logic on Supabase #2; Lovable Cloud has none; Rust bridge syncs status
+- [Copy-paste handoff workflow](mem://preferences/copy-paste-handoff-workflow) — Output paste-ready blocks for Supabase #2/#3, Hetzner, Rust bridge, Caddy
 - [SQL = High Command](mem://constraints/sql-high-command) — Always read personal Supabase SQL first; frontend mirrors SQL state
 - [Sidebar header spacing](mem://design/sidebar-header-spacing) — Locked GhostSidebar header 72px + border-b + nav pt-2 separation
 - [Sidebar locked](mem://design/sidebar-locked) — GhostSidebar premium dark glass is final across all 8 industries; landing industry cards stay consistent. Do not restyle without owner approval.
