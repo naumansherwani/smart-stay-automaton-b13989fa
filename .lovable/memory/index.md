@@ -38,6 +38,7 @@ Healthcare scheme: deep navy + medical red + WHITE accent (no teal/mint). Heartb
 - [Never-mix rules](mem://constraints/never-mix-rules) — Industry/sub-type/plan isolation rules
 - [Replit backend contract](mem://features/replit-backend-contract) — JWT, plan enforcement, SSE advisor contract
 - [No mock data](mem://constraints/no-mock-data) — Forbid hardcoded sample arrays in production UI
+- [Polar webhook secret locked](mem://features/polar-webhook-secret-locked) — Supabase #2 = ANEXVOT AI PAY brain; POLAR_WEBHOOK_SECRET is single chokepoint for all products; Deno-only constitution; new JWT Signing Keys usage
 - [Payment Brain Supabase #2](mem://features/payment-brain-supabase2) — All Polar logic on Supabase #2; Lovable Cloud has none; Rust bridge syncs status
 - [Copy-paste handoff workflow](mem://preferences/copy-paste-handoff-workflow) — Output paste-ready blocks for Supabase #2/#3, Hetzner, Rust bridge, Caddy
 - [SQL = High Command](mem://constraints/sql-high-command) — Always read personal Supabase SQL first; frontend mirrors SQL state
